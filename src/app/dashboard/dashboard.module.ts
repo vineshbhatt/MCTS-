@@ -56,21 +56,26 @@ import { ErrorHandlerFctsService } from './services/error-handler-fcts.service';
 import { TransferReplyDialogComponent } from './dialog-boxes/transfer-reply-dialog/transfer-reply-dialog.component';
 import { SafePipe } from './pipes/safe.pipe';
 
-import { BaseDashboardFullComponent } from './base-classes/base-dashboard-full/base-dashboard-full.component';		
-import { BaseDashboardComponent } from './base-classes/base-dashboard/base-dashboard.component';		
-import { BaseDashboardActiveComponent } from './base-classes/base-dashboard-active/base-dashboard-active.component';		
-import { DocumentViewerComponent } from './external/documentviewer/documentviewer.component';		
-import { MailroomsComponent } from './mailroom/mailroom.component';		
-import { MailroomDasnboardComponent } from './mailroom/mailroom-dasnboard/mailroom-dasnboard.component';		
-import { MrArchievedInboundsComponent } from './mailroom/mr-archieved-inbounds/mr-archieved-inbounds.component';		
-import { MrArchievedOutboundsComponent } from './mailroom/mr-archieved-outbounds/mr-archieved-outbounds.component';		
-import { MrNewInboundsComponent } from './mailroom/mr-new-inbounds/mr-new-inbounds.component';		
-import { MrDispatchedInboundsComponent } from './mailroom/mr-dispatched-inbounds/mr-dispatched-inbounds.component';		
-import { MrAcknowledgedInboundsComponent } from './mailroom/mr-acknowledged-inbounds/mr-acknowledged-inbounds.component';		
-import { MrNewOutboundsComponent } from './mailroom/mr-new-outbounds/mr-new-outbounds.component';		
-import { MrDispatchedOutboundsComponent } from './mailroom/mr-dispatched-outbounds/mr-dispatched-outbounds.component';		
-import { MrAcknowledgedOutboundsComponent } from './mailroom/mr-acknowledged-outbounds/mr-acknowledged-outbounds.component';		
+import { BaseDashboardFullComponent } from './base-classes/base-dashboard-full/base-dashboard-full.component';
+import { BaseDashboardComponent } from './base-classes/base-dashboard/base-dashboard.component';
+import { BaseDashboardActiveComponent } from './base-classes/base-dashboard-active/base-dashboard-active.component';
+import { DocumentViewerComponent } from './external/documentviewer/documentviewer.component';
+import { MailroomsComponent } from './mailroom/mailroom.component';
+import { MailroomDasnboardComponent } from './mailroom/mailroom-dasnboard/mailroom-dasnboard.component';
+import { MrArchievedInboundsComponent } from './mailroom/mr-archieved-inbounds/mr-archieved-inbounds.component';
+import { MrArchievedOutboundsComponent } from './mailroom/mr-archieved-outbounds/mr-archieved-outbounds.component';
+import { MrNewInboundsComponent } from './mailroom/mr-new-inbounds/mr-new-inbounds.component';
+import { MrDispatchedInboundsComponent } from './mailroom/mr-dispatched-inbounds/mr-dispatched-inbounds.component';
+import { MrAcknowledgedInboundsComponent } from './mailroom/mr-acknowledged-inbounds/mr-acknowledged-inbounds.component';
+import { MrNewOutboundsComponent } from './mailroom/mr-new-outbounds/mr-new-outbounds.component';
+import { MrDispatchedOutboundsComponent } from './mailroom/mr-dispatched-outbounds/mr-dispatched-outbounds.component';
+import { MrAcknowledgedOutboundsComponent } from './mailroom/mr-acknowledged-outbounds/mr-acknowledged-outbounds.component';
 import { TransferReturntoasDialogComponent } from './dialog-boxes/transfer-returntoas-dialog/transfer-returntoas-dialog.component';
+
+
+import { NgxPrintModule } from 'ngx-print';
+import { NgxBarcodeModule } from 'ngx-barcode';
+
 
 @NgModule({
   imports: [
@@ -101,7 +106,7 @@ import { TransferReturntoasDialogComponent } from './dialog-boxes/transfer-retur
     OwlNativeDateTimeModule,
     MatTreeModule,
     MatIconModule,
-    NgxFileDropModule
+    NgxFileDropModule, NgxPrintModule, NgxBarcodeModule
   ],
   declarations: [
     DashboardComponent,
@@ -137,20 +142,20 @@ import { TransferReturntoasDialogComponent } from './dialog-boxes/transfer-retur
     TransferRecallDialogComponent,
     TransferReplyDialogComponent,
     ExternalIncoming,
-    BaseDashboardFullComponent,		
-    BaseDashboardComponent,		
-    BaseDashboardActiveComponent,		
-    DocumentViewerComponent,		
-    MailroomsComponent,		
-    MailroomDasnboardComponent,		
-    MrArchievedInboundsComponent,		
-    MrArchievedOutboundsComponent,		
-    MrNewInboundsComponent,		
-    MrDispatchedInboundsComponent,		
-    MrAcknowledgedInboundsComponent,		
-    MrNewOutboundsComponent,		
-    MrDispatchedOutboundsComponent,		
-    MrAcknowledgedOutboundsComponent,		
+    BaseDashboardFullComponent,
+    BaseDashboardComponent,
+    BaseDashboardActiveComponent,
+    DocumentViewerComponent,
+    MailroomsComponent,
+    MailroomDasnboardComponent,
+    MrArchievedInboundsComponent,
+    MrArchievedOutboundsComponent,
+    MrNewInboundsComponent,
+    MrDispatchedInboundsComponent,
+    MrAcknowledgedInboundsComponent,
+    MrNewOutboundsComponent,
+    MrDispatchedOutboundsComponent,
+    MrAcknowledgedOutboundsComponent,
     TransferReturntoasDialogComponent
   ],
   entryComponents: [
@@ -161,7 +166,7 @@ import { TransferReturntoasDialogComponent } from './dialog-boxes/transfer-retur
     MessageDialogComponent,
     CompleteDialogComponent,
     TransferRecallDialogComponent,
-    TransferReplyDialogComponent,		    
+    TransferReplyDialogComponent,
     TransferReturntoasDialogComponent
   ],
   providers: [ErrorHandlerFctsService]

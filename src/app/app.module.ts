@@ -12,6 +12,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AppLoadConstService } from './app-load-const.service';
 
 
+
 export function initApp(appInitService: AppLoadConstService) {
   return (): Promise<any> => {
     return appInitService.Init();
@@ -29,8 +30,7 @@ export function initApp(appInitService: AppLoadConstService) {
     BrowserAnimationsModule,
     MatMenuModule,
     MalihuScrollbarModule.forRoot(),
-    ReactiveFormsModule
-  ],
+    ReactiveFormsModule],
   exports: [MatButtonModule, MatCheckboxModule],
   providers: [
     AppLoadConstService, {

@@ -46,17 +46,16 @@
                     <mat-form-field class="input_tbl_wrp">
                       <input type="text" aria-label="Number" matInput formControlName="ExternalOrganization"
                         [matAutocomplete]="extOrgName">
-                      <mat-autocomplete #extOrgName="matAutocomplete" [displayWith]="displaySearchFilterValueExt">
-                        <mat-option *ngFor="let OrgName of (filteredExtOrgNames | async)" [value]="OrgName"
-                          (onSelectionChange)="optionSelectionChangeExternal(OrgName, $event)">
-                          {{OrgName?.OrgName_En}}
-                        </mat-option>
-                      </mat-autocomplete>
                     </mat-form-field>
+                    <mat-autocomplete #extOrgName="matAutocomplete" [displayWith]="displaySearchFilterValueExt">
+                      <mat-option *ngFor="let OrgName of (filteredExtOrgNames | async)" [value]="OrgName"
+                        (onSelectionChange)="optionSelectionChangeExternal(OrgName, $event)">
+                        {{OrgName?.OrgName_En}}
+                      </mat-option>
+                    </mat-autocomplete>
                   </div>
+
                 </td>
-                <!-- <td>{{ExtSenderInfo?.OrgName_En }}</td>
-              <td>{{ExtSenderInfo?.OrgName_En }}</td> -->
                 <td>
                   <div class="input_item_wrp sm_input_wrapper">
                     <mat-form-field class="input_tbl_wrp">
@@ -552,24 +551,71 @@
               </ngx-file-drop>
             </div>
             <!-- end -->
-
           </div>
         </mat-expansion-panel>
-
-
       </mat-accordion>
     </div>
     <!-- cc code end -->
     <div class="corp_dtl_btn_btm_wrapper">
       <button *ngIf="showGeneratebarcodeButton" class="btn_008" (click)="GenerateBarcode()">Generate Barcode</button>
-      <button *ngIf="showSendOnButton" class="btn_008" (click)="SendOnWF()">Send On</button>
-      <button *ngIf="showSendOnButton" class="btn_008" (click)="SaveWF()">Save</button>
+      <button *ngIf="showSendOnButton" class="btn_008" printTitle="Barcode" printSectionId="print-section"
+        ngxPrint>Print Barcode</button>
+      <button *ngIf="showSendOnButton" class="btn_008" printTitle="Reciept" printSectionId="print-reciept"
+        ngxPrint>Print Reciept</button>
+      <button *ngIf="showSendOnButton" class="btn_008" (click)="SendOnWF('SENDON')">Send On</button>
+      <button *ngIf="showSendOnButton" class="btn_008" (click)="SendOnWF('SAVE')">Save</button>
+
       <button class="btn_008">Cancel</button>
       <button class="btn_008" (click)="backNavigation()">Back</button>
       <button (click)="expandeActionLeftButton()" matRipple class="corsp_ext_btn">
         <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
       </button>
     </div>
+
+    <div id="print-section" style="display:none">
+      <span style="font-weight:bold;text-align :center;margin-left:15%">Public Works Authority</span><br>
+      <span style="font-weight:bold;text-align :center;margin-left:20%">{{barcodeDate}}</span>
+      <ngx-barcode [bc-value]="barcodeNumberToPrint" [bc-format]="CODE128" [bc-display-value]="true" [bc-font-size]="36"
+        [bc-font]="Arial" [bc-text-margin]="5" [bc-height]="55"></ngx-barcode>
+    </div>
+
+    <div id="print-reciept" style="display:none">
+
+      <head>
+        <meta charset="UTF-8">
+      </head>
+
+      <body>
+        <table border="0" cellpadding="0" cellspacing="0" style="left: 0px; top: 0px; width: 100%;">
+          <tbody>
+            <tr>
+              <td width="50"><img border="0" src="{{basehref}}assets/images/headerbar_content_server_pwa.png"
+                  style="width: 100px; height: 66px;" width="48"></td>
+              <td width="150"></td>
+              <td class="data-trn"
+                style="font-weight: bold; font-size: 42px;text-align: left; vertical-align: middle !important;">RECEIPT
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <hr>
+        <table border="0" cellpadding="0" cellspacing="0" style="left: 0px; top: 0px; width: 100%;">
+          <tbody>
+            <tr>
+              <td>Date of Receipt:</td>
+              <td>{{barcodeDate}}</td>
+            </tr>
+            <tr>
+              <td>Correspondence Code:</td>
+              <td>{{barcodeNumberToPrint}}</td>
+            </tr>
+        </table><br>
+        <ngx-barcode [bc-value]="barcodeNumberToPrint" [bc-format]="CODE128" [bc-display-value]="true"
+          [bc-font-size]="36" [bc-font]="Arial" [bc-text-margin]="5" [bc-height]="55"></ngx-barcode>
+      </body>
+    </div>
+
+
   </div>
   <div class="correspondence_deatil_prview_wrappper" [ngClass]="expandedRightAction ? 'unActive' : 'ActiveRight'"
     *ngIf="expandedAction">

@@ -20,6 +20,19 @@ import { InprogressIntOutboundComponent } from './internal/in-progress-intioutbo
 import { AchievedIntOutboundComponent } from './internal/achieved-intoutbounds/achieved-intoutbounds.component';
 import { CreateCorrespondenceComponent } from './create-correspondence/create-correspondence.component';
 import { ExternalIncoming } from './create-correspondence/external-incoming/external-incoming.component';
+
+import { MailroomsComponent } from './mailroom/mailroom.component';
+import { MailroomDasnboardComponent } from './mailroom/mailroom-dasnboard/mailroom-dasnboard.component';
+import { MrArchievedOutboundsComponent } from './mailroom/mr-archieved-outbounds/mr-archieved-outbounds.component';
+import { MrArchievedInboundsComponent } from './mailroom/mr-archieved-inbounds/mr-archieved-inbounds.component';
+import { MrNewInboundsComponent } from './mailroom/mr-new-inbounds/mr-new-inbounds.component';
+import { MrNewOutboundsComponent } from './mailroom/mr-new-outbounds/mr-new-outbounds.component';
+import { MrAcknowledgedInboundsComponent } from './mailroom/mr-acknowledged-inbounds/mr-acknowledged-inbounds.component';
+import { MrDispatchedInboundsComponent } from './mailroom/mr-dispatched-inbounds/mr-dispatched-inbounds.component';
+import { MrDispatchedOutboundsComponent } from './mailroom/mr-dispatched-outbounds/mr-dispatched-outbounds.component';
+import { MrAcknowledgedOutboundsComponent } from './mailroom/mr-acknowledged-outbounds/mr-acknowledged-outbounds.component';
+
+
 const dashboardRoutes: Routes = [
   {
     path: '',
@@ -70,6 +83,25 @@ const dashboardRoutes: Routes = [
                   { path: 'archieved-outbounds', component: AchievedOutboundComponent },
                   { path: 'correspondence-detail', component: CorrespondenceDetailComponent },
                   { path: '', component: ExternalDashboardComponent },
+                ]
+              }
+            ]
+          },
+          {
+            path: 'mailroom', component: MailroomsComponent,
+            children: [
+              {
+                path: '',
+                children: [
+                  { path: 'mr-new-inbounds', component: MrNewInboundsComponent },
+                  { path: 'mr-dispatched-inbounds', component: MrDispatchedInboundsComponent },
+                  { path: 'mr-acknowledged-inbounds', component: MrAcknowledgedInboundsComponent },
+                  { path: 'mr-archieved-inbounds', component: MrArchievedInboundsComponent },
+                  { path: 'mr-new-outbounds', component: MrNewOutboundsComponent },
+                  { path: 'mr-dispatched-outbounds', component: MrDispatchedOutboundsComponent },
+                  { path: 'mr-acknowledged-outbounds', component: MrAcknowledgedOutboundsComponent },
+                  { path: 'mr-archieved-outbounds', component: MrArchievedOutboundsComponent },
+                  { path: '', component: MailroomDasnboardComponent },
                 ]
               }
             ]

@@ -84,6 +84,9 @@ export class ExternalIncoming implements OnInit, AfterViewInit {
 
   CCOUID: organizationalChartModel[] = [];
 
+  barcodeNumberToPrint: string = "";
+  barcodeDate: string = "";
+
 
   constructor(private correspondenceDetailsService: CorrespondenceDetailsService, private _location: Location,
     private organizationalChartService: OrganizationalChartService, private formBuilder: FormBuilder,
@@ -430,7 +433,9 @@ export class ExternalIncoming implements OnInit, AfterViewInit {
     else {
       this.correspondenceDetailsService.getCorredpondenceBarcode(this.corrFolderData.AttachCorrID, 'Incoming', new Date().getFullYear()).subscribe(
         barcodeVal => {
-          this.correspondenceDetailsForm.get('corrNumber').setValue(barcodeVal.CorrespondenceCode)
+          this.correspondenceDetailsForm.get('corrNumber').setValue(barcodeVal.CorrespondenceCode);
+          this.barcodeNumberToPrint = barcodeVal.CorrespondenceCode;
+          this.barcodeDate = new Date().toLocaleDateString();
           this.showSendOnButtons();
         }
       );
@@ -438,8 +443,6 @@ export class ExternalIncoming implements OnInit, AfterViewInit {
   }
 
   initiateWFCorrespondence(Disposition1: string, Disposition2: string, Dispostion3: string) {
-
-    debugger;
     if (this.correspondenceDetailsForm.invalid) {
       alert("Fill in Manadatory Corr Details");
     }
@@ -495,7 +498,11 @@ export class ExternalIncoming implements OnInit, AfterViewInit {
 
 
       this.correspondencservice.initiateWF(this.initiateIncomingCorrespondenceDetails, 'Incoming').subscribe(
-        () => alert("Workflow Initiated")
+        () => {
+          alert("Workflow Initiated");
+          this.backNavigation();
+        }
+
       );
     }
   }
@@ -514,10 +521,17 @@ export class ExternalIncoming implements OnInit, AfterViewInit {
     this.showGeneratebarcodeButton = false;
     this.showSendOnButton = true;
   }
-  SendOnWF() {
-    this.initiateWFCorrespondence('SendOn', '', '2b');
-  }
-  SaveWF() {
+  SendOnWF(action: string) {
+    if (action === 'SENDON') {
+      // Disposition1 SendOn
+      // Disposition3  2b
+      this.initiateWFCorrespondence('SendOn', '', '2b');
+    }
+    else if (action === 'SAVE') {
+      // Disposition1 Save
+      // Disposition3  1
+      this.initiateWFCorrespondence('Save', '', '1');
+    }
 
   }
 
