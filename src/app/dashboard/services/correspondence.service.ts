@@ -423,25 +423,17 @@ export class CorrespondenceService {
       );
   }
 
-
-  //initiate Correspondence 
-
-  // initiateWF(initateFormDate: CorrespondenceWFFormModel, corrType: string): Observable<any> {
-  //   const params = new HttpParams()
-  //     .set('SubWorkID', '122000')
-  //     .set('suppress_response_codes', '')
-  //   const options = {
-  //     headers: new HttpHeaders()
-  //       .set('Content-Type', 'application/json; charset=UTF-8')
-  //       .set('OTCSTICKET', CSConfig.AuthToken)
-  //   };
-  //   return this.httpServices.post(this._CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.initiateIncomingWF}`,
-  //     params, options);
-
-  // }
-
-
   initiateWF(initateFormDate: CorrespondenceWFFormModel, corrType: string): Observable<any> {
+    let endPoint;
+    switch (corrType) {
+      case 'Incoming':
+        endPoint = FCTSDashBoard.initiateIncomingWF;
+        break;
+      case 'Outgoing':
+        endPoint = FCTSDashBoard.initiateOutgoingWF;
+        break;
+    }
+
     const params = new HttpParams()
       .set('suppress_response_codes', '')
       .set('initiateRequest', JSON.stringify(initateFormDate));
@@ -450,7 +442,7 @@ export class CorrespondenceService {
         // .set('Content-Type', 'application/json; charset=UTF-8')
         .set('OTCSTICKET', CSConfig.AuthToken)
     };
-    return this.httpServices.post(this._CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.initiateIncomingWF}`,
+    return this.httpServices.post(this._CSUrl + `${FCTSDashBoard.WRApiV1}` + endPoint,
       params, options);
 
   }

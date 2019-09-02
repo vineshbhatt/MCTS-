@@ -1,10 +1,8 @@
 import { Injectable, } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { HttpClientModule, HttpClient, HttpRequest, HttpResponse, HttpEventType } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { FCTSDashBoard } from '../../../environments/environment';
-import { map, tap, catchError } from 'rxjs/operators'; /* added 24/06/2019 */
-import { CorrespondenceFolderModel } from '../../dashboard/models/CorrespondenenceDetails.model';
-import { EMPTY } from 'rxjs'
+import { map, catchError } from 'rxjs/operators'; /* added 24/06/2019 */
 
 @Injectable({
     providedIn: 'root'
@@ -45,8 +43,40 @@ export class CSDocumentUploadService {
         return this.httpServices.post(this.CSUrl + `${FCTSDashBoard.WFApiV2}nodes`,
             formData, { reportProgress: true, observe: 'events', headers: { OTCSTICKET: CSConfig.AuthToken } });
     }
-}
 
+
+    deleteDocument(documentDataid: string): any {
+        var formData = new FormData();
+        return this.httpServices.delete(this.CSUrl + `${FCTSDashBoard.WFApiV2}nodes` + '/' + documentDataid,
+            { headers: { OTCSTICKET: CSConfig.AuthToken } })
+            .pipe(
+                map(data => {
+                    return data;
+                }),
+                catchError(error => {
+                    return throwError(error);
+                })
+            );
+    }
+
+    copyDocToCoverFolder(sourceDocumentDataid: string, destinationDataID: number, newFileName: string): Observable<any> {
+        const params = new HttpParams()
+            .set('original_id', sourceDocumentDataid)
+            .set('parent_id', destinationDataID.toString())
+            .set('name', newFileName)
+        return this.httpServices.post<any>(this.CSUrl + `${FCTSDashBoard.WFApiV1}nodes`, '',
+            { headers: { OTCSTICKET: CSConfig.AuthToken }, params: params })
+            .pipe(
+                map(data => {
+                    return data;
+                }),
+                catchError(error => {
+                    return throwError(error);
+                })
+            );
+
+    }
+}
 export class UploadParameterModel {
     name: string;
     type: string;

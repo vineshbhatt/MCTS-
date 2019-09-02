@@ -10,9 +10,8 @@ import { MalihuScrollbarModule } from "ngx-malihu-scrollbar";
 import { DraftnamePipe } from "../app/dashboard/pipes/draftname.pipe";
 import { ReactiveFormsModule } from '@angular/forms';
 import { AppLoadConstService } from './app-load-const.service';
-
-
-
+import { NgScrollbarModule } from 'ngx-scrollbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 export function initApp(appInitService: AppLoadConstService) {
   return (): Promise<any> => {
     return appInitService.Init();
@@ -30,7 +29,8 @@ export function initApp(appInitService: AppLoadConstService) {
     BrowserAnimationsModule,
     MatMenuModule,
     MalihuScrollbarModule.forRoot(),
-    ReactiveFormsModule],
+    ReactiveFormsModule, NgScrollbarModule,
+    MatTooltipModule],
   exports: [MatButtonModule, MatCheckboxModule],
   providers: [
     AppLoadConstService, {

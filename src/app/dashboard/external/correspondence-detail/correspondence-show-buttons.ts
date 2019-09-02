@@ -52,8 +52,8 @@ interface CorrButtonsList {
       this.corrSave = false;
     }
 
-    public showButton(correspondenceData: CorrespondenenceDetailsModel) {
-     console.log(correspondenceData) ;
+    public showButton(correspondenceData: CorrespondenenceDetailsModel) {      
+     console.log(correspondenceData);
      this._setInitData();
      if (correspondenceData.ID.toString() !== '0' ) {
          if (correspondenceData.holdSecretaryID.toString() === CSConfig.globaluserid.toString()) {

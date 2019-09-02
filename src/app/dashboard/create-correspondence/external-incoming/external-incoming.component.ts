@@ -1,22 +1,23 @@
-import { Component, OnInit, AfterViewInit, VERSION } from '@angular/core';
-import { OrgNameAutoFillModel, CorrespondenceFolderModel, CCUserSetModel } from 'src/app/dashboard/models/CorrespondenenceDetails.model';
-import { CorrespondenceDetailsService } from 'src/app/dashboard/services/correspondence-details.service';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { OrgNameAutoFillModel, CCUserSetModel } from 'src/app/dashboard/models/CorrespondenenceDetails.model';
 import { OrganizationalChartService } from 'src/app/dashboard/services/organizationalChart.service';
-import { organizationalChartModel } from 'src/app/dashboard/models/organizational-Chart.model';
+import { organizationalChartModel, organizationalChartEmployeeModel } from 'src/app/dashboard/models/organizational-Chart.model';
 import { Location } from '@angular/common'
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material/tree'
-import { Observable, EMPTY } from 'rxjs';
+import { Observable } from 'rxjs';
 import { FCTSDashBoard } from '../../../../environments/environment';
 import { FormArray, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { CorrResponse } from '../../services/correspondence-response.model';
 import { switchMap, debounceTime } from 'rxjs/operators';
 import { MatOptionSelectionChange, MatCheckboxChange } from '@angular/material';
 import { CorrespondenceService } from 'src/app/dashboard/services/correspondence.service';
 import { DocumentPreview } from '../../services/documentpreview.model';
-import { CSDocumentUploadService } from '../../services/CSDocumentUpload.service';
-import { NgxFileDropEntry, FileSystemFileEntry, FileSystemDirectoryEntry } from 'ngx-file-drop';
 import { CorrespondenceWFFormModel } from '../../models/CorrepondenceWFFormModel';
+import { NotificationService } from '../../services/notification.service';
+import { BaseCorrespondenceComponent } from '../../base-classes/base-correspondence-csactions/base-correspondence.component';
+import { CorrespondenceDetailsService } from 'src/app/dashboard/services/correspondence-details.service';
+import { CSDocumentUploadService } from '../../services/CSDocumentUpload.service'
+
 
 
 @Component({
@@ -26,13 +27,13 @@ import { CorrespondenceWFFormModel } from '../../models/CorrepondenceWFFormModel
 })
 
 
-export class ExternalIncoming implements OnInit, AfterViewInit {
+export class ExternalIncoming extends BaseCorrespondenceComponent implements OnInit, AfterViewInit {
 
   basehref: String = FCTSDashBoard.BaseHref;
   CSUrl: String = FCTSDashBoard.CSUrl;
   expandedRightAction: boolean = true;
   expandedAction: boolean = true;
-  userInfo: CorrResponse[];
+
   filteredExtOrgNames: Observable<OrgNameAutoFillModel[]>;
   filteredIntDepNames: Observable<OrgNameAutoFillModel[]>;
   filteredDepartmentNames: Observable<OrgNameAutoFillModel[]>;
@@ -50,9 +51,8 @@ export class ExternalIncoming implements OnInit, AfterViewInit {
   submitted = false;
   CorrespondenceType: string;
   MetadataFilters: any[];
-  externalIncCoverLetterData: CorrResponse[];
-  externalAttachmentFolderData: CorrResponse[];
-  corrFolderData: CorrespondenceFolderModel;
+
+
   documentPreviewURL: DocumentPreview[];
 
   selectedCaption: string;
@@ -73,24 +73,35 @@ export class ExternalIncoming implements OnInit, AfterViewInit {
   //
   percentDone: number;
   uploadSuccess: boolean;
-  version = VERSION;
+
 
   //
   initiateIncomingCorrespondenceDetails = new CorrespondenceWFFormModel;
 
   showGeneratebarcodeButton: boolean = true;
   showSendOnButton: boolean = false;
-  coverID: string;
+
 
   CCOUID: organizationalChartModel[] = [];
+  CCEID: organizationalChartEmployeeModel[] = [];
 
   barcodeNumberToPrint: string = "";
   barcodeDate: string = "";
+  initiatorMailroomPrivelage: number = 0;
+  searchVal: string = '';
+  ccProgbar = false;
+  showempDetails: boolean = false;
 
+  employeeMap = new Map<number, organizationalChartEmployeeModel[]>();
+  employeeForOUID: organizationalChartEmployeeModel[] = [];
 
-  constructor(private correspondenceDetailsService: CorrespondenceDetailsService, private _location: Location,
+  constructor(private _location: Location,
     private organizationalChartService: OrganizationalChartService, private formBuilder: FormBuilder,
-    private correspondencservice: CorrespondenceService, private csdocumentupload: CSDocumentUploadService) { }
+    private correspondencservice: CorrespondenceService,
+    private notificationmessage: NotificationService,
+    public csdocumentupload: CSDocumentUploadService, public correspondenceDetailsService: CorrespondenceDetailsService) {
+    super(csdocumentupload, correspondenceDetailsService)
+  }
   ngOnInit() {
     //Get Logged in user Information
     this.getUserInfo();
@@ -162,17 +173,10 @@ export class ExternalIncoming implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.getTempFolderAttachments('Incoming');
+    this.getUserMailroomPrivvelage();
   }
 
-  getTempFolderAttachments(CorrFlowType): void {
-    this.correspondenceDetailsService.createTempAttachments(CorrFlowType).subscribe(
-      tempAttachment => {
-        this.corrFolderData = tempAttachment
-        this.getCoverSection();
-        this.getAttachmentSection();
-      }
-    );
-  }
+
   getMetadataFilters(): void {
     this.correspondencservice
       .getDashboardFilters()
@@ -191,7 +195,9 @@ export class ExternalIncoming implements OnInit, AfterViewInit {
     if (searchList) { return searchList.OrgName_En; }
   }
   displaySearchFilterValueInt(searchList: OrgNameAutoFillModel) {
-    if (searchList) { return searchList.DepName_En + ',' + searchList.SecName_En }
+    if (searchList) {
+      return searchList.DepName_En + (searchList.SecName_En != null ? (',' + searchList.SecName_En) : "")
+    }
   }
 
 
@@ -203,14 +209,6 @@ export class ExternalIncoming implements OnInit, AfterViewInit {
   }
   backNavigation() {
     this._location.back()
-  }
-
-  getUserInfo() {
-    this.correspondenceDetailsService
-      .GetUserInformation()
-      .subscribe(userInfoVal =>
-        this.userInfo = userInfoVal
-      );
   }
 
   get f() { return this.correspondenceDetailsForm.controls; }
@@ -232,20 +230,6 @@ export class ExternalIncoming implements OnInit, AfterViewInit {
   refreshAttachmentSection() {
     this.getAttachmentSection();
   }
-
-  getCoverSection() {
-    this.correspondenceDetailsService.getCoverFolderDetails(this.corrFolderData.AttachCorrCoverID).subscribe(
-      coverFolderdetails => {
-        this.externalIncCoverLetterData = coverFolderdetails;
-        this.coverID = coverFolderdetails[0].myRows[0].Dataid;
-      }
-    );
-  }
-  getAttachmentSection() {
-    this.correspondenceDetailsService.getAttachmentFolderDetails(this.corrFolderData.AttachCorrAttachmentsID).subscribe(
-      attachmentFolderdetails => this.externalAttachmentFolderData = attachmentFolderdetails
-    );
-  }
   getCoverDocumentURL(CoverID: String): void {
     this.showPreviewTreeArea = false;
     this.showPreviewCoverLetter = true;
@@ -253,6 +237,8 @@ export class ExternalIncoming implements OnInit, AfterViewInit {
       .subscribe(correspondenceCovertData => this.documentPreviewURL = correspondenceCovertData);
   }
   showActionProperties(dataID: string): void {
+    this.showPreviewTreeArea = false;
+    this.showPreviewCoverLetter = true;
     this.correspondenceDetailsService.getDocumentPropertiesURL(dataID)
       .subscribe(correspondenceCovertData => this.documentPreviewURL = correspondenceCovertData);
   }
@@ -265,6 +251,7 @@ export class ExternalIncoming implements OnInit, AfterViewInit {
     this.multiSelect = false;
     this.dataSource.data = this.organizationalChartData;
     this.CCOUID = [];
+    this.CCEID = [];
   }
   showRecipientData() {
     this.showPreviewTreeArea = true;
@@ -273,7 +260,7 @@ export class ExternalIncoming implements OnInit, AfterViewInit {
     this.showPreviewCoverLetter = false;
     this.multiSelect = false;
     this.dataSource.data = this.organizationalChartData;
-    this.CCOUID = [];
+    this.CCEID = [];
   }
   showCCData() {
 
@@ -306,23 +293,38 @@ export class ExternalIncoming implements OnInit, AfterViewInit {
       });
   }
   hasChild = (_number: number, node: organizationalChartModel) => !!node.children && node.children.length > 0;
-  getEmplDetail(organizationalChartData: organizationalChartModel): void {
-    this.showEmplChartData = organizationalChartData;
+  getEmplDetail(organizationalChartData: organizationalChartModel): Map<number, organizationalChartEmployeeModel[]> {
+    this.showempDetails = false;
+    if (this.employeeMap.has(organizationalChartData.OUID)) {
+      this.showempDetails = true;
+      return this.employeeMap;
+    }
+    else {
+      //get the List of Employees from an OUID and add to the Map
+      this.organizationalChartService.getEmployeeListFromOUID(organizationalChartData.OUID).subscribe(
+        emplist => {
+          this.employeeMap.set(organizationalChartData.OUID, emplist);
+          this.showempDetails = true;
+        }, () => { },
+        () => {
+
+        }
+      );
+    }
   }
   getOrgSelectDetail(organizationalChartData: organizationalChartModel) {
     this.showOrgChartData = organizationalChartData;
-
   }
   addRecipient() {
   }
   searchTreeValue(organizationalChartSearch: string) {
     alert(organizationalChartSearch);
   }
-  value = '';
+
   getSearchValue(value: string) {
-    this.value = value;
+    this.searchVal = value;
   }
-  selectSinglCheckbox(organizationalChartData: organizationalChartModel, e: MatCheckboxChange) {
+  selectSinglCheckboxOrg(organizationalChartData: organizationalChartModel, e: MatCheckboxChange) {
     if (this.multiSelect) {
       if (e.checked) {
         if (this.CCOUID.lastIndexOf(organizationalChartData) === -1) {
@@ -337,98 +339,78 @@ export class ExternalIncoming implements OnInit, AfterViewInit {
       this.currentlyChecked = organizationalChartData;
     }
   }
+  selectSinglCheckboxEmp(employeeChartData: organizationalChartEmployeeModel, e: MatCheckboxChange) {
+
+    if (this.multiSelect) {
+      if (e.checked) {
+        if (this.CCEID.lastIndexOf(employeeChartData) === -1) {
+          this.CCEID.push(employeeChartData);
+        }
+      }
+      else {
+        this.CCEID.splice(this.CCEID.lastIndexOf(employeeChartData), 1);
+      }
+    }
+    else {
+      this.currentlyChecked = employeeChartData;
+    }
+
+  }
+
   getSelectedIntDepartment() {
     if (this.selectedCaption === 'Recipient') {
-      this.correspondenceDetailsService.searchFieldForAutoFillOUID(this.currentlyChecked.OUID, 'IntDepartmentOUID', '').subscribe(
-        DepInfo => {
-          this.IntRecipientInfo = DepInfo[0]
-          this.recipientDetailsForm.get('RecipientDepartment').setValue(DepInfo[0])
-        }
-      )
+      if (this.currentlyChecked.EID === undefined) {
+        this.correspondenceDetailsService.searchFieldForAutoFillOUID(this.currentlyChecked.OUID, 'IntDepartmentOUID', '').subscribe(
+          DepInfo => {
+            this.IntRecipientInfo = DepInfo[0]
+            this.recipientDetailsForm.get('RecipientDepartment').setValue(DepInfo[0])
+          }
+        )
+      }
+      else {
+        this.correspondenceDetailsService.searchFieldForAutoFillOUID(this.currentlyChecked.EID, 'IntEmployeeEID', '').subscribe(
+          EmpInfo => {
+            this.IntRecipientInfo = EmpInfo[0]
+            this.recipientDetailsForm.get('RecipientDepartment').setValue(EmpInfo[0])
+          }
+        )
+      }
     }
     else if (this.selectedCaption === 'CC') {
-      let a = new Array();
+      this.ccProgbar = true;
+      this.ccDetailsForm = this.formBuilder.group({
+        CCDetails: this.formBuilder.array([])
+      });
+      let orgArray = new Array();
       this.CCOUID.forEach(function (obj) {
-        a.push(obj.OUID);
+        orgArray.push(obj.OUID);
       });
 
-      this.correspondenceDetailsService.getCCUserDetailsSet(a.toString(), 'ccDepartments', 'Incoming').subscribe(
-        ccDepInfo => {
+      let empArray = new Array();
+      this.CCEID.forEach(function (obj) {
+        empArray.push(obj.EID);
+      });
 
+      this.correspondenceDetailsService.getCCUserDetailsSet(orgArray.toString(), empArray.toString(), 'Incoming').subscribe(
+        ccDepInfo => {
           for (let obj of ccDepInfo) {
             this.addCC(obj);
           }
+          this.ccProgbar = false;
         }
-
       )
-
     }
   }
-
-  uploadCSDocument(files: File[], parentID: number, sectionName: any) {
-    //pick from one of the 4 styles of file uploads below        
-    this.csdocumentupload.uploadDocument(files, "" + parentID).subscribe(
-      () => '',
-      () => '',
-      () => {
-        if (sectionName === "COVER") {
-          this.getCoverSection();
-        }
-        else if (sectionName === "ATTACHMENT") {
-          this.getAttachmentSection();
-        }
-        else if (sectionName === "MISC") {
-        }
-      }
-    )
-  }
-  public files: NgxFileDropEntry[] = [];
-  public dropped(files: NgxFileDropEntry[], parentID: string, section: string) {
-    for (const droppedFile of files) {
-      if (droppedFile.fileEntry.isFile) {
-        const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
-        fileEntry.file((file: File) => {
-          this.csdocumentupload.dragandDropUpload(file, parentID).subscribe(
-            () => '',
-            () => '',
-            () => {
-              if (section == "COVER") {
-                this.getCoverSection();
-              }
-              else if (section == "ATTACHMENT") {
-                this.getAttachmentSection();
-              }
-              else if (section == "MISC") {
-                //this.GetMiscSection();
-              }
-            }
-          );
-        });
-      } else {
-        // It was a directory (empty directories are added, otherwise only files)
-        const fileEntry = droppedFile.fileEntry as FileSystemDirectoryEntry;
-        // console.log(droppedFile.relativePath, fileEntry);
-      }
-    }
-  }
-  public fileOver(event) {
-
-  }
-
-  public fileLeave(event) {
-
-  }
-
   GenerateBarcode() {
 
     if (this.correspondenceDetailsForm.invalid) {
-      alert("Fill in Manadatory Corr Details");
+      this.notificationmessage.warning('Correspondence details missing', 'Please fill in manadatory correspondence details', 2500);
     }
     else if (this.senderDetailsForm.invalid) {
-      alert("Fill In Mandatory Sender Information");
+      this.notificationmessage.warning('Sender information missing', 'Please fill in mandatory sender information', 2500);
     }
     else if (this.recipientDetailsForm.invalid) {
-      alert("Fill In Mandatory Recipient Information");
+      this.notificationmessage.warning('Recipient infomration missing', 'Please fill in mandatory recipient information', 2500);
     }
     else {
       this.correspondenceDetailsService.getCorredpondenceBarcode(this.corrFolderData.AttachCorrID, 'Incoming', new Date().getFullYear()).subscribe(
@@ -444,20 +426,20 @@ export class ExternalIncoming implements OnInit, AfterViewInit {
 
   initiateWFCorrespondence(Disposition1: string, Disposition2: string, Dispostion3: string) {
     if (this.correspondenceDetailsForm.invalid) {
-      alert("Fill in Manadatory Corr Details");
+      this.notificationmessage.warning('Correspondence details missing', 'Please fill in manadatory correspondence details', 2500);
     }
     else if (this.senderDetailsForm.invalid) {
-      alert("Fill In Mandatory Sender Information");
+      this.notificationmessage.warning('Sender information missing', 'Please fill in mandatory sender information', 2500);
     }
     else if (this.recipientDetailsForm.invalid) {
-      alert("Fill In Mandatory Recipient Information");
+      this.notificationmessage.warning('Recipient infomration missing', 'Please fill in mandatory recipient information', 2500);
     }
     else {
       //Set each and every Value ofr the three Forms to one Single Object For Post
       this.initiateIncomingCorrespondenceDetails.CorrespondenceDate = this.correspondenceDetailsForm.get('regDate').value;
       this.initiateIncomingCorrespondenceDetails.Confidential = this.correspondenceDetailsForm.get('confidential').value;
       this.initiateIncomingCorrespondenceDetails.ConnectedID = '';
-      this.initiateIncomingCorrespondenceDetails.refID = '';
+      this.initiateIncomingCorrespondenceDetails.ConnectedRefID = '';
       this.initiateIncomingCorrespondenceDetails.CorrespondenceID = "" + this.corrFolderData.AttachCorrID;
       this.initiateIncomingCorrespondenceDetails.CorrespondenceCode = this.correspondenceDetailsForm.get('corrNumber').value;
       this.initiateIncomingCorrespondenceDetails.SenderDetails = this.senderDetailsForm.get('ExternalOrganization').value;
@@ -485,7 +467,7 @@ export class ExternalIncoming implements OnInit, AfterViewInit {
       this.initiateIncomingCorrespondenceDetails.ContractNumber = this.correspondenceDetailsForm.get('contractNumber').value;
       this.initiateIncomingCorrespondenceDetails.StaffNumber = this.correspondenceDetailsForm.get('staffNumber').value;
       this.initiateIncomingCorrespondenceDetails.CorrespondencePurpose = '';
-      this.initiateIncomingCorrespondenceDetails.TempLanguage = '';
+      this.initiateIncomingCorrespondenceDetails.TemplateLanguage = '';
       this.initiateIncomingCorrespondenceDetails.FillingFilePlanPath = this.getIDVal(this.correspondenceDetailsForm.get('fillinPlanPath').value);
       this.initiateIncomingCorrespondenceDetails.CorrespondenceFlowType = '1';
       this.initiateIncomingCorrespondenceDetails.CorrespondenceYear = '' + new Date().getFullYear();
@@ -499,15 +481,13 @@ export class ExternalIncoming implements OnInit, AfterViewInit {
 
       this.correspondencservice.initiateWF(this.initiateIncomingCorrespondenceDetails, 'Incoming').subscribe(
         () => {
-          alert("Workflow Initiated");
+          this.notificationmessage.success('Correspondence Created Succesfully', 'Your Correspondence has been created successfullly', 2500);
           this.backNavigation();
         }
 
       );
     }
   }
-
-
   getIDVal(attributeObj: any): string {
     if (typeof attributeObj === 'undefined') {
       return ''
@@ -523,13 +503,43 @@ export class ExternalIncoming implements OnInit, AfterViewInit {
   }
   SendOnWF(action: string) {
     if (action === 'SENDON') {
-      // Disposition1 SendOn
-      // Disposition3  2b
-      this.initiateWFCorrespondence('SendOn', '', '2b');
+
+      if (this.initiatorMailroomPrivelage > 1) {
+
+        switch (this.initiatorMailroomPrivelage) {
+          case 2:
+            // Disposition1 SendOnAndSkip
+            // Disposition3  3
+            this.initiateWFCorrespondence('SendOnAndSkip', 'WR2b', '3');
+            break;
+          case 3:
+            // Disposition1 SendOnAndSkip
+            // Disposition3  4
+            this.initiateWFCorrespondence('SendOnAndSkip', 'WR2b', '4');
+            break;
+          case 4:
+            // Disposition1 SendOnAndSkip
+            // Disposition3  5
+            this.initiateWFCorrespondence('SendOnAndSkip', 'WR2b', '5');
+            break;
+          case 5:
+            debugger;
+            // Disposition1 SendOnAndSkip
+            // Disposition3  6
+            if (this.coverID != '' && this.coverID != undefined) {
+              this.initiateWFCorrespondence('SendOnAndSkip', 'WR2b', '6');
+            } else {
+              this.notificationmessage.warning('Cover Document Manadatory', 'Please upload Cover Document to Proceed', 2500);
+            }
+
+            break;
+        }
+      }
+      else {
+        this.initiateWFCorrespondence('SendOn', '', '2b');
+      }
     }
     else if (action === 'SAVE') {
-      // Disposition1 Save
-      // Disposition3  1
       this.initiateWFCorrespondence('Save', '', '1');
     }
 
@@ -559,6 +569,7 @@ export class ExternalIncoming implements OnInit, AfterViewInit {
   addCC(depDetails: CCUserSetModel): void {
     this.CCDetails = this.ccDetailsForm.get('CCDetails') as FormArray;
     this.CCDetails.push(this.createNewCC(depDetails));
+
   }
   createNewCC(depDetails: CCUserSetModel): FormGroup {
     return this.formBuilder.group({
@@ -569,8 +580,18 @@ export class ExternalIncoming implements OnInit, AfterViewInit {
       name: depDetails.Name_EN
     });
   }
-  removeCC(index: number) {
-    alert(JSON.stringify(this.CCDetails.value));
 
+  removeCC(index: number) {
+    this.CCDetails = this.ccDetailsForm.get('CCDetails') as FormArray;
+    this.CCDetails.removeAt(index);
   }
+
+  getUserMailroomPrivvelage() {
+    this.correspondenceDetailsService.getCurrentUserMailroomPrivelage().subscribe(
+      mailroomuserprivelage => {
+        this.initiatorMailroomPrivelage = Number(mailroomuserprivelage.usermailroomprivelage)
+      }
+    )
+  }
+
 }

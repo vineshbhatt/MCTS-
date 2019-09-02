@@ -21,8 +21,7 @@ export class AppLoadConstService {
         .subscribe(
           response => {
             this._CSConstants = response;
-            this._CSConstants.FCTS_Dashboard.UserGroupsArray = this._CSConstants.FCTS_Dashboard.UserGroups.split(',');
-            console.log(this._CSConstants);
+            this._CSConstants.FCTS_Dashboard.UserGroupsArray = this._CSConstants.FCTS_Dashboard.UserGroups.split(',');            
             resolve();
           },
           error => {

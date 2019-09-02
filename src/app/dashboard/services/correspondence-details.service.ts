@@ -5,7 +5,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { FCTSDashBoard } from '../../../environments/environment';
 import { DocumentPreview } from '../services/documentpreview.model';
 import { DashboardFilterResponse, TransferAttributes } from '../models/DashboardFilter';
-import { CorrespondenenceDetailsModel, OrgNameAutoFillModel, CorrespondenceFolderModel, CCUserSetModel } from '../models/CorrespondenenceDetails.model';
+import { CorrespondenenceDetailsModel, OrgNameAutoFillModel, CorrespondenceFolderModel, CCUserSetModel, ColUserSetModel } from '../models/CorrespondenenceDetails.model';
 import { StatusRequest, SetStatusRow } from '../models/Shared.model';
 import { CorrespondenceShareService } from '../services/correspondence-share.service';
 import { map, catchError } from 'rxjs/operators'; /* added 24/06/2019 */
@@ -37,12 +37,13 @@ export class CorrespondenceDetailsService {
     );
   }
 
-  getCorrespondenceSenderDetails(SubWorkID, CorrFlowType): Observable<CorrResponse[]> {
+  getCorrespondenceSenderDetails(SubWorkID, CorrFlowType, qLive, UserID = ''): Observable<CorrResponse[]> {
     const params = new HttpParams()
       .set('SubWorkID', SubWorkID)
       .set('CorrFlowType', CorrFlowType)
-      .set('qLive', 'false')
-      .set('prompting', 'done');
+      .set('qLive', qLive)
+      .set('prompting', 'done')
+      .set('UserID', UserID);
 
 
     return this.httpServices.get<CorrResponse[]>(
@@ -420,16 +421,15 @@ export class CorrespondenceDetailsService {
     );
   }
 
-  getCCUserDetailsSet(OUIds: string, requestType: string, corrFlowType: string): Observable<CCUserSetModel[]> {
+  getCCUserDetailsSet(OUIds: string, EmpIDs: string, corrFlowType: string): Observable<CCUserSetModel[]> {
     const params = new HttpParams()
       .set('OUIDs', OUIds)
       .set('qLive', 'true')
       .set('CorrFlowType', corrFlowType)
       .set('UserIDs', '')
-      .set('EIDs', '');
-    type NewType = CCUserSetModel;
+      .set('EIDs', EmpIDs);
 
-    return this.httpServices.get<NewType[]>(
+    return this.httpServices.get<CCUserSetModel[]>(
       this.CSUrl +
       `${FCTSDashBoard.WRApiV1}${
       FCTSDashBoard.GetCCUserSet
@@ -438,6 +438,77 @@ export class CorrespondenceDetailsService {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
       }
     );
+  }
+
+  getCurrentUserMailroomPrivelage(): Observable<any> {
+    return this.httpServices.get<any>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${
+      FCTSDashBoard.GetUserMailroomPrivelage
+      }?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }
+      }
+    );
+  }
+
+  getApproverList(ApproverType: string): Observable<any[]> {
+    const params = new HttpParams()
+      .set(ApproverType, 'true')
+      .set('mainLanguage', 'EN')
+      .set('filterField1', CSConfig.globaluserid)
+    return this.httpServices.get<any[]>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${
+      FCTSDashBoard.GetApproverList
+      }?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    );
+  }
+
+  getTemplatesList(corrFlowType: string, templateType: string = 'Default', onBehalfOf: string = '') {
+    const params = new HttpParams()
+      .set('correspondence_type', corrFlowType)
+      .set('template_type', templateType)
+      .set('onBehalfOf', onBehalfOf)
+      .set('active', '1')
+      .set('catid', '261305')
+      .set('language', '')
+      .set('locationid', '261309')
+    return this.httpServices.get<any[]>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${
+      FCTSDashBoard.GetCoverLettertemplates
+      }?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    );
+  }
+
+  getCollUserDetailsSet(EmpIDs: string, corrFlowType: string): Observable<ColUserSetModel[]> {
+    const params = new HttpParams()
+      .set('qLive', 'true')
+      .set('CorrFlowType', corrFlowType)
+      .set('UserIDs', '')
+      .set('EIDs', EmpIDs)
+      .set('SubWorkID', '')
+      .set('UserIDs', '');
+
+    return this.httpServices.get<ColUserSetModel[]>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${
+      FCTSDashBoard.GetColUserSet
+      }?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    );
+
+
+
   }
 
 }   

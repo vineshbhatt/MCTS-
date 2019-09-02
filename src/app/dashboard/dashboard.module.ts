@@ -75,6 +75,14 @@ import { TransferReturntoasDialogComponent } from './dialog-boxes/transfer-retur
 
 import { NgxPrintModule } from 'ngx-print';
 import { NgxBarcodeModule } from 'ngx-barcode';
+import { NotificationComponent } from './dialog-boxes/notification/notification.component';
+import { NotificationService } from './services/notification.service';
+import { PreventDoubleSubmitModule } from 'ngx-prevent-double-submission';
+import { EmployeeMapList } from '../dashboard/pipes/employeemaplist.pipe';
+
+import { NgScrollbarModule } from 'ngx-scrollbar';
+import { BaseCorrespondenceComponent } from './base-classes/base-correspondence-csactions/base-correspondence.component';
+import { ExternalOutgoing } from './create-correspondence/external-outgoing/external-outgoing.component';
 
 
 @NgModule({
@@ -106,7 +114,7 @@ import { NgxBarcodeModule } from 'ngx-barcode';
     OwlNativeDateTimeModule,
     MatTreeModule,
     MatIconModule,
-    NgxFileDropModule, NgxPrintModule, NgxBarcodeModule
+    NgxFileDropModule, NgxPrintModule, NgxBarcodeModule, PreventDoubleSubmitModule, NgScrollbarModule
   ],
   declarations: [
     DashboardComponent,
@@ -156,7 +164,11 @@ import { NgxBarcodeModule } from 'ngx-barcode';
     MrNewOutboundsComponent,
     MrDispatchedOutboundsComponent,
     MrAcknowledgedOutboundsComponent,
-    TransferReturntoasDialogComponent
+    TransferReturntoasDialogComponent,
+    NotificationComponent,
+    EmployeeMapList,
+    BaseCorrespondenceComponent,
+    ExternalOutgoing
   ],
   entryComponents: [
     MailDetailView,
@@ -169,6 +181,6 @@ import { NgxBarcodeModule } from 'ngx-barcode';
     TransferReplyDialogComponent,
     TransferReturntoasDialogComponent
   ],
-  providers: [ErrorHandlerFctsService]
+  providers: [ErrorHandlerFctsService, NotificationService]
 })
 export class DashboardModule { }

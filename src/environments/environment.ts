@@ -9,6 +9,7 @@ export const environment = {
 export const FCTSDashBoard = {
   WRApiV1: "/api/v1/webreports/",
   WFApiV2: '/api/v2/',
+  WFApiV1: '/api/v1/',
   //WRApiV1: "/api/v1/nodes/",
   WRApiV2: "/output",
   getMenuCountExt: "CTASidebarExtCount",
@@ -60,11 +61,18 @@ export const FCTSDashBoard = {
   AttachmentFolderContents: '398964',
   createTempAttachments: '492171',
   initiateIncomingWF: '496142',
+
   GenerateBarcode: '496732',
   GetCCUserSet: '497454',
 
   getMenuCountMR: 'CTA_SidebarMRCount',
   CCRecallReturnToAS: 'FCTS_CCRecall',
+
+  GetUserMailroomPrivelage: '503438',
+  GetApproverList: '508354',
+  GetCoverLettertemplates: '510471',
+  GetColUserSet: '511783',
+  initiateOutgoingWF: '512156',
   //BaseHref: '/img/fctsangular/fctsapp/',
   BaseHref: '/',
   CSUrl: 'http://manotcst02.mannaicorp.com.qa/otcs/cs.exe'

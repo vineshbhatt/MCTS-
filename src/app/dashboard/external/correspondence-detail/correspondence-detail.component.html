@@ -1,40 +1,37 @@
 <div class="correspondence_detail" *ngIf="expandedRightAction" [ngClass]="expandedAction ? 'unActive' : 'ActiveLeft'">
   <button (click)="expandeActionLeftButton()" matRipple class="corsp_ext_btn">
-          <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
-    </button>
+    <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
+  </button>
   <div class="detail_header">
     <div class="header_text" *ngFor="let correspondenceDetails of correspondenceSenderDetailsData">
       <div class="header_back_cpd_dtl">
         <button class="back_btn" (click)="backNavigation()">
-                <img src="{{basehref}}assets/images/icons/left_arrow.svg" alt="">
-              </button>
+          <img src="{{basehref}}assets/images/icons/left_arrow.svg" alt="">
+        </button>
         <h3 class="text_23 ltg_text">{{correspondenceData.CorrFolderName }} - {{CorrespondencType}}</h3>
       </div>
-      <!-- <div class="user_name">
-          <div class="user_img">
-            <img src="{{basehref}}assets/images/icons/profile.svg" alt="">
-          </div>
-          <p *ngFor="let senderData of correspondenceDetails.myRows">
-            {{senderData.OrganizationName_EN}}</p>
-        </div> -->
     </div>
 
     <div class="header_btn">
-      <button class="btn btn_005" matTooltip="Reply"  (click)="transferReply(correspondData)" *ngIf="buttonsDisplay.corrTrReply" >
-                <img src="{{basehref}}assets/images/icons/back-arrow.svg" alt="">
-              </button>
-      <button class="btn btn_005" matTooltip="Complete" *ngIf="buttonsDisplay.corrComplete" (click)="OpenCompleteDialog('1')">  
-                <img src="{{basehref}}assets/images/icons/check-box.svg" alt="">
-              </button>
-      <button class="btn btn_005" matTooltip="Archive" *ngIf="buttonsDisplay.corrArchive" (click)="OpenCompleteDialog('2')">
-                <img src="{{basehref}}assets/images/icons/file_archive_02.svg" alt="">
-              </button>
+      <button class="btn btn_005" matTooltip="Reply" (click)="transferReply(correspondData)"
+        *ngIf="buttonsDisplay.corrTrReply">
+        <img src="{{basehref}}assets/images/icons/back-arrow.svg" alt="">
+      </button>
+      <button class="btn btn_005" matTooltip="Complete" *ngIf="buttonsDisplay.corrComplete"
+        (click)="OpenCompleteDialog('1')">
+        <img src="{{basehref}}assets/images/icons/check-box.svg" alt="">
+      </button>
+      <button class="btn btn_005" matTooltip="Archive" *ngIf="buttonsDisplay.corrArchive"
+        (click)="OpenCompleteDialog('2')">
+        <img src="{{basehref}}assets/images/icons/file_archive_02.svg" alt="">
+      </button>
       <button class="btn btn_005" matTooltip="Save" *ngIf="buttonsDisplay.corrSave" (click)="saveTransferTo()">
-                <img src="{{basehref}}assets/images/icons/save-button.svg" alt="">
-              </button>
+        <img src="{{basehref}}assets/images/icons/save-button.svg" alt="">
+      </button>
       <button class="btn btn_005">
-                <img src="{{basehref}}assets/images/icons/close_btn_icon.svg" alt="" (click)="showMessage('it is a test message. Please indorm Administrator')">
-              </button>
+        <img src="{{basehref}}assets/images/icons/close_btn_icon.svg" alt=""
+          (click)="showMessage('it is a test message. Please indorm Administrator')">
+      </button>
     </div>
   </div>
   <div class="sender_wrapper corspnt_item" *ngIf="sectionDisplay.Sender.Show">
@@ -82,8 +79,10 @@
             <th>Name</th>
           </tr>
           <tr *ngFor="let correspondenceRecipientsDetails of correspondenceRecipientDetailsData">
-            <td *ngFor="let recipientData of correspondenceRecipientsDetails.myRows">{{recipientData.OrganizationName_EN}} </td>
-            <td *ngFor="let recipientData of correspondenceRecipientsDetails.myRows"> {{recipientData.DepartmentName_EN}} </td>
+            <td *ngFor="let recipientData of correspondenceRecipientsDetails.myRows">
+              {{recipientData.OrganizationName_EN}} </td>
+            <td *ngFor="let recipientData of correspondenceRecipientsDetails.myRows">
+              {{recipientData.DepartmentName_EN}} </td>
             <td *ngFor="let recipientData of correspondenceRecipientsDetails.myRows"> {{recipientData.Name_EN}} </td>
           </tr>
         </table>
@@ -168,7 +167,8 @@
                     <input matInput disabled placeholder="Correspondence Type" [value]="corrData.CorrespondenceType_EN">
                   </mat-form-field>
                   <mat-form-field class="col_6">
-                    <input matInput disabled placeholder="Correspondence Date" [owlDateTimeTrigger]="correspondenceDate" [owlDateTime]="correspondenceDate">
+                    <input matInput disabled placeholder="Correspondence Date" [owlDateTimeTrigger]="correspondenceDate"
+                      [owlDateTime]="correspondenceDate">
                     <!-- [(ngModel)]="dateTime" -->
                     <owl-date-time #correspondenceDate></owl-date-time>
                   </mat-form-field>
@@ -176,7 +176,8 @@
                     <input matInput disabled placeholder="Cover Date" [value]="corrData.CorrespondenceDate">
                   </mat-form-field>
                   <mat-form-field class="col_6">
-                    <input matInput disabled disabled placeholder="Correspondence Due Date" [value]="corrData.CorrespondenceDueDate">
+                    <input matInput disabled disabled placeholder="Correspondence Due Date"
+                      [value]="corrData.CorrespondenceDueDate">
                   </mat-form-field>
                   <!-- <mat-form-field class="col_6">
                   <input matInput disabled placeholder="Acknowledgement Date" [value]="corrData.CorrespondenceDueDate">
@@ -194,13 +195,14 @@
                     <input matInput disabled placeholder="Document Number" [value]="corrData.DocumentNumber">
                   </mat-form-field>
                   <mat-form-field class="col_6">
-                    <input matInput disabled placeholder="Company Registration Number" [value]="corrData.EnglishSubject">
+                    <input matInput disabled placeholder="Company Registration Number"
+                      [value]="corrData.CompanyRegistrationNumber">
                   </mat-form-field>
                   <mat-form-field class="col_6">
-                    <input matInput disabled placeholder="Registered By" [value]="corrData.EnglishSubject">
+                    <input matInput disabled placeholder="Registered By" [value]="corrData.RegisteredBy">
                   </mat-form-field>
                   <mat-form-field class="col_6">
-                    <input matInput disabled placeholder="Commitment Number" [value]="corrData.EnglishSubject">
+                    <input matInput disabled placeholder="Commitment Number" [value]="corrData.CommitmentNumber">
                   </mat-form-field>
                   <mat-form-field class="col_6">
                     <input matInput disabled placeholder="Tender Number" [value]="corrData.TenderNumber">
@@ -255,10 +257,10 @@
                         <!-- <button matTooltip="Print" class="btn btn_006">
                           <img src="{{basehref}}assets/images/icons/printer-tool.svg" alt="">
                         </button> -->
-                        <a matTooltip="Download" class="btn btn_006"  href="{{CSUrl}}{{coverData.DownloadURL}}">
-                          <img src="{{basehref}}assets/images/icons/download-to-storage-drive.svg"  alt="">
+                        <a matTooltip="Download" class="btn btn_006" href="{{CSUrl}}{{coverData.DownloadURL}}">
+                          <img src="{{basehref}}assets/images/icons/download-to-storage-drive.svg" alt="">
                         </a>
-                        <a matTooltip="Properties" class="btn btn_006" (click)=showActionProperties(coverData.Dataid) >
+                        <a matTooltip="Properties" class="btn btn_006" (click)=showActionProperties(coverData.Dataid)>
                           <img src="{{basehref}}assets/images/icons/info-round-button.svg" alt="">
                         </a>
                       </div>
@@ -272,7 +274,7 @@
           </div>
         </div>
       </mat-expansion-panel>
-      <mat-expansion-panel class="mat-elevation-z"   *ngIf="sectionDisplay.Attachments.Show">
+      <mat-expansion-panel class="mat-elevation-z" *ngIf="sectionDisplay.Attachments.Show">
         <mat-expansion-panel-header (click)="attachmentShowData();">
           <div class="icon_wrapper">
             <div class="icon_typ icon_typ_006">
@@ -283,7 +285,8 @@
         </mat-expansion-panel-header>
         <div class="corres_data_area">
           <div class="atch_header_wrp">
-            <button class="ref_btn_sm" (click)="attachmentShowData()"><img src="{{basehref}}assets/images/icons/refresh-arrow.svg" alt=""></button>
+            <button class="ref_btn_sm" (click)="attachmentShowData()"><img
+                src="{{basehref}}assets/images/icons/refresh-arrow.svg" alt=""></button>
           </div>
           <div class="corres_table_wrapper">
             <div *ngIf="attachmentsProgbar" class="spinner_sm_wrappar">
@@ -303,17 +306,19 @@
                     <td class="size_45" [innerHtml]="attachmentData.attachmentType">
                     </td>
                     <td>
-                      <a class="coverLink" (click)="getCoverDocumentURL(attachmentData.Dataid)">{{attachmentData.Name}} </a>
+                      <a class="coverLink" (click)="getCoverDocumentURL(attachmentData.Dataid)">{{attachmentData.Name}}
+                      </a>
                     </td>
                     <td>
                       <div class="group_btn">
                         <!-- <button matTooltip="Print" class="btn btn_006">
                           <img src="{{basehref}}assets/images/icons/printer-tool.svg" alt="">
                         </button> -->
-                        <a matTooltip="Download" class="btn btn_006"  href="{{CSUrl}}{{attachmentData.DownloadURL}}">
-                          <img src="{{basehref}}assets/images/icons/download-to-storage-drive.svg"  alt="">
+                        <a matTooltip="Download" class="btn btn_006" href="{{CSUrl}}{{attachmentData.DownloadURL}}">
+                          <img src="{{basehref}}assets/images/icons/download-to-storage-drive.svg" alt="">
                         </a>
-                        <a matTooltip="Properties" class="btn btn_006" (click)=showActionProperties(attachmentData.Dataid) >
+                        <a matTooltip="Properties" class="btn btn_006"
+                          (click)=showActionProperties(attachmentData.Dataid)>
                           <img src="{{basehref}}assets/images/icons/info-round-button.svg" alt="">
                         </a>
                       </div>
@@ -380,20 +385,26 @@
           <div *ngIf="!corrConnectionsProgbar" class="corres_data_area">
             <div class="linked_corp_wrp">
               <div class="link_btn_wrp">
-                <button class="ref_btn_sm" matTooltip="Refresh"  (click)="corrconnectionsData();"><img alt="" src="assets/images/icons/refresh-arrow.svg"></button>
+                <button class="ref_btn_sm" matTooltip="Refresh" (click)="corrconnectionsData();"><img alt=""
+                    src="assets/images/icons/refresh-arrow.svg"></button>
               </div>
               <div class="link_corsp_cnt">
                 <mat-accordion *ngFor="let correspondenceLinkedCorrespondenceDetails of corrConnectionsData">
-                  <mat-expansion-panel class="mat-elevation-z" *ngFor="let correspondenceLinkedCorrespondenceDetailsCnt of correspondenceLinkedCorrespondenceDetails.myRows">
-                    <mat-expansion-panel-header class="corspnd_main_head" [collapsedHeight]="'35px'" [expandedHeight]="'35px'">
-                      <span class="link_main_sub"> {{correspondenceLinkedCorrespondenceDetailsCnt.EnglishSubject}}</span>
-                      <span class="link_main_code"> {{correspondenceLinkedCorrespondenceDetailsCnt.CorrespondenceName}}</span>
+                  <mat-expansion-panel class="mat-elevation-z"
+                    *ngFor="let correspondenceLinkedCorrespondenceDetailsCnt of correspondenceLinkedCorrespondenceDetails.myRows">
+                    <mat-expansion-panel-header class="corspnd_main_head" [collapsedHeight]="'35px'"
+                      [expandedHeight]="'35px'">
+                      <span class="link_main_sub">
+                        {{correspondenceLinkedCorrespondenceDetailsCnt.EnglishSubject}}</span>
+                      <span class="link_main_code">
+                        {{correspondenceLinkedCorrespondenceDetailsCnt.CorrespondenceName}}</span>
                       <!-- <button matTooltip="Remove" (click)="toggle(d.expanded)" class="remove_btn"><img src="assets/images/icons/rubbish-bin.svg" alt=""></button> -->
                     </mat-expansion-panel-header>
                     <div class="link_sub_cont">
                       <mat-accordion multi="true">
                         <mat-expansion-panel [expanded]="true" class="mat-elevation-z">
-                          <mat-expansion-panel-header [collapsedHeight]="'35px'" [expandedHeight]="'35px'" class="link_cmd_sub_head" hideToggle>Cover letter</mat-expansion-panel-header>
+                          <mat-expansion-panel-header [collapsedHeight]="'35px'" [expandedHeight]="'35px'"
+                            class="link_cmd_sub_head" hideToggle>Cover letter</mat-expansion-panel-header>
                           <div class="link_sub_cont">
                             <table class="link_corspd">
                               <tr>
@@ -404,21 +415,24 @@
                                 <th class="Modified">Modified</th>
                               </tr>
                               <tr>
-                                <td><img class="max_15" [src]="correspondenceLinkedCorrespondenceDetailsCnt.CoverType"></td>
-                                
+                                <td><img class="max_15" [src]="correspondenceLinkedCorrespondenceDetailsCnt.CoverType">
+                                </td>
+
                                 <!-- <td>{{correspondenceLinkedCorrespondenceDetailsCnt.CoverName}}</td> -->
-                                <td><a class="coverLink" (click)="getCoverDocumentURL(correspondenceLinkedCorrespondenceDetailsCnt.CoverID)">{{correspondenceLinkedCorrespondenceDetailsCnt.CoverName}} </a></td>
+                                <td><a class="coverLink"
+                                    (click)="getCoverDocumentURL(correspondenceLinkedCorrespondenceDetailsCnt.CoverID)">{{correspondenceLinkedCorrespondenceDetailsCnt.CoverName}}
+                                  </a></td>
                                 <td>
                                   <div class="group_btn">
                                     <button matTooltip="Print" class="btn btn_006">
-                                    <img src="assets/images/icons/printer-tool.svg" alt="">
-                                  </button>
+                                      <img src="assets/images/icons/printer-tool.svg" alt="">
+                                    </button>
                                     <button matTooltip="Download" class="btn btn_006">
-                                    <img src="assets/images/icons/download-to-storage-drive.svg" alt="">
-                                  </button>
+                                      <img src="assets/images/icons/download-to-storage-drive.svg" alt="">
+                                    </button>
                                     <a matTooltip="Properties" class="btn btn_006">
-                                    <img src="assets/images/icons/info-round-button.svg" alt="">
-                                  </a>
+                                      <img src="assets/images/icons/info-round-button.svg" alt="">
+                                    </a>
                                   </div>
                                 </td>
                                 <td>{{correspondenceLinkedCorrespondenceDetailsCnt.Size}}</td>
@@ -486,7 +500,8 @@
           </div>
           <div *ngIf="!commentsProgbar" class="corres_comnt_area">
             <div class="cmnt_wrapper" *ngFor="let correspondenceCommentsDetails of correspondenceCommentsDetail">
-              <div class="main_cmd" *ngFor="let correspondenceCommentsCnt of correspondenceCommentsDetails.myRows;let rowNumber = index">
+              <div class="main_cmd"
+                *ngFor="let correspondenceCommentsCnt of correspondenceCommentsDetails.myRows;let rowNumber = index">
                 <div class="camnd_wrp_white" *ngIf="rowNumber < 2">
                   <p class="cmnd_name">{{correspondenceCommentsCnt.CreatorName_EN}}</p>
                   <div class="amnd_dt_typ_wrp">
@@ -509,7 +524,8 @@
                     </div>
                   </div>
                 </div>
-                <button class="cmd_mr_btn_wrp" (click)="openedSubComment = !openedSubComment" *ngIf="correspondenceCommentsCnt.ReplyAvailable">View Replies.</button>
+                <button class="cmd_mr_btn_wrp" (click)="openedSubComment = !openedSubComment"
+                  *ngIf="correspondenceCommentsCnt.ReplyAvailable">View Replies.</button>
                 <div *ngIf="openedSubComment" class="cmnt_wrapper inner_cmd">
                   <div *ngFor="let correspondenceCommentsNextCnt  of correspondenceCommentsCnt.subComments">
                     <div class="camnd_wrp_white">
@@ -522,7 +538,8 @@
                         <p class="cnt_text">{{correspondenceCommentsNextCnt.CommentText}}</p>
                       </div>
                     </div>
-                    <button class="cmd_mr_btn_wrp" (click)="openedSubReplies = !openedSubReplies" *ngIf=correspondenceCommentsNextCnt.ReplyAvailable>View Replies.</button>
+                    <button class="cmd_mr_btn_wrp" (click)="openedSubReplies = !openedSubReplies"
+                      *ngIf=correspondenceCommentsNextCnt.ReplyAvailable>View Replies.</button>
                     <div *ngIf="openedSubReplies" class="cmnt_wrapper inner_cmd">
                       <div *ngFor="let correspondenceCommentsNextCmnt  of correspondenceCommentsNextCnt.subComments">
                         <div class="camnd_wrp_white">
@@ -541,8 +558,10 @@
                 </div>
               </div>
               <div class="frst_wrk_btn">
-                <button class="cmd_mr_btn_wrp" *ngIf="!openedComment" (click)="openedComment = !openedComment">View more comments.</button>
-                <button class="cmd_mr_btn_wrp" *ngIf="openedComment" (click)="openedComment = !openedComment">View less comments.</button>
+                <button class="cmd_mr_btn_wrp" *ngIf="!openedComment" (click)="openedComment = !openedComment">View more
+                  comments.</button>
+                <button class="cmd_mr_btn_wrp" *ngIf="openedComment" (click)="openedComment = !openedComment">View less
+                  comments.</button>
               </div>
             </div>
           </div>
@@ -573,8 +592,10 @@
           </div>
           <div *ngIf="!transferProgbar" class="corres_table_wrapper">
             <div class="transfer_header" *ngIf="sectionDisplay.Transfer.Modify">
-              <button class="btn_007 mat-button" (click)="openDialog()"><img src="{{basehref}}assets/images/icons/plus_btn_green.svg" alt=""> Select Transfer</button>
-              <button class="btn_007 mat-button" (click)="transferTabShowData()"><img src="{{basehref}}assets/images/icons/refresh-page-button.svg" alt="">Refresh</button>
+              <button class="btn_007 mat-button" (click)="openDialog()"><img
+                  src="{{basehref}}assets/images/icons/plus_btn_green.svg" alt=""> Select Transfer</button>
+              <button class="btn_007 mat-button" (click)="transferTabShowData()"><img
+                  src="{{basehref}}assets/images/icons/refresh-page-button.svg" alt="">Refresh</button>
             </div>
             <div class="transfer_list_item_wrp">
               <ul class="inside_acdn_header_002">
@@ -622,12 +643,13 @@
   </div>
   <div class="corp_dtl_btn_btm_wrapper">
     <button (click)="expandeActionLeftButton()" matRipple class="corsp_ext_btn">
-        <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
-      </button>
+      <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
+    </button>
   </div>
 </div>
 
-<div class="correspondence_deatil_prview_wrappper" [ngClass]="expandedRightAction ? 'unActive' : 'ActiveRight'" *ngIf="expandedAction">
+<div class="correspondence_deatil_prview_wrappper" [ngClass]="expandedRightAction ? 'unActive' : 'ActiveRight'"
+  *ngIf="expandedAction">
   <!-- <button (click)="expandeActionRightButton()" matRipple class="corsp_ext_btn">
         <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
       </button> -->

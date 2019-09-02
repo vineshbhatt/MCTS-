@@ -4,14 +4,14 @@
 	  "inbounds": [	
 		{
 			"ResultName":"MyCorrExtInboundMR",
-			"Count":"0",
+			"Count":"",
 			"Title": "WIP",
 			"router":"mr-new-inbounds",
 			"icon":"assets/images/icons/new_message_001.svg"
 		},
 		{
 			"ResultName":"MyCorrExtInboundMR",
-			"Count":"0",
+			"Count":"",
 			"Title": "Dispatched",
 			"router":"mr-dispatched-inbounds",
 			"icon":"assets/images/icons/in_progress_icon_001.svg"
@@ -19,14 +19,14 @@
 		},
 		{
 			"ResultName":"MyCorrExtInboundMR",
-			"Count":"0",
+			"Count":"",
 			"Title": "Acknowledged",
 			"router":"mr-acknowledged-inbounds",
 			"icon":"assets/images/icons/achieved_icon_001.svg"
 		},
 		{
 			"ResultName":"MyCorrExtInboundMR",
-			"Count":"0",
+			"Count":"",
 			"Title": "Archived",
 			"router":"mr-archieved-inbounds",
 			"icon":"assets/images/icons/achieved_icon_001.svg"
@@ -35,28 +35,28 @@
 	"outbounds":[		
 		{
 			"ResultName":"MyCorrExtOutboundMR",
-			"Count":"0",
+			"Count":"",
 			"Title": "WIP",
 			"router":"mr-new-outbounds",
 			"icon":"assets/images/icons/new_message_001.svg"			
 		},
 		{
 			"ResultName":"MyCorrExtOutboundMR",
-			"Count":"0",
+			"Count":"",
 			"Title": "Dispatched",
 			"router":"mr-dispatched-outbounds",
 			"icon":"assets/images/icons/in_progress_icon_001.svg"
 		},
 		{
 			"ResultName":"MyCorrExtOutboundMR",
-			"Count":"0",
+			"Count":"",
 			"Title": "Acknowledged",
 			"router":"mr-acknowledged-outbounds",
 			"icon":"assets/images/icons/achieved_icon_001.svg"
 		},
 		{
 			"ResultName":"MyCorrExtOutboundMR",
-			"Count":"0",
+			"Count":"",
 			"Title": "Archived",
 			"router":"archieved-intoutbounds",
 			"icon":"assets/images/icons/achieved_icon_001.svg"

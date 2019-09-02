@@ -31,8 +31,7 @@ export class BaseDashboardActiveComponent extends BaseDashboardComponent impleme
     super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService);
   }
 
-  ngOnInit() {
-    console.log('init intermidiate component');
+  ngOnInit() {   
     super.ngOnInit();
   }
 

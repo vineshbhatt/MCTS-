@@ -1,5 +1,5 @@
 <!-- <div class="navigation_cont" malihu-scrollbar [scrollbarOptions]="scrollbarOptions"> -->
-<div class="navigation_cont">
+  <ng-scrollbar thumbClass="scroll_002" class="navigation_cont scroll_wrp_002"  compact="true">
   <div routerLinkActive="active" routerLink="../dashboard" class="nav_logo">
     <img src="{{basehref}}assets/images/cms_logo.jpg" alt="">
   </div>
@@ -10,13 +10,13 @@
           </a>
     </li>
     <mat-menu #sideNavMenu="matMenu" class="sub_menu_new_drp">
-      <button routerLink="./create/new-external" routerLinkActive="active" mat-menu-item>External Incoming</button>
-      <button routerLink="./create/new-internal" routerLinkActive="active" mat-menu-item>External Outbound</button>
-      <button routerLink="./create/new-internal" routerLinkActive="active" mat-menu-item>Internal Outbound</button>
+      <button routerLink="./create/new-external-incoming" routerLinkActive="active" mat-menu-item>External Incoming</button>
+      <button routerLink="./create/new-external-outgoing" routerLinkActive="active" mat-menu-item>External Outbound</button>
+      <button routerLink="./create/new-internal-outgoing" routerLinkActive="active" mat-menu-item>Internal Outbound</button>
     </mat-menu>
     <li class="nav_item" *ngIf="showMR" matTooltip="Mailroom" matTooltipClass="matTooltip_001" matTooltipPosition="right">
       <a class="" routerLink="./mailroom" routerLinkActive="active">
-        <img class="nav_item_img_001" src="{{basehref}}assets/images/icons/mailroom-nav_icon.svg" alt="">
+        <img class="nav_item_img_001" src="{{basehref}}assets/images/icons/group_message_icon.svg" alt="">
       </a>
     </li>
     <li class="nav_item" matTooltip="External" matTooltipClass="matTooltip_001" matTooltipPosition="right">
@@ -29,11 +29,11 @@
         <img class="nav_item_img_001" src="{{basehref}}assets/images/icons/internal_nav_icon.svg" alt="">
       </a>
     </li>
-    <li class="nav_item">
+    <!-- <li class="nav_item">
       <a routerlink="external/new" routerLinkActive="active" matTooltip="Mail" matTooltipClass="matTooltip_001" matTooltipPosition="right">
             <img class="nav_item_img_001" src="{{basehref}}assets/images/icons/group_message_icon.svg" alt="">
           </a>
-    </li>
+    </li> -->
   </ul>
   <ul class="nav_items_001">
     <li class="nav_item">
@@ -53,4 +53,4 @@
           </a>
     </li>
   </ul>
-</div>
+</ng-scrollbar>

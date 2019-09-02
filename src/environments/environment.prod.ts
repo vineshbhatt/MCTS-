@@ -13,7 +13,7 @@ export const FCTSDashBoard = {
   getUserOverallData: "CTAUserDataDashboard",
   ExternalInbNew: "CTA_Dash_ExtInbNew",
   ExternalFullSearch: "CTA_ExtFullSearch",
-  DashboardReportMain: "CTA_DashboardWR ",
+  DashboardReportMain: "CTA_DashboardWR",
   BravaURL: '376807',
   SearchFilters: '383838',
   SenderInfo: '391722',
@@ -62,7 +62,10 @@ export const FCTSDashBoard = {
 
   getMenuCountMR: 'CTA_SidebarMRCount',
   CCRecallReturnToAS: 'FCTS_CCRecall',
-  BaseHref: '/img/fctsangular/fctsapp/',
-  //BaseHref: '/',
+
+  GetUserMailroomPrivelage:'503438',
+
+  //BaseHref: '/img/fctsangular/fctsapp/',
+  BaseHref: '/',
   CSUrl: 'http://manotcst02.mannaicorp.com.qa/otcs/cs.exe'
 };

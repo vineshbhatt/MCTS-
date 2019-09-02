@@ -166,58 +166,11 @@
                         </a>
                   <button class="oppr_icon_002" (click)="previewViewWrapper(!correspondData)">
                           <img  matTooltip="Quick view" (click)="quickViewWrapper(correspondData)" src="{{basehref}}assets/images/icons/info_icon-white.svg" alt="">
-                        </button>
-                  <!-- <div class="table_004_wrapper">
-                    <table class="table_004">
-                      <tr>
-                        <th>From</th>
-                        <td>{{correspondData.FromDepartment}}</td>
-                      </tr>
-                      <tr>
-                        <th>To</th>
-                        <td>{{correspondData.ToDepartment}}</td>
-                      </tr>
-                      <tr>
-                        <th>Subject</th>
-                        <td>{{correspondData.EnglishSubject}}</td>
-                      </tr>
-                      <tr>
-                        <th>Date</th>
-                        <td>{{correspondData.ReceivedDate}}</td>
-                      </tr>
-                    </table>
-                  </div> -->
+                        </button>                 
                 </div>
                 <div class="documentViewerDiv" *ngFor="let docpreviewData of documentPreviewURL">
                   <iframe class="iframeclass" [src]="docpreviewData.CorrespondencedocumentURL | safe">
-                  </iframe>
-
-                  <!-- <div class="attachment_wrapper">
-                            <p class="text_16">3 attachment</p>
-                            <ul class="attach_item_wrp">
-                                <li>
-                                  <img src="{{basehref}}assets/images/attach_img_001.jpg" alt="">
-                                  <div class="atch_typ_wrp">
-                                    <img src="{{basehref}}assets/images/icons/microsoft-access.svg" alt="" class="dct_typ_icn">
-                                    <p class="text_11">Document 1</p>
-                                  </div>
-                                </li>
-                                <li>
-                                  <img src="{{basehref}}assets/images/attach_img_001.jpg" alt="">
-                                  <div class="atch_typ_wrp">
-                                    <img src="{{basehref}}assets/images/icons/powerpoint.svg" alt="" class="dct_typ_icn">
-                                    <p class="text_11">Document 1</p>
-                                  </div>
-                                </li>
-                                <li>
-                                  <img src="{{basehref}}assets/images/attach_img_001.jpg" alt="">
-                                  <div class="atch_typ_wrp">
-                                    <img src="{{basehref}}assets/images/icons/excel.svg" alt="" class="dct_typ_icn">
-                                    <p class="text_11">Document 1</p>
-                                  </div>
-                                </li>
-                            </ul>
-                        </div> -->
+                  </iframe>                 
                 </div>
               </div>
               <div class="priview_wrapper qk_view active" [class.active]="correspondData === quickViewCorrespondence">

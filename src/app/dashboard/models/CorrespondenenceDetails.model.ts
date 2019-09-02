@@ -77,3 +77,36 @@ export class CCUserSetModel {
   Name_EN: string;
   Name_AR: string;
 }
+
+
+export class ColUserSetModel {
+  VolumeID: string;
+  OrderNum: string;
+  SubSeq: string;
+  UserColl_User: string;
+  UserColl_Type: string;
+  UserColl_Purpose: string;
+  UserColl_Priority: string;
+  UserColl_DueDate: string;
+  UserColl_Notes: string;
+  UserColl_FurtherAction: string;
+  UserColl_Status: string;
+  UserColl_Disposition: string;
+  Name_EN: string;
+  Name_AR: string;
+  DepartmentName_EN: string;
+  DepartmentName_AR: string;
+  FurtherActions_EN: string;
+  FurtherActions_AR: string;
+  Purpose_EN: string;
+  Purpose_AR: string;
+  AttrSuffix: string;
+  SubWorkTask_SubWorkID: string;
+  SubWorkTask_TaskID: string;
+  SubWorkTask_Title: string;
+  SubWorkTask_Type: string;
+  SubWorkTask_Status: string;
+  SubWorkTask_Active: string;
+  Status_EN: string;
+  Status_AR: string;
+}

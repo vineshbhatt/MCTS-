@@ -107,6 +107,7 @@ export class CorrespondenceDetailComponent implements OnInit {
   }
 
   ReadRecord(locationid: string, transid: string) {
+    debugger;
     this._correspondenceDetailsService
       .getCorrRecord(locationid, transid, CSConfig.globaluserid)
       .subscribe(correspondenceData => {
@@ -134,7 +135,7 @@ export class CorrespondenceDetailComponent implements OnInit {
   }
 
   getCorrespondenceSenderDetails(VolumeID: string, CorrespondencType: String): void {
-    this._correspondenceDetailsService.getCorrespondenceSenderDetails(VolumeID, CorrespondencType)
+    this._correspondenceDetailsService.getCorrespondenceSenderDetails(VolumeID, CorrespondencType, false, '')
       .subscribe(correspondenceSenderDetailsData => this.correspondenceSenderDetailsData = correspondenceSenderDetailsData);
   }
 
@@ -220,7 +221,7 @@ export class CorrespondenceDetailComponent implements OnInit {
   }
   // call complete comment window (for transfers)
   OpenCompleteDialog(status: string): void {
-     if (status === '1' && this.correspondenceData.ID.toString() !== '0' && this.correspondenceData.Status.toString() === '0') {
+    if (status === '1' && this.correspondenceData.ID.toString() !== '0' && this.correspondenceData.Status.toString() === '0') {
       const dialogRef = this.dialog.open(CompleteDialogComponent, {
         width: '100%',
         panelClass: 'complete-dialog',
@@ -241,7 +242,7 @@ export class CorrespondenceDetailComponent implements OnInit {
   }
 
   showMessage(message: string) {
-    this.dialog.open( MessageDialogComponent, {
+    this.dialog.open(MessageDialogComponent, {
       width: '100%',
       // margin: 'auto',
       panelClass: 'complete-dialog',
@@ -319,8 +320,8 @@ export class CorrespondenceDetailComponent implements OnInit {
       data => {
 
         if (data.transfer_status_changes.length > 0 && data.transfer_status_changes[0].ID.toString() === this.correspondenceData.ID.toString()) {
-          console.log('Success operation - ' + toggleAction );
-          this.showMessage('Success operation - ' + toggleAction );
+          console.log('Success operation - ' + toggleAction);
+          this.showMessage('Success operation - ' + toggleAction);
           this.RefreshRecord();
         } else {
           console.log('An error occurred within the Transfer action - ' + toggleAction + ' , please contact the administrator');
@@ -342,29 +343,29 @@ export class CorrespondenceDetailComponent implements OnInit {
 
 
   /* *****************************  Transfer reply ******************************************* */
- transferReplyDialog(transUser: CorrResponse): void {
-  const dialogRef = this.dialog.open(TransferReplyDialogComponent, {
-    width: '100%',
-    panelClass: 'transfer-reply-dialog',
-    maxWidth: '50vw',
-    data: {
-      corrData: this.correspondenceData,
-      transferUser: transUser,
-      callPlace: 'CorrDetails'
-    }
-  }).afterClosed().subscribe();
-}
+  transferReplyDialog(transUser: CorrResponse): void {
+    const dialogRef = this.dialog.open(TransferReplyDialogComponent, {
+      width: '100%',
+      panelClass: 'transfer-reply-dialog',
+      maxWidth: '50vw',
+      data: {
+        corrData: this.correspondenceData,
+        transferUser: transUser,
+        callPlace: 'CorrDetails'
+      }
+    }).afterClosed().subscribe();
+  }
 
-transferReply(): void {
-  console.log(this.correspondenceData);
-  this._correspondenceShareService.getTransferUser(this.correspondenceData.TransferUserID).subscribe(
-    transferUser => {
-      this.transferReplyDialog(transferUser);
-    },
-    responseError => {
-      this._errorHandlerFctsService.handleError(responseError).subscribe();
-    }
-  );
-}
+  transferReply(): void {
+    console.log(this.correspondenceData);
+    this._correspondenceShareService.getTransferUser(this.correspondenceData.TransferUserID).subscribe(
+      transferUser => {
+        this.transferReplyDialog(transferUser);
+      },
+      responseError => {
+        this._errorHandlerFctsService.handleError(responseError).subscribe();
+      }
+    );
+  }
 
 }

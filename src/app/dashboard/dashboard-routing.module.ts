@@ -31,6 +31,7 @@ import { MrAcknowledgedInboundsComponent } from './mailroom/mr-acknowledged-inbo
 import { MrDispatchedInboundsComponent } from './mailroom/mr-dispatched-inbounds/mr-dispatched-inbounds.component';
 import { MrDispatchedOutboundsComponent } from './mailroom/mr-dispatched-outbounds/mr-dispatched-outbounds.component';
 import { MrAcknowledgedOutboundsComponent } from './mailroom/mr-acknowledged-outbounds/mr-acknowledged-outbounds.component';
+import { ExternalOutgoing } from './create-correspondence/external-outgoing/external-outgoing.component';
 
 
 const dashboardRoutes: Routes = [
@@ -64,7 +65,8 @@ const dashboardRoutes: Routes = [
               {
                 path: '',
                 children: [
-                  { path: 'new-external', component: ExternalIncoming }
+                  { path: 'new-external-incoming', component: ExternalIncoming },
+                  { path: 'new-external-outgoing', component: ExternalOutgoing }
                 ]
               }
             ]
