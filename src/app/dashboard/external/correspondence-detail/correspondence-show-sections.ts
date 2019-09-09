@@ -40,6 +40,28 @@ interface SectionParam {
     staffNumber:        SectionParam;
   }
 
+  interface CorrItemsList {
+    regDate:            SectionParam;
+    docsDate:           SectionParam;
+    confidential:       SectionParam;
+    priority:           SectionParam;
+    refNumber:          SectionParam;
+    personalName:       SectionParam;
+    idNumber:           SectionParam;
+    correspondenceType: SectionParam;
+    baseType:           SectionParam;
+    arabicSubject:      SectionParam;
+    englishSubject:     SectionParam;
+    projectCode:        SectionParam;
+    budgetNumber:       SectionParam;
+    contractNumber:     SectionParam;
+    tenderNumber:       SectionParam;
+    corrNumber:         SectionParam;
+    fillinPlanPath:     SectionParam;
+    dispatchMethod:     SectionParam;
+    staffNumber:        SectionParam;
+  }
+
   export class ShowSections implements CorrSectionList {
       public Sender: SectionParam;
       public Recipient: SectionParam;
@@ -100,8 +122,16 @@ interface SectionParam {
         console.log(this);
     }
 
-  }
+    public ShowCorrSectionWF() {
+      this._ShowSectionWFIncoming();
+    }
 
+    private _ShowSectionWFIncoming() {
+        this.Transfer.Show = false;
+        this.UserCollaboration.Show = false;
+    }
+
+  }
 
   export class ShowCorrItems implements CorrItemsList {
     public regDate:            SectionParam;
@@ -129,9 +159,9 @@ interface SectionParam {
   }
 
   private _setCorrItems() {
-    this.regDate =            { Show: true, Modify: true };
+    this.regDate =            { Show: true, Modify: false };
     this.docsDate =           { Show: true, Modify: true };
-    this.confidential =       { Show: true, Modify: true };
+    this.confidential =       { Show: true, Modify: false };
     this.priority =           { Show: true, Modify: true };
     this.refNumber =          { Show: true, Modify: true };
     this.personalName =       { Show: true, Modify: true };
@@ -144,7 +174,7 @@ interface SectionParam {
     this.budgetNumber =       { Show: true, Modify: true };
     this.contractNumber =     { Show: true, Modify: true };
     this.tenderNumber =       { Show: true, Modify: true };
-    this.corrNumber =         { Show: true, Modify: true };
+    this.corrNumber =         { Show: true, Modify: false };
     this.fillinPlanPath =     { Show: true, Modify: true };
     this.dispatchMethod =     { Show: true, Modify: true };
     this.staffNumber =        { Show: true, Modify: true };

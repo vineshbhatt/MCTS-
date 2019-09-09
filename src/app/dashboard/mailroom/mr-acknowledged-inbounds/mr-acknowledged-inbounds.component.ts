@@ -26,6 +26,7 @@ export class MrAcknowledgedInboundsComponent extends BaseDashboardComponent impl
   ) {
       super(router, dialogU, correspondenceService, сorrespondenceShareService, errorHandlerFctsService, appLoadConstService);
       this.reportType = 'MRExtInbAckn';
+      this.routerFormStep = '/dashboard/mailroom/correspondence-form-step';
     }
 
   ngOnInit() {

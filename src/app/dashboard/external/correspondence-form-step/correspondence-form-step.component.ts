@@ -1,25 +1,26 @@
 import { Component, OnInit, AfterViewInit, VERSION } from '@angular/core';
-import { ErrorHandlerFctsService } from '../../services/error-handler-fcts.service';
-import { OrgNameAutoFillModel, CorrespondenceFolderModel, CCUserSetModel, CorrespondenenceDetailsModel } from 'src/app/dashboard/models/CorrespondenenceDetails.model';
-import { CorrespondenceDetailsService } from 'src/app/dashboard/services/correspondence-details.service';
-import { OrganizationalChartService } from 'src/app/dashboard/services/organizationalChart.service';
-import { organizationalChartModel, organizationalChartEmployeeModel  } from 'src/app/dashboard/models/organizational-Chart.model';
-import { Location } from '@angular/common';
-import { NestedTreeControl } from '@angular/cdk/tree';
-import { MatTreeNestedDataSource } from '@angular/material/tree';
-import { Observable, EMPTY } from 'rxjs';
-import { FCTSDashBoard } from '../../../../environments/environment';
+import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
+import { Location, DatePipe } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { CorrResponse, CorrespondenceFormData, SenderDetailsData, RecipientDetailsData } from '../../services/correspondence-response.model';
+import { NestedTreeControl } from '@angular/cdk/tree';
+import { Observable, EMPTY } from 'rxjs';
 import { switchMap, debounceTime } from 'rxjs/operators';
 import { MatOptionSelectionChange, MatCheckboxChange } from '@angular/material';
-import { CorrespondenceService } from 'src/app/dashboard/services/correspondence.service';
-import { DocumentPreview } from '../../services/documentpreview.model';
-import { CSDocumentUploadService } from '../../services/CSDocumentUpload.service';
+import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { NgxFileDropEntry, FileSystemFileEntry, FileSystemDirectoryEntry } from 'ngx-file-drop';
+
+import { FCTSDashBoard } from '../../../../environments/environment';
+import { OrgNameAutoFillModel, CorrespondenceFolderModel, CCUserSetModel, CorrespondenenceDetailsModel } from 'src/app/dashboard/models/CorrespondenenceDetails.model';
+import { CorrResponse, CorrespondenceFormData, SenderDetailsData, RecipientDetailsData } from '../../services/correspondence-response.model';
+import { organizationalChartModel, organizationalChartEmployeeModel } from 'src/app/dashboard/models/organizational-Chart.model';
+import { DocumentPreview } from '../../services/documentpreview.model';
 import { CorrespondenceWFFormModel } from '../../models/CorrepondenceWFFormModel';
-import { ActivatedRoute } from '@angular/router';
-import {DatePipe} from '@angular/common';
+
+import { CorrespondenceDetailsService } from 'src/app/dashboard/services/correspondence-details.service';
+import { CorrespondenceService } from 'src/app/dashboard/services/correspondence.service';
+import { OrganizationalChartService } from 'src/app/dashboard/services/organizationalChart.service';
+import { CSDocumentUploadService } from '../../services/CSDocumentUpload.service';
+import { ErrorHandlerFctsService } from '../../services/error-handler-fcts.service';
 
 import { ShowSections, ShowCorrItems } from 'src/app/dashboard/external/correspondence-detail/correspondence-show-sections';
 
@@ -29,7 +30,6 @@ import { ShowSections, ShowCorrItems } from 'src/app/dashboard/external/correspo
   templateUrl: './correspondence-form-step.component.html',
   styleUrls: ['./correspondence-form-step.component.scss']
 })
-
 
 export class CorrespondenceFormStepComponent implements OnInit {
 
@@ -43,6 +43,7 @@ export class CorrespondenceFormStepComponent implements OnInit {
     , private _correspondenceDetailsService: CorrespondenceDetailsService
     , private route: ActivatedRoute
     , private datePipe: DatePipe
+    , private _router: Router
     , private _errorHandlerFctsService: ErrorHandlerFctsService) { }
 
   get f() { return this.correspondenceDetailsForm.controls; }
@@ -115,7 +116,6 @@ export class CorrespondenceFormStepComponent implements OnInit {
   CorrespondencType: string;
   taskID: string;
   CorrespondenceFolderName: Observable<any>;
-  transID: string;
 
   correspondenceSenderDetailsData: SenderDetailsData;    // make model
   correspondenceRecipientDetailsData: RecipientDetailsData; // make model
@@ -127,6 +127,8 @@ export class CorrespondenceFormStepComponent implements OnInit {
   transferhistorytabData: CorrResponse[];
   transferProgbar = false;
   userCollaborationProgbar = false;
+  sectionDisplay = new ShowSections();
+  showCorrItems = new ShowCorrItems();
 
   body: CorrespondenceFormData = {
     action: 'formUpdate',
@@ -136,25 +138,17 @@ export class CorrespondenceFormStepComponent implements OnInit {
   employeeMap = new Map<number, organizationalChartEmployeeModel[]>();
   showempDetails = false;
   CCLoaded = false;
-  sectionDisplay = new ShowSections();
-  ShowCorrItemsDisplay = new ShowCorrItems();
-
 
   ngOnInit() {
     this.VolumeID = this.route.snapshot.queryParamMap.get('VolumeID');
     this.CorrespondencType = this.route.snapshot.queryParamMap.get('CorrType');
     this.locationid = this.route.snapshot.queryParamMap.get('locationid');
     this.taskID = this.route.snapshot.queryParamMap.get('TaskID');
-
-
     this.RefreshRecord();
-
     this.readCorrespondenceInfo();
-
     this.getCorrespondenceSenderDetails();
-
     this.getCorrespondenceRecipientDetails();
-
+    this.sectionDisplay.ShowCorrSectionWF();
 
     // Get Logged in user Information
     this.getUserInfo();
@@ -187,25 +181,25 @@ export class CorrespondenceFormStepComponent implements OnInit {
     });
 
     this.correspondenceDetailsForm = this.formBuilder.group({
-      regDate: new FormControl({ value: '', disabled: !this.ShowCorrItemsDisplay.regDate.Modify }),
-      docsDate: new FormControl({ value: '', disabled: !this.ShowCorrItemsDisplay.docsDate.Modify }),
-      confidential: new FormControl({ value: '', disabled: !this.ShowCorrItemsDisplay.confidential.Modify }),
-      priority: new FormControl({ value: '', disabled: !this.ShowCorrItemsDisplay.priority.Modify }),
-      refNumber: new FormControl({ value: '', disabled: !this.ShowCorrItemsDisplay.refNumber.Modify }),
-      personalName: new FormControl({ value: '', disabled: !this.ShowCorrItemsDisplay.personalName.Modify }),
-      idNumber: new FormControl({ value: '', disabled: !this.ShowCorrItemsDisplay.idNumber.Modify }),
-      correspondenceType: new FormControl({ value: '', disabled: !this.ShowCorrItemsDisplay.correspondenceType.Modify }),
-      baseType: new FormControl({ value: '', disabled: !this.ShowCorrItemsDisplay.baseType.Modify }),
-      arabicSubject: new FormControl({ value: '', disabled: !this.ShowCorrItemsDisplay.arabicSubject.Modify }),
-      englishSubject: new FormControl({ value: '', disabled: !this.ShowCorrItemsDisplay.englishSubject.Modify }),
-      projectCode: new FormControl({ value: '', disabled: !this.ShowCorrItemsDisplay.projectCode.Modify }),
-      budgetNumber: new FormControl({ value: '', disabled: !this.ShowCorrItemsDisplay.budgetNumber.Modify }),
-      contractNumber: new FormControl({ value: '', disabled: !this.ShowCorrItemsDisplay.contractNumber.Modify }),
-      tenderNumber: new FormControl({ value: '', disabled: !this.ShowCorrItemsDisplay.tenderNumber.Modify }),
-      corrNumber: new FormControl({ value: '', disabled: !this.ShowCorrItemsDisplay.corrNumber.Modify }),
-      fillinPlanPath: new FormControl({ value: '', disabled: !this.ShowCorrItemsDisplay.fillinPlanPath.Modify }),
-      dispatchMethod: new FormControl({ value: '', disabled: !this.ShowCorrItemsDisplay.dispatchMethod.Modify }),
-      staffNumber: new FormControl({ value: '', disabled: !this.ShowCorrItemsDisplay.staffNumber.Modify }),
+      regDate: new FormControl({ value: '', disabled: !this.showCorrItems.regDate.Modify }),
+      docsDate: new FormControl({ value: '', disabled: !this.showCorrItems.docsDate.Modify }),
+      confidential: new FormControl({ value: '', disabled: !this.showCorrItems.confidential.Modify }),
+      priority: new FormControl({ value: '', disabled: !this.showCorrItems.priority.Modify }),
+      refNumber: ['', Validators.required],
+      personalName: new FormControl({ value: '', disabled: !this.showCorrItems.personalName.Modify }),
+      idNumber: new FormControl({ value: '', disabled: !this.showCorrItems.idNumber.Modify }),
+      correspondenceType: new FormControl({ value: '', disabled: !this.showCorrItems.correspondenceType.Modify }),
+      baseType: new FormControl({ value: '', disabled: !this.showCorrItems.baseType.Modify }),
+      arabicSubject: new FormControl({ value: '', disabled: !this.showCorrItems.arabicSubject.Modify }),
+      englishSubject: new FormControl({ value: '', disabled: !this.showCorrItems.englishSubject.Modify }),
+      projectCode: new FormControl({ value: '', disabled: !this.showCorrItems.projectCode.Modify }),
+      budgetNumber: new FormControl({ value: '', disabled: !this.showCorrItems.budgetNumber.Modify }),
+      contractNumber: new FormControl({ value: '', disabled: !this.showCorrItems.contractNumber.Modify }),
+      tenderNumber: new FormControl({ value: '', disabled: !this.showCorrItems.tenderNumber.Modify }),
+      corrNumber: new FormControl({ value: '', disabled: !this.showCorrItems.corrNumber.Modify }),
+      fillinPlanPath: new FormControl({ value: '', disabled: !this.showCorrItems.fillinPlanPath.Modify }),
+      dispatchMethod: new FormControl({ value: '', disabled: !this.showCorrItems.dispatchMethod.Modify }),
+      staffNumber: new FormControl({ value: '', disabled: !this.showCorrItems.staffNumber.Modify }),
     });
 
     this.filteredExtOrgNames = this.senderDetailsForm.get('ExternalOrganization').valueChanges
@@ -225,11 +219,6 @@ export class CorrespondenceFormStepComponent implements OnInit {
       );
   }
 
-  ngAfterViewInit() {
-    // this.getTempFolderAttachments('Incoming');
-  }
-
-
   ReadRecord(locationid: string, transid: string) {
     this.correspondenceDetailsService
       .getCorrRecord(locationid, transid, CSConfig.globaluserid)
@@ -240,12 +229,14 @@ export class CorrespondenceFormStepComponent implements OnInit {
   }
 
   RefreshRecord() {
-    this.ReadRecord(this.locationid, this.transID);
+    this.ReadRecord(this.locationid, '0');
   }
 
   getCorrespondenceSenderDetails(): void {
-    this._correspondenceDetailsService.getCorrespondenceSenderDetails(this.VolumeID, this.CorrespondencType, false, '')
-      .subscribe(correspondenceSenderDetailsData => {
+    this._correspondenceDetailsService
+      .getCorrespondenceSenderDetails(this.VolumeID, this.CorrespondencType, false, '')
+      .subscribe(
+        correspondenceSenderDetailsData => {
           if ((typeof correspondenceSenderDetailsData[0].myRows !== 'undefined') && correspondenceSenderDetailsData[0].myRows.length > 0) {
             this.correspondenceSenderDetailsData = correspondenceSenderDetailsData[0].myRows[0];
           }
@@ -253,17 +244,14 @@ export class CorrespondenceFormStepComponent implements OnInit {
         responseError => {
           this._errorHandlerFctsService.handleError(responseError).subscribe();
         }
-        );
+      );
   }
-
-
 
   getCorrespondenceRecipientDetails(): void {
     this._correspondenceDetailsService
       .getCorrespondenceRecipientDetails(this.VolumeID, this.CorrespondencType)
       .subscribe(
         correspondenceRecipientDetailsData => {
-          // tslint:disable-next-line: max-line-length
           if (( typeof correspondenceRecipientDetailsData[0].myRows !== 'undefined') && correspondenceRecipientDetailsData[0].myRows.length > 0) {
             this.correspondenceRecipientDetailsData = correspondenceRecipientDetailsData[0].myRows[0];
           }
@@ -326,7 +314,6 @@ export class CorrespondenceFormStepComponent implements OnInit {
       });
   }
 
-
   showCommentsData() {
     this.getCommentsData();
   }
@@ -339,14 +326,12 @@ export class CorrespondenceFormStepComponent implements OnInit {
         this.commentsProgbar = false;
       });
   }
-  /***/
+  /* */
   readCorrespondenceInfo(): void {
     this._correspondenceDetailsService.getFormStepInfo(this.VolumeID, this.VolumeID, this.taskID).subscribe(
-      data => {
-        if ((typeof data.forms !== 'undefined') && data.forms.length > 0) {
-          this.body.values = data.forms[0].data;
-          console.log('this.body.values');
-          console.log(this.body.values);
+      response => {
+        if ((typeof response.forms !== 'undefined') && response.forms.length > 0) {
+          this.body.values = response.forms[0].data;
           this.getMetadataFilters();
         }
       },
@@ -355,18 +340,20 @@ export class CorrespondenceFormStepComponent implements OnInit {
       }
     );
   }
-
-  makeFormObjectToSubmit() {
-
-    this.body.values.WorkflowForm_1x4x1x88 = this.senderDetailsForm.get('SenderName').value;
-
+/*
+  printdata() {
+    this.makeFormObjectToSubmit();
+    console.log('MetadataFilters');
+    console.log(this.MetadataFilters);
+  }
+*/
+  makeFormObjectToSubmit(action: string) {
     this.body.values.WorkflowForm_1x4x1x22 = this.setPopupCheckedValue('Priority', this.correspondenceDetailsForm.get('priority').value.EN);
     this.body.values.WorkflowForm_1x4x1x2 = this.correspondenceDetailsForm.get('regDate').value;
     this.body.values.WorkflowForm_1x4x1x124 = this.correspondenceDetailsForm.get('docsDate').value;
     this.body.values.WorkflowForm_1x4x1x28 = this.correspondenceDetailsForm.get('refNumber').value;
     this.body.values.WorkflowForm_1x4x1x88 = this.correspondenceDetailsForm.get('personalName').value;
     this.body.values.WorkflowForm_1x4x1x27 = this.correspondenceDetailsForm.get('idNumber').value;
-    // tslint:disable-next-line: max-line-length
     this.body.values.WorkflowForm_1x4x1x30 = this.setPopupCheckedValue('CorrespondenceType', this.correspondenceDetailsForm.get('correspondenceType').value.EN);
     this.body.values.WorkflowForm_1x4x1x29 = this.setPopupCheckedValue('BaseType', this.correspondenceDetailsForm.get('baseType').value.EN);
     this.body.values.WorkflowForm_1x4x1x35 = this.correspondenceDetailsForm.get('arabicSubject').value;
@@ -378,10 +365,8 @@ export class CorrespondenceFormStepComponent implements OnInit {
     this.body.values.WorkflowForm_1x4x1x9 = this.correspondenceDetailsForm.get('corrNumber').value;
     this.body.values.WorkflowForm_1x4x1x41 = this.correspondenceDetailsForm.get('staffNumber').value;
     this.body.values.WorkflowForm_1x4x1x49 = this.setPopupCheckedValue('DispatchMethod', this.correspondenceDetailsForm.get('dispatchMethod').value.EN);
-    this.body.values.WorkflowForm_1x4x1x75 = 'SendOn';
+    this.body.values.WorkflowForm_1x4x1x75 = action;
     this.getCCtoFormObject();
-    console.log('NewBodyData');
-    console.log(this.body);
   }
 
   getCCtoFormObject() {
@@ -398,38 +383,20 @@ export class CorrespondenceFormStepComponent implements OnInit {
     }
   }
 
-   test2() {
-    let datePipe = new DatePipe('en-US');
-    console.log(this.datePipe.transform(this.body.values.WorkflowForm_1x4x1x2, 'dd/MM/yyyy hh:mm'));
-    console.log('this.sectionDisplay');
-    console.log(this.sectionDisplay);
-    console.log('this.ShowCorrItemsDisplay');
-    console.log(this.ShowCorrItemsDisplay);
-  }
-
   setCorrespondenceDetails(): void {
-    // tslint:disable-next-line: max-line-length
-    this.recipientDetailsForm.get('RecipientDepartment').setValue({DepName_En : this.correspondenceRecipientDetailsData.DepartmentName_EN ? this.correspondenceRecipientDetailsData.DepartmentName_EN : '',
-                                                                   SecName_En : this.correspondenceRecipientDetailsData.SectionName_EN});
+    this.recipientDetailsForm.get('RecipientDepartment').setValue({DepName_En : this.correspondenceRecipientDetailsData.DepartmentName_EN, SecName_En : this.correspondenceRecipientDetailsData.SectionName_EN});
     this.recipientDetailsForm.get('RecipientName').setValue(this.correspondenceRecipientDetailsData.Name_EN);
-    // set data for sender
-    if (this.correspondenceSenderDetailsData) {
-      this.senderDetailsForm.get('SenderName').setValue(this.correspondenceSenderDetailsData.Name_EN);
-      this.senderDetailsForm.get('SenderDepartment').setValue(this.correspondenceSenderDetailsData.DepartmentName_EN);
-      this.senderDetailsForm.get('ExternalOrganization').setValue({OrgName_En : this.correspondenceSenderDetailsData.OrganizationName_EN});
-    }
-
-     // tslint:disable-next-line: max-line-length
+    this.senderDetailsForm.get('SenderName').setValue(this.correspondenceSenderDetailsData.Name_EN);
+    this.senderDetailsForm.get('SenderDepartment').setValue(this.correspondenceSenderDetailsData.SenderDepartment);
+    this.senderDetailsForm.get('ExternalOrganization').setValue({OrgName_En : this.correspondenceSenderDetailsData.OrganizationName_EN});
     this.correspondenceDetailsForm.get('priority').setValue({EN: this.getDefaultaValue('Priority', this.body.values.WorkflowForm_1x4x1x22)});
     this.correspondenceDetailsForm.get('confidential').setValue(this.body.values.WorkflowForm_1x4x1x78);
-    this.correspondenceDetailsForm.get('regDate').setValue(this.datePipe.transform(this.body.values.WorkflowForm_1x4x1x2, 'dd/MM/yyyy hh:mm'));
+    this.correspondenceDetailsForm.get('regDate').setValue(this.body.values.WorkflowForm_1x4x1x2);
     this.correspondenceDetailsForm.get('docsDate').setValue(this.body.values.WorkflowForm_1x4x1x124);
     this.correspondenceDetailsForm.get('refNumber').setValue(this.body.values.WorkflowForm_1x4x1x28);
     this.correspondenceDetailsForm.get('personalName').setValue(this.body.values.WorkflowForm_1x4x1x88);
     this.correspondenceDetailsForm.get('idNumber').setValue(this.body.values.WorkflowForm_1x4x1x27);
-    // tslint:disable-next-line: max-line-length
     this.correspondenceDetailsForm.get('correspondenceType').setValue({EN: this.getDefaultaValue('CorrespondenceType', this.body.values.WorkflowForm_1x4x1x30)});
-    // tslint:disable-next-line: max-line-length
     this.correspondenceDetailsForm.get('baseType').setValue({EN: this.getDefaultaValue('BaseType', this.body.values.WorkflowForm_1x4x1x29)});
     this.correspondenceDetailsForm.get('arabicSubject').setValue(this.body.values.WorkflowForm_1x4x1x35);
     this.correspondenceDetailsForm.get('englishSubject').setValue(this.body.values.WorkflowForm_1x4x1x36);
@@ -453,8 +420,6 @@ export class CorrespondenceFormStepComponent implements OnInit {
           Name_EN = element.Name_EN;
         }
       });
-      console.log(Attrname + 'ID!=0');
-      console.log(ID);
       return Name_EN;
     }
   }
@@ -464,27 +429,36 @@ export class CorrespondenceFormStepComponent implements OnInit {
     this.MetadataFilters.forEach(element => {
       if (element.AttrName === Attrname && element.Name_EN === Name_EN) {
         ID = element.ID;
+        return ID;
       }
     });
     return ID;
   }
 
   submitCorrespondenceInfo(action: string) {
-    this.makeFormObjectToSubmit();
-    this.correspondenceDetailsService.submitCorrespondenceInfo(this.VolumeID, this.taskID, this.body)
-    .subscribe(
-      response => { action === 'SendOn' ? this.sendOnCorrespondence() : null ;
-      },
-      responseError => {
-        this._errorHandlerFctsService.handleError(responseError).subscribe();
-      }
-    );
+    this.makeFormObjectToSubmit(action);
+      this.correspondenceDetailsService.submitCorrespondenceInfo(this.VolumeID, this.taskID, this.body)
+      .subscribe(
+        response => {
+          if (action === 'TEST') {
+            /* submits form but doesn't Send On */
+            console.log(this.body.values);
+          } else {
+            this.sendOnCorrespondence();
+          }
+        },
+        responseError => {
+          this._errorHandlerFctsService.handleError(responseError).subscribe();
+        }
+      );
   }
 
   sendOnCorrespondence() {
     this.correspondenceDetailsService.sendOnCorrespondence(this.VolumeID, this.taskID)
     .subscribe(
       response => {
+        // ?? needs to validate response if send on was correct
+        this.backNavigation();
         console.log(response);
       },
       responseError => {
@@ -495,7 +469,7 @@ export class CorrespondenceFormStepComponent implements OnInit {
 
 
   /*********************Transfer************************ */
-  transferTabShowData() {
+  /*transferTabShowData() {
     this.getTransferHistoryData(this.VolumeID);
   }
 
@@ -506,7 +480,7 @@ export class CorrespondenceFormStepComponent implements OnInit {
         this.transferhistorytabData = transferhistorytabData;
         this.transferProgbar = false;
       });
-  }
+  }*/
   /************************************************************* */
 
   getTempFolderAttachments(CorrFlowType): void {
@@ -524,8 +498,6 @@ export class CorrespondenceFormStepComponent implements OnInit {
       .subscribe(
         MetadataFilters => {
           this.MetadataFilters = MetadataFilters;
-          console.log('this.MetadataFilters');
-          console.log(this.MetadataFilters);
           this.setCorrespondenceDetails();
         }
       );
@@ -571,7 +543,6 @@ export class CorrespondenceFormStepComponent implements OnInit {
     if (searchList) { return searchList.DepName_En + (searchList.SecName_En === null ? '' : ', ' + searchList.SecName_En); }
   }
 
-
   expandeActionRightButton() {
     this.expandedRightAction = !this.expandedRightAction;
   }
@@ -589,14 +560,16 @@ export class CorrespondenceFormStepComponent implements OnInit {
         this.userInfo = userInfoVal
       );
   }
+
   onSubmit() {
     this.submitted = true;
     // stop here if form is invalid
     if (this.correspondenceDetailsForm.invalid) {
       return;
     }
-    console.log(JSON.stringify(this.correspondenceDetailsForm.value));
+    // console.log(JSON.stringify(this.correspondenceDetailsForm.value));
   }
+
   displayFn(attribute?: any): string | undefined {
     return attribute ? attribute.EN : undefined;
   }
@@ -604,6 +577,7 @@ export class CorrespondenceFormStepComponent implements OnInit {
   refreshCoverSection() {
     this.getCoverSection();
   }
+
   refreshAttachmentSection() {
     this.getAttachmentSection();
   }
@@ -666,6 +640,7 @@ export class CorrespondenceFormStepComponent implements OnInit {
     this.multiSelect = true;
     this.dataSource.data = this.organizationalChartData;
   }
+
   getOrganizationalChartDetail(): void {
     this.organizationalChartService.getOrgChartInternal()
       .subscribe(OrgChartResponse => {
@@ -834,6 +809,7 @@ export class CorrespondenceFormStepComponent implements OnInit {
       }
     }
   }
+
   public fileOver(event) {
 
   }
@@ -842,8 +818,8 @@ export class CorrespondenceFormStepComponent implements OnInit {
 
   }
 
+   // check if needed on WF Step
   GenerateBarcode() {
-
     if (this.correspondenceDetailsForm.invalid) {
       alert('Fill in Manadatory Corr Details');
     } else if (this.senderDetailsForm.invalid) {

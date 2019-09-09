@@ -23,10 +23,10 @@ speed-measure-plugin.json
 
 # IDE - VSCode
 .vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+#!.vscode/settings.json
+#!.vscode/tasks.json
+#!.vscode/launch.json
+#!.vscode/extensions.json
 
 # misc
 /.sass-cache
@@ -41,3 +41,11 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+#custom
+_readme.txt
+tslint.json
+/src/fctsapp.html
+angular.json
+package.json
+package-lock.json

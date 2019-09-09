@@ -55,6 +55,8 @@ const dashboardRoutes: Routes = [
                   { path: 'new-intoutbounds', component: NewIntOutboundComponent },
                   { path: 'inProgress-intoutbounds', component: InprogressIntOutboundComponent },
                   { path: 'archieved-intoutbounds', component: AchievedIntOutboundComponent },
+                  { path: 'correspondence-detail', component: CorrespondenceDetailComponent },
+                  { path: 'correspondence-form-step', component: CorrespondenceFormStepComponent },
                   { path: '', component: InternalDashboardComponent }
                 ]
               }
@@ -85,7 +87,7 @@ const dashboardRoutes: Routes = [
                   { path: 'inProgress-outbounds', component: InProgressOutboundComponent },
                   { path: 'archieved-outbounds', component: AchievedOutboundComponent },
                   { path: 'correspondence-detail', component: CorrespondenceDetailComponent },
-                  //{ path: 'correspondence-form-step', component: CorrespondenceFormStepComponent },
+                  { path: 'correspondence-form-step', component: CorrespondenceFormStepComponent },
                   { path: '', component: ExternalDashboardComponent },
                 ]
               }
@@ -105,7 +107,8 @@ const dashboardRoutes: Routes = [
                   { path: 'mr-dispatched-outbounds', component: MrDispatchedOutboundsComponent },
                   { path: 'mr-acknowledged-outbounds', component: MrAcknowledgedOutboundsComponent },
                   { path: 'mr-archieved-outbounds', component: MrArchievedOutboundsComponent },
-                  { path: 'correspondence-form-step', component: CorrespondenceFormStepComponent  },
+                  { path: 'correspondence-detail', component: CorrespondenceDetailComponent },
+                  { path: 'correspondence-form-step', component: CorrespondenceFormStepComponent },
                   { path: '', component: MailroomDasnboardComponent },
                 ]
               }

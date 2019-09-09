@@ -171,7 +171,8 @@ import {DatePipe} from '@angular/common';
     NotificationComponent,
     EmployeeMapList,
     BaseCorrespondenceComponent,
-    ExternalOutgoing
+    ExternalOutgoing,
+    CorrespondenceFormStepComponent
   ],
   entryComponents: [
     MailDetailView,
