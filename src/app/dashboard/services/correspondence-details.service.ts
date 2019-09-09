@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { CorrResponse } from './correspondence-response.model';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { FCTSDashBoard } from '../../../environments/environment';
 import { DocumentPreview } from '../services/documentpreview.model';
 import { DashboardFilterResponse, TransferAttributes } from '../models/DashboardFilter';
@@ -9,7 +9,7 @@ import { CorrespondenenceDetailsModel, OrgNameAutoFillModel, CorrespondenceFolde
 import { StatusRequest, SetStatusRow } from '../models/Shared.model';
 import { CorrespondenceShareService } from '../services/correspondence-share.service';
 import { map, catchError } from 'rxjs/operators'; /* added 24/06/2019 */
-import { EMPTY } from 'rxjs'
+import { EMPTY } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
@@ -349,7 +349,7 @@ export class CorrespondenceDetailsService {
 
   searchFieldForAutoFillOUID(orgID: string, searchField: string, parentOUID: string): Observable<OrgNameAutoFillModel[]> {
     let searchResults: Observable<OrgNameAutoFillModel[]>;
-    let params = new HttpParams()
+    const params = new HttpParams()
       .set('OrgID', orgID)
       .set(searchField, 'true');
     return this.httpServices.get<OrgNameAutoFillModel[]>(
@@ -393,7 +393,7 @@ export class CorrespondenceDetailsService {
 
   createTempAttachments(CorrFlowType: string): Observable<CorrespondenceFolderModel> {
     const params = new HttpParams()
-      .set('CorrFlowType', CorrFlowType)
+      .set('CorrFlowType', CorrFlowType);
     return this.httpServices.get<CorrespondenceFolderModel>(
       this.CSUrl +
       `${FCTSDashBoard.WRApiV1}${
@@ -409,7 +409,7 @@ export class CorrespondenceDetailsService {
     const params = new HttpParams()
       .set('CorrFlowType', CorrFlowType)
       .set('CorrespondenceYear', '' + CorrespondenceYear)
-      .set('AttachID', '' + corrAttachID)
+      .set('AttachID', '' + corrAttachID);
     return this.httpServices.get<any>(
       this.CSUrl +
       `${FCTSDashBoard.WRApiV1}${
@@ -440,6 +440,70 @@ export class CorrespondenceDetailsService {
     );
   }
 
+  /*****************************correspondence form-step-functions**************************************** */
+
+  getFormStepInfo(WorkID: string, SubWorkID: string, TaskID: string): Observable<any> {
+    const params = new HttpParams()
+      .set('process_id', WorkID)
+      .set('subprocess_id', SubWorkID)
+      .set('task_id', TaskID);
+    return this.httpServices.get<any>(
+      this.CSUrl +
+      `${FCTSDashBoard.WFApiV1}forms/processes/tasks/update?`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        console.log('correspondence ERROR => ' + error.message || 'some error with correspondence');
+        return throwError(error);
+      })
+    );
+  }
+
+
+
+  submitCorrespondenceInfo(WorkID: string, TaskID: string, data: any): Observable<any> {
+    const url =  this.CSUrl + `${FCTSDashBoard.WFApiV2}processes/${WorkID}/subprocesses/${WorkID}/tasks/${TaskID}`;
+    const body = new HttpParams()
+        .set('body', JSON.stringify(data));
+    return this.httpServices.put<any>(url, body, {
+      headers: new HttpHeaders()
+          .set('OTCSTICKET', CSConfig.AuthToken )
+          .set('Content-Type', 'application/x-www-form-urlencoded')
+    }).pipe(
+      map(response => {
+        return response;
+      }),
+      catchError(error => {
+        console.log('correspondence ERROR => ' + error.message || 'some error with correspondence');
+        return throwError(error);
+      })
+    );
+  }
+
+  sendOnCorrespondence(WorkID: string, TaskID: string) {
+    const url =  this.CSUrl + `${FCTSDashBoard.WFApiV2}processes/${WorkID}/subprocesses/${WorkID}/tasks/${TaskID}?action=SendOn`;
+    const body = new HttpParams();
+    return this.httpServices.put<any>(url, body, {
+      headers: new HttpHeaders()
+          .set('OTCSTICKET', CSConfig.AuthToken )
+    }).pipe(
+      map(response => {
+        return response;
+      }),
+      catchError(error => {
+        console.log('correspondence ERROR => ' + error.message || 'some error with correspondence');
+        return throwError(error);
+      })
+    );
+  }
+
+
+
   getCurrentUserMailroomPrivelage(): Observable<any> {
     return this.httpServices.get<any>(
       this.CSUrl +
@@ -456,7 +520,7 @@ export class CorrespondenceDetailsService {
     const params = new HttpParams()
       .set(ApproverType, 'true')
       .set('mainLanguage', 'EN')
-      .set('filterField1', CSConfig.globaluserid)
+      .set('filterField1', CSConfig.globaluserid);
     return this.httpServices.get<any[]>(
       this.CSUrl +
       `${FCTSDashBoard.WRApiV1}${
@@ -476,7 +540,7 @@ export class CorrespondenceDetailsService {
       .set('active', '1')
       .set('catid', '261305')
       .set('language', '')
-      .set('locationid', '261309')
+      .set('locationid', '261309');
     return this.httpServices.get<any[]>(
       this.CSUrl +
       `${FCTSDashBoard.WRApiV1}${
@@ -511,4 +575,4 @@ export class CorrespondenceDetailsService {
 
   }
 
-}   
+}

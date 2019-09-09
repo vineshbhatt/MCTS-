@@ -53,7 +53,7 @@ export class BaseDashboardComponent implements OnInit {
 
   reportType = '';
   routerCorrDetail = '/dashboard/external/correspondence-detail';
-
+  routerFormStep = '/dashboard/external/correspondence-form-step';
   basehref: String = FCTSDashBoard.BaseHref;
   CorrAttach: CorrAttachDocuments;
   frameurl: string;
@@ -149,12 +149,12 @@ export class BaseDashboardComponent implements OnInit {
 
   routeToDetailsPage(correspondData: Correspondence) {
     this.setPerformerPermission(correspondData);
-
     if (correspondData.SubWorkTask_TaskID > 0 && correspondData.SubWorkTask_PerformerID_Groups.split(',').indexOf(correspondData.SubWorkTask_PerformerID) > 0 ) {
       this.userConfirmation( 'assignWF', correspondData );
     } else if (correspondData.transID > 0 && correspondData.transHoldSecretaryID !== CSConfig.globaluserid ) {
       this.userConfirmation( 'assignTransfer', correspondData );
-
+    } else if (correspondData.SubWorkTask_TaskID > 0 && correspondData.SubWorkTask_PerformerID.toString() === CSConfig.globaluserid ) {
+      this.routeToFormStepPage(correspondData);
     /*} else if (correspondenceData.transID > 0 && correspondenceData.transHoldSecretaryID != CSConfig.globaluserid ) {
       console.log("transfer assigned to USER"); */
     } else {
@@ -172,7 +172,20 @@ export class BaseDashboardComponent implements OnInit {
                               }
                           );
     }
-    console.log(correspondData);
+  }
+
+  routeToFormStepPage(correspondData: Correspondence) {
+    this.setPerformerPermission(correspondData);
+      this.router.navigate([this.routerFormStep],
+                            { queryParams:
+                              {
+                                VolumeID: correspondData.VolumeID,
+                                TaskID: correspondData.SubWorkTask_TaskID,
+                                CorrType: correspondData.CorrFlowType,
+                                locationid: correspondData.DataID
+                              }
+                            }
+                          );
   }
 
   getCoverDocumentURL(CoverID: String): void {
@@ -283,19 +296,7 @@ export class BaseDashboardComponent implements OnInit {
             response => {
              console.log('DEV: Assign WF step');
             /* !!!!!! there should be opened WF step, temporary: withing development CorrespView is opened */
-              this.router.navigate([this.routerCorrDetail],
-                { queryParams:
-                    {
-                      VolumeID: correspondenceData.VolumeID,
-                      CorrType: correspondenceData.CorrFlowType,
-                      CoverID: correspondenceData.CoverID,
-                      locationid: correspondenceData.DataID,
-                      TaskID: correspondenceData.SubWorkTask_TaskID,
-                      TransID: correspondenceData.transID,
-                      TransIsCC: correspondenceData.transIsCC
-                    }
-                  }
-              );
+            this.routeToFormStepPage(correspondenceData);
             /* *************************************************** */
             },
             responseError => {

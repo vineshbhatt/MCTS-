@@ -26,6 +26,8 @@ export class MrNewInboundsComponent extends BaseDashboardComponent implements On
   ) {
       super(router, dialogU, correspondenceService, сorrespondenceShareService, errorHandlerFctsService, appLoadConstService);
       this.reportType = 'MRExtInbWIP';
+      this.routerFormStep = '/dashboard/mailroom/correspondence-form-step';
+      // this.routerFormStep = '/dashboard/mailroom/mr-new-inbounds/correspondence-form-step';
     }
 
   ngOnInit() {

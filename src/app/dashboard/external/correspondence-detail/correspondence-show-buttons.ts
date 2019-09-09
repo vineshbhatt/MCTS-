@@ -52,7 +52,7 @@ interface CorrButtonsList {
       this.corrSave = false;
     }
 
-    public showButton(correspondenceData: CorrespondenenceDetailsModel) {      
+    public showButton(correspondenceData: CorrespondenenceDetailsModel) {
      console.log(correspondenceData);
      this._setInitData();
      if (correspondenceData.ID.toString() !== '0' ) {
@@ -64,7 +64,7 @@ interface CorrButtonsList {
          }
       } else if (correspondenceData.isCC.toString() === '1' ) {
         // btnComplete, btnArchive
-        correspondenceData.CCstatus == 'Archived' ?  this.corrArchive = false : this.corrArchive = true;
+        correspondenceData.CCstatus === 'Archived' ?  this.corrArchive = false : this.corrArchive = true;
         correspondenceData.CCstatus == null ? this.corrComplete = true : this.corrComplete = false;
       } else {
         correspondenceData.perform07.toString() === '1' && correspondenceData.CCstatus !== 'Archived'

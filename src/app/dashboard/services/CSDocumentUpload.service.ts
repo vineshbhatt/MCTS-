@@ -18,6 +18,7 @@ export class CSDocumentUploadService {
 
 
     uploadDocument(files: File[], parentID: string): Observable<any> {
+        debugger;
         var formData = new FormData();
         Array.from(files).forEach(f => {
             var inputBody = new UploadParameterModel();

@@ -32,6 +32,7 @@ import { MrDispatchedInboundsComponent } from './mailroom/mr-dispatched-inbounds
 import { MrDispatchedOutboundsComponent } from './mailroom/mr-dispatched-outbounds/mr-dispatched-outbounds.component';
 import { MrAcknowledgedOutboundsComponent } from './mailroom/mr-acknowledged-outbounds/mr-acknowledged-outbounds.component';
 import { ExternalOutgoing } from './create-correspondence/external-outgoing/external-outgoing.component';
+import { CorrespondenceFormStepComponent } from './external/correspondence-form-step/correspondence-form-step.component';
 
 
 const dashboardRoutes: Routes = [
@@ -54,6 +55,8 @@ const dashboardRoutes: Routes = [
                   { path: 'new-intoutbounds', component: NewIntOutboundComponent },
                   { path: 'inProgress-intoutbounds', component: InprogressIntOutboundComponent },
                   { path: 'archieved-intoutbounds', component: AchievedIntOutboundComponent },
+                  { path: 'correspondence-detail', component: CorrespondenceDetailComponent },
+                  { path: 'correspondence-form-step', component: CorrespondenceFormStepComponent },
                   { path: '', component: InternalDashboardComponent }
                 ]
               }
@@ -84,6 +87,7 @@ const dashboardRoutes: Routes = [
                   { path: 'inProgress-outbounds', component: InProgressOutboundComponent },
                   { path: 'archieved-outbounds', component: AchievedOutboundComponent },
                   { path: 'correspondence-detail', component: CorrespondenceDetailComponent },
+                  { path: 'correspondence-form-step', component: CorrespondenceFormStepComponent },
                   { path: '', component: ExternalDashboardComponent },
                 ]
               }
@@ -103,6 +107,8 @@ const dashboardRoutes: Routes = [
                   { path: 'mr-dispatched-outbounds', component: MrDispatchedOutboundsComponent },
                   { path: 'mr-acknowledged-outbounds', component: MrAcknowledgedOutboundsComponent },
                   { path: 'mr-archieved-outbounds', component: MrArchievedOutboundsComponent },
+                  { path: 'correspondence-detail', component: CorrespondenceDetailComponent },
+                  { path: 'correspondence-form-step', component: CorrespondenceFormStepComponent },
                   { path: '', component: MailroomDasnboardComponent },
                 ]
               }

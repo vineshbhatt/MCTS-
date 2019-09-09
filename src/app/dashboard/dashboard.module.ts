@@ -71,7 +71,7 @@ import { MrNewOutboundsComponent } from './mailroom/mr-new-outbounds/mr-new-outb
 import { MrDispatchedOutboundsComponent } from './mailroom/mr-dispatched-outbounds/mr-dispatched-outbounds.component';
 import { MrAcknowledgedOutboundsComponent } from './mailroom/mr-acknowledged-outbounds/mr-acknowledged-outbounds.component';
 import { TransferReturntoasDialogComponent } from './dialog-boxes/transfer-returntoas-dialog/transfer-returntoas-dialog.component';
-
+import { CorrespondenceFormStepComponent } from './external/correspondence-form-step/correspondence-form-step.component';
 
 import { NgxPrintModule } from 'ngx-print';
 import { NgxBarcodeModule } from 'ngx-barcode';
@@ -168,7 +168,8 @@ import { ExternalOutgoing } from './create-correspondence/external-outgoing/exte
     NotificationComponent,
     EmployeeMapList,
     BaseCorrespondenceComponent,
-    ExternalOutgoing
+    ExternalOutgoing,
+    CorrespondenceFormStepComponent
   ],
   entryComponents: [
     MailDetailView,
