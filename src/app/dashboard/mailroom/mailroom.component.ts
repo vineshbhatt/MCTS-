@@ -26,6 +26,7 @@ export class MailroomsComponent implements OnInit, AfterViewInit {
     this._correspondenceService.getSideBarElementsHC('menuMR.json').subscribe(data => {
       this.menuItems = data as string[];
     });
+    console.log('mailrooom')
   }
 
   ngAfterViewInit() {
@@ -36,6 +37,7 @@ export class MailroomsComponent implements OnInit, AfterViewInit {
 
   menuActionButton() {
     this.menuAction = !this.menuAction;
+    console.log('this.menuAction');
     console.log(this.menuAction);
   }
 

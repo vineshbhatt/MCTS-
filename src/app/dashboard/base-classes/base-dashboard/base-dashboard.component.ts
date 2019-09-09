@@ -53,7 +53,8 @@ export class BaseDashboardComponent implements OnInit {
 
   reportType = '';
   routerCorrDetail = '/dashboard/external/correspondence-detail';
-
+  routerFormStep = '/dashboard/mailroom/correspondence-form-step';
+  //routerFormStep = '/dashboard/external/correspondence-form-step';
   basehref: String = FCTSDashBoard.BaseHref;
   CorrAttach: CorrAttachDocuments;
   frameurl: string;
@@ -172,6 +173,31 @@ export class BaseDashboardComponent implements OnInit {
                               }
                           );
     }
+    console.log(correspondData);
+  }
+
+  routeToFormStepPage(correspondData: Correspondence) {
+    this.setPerformerPermission(correspondData);
+
+/*     if (correspondData.SubWorkTask_TaskID > 0 && correspondData.SubWorkTask_PerformerID_Groups.split(',').indexOf(correspondData.SubWorkTask_PerformerID) > 0 ) {
+      this.userConfirmation( 'assignWF', correspondData );
+    } else if (correspondData.transID > 0 && correspondData.transHoldSecretaryID !== CSConfig.globaluserid ) {
+      this.userConfirmation( 'assignTransfer', correspondData );
+    } else { */
+      this.router.navigate([this.routerFormStep],
+                            { queryParams:
+                              {
+                                VolumeID: correspondData.VolumeID,
+                                CorrType: correspondData.CorrFlowType,
+                                CoverID: correspondData.CoverID,
+                                locationid: correspondData.DataID,
+                                TaskID: correspondData.SubWorkTask_TaskID,
+                                TransID: correspondData.transID,
+                                TransIsCC: correspondData.transIsCC
+                                }
+                              }
+                          );
+/*     } */
     console.log(correspondData);
   }
 

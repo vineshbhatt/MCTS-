@@ -26,6 +26,7 @@ export class ExternalComponent implements OnInit, AfterViewInit {
     this._correspondenceService.getSideBarElementsHC('menu.json').subscribe(data => {
       this.menuItems = data as string[];
     });
+    console.log('external')
   }
 
   ngAfterViewInit() {
