@@ -1,4 +1,5 @@
-<div class="correspondence_detail" *ngIf="expandedRightAction" [ngClass]="expandedAction ? 'unActive' : 'ActiveLeft'">
+<div class="new_edt_cont_wrapper correspondence_detail_wrapper">
+  <ng-scrollbar thumbClass="scroll_001" *ngIf="expandedRightAction" [ngClass]="expandedAction ? 'unActive' : 'ActiveLeft'"  class="correspondence_detail correspondence_detail_pad_0_wrp scroll_wrp_001"  compact="true">
   <button (click)="expandeActionLeftButton()" matRipple class="corsp_ext_btn">
     <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
   </button>
@@ -646,18 +647,17 @@
       <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
     </button>
   </div>
-</div>
 
-<div class="correspondence_deatil_prview_wrappper" [ngClass]="expandedRightAction ? 'unActive' : 'ActiveRight'"
-  *ngIf="expandedAction">
+</ng-scrollbar>
+<ng-scrollbar  thumbClass="scroll_001" class="correspondence_deatil_prview_wrappper scroll_wrp_001 scroll_pr_0" [ngClass]="expandedRightAction ? 'unActive' : 'ActiveRight'" *ngIf="expandedAction"  compact="true">
   <!-- <button (click)="expandeActionRightButton()" matRipple class="corsp_ext_btn">
         <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
       </button> -->
   <div class="documentViewerDiv" *ngFor="let docpreviewData of documentPreviewURL">
     <iframe class="iframeclass" [src]="docpreviewData.CorrespondencedocumentURL|safe"></iframe>
   </div>
+</ng-scrollbar>
 </div>
-
 <!-- <div class="correspondence_deatil_prview_wrappper" *ngFor="let docpreviewData of documentPreviewURL" [ngClass]="expandedRightAction ? 'unActive' : 'ActiveRight'" *ngIf="expandedAction">
       <button (click)="expandeActionRightButton()" matRipple class="corsp_ext_btn">
           <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">

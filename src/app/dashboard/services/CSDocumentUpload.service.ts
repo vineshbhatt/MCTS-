@@ -76,9 +76,20 @@ export class CSDocumentUploadService {
             );
 
     }
+
+    uploadDocumentVersion(files: File[], documentID: string): Observable<any> {
+        var formData = new FormData();
+        Array.from(files).forEach(f => {    
+            formData.append('file', f);
+        });
+        return this.httpServices.post(this.CSUrl + `${FCTSDashBoard.WFApiV2}nodes/` + documentID + `/versions`,
+            formData, { headers: { OTCSTICKET: CSConfig.AuthToken } });
+
+    }
 }
 export class UploadParameterModel {
     name: string;
     type: string;
     parent_id: string;
+    id: string;
 }

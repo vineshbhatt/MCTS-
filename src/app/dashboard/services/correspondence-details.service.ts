@@ -5,7 +5,10 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { FCTSDashBoard } from '../../../environments/environment';
 import { DocumentPreview } from '../services/documentpreview.model';
 import { DashboardFilterResponse, TransferAttributes } from '../models/DashboardFilter';
-import { CorrespondenenceDetailsModel, OrgNameAutoFillModel, CorrespondenceFolderModel, CCUserSetModel, ColUserSetModel } from '../models/CorrespondenenceDetails.model';
+import {
+  CorrespondenenceDetailsModel, OrgNameAutoFillModel, CorrespondenceFolderModel, CCUserSetModel,
+  ColUserSetModel, SyncDocumentMetadataModel
+} from '../models/CorrespondenenceDetails.model';
 import { StatusRequest, SetStatusRow } from '../models/Shared.model';
 import { CorrespondenceShareService } from '../services/correspondence-share.service';
 import { map, catchError } from 'rxjs/operators'; /* added 24/06/2019 */
@@ -506,9 +509,48 @@ export class CorrespondenceDetailsService {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
       }
     );
+  }
+  syncDocumentMetadata(documentMetadataSync: SyncDocumentMetadataModel): Observable<any> {
 
+    var formData = new FormData();
+    formData.append('docFolderID', documentMetadataSync.docFolderID);
+    formData.append('srcDocID', documentMetadataSync.srcDocID);
+    formData.append('SenderOrganization', documentMetadataSync.SenderOrganization);
+    formData.append('RecipientOrganization', documentMetadataSync.RecipientOrganization);
+    formData.append('RecipientDepartment', documentMetadataSync.RecipientDepartment);
+    formData.append('RecipientName', documentMetadataSync.RecipientName);
+    formData.append('DATE', documentMetadataSync.DATE);
+    formData.append('DocumentNumber', documentMetadataSync.DocumentNumber);
+    formData.append('SUBJECT', documentMetadataSync.SUBJECT);
+    formData.append('CorrespondencePurpose', documentMetadataSync.CorrespondencePurpose);
+    formData.append('BaseType', documentMetadataSync.BaseType);
+    formData.append('ProjectCode', documentMetadataSync.ProjectCode);
+    formData.append('BudgetNumber', documentMetadataSync.BudgetNumber);
+    formData.append('ContractNumber', documentMetadataSync.ContractNumber);
+    formData.append('CommitmentNumber', documentMetadataSync.CommitmentNumber);
+    formData.append('TenderNumber', documentMetadataSync.TenderNumber);
 
+    return this.httpServices.post(this.CSUrl + `${FCTSDashBoard.WFApiV1}${
+      FCTSDashBoard.syncDoc
+      }`,
+      formData, { headers: { OTCSTICKET: CSConfig.AuthToken } });
+  }
 
+  insertCorrNotes(notes: string): Observable<any> {
+
+    const params = new HttpParams()
+      .set('NoteText', notes)
+      .set('prompting', 'done')
+
+    return this.httpServices.get<any>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${
+      FCTSDashBoard.insertNotes
+      }?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    );
   }
 
 }   

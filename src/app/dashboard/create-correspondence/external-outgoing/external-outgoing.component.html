@@ -372,9 +372,15 @@
                     </td>
                     <td>
                       <div class="group_btn">
-                        <!-- <a matTooltip="Print" class="btn btn_006" href="#">
-                              <img src="{{basehref}}assets/images/icons/printer-tool.svg" alt="">
-                            </a> -->
+                        <a matTooltip="Synchronize Metadata" class="btn btn_006" (click)=syncCoverData()>
+                          <img src="{{basehref}}assets/images/icons/eye-close-up.svg" alt="">
+                        </a>
+                        <a *ngIf="coverLetterData.addversionperm=='TRUE'" matTooltip="Add Version" class="btn btn_006"
+                          (click)="openBrowseDocument($event,'file-inputAddversioncover')">
+                          <img src="{{basehref}}assets/images/icons/arrow-point-to-up.svg" alt="">
+                        </a>
+                        <input id="file-inputAddversioncover" class="hidden-button" type="file"
+                          (change)="addDocumentVersion($event.target.files,coverLetterData.Dataid,'COVER')" />
                         <a matTooltip="Download" class="btn btn_006" href="{{CSUrl}}{{coverLetterData.DownloadURL}}">
                           <img src="{{basehref}}assets/images/icons/download-to-storage-drive.svg" alt="">
                         </a>
@@ -450,9 +456,12 @@
                     </td>
                     <td>
                       <div class="group_btn">
-                        <!-- <button matTooltip="Print" class="btn btn_006">
-                              <img src="{{basehref}}assets/images/icons/printer-tool.svg" alt="">
-                            </button> -->
+                        <a *ngIf="attachmentData.addversionperm=='TRUE'" matTooltip="Add Version" class="btn btn_006"
+                          (click)="openBrowseDocument($event,'file-inputAddversionAttachment')">
+                          <img src="{{basehref}}assets/images/icons/arrow-point-to-up.svg" alt="">
+                        </a>
+                        <input id="file-inputAddversionAttachment" class="hidden-button" type="file"
+                          (change)="addDocumentVersion($event.target.files,attachmentData.Dataid,'ATTACHMENT')" />
                         <a matTooltip="Download" class="btn btn_006" href="{{CSUrl}}{{attachmentData.DownloadURL}}">
                           <img src="{{basehref}}assets/images/icons/download-to-storage-drive.svg" alt="">
                         </a>
@@ -549,12 +558,13 @@
                             <div class="last_not_show" [ngClass]="{'active': i === activeRowItem}">
                               <p *ngIf='!editMode' class='cell'>{{col.controls.UserColl_Notes.value}}</p>
                               <textarea rows="5" cols="100" class="note_input" *ngIf='editMode'
-                                (focusout)="onFocusOut()" formControlName="UserColl_Notes"
+                                formControlName="UserColl_Notes"
                                 [(value)]='col.controls.UserColl_Notes.value'></textarea>
+
                               <div class="note_edit_btn_wrp"
                                 [ngClass]="{'active': col.controls.UserColl_Notes.value === null}">
-                                <button (click)='closeLastNote()' class="edit_note_btn">Close</button>
-                                <button (click)='closeLastNote()' *ngIf='editMode' class="edit_note_btn">Save</button>
+                                <button (click)='closeLastNote(i)' class="edit_note_btn">Close</button>
+                                <button (click)='closeLastNote(i)' *ngIf='editMode' class="edit_note_btn">Save</button>
                                 <button *ngIf='!editMode' (click)='viewLastNoteEdit(i)'
                                   class="edit_note_btn">Edit</button>
                               </div>
@@ -579,6 +589,35 @@
           </mat-expansion-panel>
         </form>
 
+        <form [formGroup]="colDetailsForm">
+          <mat-expansion-panel class="mat-elevation-z bg_001">
+            <mat-expansion-panel-header>
+              <div class="icon_wrapper">
+                <div class="icon_typ icon_typ_007">
+                  <img src="{{basehref}}assets/images/icons/comment_icon.svg" alt="">
+                </div>
+              </div>
+              <p class="title_001">Comments</p>
+            </mat-expansion-panel-header>
+            <div class="corres_data_area">
+                <button class="show_preview_btn" (click)="showCommentsTextAreaSection()">
+                    <img src="{{basehref}}assets/images/icons/plus_green_btn.svg" alt="">
+                    <span>Add Comments</span>
+                  </button>
+                  <ng-container *ngIf="showCommentsTextArea" >
+                  <mat-form-field class="comments-area-fullwidth">
+                      <textarea matInput #CommentsArea  placeholder="Leave a comment"></textarea>
+                  </mat-form-field>
+                  <div class="">
+                      <button class="btn_007" prevent-double-submit (click)="SaveComments(CommentsArea.value)">Save</button>
+                      <button class="btn_007" prevent-double-submit (click)="CloseCommentsSection()">Close</button>
+                  </div>
+                </ng-container>
+                  
+
+            </div>
+          </mat-expansion-panel>
+        </form>
       </mat-accordion>
     </div>
     <!-- cc code end -->

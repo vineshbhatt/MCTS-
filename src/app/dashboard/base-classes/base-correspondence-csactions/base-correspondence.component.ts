@@ -96,6 +96,23 @@ export class BaseCorrespondenceComponent implements OnInit {
         );
     }
 
+    addDocumentVersion(files: File[], documentDataid: number, sectionName: any) {         
+        this.csdocumentupload.uploadDocumentVersion(files, "" + documentDataid).subscribe(
+            () => '',
+            () => '',
+            () => {
+                if (sectionName === "COVER") {
+                    this.getCoverSection();
+                }
+                else if (sectionName === "ATTACHMENT") {
+                    this.getAttachmentSection();
+                }
+                else if (sectionName === "MISC") {
+                }
+            }
+        )
+    }
+
     getUserInfo() {
         this.correspondenceDetailsService
             .GetUserInformation()
@@ -123,5 +140,10 @@ export class BaseCorrespondenceComponent implements OnInit {
         this.correspondenceDetailsService.getAttachmentFolderDetails(this.corrFolderData.AttachCorrAttachmentsID).subscribe(
             attachmentFolderdetails => this.AttachmentFolderData = attachmentFolderdetails
         );
+    }
+    openBrowseDocument(event: any, elementID: string) {
+        event.preventDefault();
+        let element: HTMLElement = document.getElementById(elementID) as HTMLElement;
+        element.click();
     }
 }

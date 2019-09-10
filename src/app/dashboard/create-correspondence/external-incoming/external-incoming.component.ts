@@ -80,7 +80,7 @@ export class ExternalIncoming extends BaseCorrespondenceComponent implements OnI
 
   showGeneratebarcodeButton: boolean = true;
   showSendOnButton: boolean = false;
-
+  
 
   CCOUID: organizationalChartModel[] = [];
   CCEID: organizationalChartEmployeeModel[] = [];
@@ -94,6 +94,8 @@ export class ExternalIncoming extends BaseCorrespondenceComponent implements OnI
 
   employeeMap = new Map<number, organizationalChartEmployeeModel[]>();
   employeeForOUID: organizationalChartEmployeeModel[] = [];
+  spinnerDataLoaded:boolean = false;
+
 
   constructor(private _location: Location,
     private organizationalChartService: OrganizationalChartService, private formBuilder: FormBuilder,
@@ -593,5 +595,8 @@ export class ExternalIncoming extends BaseCorrespondenceComponent implements OnI
       }
     )
   }
-
+  showSpinner()
+  {
+    this.spinnerDataLoaded=true;
+  }
 }

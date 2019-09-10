@@ -110,3 +110,25 @@ export class ColUserSetModel {
   Status_EN: string;
   Status_AR: string;
 }
+
+export class SyncDocumentMetadataModel {
+  docFolderID: string;
+  srcDocID: string;
+  SenderOrganization: string;
+  SenderDepartment: string;
+  SenderName: string;
+  RecipientOrganization: string;
+  RecipientDepartment: string;
+  RecipientRole: string;
+  RecipientName: string;
+  DATE: string;
+  DocumentNumber: string;
+  SUBJECT: string;
+  CorrespondencePurpose: string;
+  BaseType: string;
+  ProjectCode: string;
+  BudgetNumber: string;
+  ContractNumber: string;
+  CommitmentNumber: string;
+  TenderNumber: string;
+}

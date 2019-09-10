@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
-import { OrgNameAutoFillModel, CCUserSetModel, ColUserSetModel } from 'src/app/dashboard/models/CorrespondenenceDetails.model';
+import { OrgNameAutoFillModel, CCUserSetModel, ColUserSetModel, SyncDocumentMetadataModel } from 'src/app/dashboard/models/CorrespondenenceDetails.model';
 import { OrganizationalChartService } from 'src/app/dashboard/services/organizationalChart.service';
 import { organizationalChartModel, organizationalChartEmployeeModel } from 'src/app/dashboard/models/organizational-Chart.model';
 import { Location } from '@angular/common'
@@ -114,24 +114,14 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
   showTemplateArea: boolean = false;
   templatesDocList: any[];
   templateLanguage: string;
+  documentMetadataSync = new SyncDocumentMetadataModel;
+  showCommentsTextArea: boolean = false;
 
-  //
   @Input() data: number;
   @Output() focusOut: EventEmitter<number> = new EventEmitter<number>();
   viewNoteStatus;
   activeRowItem: any;
   editMode: any;
-  viewLastNote(selectItemRow: number) {
-    this.activeRowItem = selectItemRow;
-    this.editMode = false;
-  }
-  closeLastNote() {
-    this.activeRowItem = ' ';
-    this.editMode = false;
-  }
-  viewLastNoteEdit(editItem) {
-    this.editMode = true;
-  }
 
   constructor(private _location: Location,
     private organizationalChartService: OrganizationalChartService, private formBuilder: FormBuilder,
@@ -370,7 +360,22 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
   addRecipient() {
   }
   searchTreeValue(organizationalChartSearch: string) {
-    alert(organizationalChartSearch);
+    // alert(organizationalChartSearch);
+    // let filteredTreeData;
+
+    // if (organizationalChartSearch) {
+    //   filteredTreeData = this.dataSource.data.filter()
+    //   //There is filter function in the sample);
+    // } else {
+    //   filteredTreeData = this.dataSource.data;
+    // }
+
+    // // file node as children.
+    // const data =  this.organizationalChartData 
+    // // Notify the change. !!!IMPORTANT
+    // //this.dataChange.next(data);    
+
+
   }
 
   getSearchValue(value: string) {
@@ -716,12 +721,12 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
       const newFileName = this.corrFlowType + ' ' + 'Cover Template';
       this.csdocumentupload.copyDocToCoverFolder(templateDataID, this.corrFolderData.AttachCorrCoverID, newFileName).subscribe(
         response => {
-          this.coverID = response.ID;
+          this.coverID = response.id;
           this.setLanguage(language)
         },
         () => { },
         () => {
-          this.getCoverSection();
+          this.syncCoverData();
         }
       );
     }
@@ -747,4 +752,88 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
         this.senderDetailsForm.get('SenderInfo').setValue(this.userInfo)
       });
   }
+  convertUndefindedOrNulltoemptyString(obj: any) {
+    if (typeof obj == undefined || obj == null) {
+      return "";
+    }
+    else { return obj }
+  }
+  syncCoverData() {
+    this.documentMetadataSync.docFolderID = this.corrFolderData.AttachCorrCoverID.toString();
+    this.documentMetadataSync.srcDocID = this.coverID;
+    if (this.templateLanguage === 'EN') {
+
+      this.documentMetadataSync.SenderOrganization = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].OrganizationName_EN)
+      this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].DepartmentName_EN + (this.userInfo[0].myRows[0].SectionName_EN != null ? ("," + this.userInfo[0].myRows[0].SectionName_EN) : ""))
+      this.documentMetadataSync.SenderName = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].Name_EN)
+      let recipientDetails: OrgNameAutoFillModel = this.recipientDetailsForm.get('ExternalOrganization').value;
+      this.documentMetadataSync.RecipientOrganization = this.convertUndefindedOrNulltoemptyString(recipientDetails.OrgName_En)
+      this.documentMetadataSync.RecipientDepartment = this.convertUndefindedOrNulltoemptyString(recipientDetails.DepName_En) + (this.convertUndefindedOrNulltoemptyString(recipientDetails.SecName_En) ? "," + this.convertUndefindedOrNulltoemptyString(recipientDetails.SecName_En) : "");
+      this.documentMetadataSync.RecipientRole = this.convertUndefindedOrNulltoemptyString(recipientDetails.RoleName_En)
+      this.documentMetadataSync.RecipientName = this.convertUndefindedOrNulltoemptyString(this.recipientDetailsForm.get('RecipientName').value)
+      this.documentMetadataSync.DATE = this.convertUndefindedOrNulltoemptyString(this.correspondenceDetailsForm.get('regDate').value)
+      this.documentMetadataSync.SUBJECT = this.convertUndefindedOrNulltoemptyString(this.correspondenceDetailsForm.get('englishSubject').value)
+
+    }
+    else if (this.templateLanguage === 'AR') {
+
+      this.documentMetadataSync.SenderOrganization = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].OrganizationName_AR)
+      this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].DepartmentName_AR + (this.userInfo[0].myRows[0].SectionName_AR != null ? ("," + this.userInfo[0].myRows[0].SectionName_AR) : ""))
+      this.documentMetadataSync.SenderName = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].Name_AR)
+      let recipientDetails: OrgNameAutoFillModel = this.recipientDetailsForm.get('ExternalOrganization').value
+      this.documentMetadataSync.RecipientOrganization = this.convertUndefindedOrNulltoemptyString(recipientDetails.OrgName_Ar)
+      this.documentMetadataSync.RecipientDepartment = this.convertUndefindedOrNulltoemptyString(recipientDetails.DepName_AR) + (this.convertUndefindedOrNulltoemptyString(recipientDetails.SecName_Ar) ? "," + this.convertUndefindedOrNulltoemptyString(recipientDetails.SecName_Ar) : "");
+      this.documentMetadataSync.RecipientRole = this.convertUndefindedOrNulltoemptyString(recipientDetails.RoleName_Ar)
+      this.documentMetadataSync.RecipientName = this.convertUndefindedOrNulltoemptyString(this.recipientDetailsForm.get('RecipientName').value)
+      this.documentMetadataSync.DATE = this.convertUndefindedOrNulltoemptyString(this.correspondenceDetailsForm.get('regDate').value)
+      this.documentMetadataSync.SUBJECT = this.convertUndefindedOrNulltoemptyString(this.correspondenceDetailsForm.get('arabicsubject').value)
+    }
+
+    this.correspondenceDetailsService.syncDocumentMetadata(this.documentMetadataSync)
+      .subscribe(
+        () => { },
+        () => { },
+        () => { this.getCoverSection(); }
+      );
+  }
+
+  viewLastNote(selectItemRow: number) {
+    this.activeRowItem = selectItemRow;
+    this.editMode = false;
+  }
+  closeLastNote(selectItemRow: number) {
+    // this.ColDetails = this.colDetailsForm.get('ColDetails') as FormArray;    
+    // let currentNoteValue = this.ColDetails.value[selectItemRow].UserColl_Notes;
+    // if (currentNoteValue != null || currentNoteValue != undefined) {
+    //   this.insertNewNote(currentNoteValue, selectItemRow);
+    // }
+    this.activeRowItem = ' ';
+    this.editMode = false;
+  }
+
+  viewLastNoteEdit(editItem) {
+    this.editMode = true;
+  }
+
+  insertNewNote(notesVal: string, selectItemRow: number) {
+    this.correspondenceDetailsService.insertCorrNotes(notesVal).subscribe(
+      (resultVal) => {
+        this.ColDetails = this.colDetailsForm.get('ColDetails') as FormArray;
+        this.ColDetails.value[selectItemRow].UserColl_Notes = resultVal.NotesID;
+      },
+      () => { },
+      () => { }
+    );
+  }
+
+  showCommentsTextAreaSection() {
+    this.showCommentsTextArea = true;
+  }
+  CloseCommentsSection() {
+    this.showCommentsTextArea = false;
+  }
+  SaveComments(Comments: string) {
+    
+  }
+
 }
