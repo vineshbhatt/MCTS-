@@ -25,7 +25,8 @@ export class MrArchievedInboundsComponent extends BaseDashboardComponent impleme
     public appLoadConstService: AppLoadConstService,
   ) {
       super(router, dialogU, correspondenceService, сorrespondenceShareService, errorHandlerFctsService, appLoadConstService);
-     this.reportType = 'MRExtInbArc';
+      this.reportType = 'MRExtInbArc';
+      this.routerFormStep = '/dashboard/mailroom/correspondence-form-step';
   }
 
   ngOnInit() {
