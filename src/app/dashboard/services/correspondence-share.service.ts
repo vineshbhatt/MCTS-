@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { StatusRequest, SetStatusRow } from '../models/Shared.model';
 import { Observable, of, throwError } from 'rxjs';
 import { map, tap, catchError } from 'rxjs/operators';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { FCTSDashBoard } from '../../../environments/environment';
 import { Correspondence } from './correspondence.model';
-import { CorrResponse } from './correspondence-response.model';
+import { CorrResponse, CommentsNode } from './correspondence-response.model';
 
 @Injectable({
   providedIn: 'root'
@@ -227,5 +227,30 @@ export class CorrespondenceShareService {
       setStatusObj.SetStatusRow = statusRowsArray;
       return setStatusObj;
   }
+
+  setComment(commentParams: CommentsNode, task_id: string): Observable<any> {
+    const params = new HttpParams()
+    .set('ReplyTo', commentParams.ReplyTo )
+    .set('CommentText', commentParams.CommentText )
+    .set('ReferenceID', commentParams.ReferenceID )
+    .set('ReferenceType', commentParams.ReferenceType)
+    .set('Private', commentParams.Private)
+    .set('TaskID', task_id);
+    const options = {
+      headers: new HttpHeaders()
+        // .set('Content-Type', 'application/json; charset=UTF-8')
+        .set('OTCSTICKET', CSConfig.AuthToken)
+    };
+    return this.httpServices.post(this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.InsertNewComment}`,
+      params, options)
+    .pipe (
+      map (data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+   }
 
 }

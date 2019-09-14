@@ -42,7 +42,7 @@ export class CorrespondenceDetailsService {
         console.log('correspondence ERROR => ' + error.message || 'some error with correspondence');
         return throwError(error);
       })
-    );;
+    );
   }
 
   getCorrespondenceSenderDetails(SubWorkID, CorrFlowType, qLive, UserID = ''): Observable<CorrResponse[]> {
@@ -144,23 +144,27 @@ export class CorrespondenceDetailsService {
       }
     );
   }
-  searchTransferFieldName(name, Type) {
-    let requestType;
-    if (Type === 'EMP') {
-      requestType = 'IntName';
-    } else {
-      requestType = 'IntDepartment';
-    }
-    const params = new HttpParams().set(requestType, 'true')
-      .set('NameVal', name + '%');
+
+ searchTransferFieldName(name, Type) {
     if (name.length >= 3) {
-      return this.httpServices.get<DashboardFilterResponse[]>(this.CSUrl +
-        `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.GetTransferFields}?Format=webreport`,
-        {
-          headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
-        });
-    }
+      let requestType;
+      if (Type === 'EMP') {
+        requestType = 'IntName';
+      } else {
+        requestType = 'IntDepartment';
+      }
+      const params = new HttpParams().set(requestType, 'true')
+        .set('NameVal', name + '%');
+/*       if (name.length >= 3) { */
+        return this.httpServices.get<DashboardFilterResponse[]>(this.CSUrl +
+          `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.GetTransferFields}?Format=webreport`,
+          {
+            headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+          });
+/*       } */
+    } return EMPTY;
   }
+
   getCorrespondenceMetadataDetail(SubWorkID, CorrFlowType): Observable<CorrResponse[]> {
     const params = new HttpParams()
       .set('volumeId', SubWorkID)
@@ -175,7 +179,6 @@ export class CorrespondenceDetailsService {
       }
     );
   }
-
 
   getTransferHistoryTab(volumeID): Observable<CorrResponse[]> {
     const params = new HttpParams()
@@ -205,6 +208,7 @@ export class CorrespondenceDetailsService {
       }
     );
   }
+
   getCorrespondenceFolderName(volumeID): Observable<any> {
     const params = new HttpParams()
       .set('volumeID', volumeID);
@@ -217,8 +221,8 @@ export class CorrespondenceDetailsService {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
       }
     );
-
   }
+
   getCorrespondenceCollaborationInfoRO(SubWorkID, CorrFlowType): Observable<CorrResponse[]> {
 
     const params = new HttpParams()
@@ -236,6 +240,7 @@ export class CorrespondenceDetailsService {
       }
     );
   }
+
   getCommentsData(volumeID): Observable<CorrResponse[]> {
     const params = new HttpParams()
       .set('ReferenceID', volumeID);
@@ -284,7 +289,8 @@ export class CorrespondenceDetailsService {
       .set('taskid', '32') /* needed to change for diff. CoorFlowType */
       .set('CorrFlowType', 'Incoming')
       .set('locationid', correspondenceData.AttachCorrID)
-      .set('rows_count', transferJson.length);
+      .set('rows_count', transferJson.length)
+      .set('onBehalfUserID', CSConfig.globaluserid);
 
     return this.httpServices
       .get<any>(this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.createTransfer}?Format=webreport`,
@@ -330,8 +336,6 @@ export class CorrespondenceDetailsService {
     this._correspondenceShareService.setTransferToStatus(setStatusRequest).subscribe();
   }
 
-
-
   GetUserInformation(): Observable<CorrResponse[]> {
     return this.httpServices.get<CorrResponse[]>(
       this.CSUrl +
@@ -343,7 +347,7 @@ export class CorrespondenceDetailsService {
   }
 
   searchFieldForAutoFill(searchText: string, searchField: string, ParentVal: any): Observable<OrgNameAutoFillModel[]> {
-    let searchResults: Observable<OrgNameAutoFillModel[]>;
+    // let searchResults: Observable<OrgNameAutoFillModel[]>;
     if (searchText.length >= 3) {
       const params = new HttpParams()
         .set('NameVal', '%' + searchText + '%')
@@ -362,7 +366,7 @@ export class CorrespondenceDetailsService {
   }
 
   searchFieldForAutoFillOUID(orgID: string, searchField: string, parentOUID: string): Observable<OrgNameAutoFillModel[]> {
-    let searchResults: Observable<OrgNameAutoFillModel[]>;
+    // let searchResults: Observable<OrgNameAutoFillModel[]>;
     const params = new HttpParams()
       .set('OrgID', orgID)
       .set(searchField, 'true');
@@ -375,6 +379,7 @@ export class CorrespondenceDetailsService {
       }
     );
   }
+
   getCoverFolderDetails(FolderID: number): Observable<CorrResponse[]> {
     const params = new HttpParams()
       .set('FolderID', '' + FolderID)
@@ -478,8 +483,6 @@ export class CorrespondenceDetailsService {
     );
   }
 
-
-
   submitCorrespondenceInfo(WorkID: string, TaskID: string, data: any): Observable<any> {
     const url =  this.CSUrl + `${FCTSDashBoard.WFApiV2}processes/${WorkID}/subprocesses/${WorkID}/tasks/${TaskID}`;
     const body = new HttpParams()
@@ -515,8 +518,6 @@ export class CorrespondenceDetailsService {
       })
     );
   }
-
-
 
   getCurrentUserMailroomPrivelage(): Observable<any> {
     return this.httpServices.get<any>(
@@ -584,9 +585,29 @@ export class CorrespondenceDetailsService {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
       }
     );
+  }
 
+  getRejectReasons(Condition: string): Observable<any> {
+    const params = new HttpParams()
+      .set('Condition', Condition)
+      .set('fRejctReson', 'true');
 
-
+    return this.httpServices.get<any>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${
+      FCTSDashBoard.SelectAttributes
+      }?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
   }
 
 }

@@ -1,0 +1,29 @@
+<div class="return-reason-holder">
+  <div class="action_header">
+      <p class="text_16 blt_text">Provide reason for return</p>
+  </div>
+  <div class="message-section">
+    <mat-form-field>
+      <mat-label [class.error-text]= "errmsg">Select reason for return</mat-label>
+      <mat-select [(ngModel)]="returnReason.selectedID"> 
+        <mat-option *ngFor="let list of rejectList" [value]="list.ID" (onSelectionChange)="selected(list,$event)">
+          {{list.attrName_EN}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div class="input_item_wrp text_area row-value">
+      <mat-form-field>
+          <textarea 
+            cdkTextareaAutosize
+            cdkAutosizeMinRows="2" 
+            placeholder="Comment"
+            matInput [(ngModel)]="comment" 
+            [(ngModel)]="returnReason.comment"></textarea>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="button-section">
+    <button  id="no-button" class = "btn_004" [mat-dialog-close]="false" [disabled]="disButton">Cancel</button>
+    <button  id="yes-button" class = "btn_004" (click)="sendComment()"  [disabled]="disButton">Return</button>
+  </div>
+</div> 

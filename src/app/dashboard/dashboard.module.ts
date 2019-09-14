@@ -85,6 +85,7 @@ import { BaseCorrespondenceComponent } from './base-classes/base-correspondence-
 import { ExternalOutgoing } from './create-correspondence/external-outgoing/external-outgoing.component';
 
 import {DatePipe} from '@angular/common';
+import { SendBackDialogComponent } from './dialog-boxes/send-back-dialog/send-back-dialog.component';
 
 
 @NgModule({
@@ -172,7 +173,8 @@ import {DatePipe} from '@angular/common';
     EmployeeMapList,
     BaseCorrespondenceComponent,
     ExternalOutgoing,
-    CorrespondenceFormStepComponent
+    CorrespondenceFormStepComponent,
+    SendBackDialogComponent
   ],
   entryComponents: [
     MailDetailView,
@@ -183,7 +185,8 @@ import {DatePipe} from '@angular/common';
     CompleteDialogComponent,
     TransferRecallDialogComponent,
     TransferReplyDialogComponent,
-    TransferReturntoasDialogComponent
+    TransferReturntoasDialogComponent,
+    SendBackDialogComponent
   ],
   providers: [ErrorHandlerFctsService, NotificationService, DatePipe]
 })

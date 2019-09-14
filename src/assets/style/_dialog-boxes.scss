@@ -1,0 +1,136 @@
+.sendBackDialogBoxClass
+ {
+  margin: auto !important;
+
+  .closeButton {
+    display: flex;
+    flex-direction: row-reverse;
+
+    #close-icon {
+      font-weight: 500;
+    }
+
+    #close-icon:hover {
+      cursor: pointer;
+      font-weight: 800;
+    }
+  }
+
+  .action_header {
+    padding: 15px 24px 11px;
+    background: #00b7c3;
+    color: #fff;
+    display: flex;
+
+    .text_16 {
+      margin-bottom: 0px;
+      color: #fff;
+      padding-right: 20px;
+    }
+
+    .text_16.err_message {
+      color: rgb(255, 60, 1);
+    }
+  }
+
+  .message-section {
+    min-height: 50px;
+    padding: 10px;
+
+    .text_16 {
+      margin-bottom: 0px;
+      color: black;
+      padding-right: 20px;
+    }
+
+    table.transferReply {
+      width: 100%;
+      table-layout: fixed;
+    }
+  }
+
+  table {
+    padding: 5px;
+
+    td {
+      padding: 5px 10px 5px 10px;
+    }
+
+    thead td {
+      font-size: 13px;
+      font-weight: 600;
+      color: #65676f;
+    }
+
+    tbody td {
+      background: #f5f5f5;
+      font-family: "Roboto", sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      color: #65676f;
+    }
+
+    .input_item_wrp {
+      background: white;
+    }
+
+
+  }
+
+  .input_item_wrp .text_area,
+  .button-holder {
+    margin: 2px;
+  }
+
+  .input_item_wrp {
+    .mat-form-field-appearance-legacy.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
+      transform: translateY(-7px) scale(0.75) perspective(100px) translateZ(0.001px);
+    }
+
+    &.text_area {
+      .mat-form-field {
+        width: 100%;
+      }
+
+      .mat-input-element {
+        margin: 5px;
+        height: 13px;
+      }
+
+      .mat-form-field-appearance-legacy.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
+        top: 25px;
+
+        button {
+          margin-left: 5%;
+        }
+      }
+    }
+  }
+
+  .button-section {
+    display: flex;
+    flex-direction: row-reverse;
+    padding: 5px;
+  }
+
+  .row-section{
+      display: flex;
+      flex-direction: row;
+      margin: 10px;  
+      
+    .row-description{
+        width:30%;    
+    }
+    .row-value{
+        width:auto;  
+    }
+  }
+
+  .mat-form-field-infix{
+    width: 200px;
+  }
+
+  .error-text{
+    color:red;
+  }
+}

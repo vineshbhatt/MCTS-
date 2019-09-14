@@ -8,36 +8,17 @@ interface SectionParam {
   interface CorrSectionList {
     Sender: SectionParam;
     Recipient: SectionParam;
+    Approvers: SectionParam;
     CC: SectionParam;
     Correspondence: SectionParam;
     Cover: SectionParam;
     Attachments: SectionParam;
+    MiscelFolder: SectionParam;
     UserCollaboration: SectionParam;
     LinkedCorrespondence: SectionParam;
     Comments: SectionParam;
     Transfer: SectionParam;
     Distribution: SectionParam;
-  }
-  interface CorrItemsList {
-    regDate:            SectionParam;
-    docsDate:           SectionParam;
-    confidential:       SectionParam;
-    priority:           SectionParam;
-    refNumber:          SectionParam;
-    personalName:       SectionParam;
-    idNumber:           SectionParam;
-    correspondenceType: SectionParam;
-    baseType:           SectionParam;
-    arabicSubject:      SectionParam;
-    englishSubject:     SectionParam;
-    projectCode:        SectionParam;
-    budgetNumber:       SectionParam;
-    contractNumber:     SectionParam;
-    tenderNumber:       SectionParam;
-    corrNumber:         SectionParam;
-    fillinPlanPath:     SectionParam;
-    dispatchMethod:     SectionParam;
-    staffNumber:        SectionParam;
   }
 
   interface CorrItemsList {
@@ -66,30 +47,22 @@ interface SectionParam {
       public Sender: SectionParam;
       public Recipient: SectionParam;
       public CC: SectionParam;
+      public Approvers: SectionParam;
       public Correspondence: SectionParam;
       public Cover: SectionParam;
       public Attachments: SectionParam;
+      public MiscelFolder: SectionParam;
       public UserCollaboration: SectionParam;
       public LinkedCorrespondence: SectionParam;
       public Comments: SectionParam;
       private _Transfer: SectionParam;
       private _Distribution: SectionParam;
 
+    public get Distribution(): SectionParam { return this._Distribution; }
+    public set Distribution(value: SectionParam) { this._Distribution = value; }
 
-
-    public get Distribution(): SectionParam {
-        return this._Distribution;
-    }
-    public set Distribution(value: SectionParam) {
-        this._Distribution = value;
-    }
-
-    public get Transfer(): SectionParam {
-        return this._Transfer;
-    }
-    public set Transfer(value: SectionParam) {
-        this._Transfer = value;
-    }
+    public get Transfer(): SectionParam { return this._Transfer; }
+    public set Transfer(value: SectionParam) { this._Transfer = value; }
 
     constructor() {
       this._setInitData();
@@ -99,9 +72,11 @@ interface SectionParam {
       this.Sender = { Show: true, Modify: false };
       this.Recipient = { Show: true, Modify: false };
       this.CC = { Show: true, Modify: false };
+      this.Approvers = { Show: true, Modify: false };
       this.Correspondence = { Show: true, Modify: false };
       this.Cover = { Show: true, Modify: false };
       this.Attachments = { Show: true, Modify: false };
+      this.MiscelFolder = { Show: true, Modify: false };
       this.UserCollaboration = { Show: true, Modify: false };
       this.LinkedCorrespondence = { Show: true, Modify: false };
       this.Comments = { Show: true, Modify: false };
@@ -179,4 +154,17 @@ interface SectionParam {
     this.dispatchMethod =     { Show: true, Modify: true };
     this.staffNumber =        { Show: true, Modify: true };
   }
+}
+
+export class ShowWFButtons {
+  btnComplete: boolean;
+  btnDelete: boolean;
+  btnNotifExtComp: boolean;
+  btnPrnBarcode: boolean;
+  btnPrnReceipt: boolean;
+  btnSave: boolean;
+  btnSendBack: boolean;
+  btnSendFax: boolean;
+  btnSendOn: boolean;
+  btnToDashboard: boolean;
 }

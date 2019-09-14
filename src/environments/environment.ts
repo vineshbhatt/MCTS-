@@ -74,7 +74,8 @@ export const FCTSDashBoard = {
   GetCoverLettertemplates: '5137613',
   GetColUserSet: '5137516',
   initiateOutgoingWF: '5137609',
-
+  SelectAttributes: '5414023',
+  InsertNewComment: '5058946',
   // BaseHref: '/img/fctsangular/fctsapp/',
   BaseHref: '/',
   CSUrl: 'http://mv2cdmsadp02/otcs/cs.exe'

@@ -1,4 +1,7 @@
-<div class="form_eic_cont_wrapper">
+<div class="form_eic_cont_wrapper" *ngIf="progbar">
+  <mat-spinner></mat-spinner>
+</div>
+<div class="form_eic_cont_wrapper" *ngIf="!progbar">
   <ng-scrollbar thumbClass="scroll_001" class="correspondence_detail scroll_wrp_001" *ngIf="expandedRightAction"
   [ngClass]="expandedAction ? 'unActive' : 'ActiveLeft'" compact="true">
   <button (click)="expandeActionLeftButton()" matRipple class="corsp_ext_btn">
@@ -10,7 +13,8 @@
         <button class="back_btn" (click)="backNavigation()">
           <img src="{{basehref}}assets/images/icons/left_arrow.svg" alt="">
         </button>
-        <h3 class="text_23 ltg_text">{{correspondenceData.CorrFolderName }} - {{CorrespondencType}}</h3>
+        <h3 class="text_23 ltg_text" *ngIf="taskTitle">{{taskTitle}}</h3>
+        <h3 class="text_23 ltg_text">: {{correspondenceData.CorrFolderName }} - {{CorrespondencType}}</h3>
       </div>
     </div>
   </div>
@@ -217,11 +221,9 @@
                   <mat-option *ngFor="let option of MetadataFilters | attrfilter:'Priority':PriorityVal"
                     [value]="option">
                     {{option.EN}}
-
                   </mat-option>
                 </mat-autocomplete>
               </mat-form-field>
-
 
                 <mat-form-field class="col_6" *ngIf="showCorrItems.refNumber.Show">
                   <input matInput autocomplete="off" placeholder="Ref Number" formControlName="refNumber"
@@ -249,7 +251,6 @@
                     </mat-option>
                   </mat-autocomplete>
                 </mat-form-field>
-
 
                 <mat-form-field class="col_6" *ngIf="showCorrItems.baseType.Show">
                   <input type="text" [(ngModel)]="BaseTypeVal" placeholder="Base Type" matInput
@@ -330,10 +331,9 @@
               </li>
               <li class="cl_btn_wrp">
                 <div class="image-upload" *ngIf = "!coverID">
-
                   <label for="file-input" class="cl_btn cl_btn_002" matTooltip="Add document">
                     <img src="{{basehref}}assets/images/icons/cl_file_add_doc.svg" alt="">
-        </label>
+                  </label>
                   <input id="file-input" type="file"
                     (change)="uploadCSDocument($event.target.files,correspondenceData.AttachCorrCoverID,'COVER')" />
                 </div>
@@ -396,7 +396,6 @@
           </div>
         </mat-expansion-panel>
 
-
         <mat-expansion-panel class="mat-elevation-z">
           <mat-expansion-panel-header (click) = "getAttachmentSection()">
             <div class="icon_wrapper">
@@ -413,10 +412,9 @@
                   <img src="{{basehref}}assets/images/icons/refresh_arrow_white.svg" alt="">
                 </button>
               </li>
+
               <li class="cl_btn_wrp">
-
                 <div class="image-upload">
-
                   <label for="file-inputAttachment" class="cl_btn cl_btn_002" matTooltip="Add document">
                     <img src="{{basehref}}assets/images/icons/cl_file_add_doc.svg" alt="">
                   </label>
@@ -608,7 +606,8 @@
             </div>
             <div *ngIf="!transferProgbar" class="corres_table_wrapper">
               <div class="transfer_header">
-                <button class="btn_007 mat-button" (click)="openDialog()"><img src="{{basehref}}assets/images/icons/plus_btn_green.svg" alt=""> Select Transfer</button>
+                <button class="btn_007 mat-button" (click)="openTransferDialog()"><img src="{{basehref}}assets/images/icons/plus_btn_green.svg" alt=""> Select Transfer</button>
+                <!-- (click)="transferTabShowData() should be deleted later -->
                 <button class="btn_007 mat-button" (click)="transferTabShowData()"><img src="{{basehref}}assets/images/icons/refresh-page-button.svg" alt="">Refresh</button>
               </div>
               <div class="transfer_list_item_wrp">
@@ -655,16 +654,74 @@
         </mat-expansion-panel>
       </mat-accordion>
     </div>
-    <!-- cc code end -->
+
     <div class="corp_dtl_btn_btm_wrapper">
-      <button class="btn_008" (click)="submitCorrespondenceInfo('SendOn')">Send On</button>
-      <button class="btn_008" (click)="submitCorrespondenceInfo('Save')">Save</button>
-      <button class="btn_008" (click)="backNavigation()">Back</button>
-      <button (click)="submitCorrespondenceInfo('TEST')">test</button>
+      <button class="btn_008" *ngIf="showWFButtons.btnComplete" (click)="submitCorrespondenceInfo('SendOn')">Complete</button>
+      <button class="btn_008" *ngIf="showWFButtons.btnPrnBarcode" printTitle="Barcode" printSectionId="print-section" ngxPrint>Print Barcode</button>
+      <button class="btn_008" *ngIf="showWFButtons.btnPrnReceipt" printTitle="Reciept" printSectionId="print-reciept" ngxPrint>Print Reciept</button> 
+      <button class="btn_008" *ngIf="showWFButtons.btnSendFax">SendFax</button>
+      <button class="btn_008" *ngIf="showWFButtons.btnSendOn" (click)="submitCorrespondenceInfo('SendOn')">Send On</button>
+      <button class="btn_008" *ngIf="showWFButtons.btnSave" (click)="submitCorrespondenceInfo('Save')">Save</button>
+      <button class="btn_008" *ngIf="showWFButtons.btnSendBack" (click)="openSendBackDialog()">Send Back</button>
+      <button class="btn_008" *ngIf="showWFButtons.btnNotifExtComp" (click)="submitCorrespondenceInfo('WaitExtCompany')">NotifyExternalCompany</button>
+      <button class="btn_008" *ngIf="showWFButtons.btnDelete"  (click)="submitCorrespondenceInfo('Terminate')">Delete Correspondence</button>
+      <button class="btn_008" *ngIf="showWFButtons.btnToDashboard" (click)="backNavigation()">Back to dashboard</button>
+<!--       <button (click)="submitCorrespondenceInfo('TEST')">test</button>
+      <button (click)="openSendBackDialog()">open dilaog</button> -->
+     <!-- <button (click)="expandeActionLeftButton()" matRipple class="corsp_ext_btn">
+        <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
+      </button> -->
+    </div>
+
+    <div class="corp_dtl_btn_btm_wrapper">
       <button (click)="expandeActionLeftButton()" matRipple class="corsp_ext_btn">
         <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
       </button>
     </div>
+
+    <div id="print-section" style="display:none">
+      <span style="font-weight:bold;text-align :center;margin-left:15%">Public Works Authority</span><br>
+      <span style="font-weight:bold;text-align :center;margin-left:20%">{{barcodeDate}}</span>
+      <ngx-barcode [bc-value]="barcodeNumberToPrint" [bc-format]="CODE128" [bc-display-value]="true" [bc-font-size]="36"
+        [bc-font]="Arial" [bc-text-margin]="5" [bc-height]="55"></ngx-barcode>
+    </div>
+
+    <div id="print-reciept" style="display:none">
+
+      <head>
+        <meta charset="UTF-8">
+      </head>
+
+      <body>
+        <table border="0" cellpadding="0" cellspacing="0" style="left: 0px; top: 0px; width: 100%;">
+          <tbody>
+            <tr>
+              <td width="50"><img border="0" src="{{basehref}}assets/images/headerbar_content_server_pwa.png"
+                  style="width: 100px; height: 66px;" width="48"></td>
+              <td width="150"></td>
+              <td class="data-trn"
+                style="font-weight: bold; font-size: 42px;text-align: left; vertical-align: middle !important;">RECEIPT
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <hr>
+        <table border="0" cellpadding="0" cellspacing="0" style="left: 0px; top: 0px; width: 100%;">
+          <tbody>
+            <tr>
+              <td>Date of Receipt:</td>
+              <td>{{barcodeDate}}</td>
+            </tr>
+            <tr>
+              <td>Correspondence Code:</td>
+              <td>{{barcodeNumberToPrint}}</td>
+            </tr>
+        </table><br>
+        <ngx-barcode [bc-value]="barcodeNumberToPrint" [bc-format]="CODE128" [bc-display-value]="true"
+          [bc-font-size]="36" [bc-font]="Arial" [bc-text-margin]="5" [bc-height]="55"></ngx-barcode>
+      </body>
+    </div>
+
   </ng-scrollbar>
   <ng-scrollbar class="correspondence_deatil_prview_wrappper" [ngClass]="expandedRightAction ? 'unActive' : 'ActiveRight'"
     *ngIf="expandedAction">
@@ -790,7 +847,7 @@
                       </div>
                     </mat-checkbox>
                   </div>
-                </div>
+                </div> 
   
                 <div *ngIf="showEmployees" class="show_empl_name_wrp">
                   <ul *ngIf="treeControl.isExpanded(node)" class="show_empl_name_ul">              

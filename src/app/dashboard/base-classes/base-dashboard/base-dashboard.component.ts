@@ -53,7 +53,7 @@ export class BaseDashboardComponent implements OnInit {
 
   reportType = '';
   routerCorrDetail = '/dashboard/external/correspondence-detail';
-  routerFormStep = '/dashboard/external/correspondence-form-step';
+  routerFormStep = '/';
   basehref: String = FCTSDashBoard.BaseHref;
   CorrAttach: CorrAttachDocuments;
   frameurl: string;
@@ -149,12 +149,13 @@ export class BaseDashboardComponent implements OnInit {
 
   routeToDetailsPage(correspondData: Correspondence) {
     this.setPerformerPermission(correspondData);
-    if (correspondData.SubWorkTask_TaskID > 0 && correspondData.SubWorkTask_PerformerID_Groups.split(',').indexOf(correspondData.SubWorkTask_PerformerID) > 0 ) {
+    const isAssignee = this.globalConstants.FCTS_Dashboard.UserGroupsArray.includes(correspondData.SubWorkTask_PerformerID);
+    if (correspondData.SubWorkTask_TaskID > 0 && correspondData.SubWorkTask_PerformerID.toString() === CSConfig.globaluserid ) {
+      this.routeToFormStepPage(correspondData);
+    } else if (correspondData.SubWorkTask_TaskID > 0 && isAssignee && correspondData.SubWorkTask_PerformerID_Type.toString() !== '0') {
       this.userConfirmation( 'assignWF', correspondData );
     } else if (correspondData.transID > 0 && correspondData.transHoldSecretaryID !== CSConfig.globaluserid ) {
       this.userConfirmation( 'assignTransfer', correspondData );
-    } else if (correspondData.SubWorkTask_TaskID > 0 && correspondData.SubWorkTask_PerformerID.toString() === CSConfig.globaluserid ) {
-      this.routeToFormStepPage(correspondData);
     /*} else if (correspondenceData.transID > 0 && correspondenceData.transHoldSecretaryID != CSConfig.globaluserid ) {
       console.log("transfer assigned to USER"); */
     } else {
@@ -175,7 +176,7 @@ export class BaseDashboardComponent implements OnInit {
   }
 
   routeToFormStepPage(correspondData: Correspondence) {
-    this.setPerformerPermission(correspondData);
+    // this.setPerformerPermission(correspondData);
       this.router.navigate([this.routerFormStep],
                             { queryParams:
                               {
@@ -346,6 +347,7 @@ export class BaseDashboardComponent implements OnInit {
 
 /* ******************  START RECALL  ****************** */
   startRecall(correspondData: Correspondence, recallType: string): void {
+    debugger;
     if ( recallType !== 'ReturnToAS' ) {
       if ( correspondData.SubWorkTask_TaskID > 0 ) {
         this.recallWF(correspondData, recallType);

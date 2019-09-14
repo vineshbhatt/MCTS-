@@ -26,6 +26,7 @@ export class NewInboundComponent extends BaseDashboardActiveComponent implements
   ) {
     super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService);
     this.reportType = 'ExtInbNew';
+    this.routerFormStep = '/dashboard/external/correspondence-form-step';
   }
 
   ngOnInit() {

@@ -66,12 +66,13 @@ export const FCTSDashBoard = {
   getMenuCountMR: 'CTA_SidebarMRCount',
   CCRecallReturnToAS: 'FCTS_CCRecall',
 
-  GetUserMailroomPrivelage: '503438',
-  GetApproverList: '508354',
-  GetCoverLettertemplates: '510471',
-  GetColUserSet: '511783',
-  initiateOutgoingWF: '512156',
-
+  GetUserMailroomPrivelage: '5137421',
+  GetApproverList: '5137715',
+  GetCoverLettertemplates: '5137613',
+  GetColUserSet: '5137516',
+  initiateOutgoingWF: '5137609',
+  SelectAttributes: '5414023',
+  InsertNewComment: '5058946',
   BaseHref: '/img/fctsangular/fctsapp/',
   // BaseHref: '/',
   CSUrl: 'http://mv2cdmsadp02/otcs/cs.exe'
