@@ -85,6 +85,7 @@ import { BaseCorrespondenceComponent } from './base-classes/base-correspondence-
 import { ExternalOutgoing } from './create-correspondence/external-outgoing/external-outgoing.component';
 
 import {DatePipe} from '@angular/common';
+import { CorrespondenceFormStepExtOutComponent } from './external/correspondence-form-step-extout/correspondence-form-step-extout.component';
 
 
 @NgModule({
@@ -172,7 +173,8 @@ import {DatePipe} from '@angular/common';
     EmployeeMapList,
     BaseCorrespondenceComponent,
     ExternalOutgoing,
-    CorrespondenceFormStepComponent
+    CorrespondenceFormStepComponent,
+    CorrespondenceFormStepExtOutComponent
   ],
   entryComponents: [
     MailDetailView,

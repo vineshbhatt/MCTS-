@@ -18,6 +18,7 @@ export class BaseCorrespondenceComponent implements OnInit {
     corrFolderData: CorrespondenceFolderModel;
     coverID: string;
     userInfo: CorrResponse[];
+    templatesDocList: any[];
 
     ngOnInit() {
 
@@ -96,7 +97,7 @@ export class BaseCorrespondenceComponent implements OnInit {
         );
     }
 
-    addDocumentVersion(files: File[], documentDataid: number, sectionName: any) {         
+    addDocumentVersion(files: File[], documentDataid: number, sectionName: any) {
         this.csdocumentupload.uploadDocumentVersion(files, "" + documentDataid).subscribe(
             () => '',
             () => '',
@@ -146,4 +147,19 @@ export class BaseCorrespondenceComponent implements OnInit {
         let element: HTMLElement = document.getElementById(elementID) as HTMLElement;
         element.click();
     }
+
+    convertUndefindedOrNulltoemptyString(obj: any) {
+        if (typeof obj == undefined || obj == null) {
+            return "";
+        }
+        else { return obj }
+    }
+    getTemplatesSectionData(corrFlowType: string, templateType: string = 'Default', onBehalfOf: string = '') {
+        this.correspondenceDetailsService.getTemplatesList(corrFlowType, templateType, onBehalfOf).subscribe(
+            listoftemplates => {
+                this.templatesDocList = listoftemplates
+            }
+        );
+    }
+
 }

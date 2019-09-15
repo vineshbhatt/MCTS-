@@ -132,3 +132,15 @@ export class SyncDocumentMetadataModel {
   CommitmentNumber: string;
   TenderNumber: string;
 }
+
+
+export class CorrWFTaskInfoModel {
+  SubWork_WorkID: string;
+  SubWork_SubWorkID: string;
+  SubWork_Title: string;
+  Work_DateInitiated: string;
+  Work_OwnerID: string;
+  SubWorkTask_TaskID: string;
+  SubWorkTask_Title: string;
+  SubWorkTask_Status: string;
+}

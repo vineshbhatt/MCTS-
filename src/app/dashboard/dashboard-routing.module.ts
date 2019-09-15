@@ -33,6 +33,7 @@ import { MrDispatchedOutboundsComponent } from './mailroom/mr-dispatched-outboun
 import { MrAcknowledgedOutboundsComponent } from './mailroom/mr-acknowledged-outbounds/mr-acknowledged-outbounds.component';
 import { CorrespondenceFormStepComponent } from './external/correspondence-form-step/correspondence-form-step.component';
 import { ExternalOutgoing } from './create-correspondence/external-outgoing/external-outgoing.component';
+import { CorrespondenceFormStepExtOutComponent } from './external/correspondence-form-step-extout/correspondence-form-step-extout.component';
 
 
 const dashboardRoutes: Routes = [
@@ -87,7 +88,7 @@ const dashboardRoutes: Routes = [
                   { path: 'inProgress-outbounds', component: InProgressOutboundComponent },
                   { path: 'archieved-outbounds', component: AchievedOutboundComponent },
                   { path: 'correspondence-detail', component: CorrespondenceDetailComponent },
-                  { path: 'correspondence-form-step', component: CorrespondenceFormStepComponent },
+                  { path: 'correspondence-form-step', component: CorrespondenceFormStepExtOutComponent },
                   { path: '', component: ExternalDashboardComponent },
                 ]
               }

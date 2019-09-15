@@ -154,6 +154,8 @@ interface SectionParam {
     public dispatchMethod:     SectionParam;
     public staffNumber:        SectionParam;
 
+    public obType:             SectionParam;
+
   constructor() {
     this._setCorrItems();
   }
@@ -178,5 +180,6 @@ interface SectionParam {
     this.fillinPlanPath =     { Show: true, Modify: true };
     this.dispatchMethod =     { Show: true, Modify: true };
     this.staffNumber =        { Show: true, Modify: true };
+    this.obType      =        { Show: true, Modify: true };
   }
 }

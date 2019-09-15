@@ -57,12 +57,7 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
   submitted = false;
   CorrespondenceType: string;
   MetadataFilters: any[];
-
-
-
-
   documentPreviewURL: DocumentPreview[];
-
   selectedCaption: string;
   multiSelect: boolean;
   currentlyChecked: any = false;
@@ -78,12 +73,10 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
   showEmplChartData: organizationalChartModel;
   showOrgChartData: organizationalChartModel;
   showPreviewTreeArea = false;
-  //
+
   percentDone: number;
   uploadSuccess: boolean;
 
-
-  //
   initiateOutgoingCorrespondenceDetails = new CorrespondenceWFFormModel;
 
   showGeneratebarcodeButton: boolean = true;
@@ -112,7 +105,7 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
   DepApproverList: any[];
   HOSApproverList: any[];
   showTemplateArea: boolean = false;
-  templatesDocList: any[];
+
   templateLanguage: string;
   documentMetadataSync = new SyncDocumentMetadataModel;
   showCommentsTextArea: boolean = false;
@@ -583,14 +576,10 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
         this.ExtSenderInfo = new OrgNameAutoFillModel();
         break;
       case 'recipientDetailsForm':
-        this.recipientDetailsForm.get('RecipientID').setValue('');
-        this.recipientDetailsForm.get('RecipientUserID').setValue('');
-        this.recipientDetailsForm.get('RecipientVersion').setValue('');
-        this.recipientDetailsForm.get('RecipientType').setValue('');
-        this.recipientDetailsForm.get('RecipientDepartment').setValue('');
-        this.recipientDetailsForm.get('RecipientSection').setValue('');
-        this.recipientDetailsForm.get('RecipientName').setValue('');
-        this.IntRecipientInfo = new OrgNameAutoFillModel();
+        this.recipientDetailsForm.get('ExternalOrganization').setValue('');
+        this.recipientDetailsForm.get('SenderDepartment').setValue('');
+        this.recipientDetailsForm.get('SenderName').setValue('');
+        this.ExtSenderInfo = new OrgNameAutoFillModel();
       default:
         break;
     }
@@ -632,7 +621,7 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
       UserColl_Type: empDetails.UserColl_Type,
       UserColl_Purpose: empDetails.UserColl_Purpose,
       UserColl_Priority: empDetails.UserColl_Priority,
-      UserColl_DueDate: empDetails.UserColl_Priority,
+      UserColl_DueDate: empDetails.UserColl_DueDate,
       UserColl_Notes: empDetails.UserColl_Notes,
       UserColl_FurtherAction: empDetails.UserColl_FurtherAction,
       UserColl_Status: empDetails.UserColl_Status,
@@ -707,13 +696,7 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
         }
       );
   }
-  getTemplatesSectionData(corrFlowType: string, templateType: string = 'Default', onBehalfOf: string = '') {
-    this.correspondenceDetailsService.getTemplatesList(corrFlowType, templateType, onBehalfOf).subscribe(
-      listoftemplates => {
-        this.templatesDocList = listoftemplates
-      }
-    );
-  }
+
 
   importLettertoCoverFolder(templateDataID: string, language: string) {
     //Check Child Count    
@@ -752,12 +735,7 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
         this.senderDetailsForm.get('SenderInfo').setValue(this.userInfo)
       });
   }
-  convertUndefindedOrNulltoemptyString(obj: any) {
-    if (typeof obj == undefined || obj == null) {
-      return "";
-    }
-    else { return obj }
-  }
+
   syncCoverData() {
     this.documentMetadataSync.docFolderID = this.corrFolderData.AttachCorrCoverID.toString();
     this.documentMetadataSync.srcDocID = this.coverID;
@@ -833,7 +811,7 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
     this.showCommentsTextArea = false;
   }
   SaveComments(Comments: string) {
-    
+
   }
 
 }

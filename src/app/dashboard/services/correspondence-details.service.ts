@@ -484,13 +484,13 @@ export class CorrespondenceDetailsService {
 
 
   submitCorrespondenceInfo(WorkID: string, TaskID: string, data: any): Observable<any> {
-    const url =  this.CSUrl + `${FCTSDashBoard.WFApiV2}processes/${WorkID}/subprocesses/${WorkID}/tasks/${TaskID}`;
+    const url = this.CSUrl + `${FCTSDashBoard.WFApiV2}processes/${WorkID}/subprocesses/${WorkID}/tasks/${TaskID}`;
     const body = new HttpParams()
-        .set('body', JSON.stringify(data));
+      .set('body', JSON.stringify(data));
     return this.httpServices.put<any>(url, body, {
       headers: new HttpHeaders()
-          .set('OTCSTICKET', CSConfig.AuthToken )
-          .set('Content-Type', 'application/x-www-form-urlencoded')
+        .set('OTCSTICKET', CSConfig.AuthToken)
+        .set('Content-Type', 'application/x-www-form-urlencoded')
     }).pipe(
       map(response => {
         return response;
@@ -503,11 +503,11 @@ export class CorrespondenceDetailsService {
   }
 
   sendOnCorrespondence(WorkID: string, TaskID: string) {
-    const url =  this.CSUrl + `${FCTSDashBoard.WFApiV2}processes/${WorkID}/subprocesses/${WorkID}/tasks/${TaskID}?action=SendOn`;
+    const url = this.CSUrl + `${FCTSDashBoard.WFApiV2}processes/${WorkID}/subprocesses/${WorkID}/tasks/${TaskID}?action=SendOn`;
     const body = new HttpParams();
     return this.httpServices.put<any>(url, body, {
       headers: new HttpHeaders()
-          .set('OTCSTICKET', CSConfig.AuthToken )
+        .set('OTCSTICKET', CSConfig.AuthToken)
     }).pipe(
       map(response => {
         return response;
@@ -538,6 +538,22 @@ export class CorrespondenceDetailsService {
       .set(ApproverType, 'true')
       .set('mainLanguage', 'EN')
       .set('filterField1', CSConfig.globaluserid);
+    return this.httpServices.get<any[]>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${
+      FCTSDashBoard.GetApproverList
+      }?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    );
+  }
+
+  getApproverListRunningWF(ApproverType: string, volumeID: string): Observable<any[]> {
+    const params = new HttpParams()
+      .set(ApproverType, 'true')
+      .set('mainLanguage', 'EN')
+      .set('filterField1', volumeID);
     return this.httpServices.get<any[]>(
       this.CSUrl +
       `${FCTSDashBoard.WRApiV1}${
@@ -629,6 +645,40 @@ export class CorrespondenceDetailsService {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
       }
     );
+  }
+
+  getCorrWFTaskInfo(subworkId: string, taskId: string): Observable<any> {
+
+    const params = new HttpParams()
+      .set('subworkId', subworkId)
+      .set('taskId', taskId)
+
+    return this.httpServices.get<any>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${
+      FCTSDashBoard.getWFTaskInfo
+      }?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    );
+  }
+
+  getNotesText(notesID: string, volumeID: string): Observable<any> {
+    const params = new HttpParams()
+      .set('NotesID', notesID)
+      .set('SubWorkID', volumeID)
+
+    return this.httpServices.get<any>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${
+      FCTSDashBoard.getNotes
+      }?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    );
+
   }
 
 }
