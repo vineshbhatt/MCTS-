@@ -54,3 +54,21 @@ export class RecipientDetailsData {
   SectionName_AR: string;
   SectionName_EN: string;
 }
+
+export interface CommentsNode {
+  CommentText: string;
+  CreationDate: string;
+  CreatorID: string;
+  CreatorName_AR: string;
+  CreatorName_EN: string;
+  Deleted: string;
+  ID: string;
+  Private: string;
+  ReferenceID: string;
+  ReferenceType: string;
+  ReplyAvailable: string;
+  ReplyTo: string;
+  Version: string;
+  shortComment: string;
+  subComments?: CommentsNode[];
+}

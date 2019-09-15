@@ -25,6 +25,7 @@ export class AchievedInboundsComponent extends BaseDashboardComponent implements
   ) {
       super(router, dialogU, correspondenceService, сorrespondenceShareService, errorHandlerFctsService, appLoadConstService);
       this.reportType = 'ExtInbArc';
+      this.routerFormStep = '/dashboard/external/correspondence-form-step';
   }
 
   ngOnInit() {

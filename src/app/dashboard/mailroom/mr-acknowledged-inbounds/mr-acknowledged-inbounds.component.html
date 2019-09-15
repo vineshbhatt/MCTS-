@@ -106,8 +106,8 @@
                     <button mat-menu-item (click)="OpenDashCompleteDialog(correspondData, '1')" *ngIf=(correspondData.showButtons.Complete)>Complete</button>
                     <button mat-menu-item (click)="OpenDashCompleteDialog(correspondData, '2')" *ngIf=(correspondData.showButtons.Archive)>Archive</button>
                     <button mat-menu-item (click)="startRecall(correspondData, 'SimpleRecall')" *ngIf=(correspondData.showButtons.Recall)>Recall</button>
-                    <button mat-menu-item  *ngIf=(correspondData.showButtons.MRRecall)>MR Recall</button>
-                    <button mat-menu-item  *ngIf=(correspondData.showButtons.ReturnToAS)>Returt to AS</button>
+                    <button mat-menu-item (click)="startRecall(correspondData, 'MRRecall')" *ngIf=(correspondData.showButtons.MRRecall)>MR Recall</button>
+                    <button mat-menu-item (click)="startRecall(correspondData, 'ReturnToAS')" *ngIf=(correspondData.showButtons.ReturnToAS)>Returt to AS</button>
                     <button mat-menu-item  *ngIf=(correspondData.showButtons.Copy)>Copy</button>
                     <button mat-menu-item  *ngIf=(correspondData.showButtons.ReplyIntern)>Reply (Internal)</button>
                     <button mat-menu-item (click)='transferReply(correspondData)' *ngIf=(correspondData.showButtons.ReplyTrans)>Reply (Transfer)</button>

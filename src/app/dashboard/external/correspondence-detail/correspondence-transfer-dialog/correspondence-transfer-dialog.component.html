@@ -9,7 +9,7 @@
         <div class="input_item_wrp auto_cmplt" *ngIf="transferAttribute">
           <mat-form-field>
             <mat-label>Priority </mat-label>
-            <mat-select [(value)]="transferPriority">
+            <mat-select [(value)]="transferPriority" (selectionChange) = groupChangePriority()>
               <mat-option *ngFor="let transferDummy of transferAttribute.Priority" [value]="transferDummy.ID">
                 {{transferDummy.Priority_EN}}
               </mat-option>
@@ -19,7 +19,7 @@
         <div class="input_item_wrp auto_cmplt" *ngIf="transferAttribute">
           <mat-form-field>
             <mat-label>Role Purpose </mat-label>
-            <mat-select [(value)]="transferPurpose">
+            <mat-select [(value)]="transferPurpose" (selectionChange) = groupChangePurpose()>
               <mat-option *ngFor="let transferDummy of transferAttribute.Purpose" [value]="transferDummy.ID">
                 {{transferDummy.Purpose_EN}}
               </mat-option>
@@ -30,7 +30,7 @@
       </div>
       <div class="transfer_table_row table_wrapper_003">
 
-        <table formArrayName="transfer_list" class="table table_nrml" *ngIf="isReady">
+        <table formArrayName="transfer_list" class="table table_nrml" *ngIf="isReady && transferAttribute">
           <tr class="no_bg">
             <td class="">Department</td>
             <td>To</td>
@@ -94,7 +94,7 @@
               <div class="input_item_wrp auto_cmplt">
                 <mat-form-field>
                   <mat-label>Priority </mat-label>
-                  <mat-select [(value)]="transferPriority" formControlName="Priority">
+                  <mat-select formControlName="Priority">
                     <mat-option *ngFor="let transferDummy of transferAttribute.Priority" [value]="transferDummy.ID">
                       {{transferDummy.Priority_EN}}
                     </mat-option>

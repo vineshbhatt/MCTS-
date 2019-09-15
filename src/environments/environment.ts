@@ -73,14 +73,14 @@ export const FCTSDashBoard = {
   GetCoverLettertemplates: '510471',
   GetColUserSet: '511783',
   initiateOutgoingWF: '512156',
-
-  syncDoc:'syncdoc',
-  insertNotes:'528075',
-  getNotes:'532017',
-
-
-  getWFTaskInfo:'529976',
+  syncDoc: 'syncdoc',
+  insertNotes: '528075',
+  getNotes: '532017',
+  getWFTaskInfo: '529976',
   //BaseHref: '/img/fctsangular/fctsapp/',
+  SelectAttributes: '5414023',
+  InsertNewComment: '5058946',
+  // BaseHref: '/img/fctsangular/fctsapp/',
   BaseHref: '/',
   CSUrl: 'http://manotcst02.mannaicorp.com.qa/otcs/cs.exe'
 };

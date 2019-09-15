@@ -103,7 +103,7 @@ export class TransferDialogBox implements OnInit {
       Department: ['', Validators.required],
       Purpose: ['', Validators.required],
       To: ['', Validators.required],
-      Priority: ['', Validators.required],
+      Priority: new FormControl('', Validators.required),
       Comments: ['', Validators.required],
       DueDate: ['', Validators.required]
     }));
@@ -126,11 +126,15 @@ export class TransferDialogBox implements OnInit {
   }
   getTransferPurposeAndPriority() {
     this._correspondenceDetailsService.getTransferPurposeAndPriority()
-      .subscribe(transferAttribute => this.transferAttribute = transferAttribute);
+      .subscribe(transferAttribute => {
+        this.transferAttribute = transferAttribute;
+      });
   }
+
   displayFieldValue(fieldValue: UserValueResponse) {
     if (fieldValue) { return fieldValue.Val_En; }
   }
+
   postTransferToRequest(myForm: any): void {
     // console.log('value: ', this.transferRequestForm.value);
     // this.finalRequest = <Transferlist[]>this.transferRequestForm.value;
@@ -169,7 +173,7 @@ export class TransferDialogBox implements OnInit {
       Department: ['', Validators.required],
       Purpose: ['', Validators.required],
       To: ['', Validators.required],
-      Priority: ['', Validators.required],
+      Priority: new FormControl('', Validators.required),
       Comments: ['', Validators.required],
       DueDate: ['', Validators.required]
     });
@@ -187,4 +191,19 @@ export class TransferDialogBox implements OnInit {
   trackByFn(index: number, item: any) {
     return index;
   }
+
+ groupChangePriority() {
+    const arrayControl = this.transferRequestForm.get('transfer_list') as FormArray;
+    for (let i = 0; i < arrayControl.length; i++) {
+      arrayControl.at(i).get('Priority').setValue(this.transferPriority);
+    }
+  }
+
+  groupChangePurpose() {
+    const arrayControl = this.transferRequestForm.get('transfer_list') as FormArray;
+    for (let i = 0; i < arrayControl.length; i++) {
+      arrayControl.at(i).get('Purpose').setValue(this.transferPurpose);
+    }
+  }
+
 }

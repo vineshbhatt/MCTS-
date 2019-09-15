@@ -86,6 +86,7 @@ import { ExternalOutgoing } from './create-correspondence/external-outgoing/exte
 
 import {DatePipe} from '@angular/common';
 import { CorrespondenceFormStepExtOutComponent } from './external/correspondence-form-step-extout/correspondence-form-step-extout.component';
+import { SendBackDialogComponent } from './dialog-boxes/send-back-dialog/send-back-dialog.component';
 
 
 @NgModule({
@@ -174,7 +175,8 @@ import { CorrespondenceFormStepExtOutComponent } from './external/correspondence
     BaseCorrespondenceComponent,
     ExternalOutgoing,
     CorrespondenceFormStepComponent,
-    CorrespondenceFormStepExtOutComponent
+    CorrespondenceFormStepExtOutComponent,
+    SendBackDialogComponent
   ],
   entryComponents: [
     MailDetailView,
@@ -185,7 +187,8 @@ import { CorrespondenceFormStepExtOutComponent } from './external/correspondence
     CompleteDialogComponent,
     TransferRecallDialogComponent,
     TransferReplyDialogComponent,
-    TransferReturntoasDialogComponent
+    TransferReturntoasDialogComponent,
+    SendBackDialogComponent
   ],
   providers: [ErrorHandlerFctsService, NotificationService, DatePipe]
 })
