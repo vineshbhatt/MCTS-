@@ -67,7 +67,7 @@
             <td class="icon_wrapper ">
               <span *ngFor="let inboxCorrespondenceIcons of correspondData.inboxCorrespondenceIcon" [matTooltip]="inboxCorrespondenceIcons.title"
                 class="icon_004" [ngClass]="inboxCorrespondenceIcons.active">
-                      <img class="inbox_icon_img" [src]="inboxCorrespondenceIcons.icon" alt="">
+                      <img class="inbox_icon_img" [src]="inboxCorrespondenceIcons.icon" alt="" (click) = "correspondenceIconsFunction(correspondData,inboxCorrespondenceIcons.runfunc)">
                   </span>
             </td>
             <td (click)="previewViewWrapper(correspondData)">

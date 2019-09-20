@@ -18,6 +18,8 @@ import { WorkflowHistoryDialogBox } from 'src/app/dashboard/workflow-history/wor
 import { ConfirmationDialogComponent } from 'src/app/dashboard/dialog-boxes/confirmation-dialog/confirmation-dialog.component';
 import { TransferRecallDialogComponent } from '../../dialog-boxes/transfer-recall-dialog/transfer-recall-dialog.component';
 import { MessageDialogComponent } from '../../dialog-boxes/message-dialog/message-dialog.component';
+import { CommentDialogComponent } from '../../comments/comment-dialog/comment-dialog.component';
+import { CompleteDialogComponent } from '../../dialog-boxes/complete-dialog/complete-dialog.component';
 
 @Component({
   selector: 'app-base-dashboard',
@@ -147,10 +149,15 @@ export class BaseDashboardComponent implements OnInit {
     this.getPage(1);
   }
 
+  selectWFStepRoute(correspondData: Correspondence) {
+    // neede to correct routing in full search
+  }
+
   routeToDetailsPage(correspondData: Correspondence) {
+    this.selectWFStepRoute(correspondData);
     this.setPerformerPermission(correspondData);
     const isAssignee = this.globalConstants.FCTS_Dashboard.UserGroupsArray.includes(correspondData.SubWorkTask_PerformerID);
-    if (correspondData.SubWorkTask_TaskID > 0 && correspondData.SubWorkTask_PerformerID.toString() === CSConfig.globaluserid ) {
+    if (Number(correspondData.SubWorkTask_TaskID) > 0 && correspondData.SubWorkTask_PerformerID.toString() === CSConfig.globaluserid ) {
       this.routeToFormStepPage(correspondData);
     } else if (correspondData.SubWorkTask_TaskID > 0 && isAssignee && correspondData.SubWorkTask_PerformerID_Type.toString() !== '0') {
       this.userConfirmation( 'assignWF', correspondData );
@@ -314,7 +321,7 @@ export class BaseDashboardComponent implements OnInit {
 
   OpenDashCompleteDialog(correspondData: Correspondence, status: string): void {
     if (status === '1' && correspondData.transID.toString() !== '0' && correspondData.transStatus.toString() === '0' ) {
-      const dialogRef = this.dialogU.open(ConfirmationDialogComponent, {
+      this.dialogU.open(CompleteDialogComponent, {
         width: '100%',
         panelClass: 'complete-dialog',
         maxWidth: '30vw',
@@ -347,7 +354,6 @@ export class BaseDashboardComponent implements OnInit {
 
 /* ******************  START RECALL  ****************** */
   startRecall(correspondData: Correspondence, recallType: string): void {
-    debugger;
     if ( recallType !== 'ReturnToAS' ) {
       if ( correspondData.SubWorkTask_TaskID > 0 ) {
         this.recallWF(correspondData, recallType);
@@ -479,6 +485,25 @@ export class BaseDashboardComponent implements OnInit {
 
   itemsCountShare() {
     this.correspondenceService.changeItemsCount(this.totalCount);
+  }
+  /***********************comment*************************** */
+  commentsDialogBox(correspondData: Correspondence): void {
+    const dialogRef = this.dialogU.open(CommentDialogComponent, {
+      width: '100%',
+      panelClass: 'commentsDialogBox',
+      maxWidth: '60vw',
+      data: {
+        data: correspondData,
+        reportType: this.reportType
+      }
+    });
+  }
+  /********************************************************* */
+
+  correspondenceIconsFunction(correspondData: Correspondence, icon: string): void {
+    if (icon === 'openComments') {
+      this.commentsDialogBox(correspondData);
+    }
   }
 
 }

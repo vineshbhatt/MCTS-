@@ -73,8 +73,6 @@
     .input_item_wrp {
       background: white;
     }
-
-
   }
 
   .input_item_wrp .text_area,
@@ -116,7 +114,7 @@
   .row-section{
       display: flex;
       flex-direction: row;
-      margin: 10px;  
+      margin-bottom: 10px;  
       
     .row-description{
         width:30%;    
@@ -134,3 +132,159 @@
     color:red;
   }
 }
+
+.commentsDialogBox, .corres_comnt_area {
+  .ng-scroll-view  {
+    padding: 0px 0 !important;
+    width: 100% !important;
+    padding-right: 25px !important;
+  }
+  .close-button{
+      cursor: pointer;
+      margin-left: auto;
+      margin-right: 0px;
+  }
+
+  .input_item_wrp .text_area,
+  .button-holder {
+    margin: 2px;
+  }
+
+  .input_item_wrp {
+    .mat-form-field-appearance-legacy.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
+      transform: translateY(-7px) scale(0.75) perspective(100px) translateZ(0.001px);
+    }
+
+&.text_area {
+      .mat-form-field {
+        width: 98%;
+        overflow-y: hidden;
+      }
+
+      .mat-input-element {
+        margin: 5px;
+        height: 13px;
+      }
+
+      .mat-form-field-appearance-legacy.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
+        top: 25px;
+
+        button {
+          margin-left: 5%;
+        }
+      }
+    }
+  }
+
+  background-color: #f7f7f7;
+
+  .ng-star-inserted{
+
+  background-color: #f7f7f7;
+      .mat-tree{
+          background-color:#f7f7f7;
+      }
+  }
+
+  .empty-block{
+      text-align: center;
+  }
+
+  .tree-holder{
+     
+      .tree1,.tree2{
+          margin: 0px 10px 10px 10px;
+          background-color: white;
+          border-radius: 10px;
+          .line-holder{
+          width:100%;
+              .comment-infoholder{
+                  width:100%;
+                  display: flex;
+                  flex-direction: row;
+                  .button-holder{
+                      margin-left: auto;
+                      margin-right: 20px;
+                      background-color: white;
+                  }
+              }
+          }   
+      }
+  }
+  .addComment{
+      transition: height 1s, opacity 1s ease-out;
+      opacity: 0; 
+      height: auto;
+      overflow: hidden;
+      margin-bottom: 10px;
+      .replyToComment{
+          max-height: 57px;
+      }
+
+  } 
+  .hide-block {
+      display: none;
+  }
+  .show-block{
+      display: block;
+  }
+}
+
+.commentsDialogBox{
+  .tree-holder{
+    max-height:20vw;
+    width:100%;
+  }
+
+  .buttonHolder{
+    display:flex;
+    flex-direction: row-reverse;
+    margin:15px 43px 0px 10px;
+    .btn_002{
+        cursor: pointer;
+    }
+  }
+  .cmntAction{
+    background: white;
+  }
+}
+
+.corres_comnt_area{
+  .tree-holder{
+    max-height:11.5vw;
+  }
+
+  .cmntAction{
+    background: white;
+  }
+
+  .mat-form-field{
+    width:94%;
+  }
+
+  .buttonHolder{
+    display:flex;
+    flex-direction: row-reverse;
+    margin-right:67px;
+    .btn_002{
+        cursor: pointer;
+    }
+  }
+}
+
+.newCommentSection{
+  margin: 0px 10px 0px 10px;
+  .mat-form-field-infix{
+      margin: 10px 0px 10px 0px;
+      background-color: white;
+  }
+  .radio-button{
+      margin-left: 10px;
+  }
+}
+
+
+.mat-expansion-panel-header{
+  height: 18vw;
+}
+

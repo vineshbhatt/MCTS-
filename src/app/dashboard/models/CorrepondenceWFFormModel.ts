@@ -2,8 +2,8 @@ import { OrgNameAutoFillModel } from './CorrespondenenceDetails.model';
 export class CorrespondenceWFFormModel {
     CorrespondenceDate: string;			// CorrespondenceDate
     Confidential: string;			    // Confidential
-    ConnectedID: string;				// connectedid 
-    ConnectedRefID: string;						// refID 
+    ConnectedID: string;				// connectedid
+    ConnectedRefID: string;						// refID
     CorrespondenceID: string;			// CorrespondenceID
     CorrespondenceCode: string;			// CorrespondenceCode
     SenderDetails: OrgNameAutoFillModel;
@@ -26,8 +26,8 @@ export class CorrespondenceWFFormModel {
     Disposition3: string;
     CoverID: string;	                 // CoverID
     ArabicSubject: string;		        // ArabicSubject
-    EnglishSubject: string;		        // EnglishSubject 
-    CoverDate: string;		            // CoverDate 
+    EnglishSubject: string;		        // EnglishSubject
+    CoverDate: string;		            // CoverDate
     DocumentNumber: string;	            // DocumentNumber
     Priority: string;					// Priority
     CorrespondenceType2: string;		// CorrespondenceType2

@@ -26,7 +26,7 @@ export class NewOutboundComponent extends BaseDashboardActiveComponent implement
   ) {
     super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService);
     this.reportType = 'ExtOutWIP';
-    this.routerFormStep = '/dashboard/external/correspondence-form-step';
+    this.routerFormStep = '/dashboard/external/correspondence-form-step-out';
   }
 
   ngOnInit() {

@@ -1,8 +1,14 @@
 import { CorrespondenenceDetailsModel } from '../../models/CorrespondenenceDetails.model';
 
-interface SectionParam {
+  interface SectionParam {
     Show: boolean;
     Modify: boolean;
+  }
+
+  interface FieldParam {
+    Show: boolean;
+    Modify: boolean;
+    Required: boolean;
   }
 
   interface CorrSectionList {
@@ -109,53 +115,52 @@ interface SectionParam {
   }
 
   export class ShowCorrItems implements CorrItemsList {
-    public regDate:            SectionParam;
-    public docsDate:           SectionParam;
-    public confidential:       SectionParam;
-    public priority:           SectionParam;
-    public refNumber:          SectionParam;
-    public personalName:       SectionParam;
-    public idNumber:           SectionParam;
-    public correspondenceType: SectionParam;
-    public baseType:           SectionParam;
-    public arabicSubject:      SectionParam;
-    public englishSubject:     SectionParam;
-    public projectCode:        SectionParam;
-    public budgetNumber:       SectionParam;
-    public contractNumber:     SectionParam;
-    public tenderNumber:       SectionParam;
-    public corrNumber:         SectionParam;
-    public fillinPlanPath:     SectionParam;
-    public dispatchMethod:     SectionParam;
-    public staffNumber:        SectionParam;
-
-    public obType:             SectionParam;
+    public regDate:            FieldParam;
+    public docsDate:           FieldParam;
+    public confidential:       FieldParam;
+    public priority:           FieldParam;
+    public refNumber:          FieldParam;
+    public personalName:       FieldParam;
+    public idNumber:           FieldParam;
+    public correspondenceType: FieldParam;
+    public baseType:           FieldParam;
+    public arabicSubject:      FieldParam;
+    public englishSubject:     FieldParam;
+    public projectCode:        FieldParam;
+    public budgetNumber:       FieldParam;
+    public contractNumber:     FieldParam;
+    public tenderNumber:       FieldParam;
+    public corrNumber:         FieldParam;
+    public fillinPlanPath:     FieldParam;
+    public dispatchMethod:     FieldParam;
+    public staffNumber:        FieldParam;
+    public obType:             FieldParam;
 
   constructor() {
     this._setCorrItems();
   }
 
   private _setCorrItems() {
-    this.regDate =            { Show: true, Modify: false };
-    this.docsDate =           { Show: true, Modify: true };
-    this.confidential =       { Show: true, Modify: false };
-    this.priority =           { Show: true, Modify: true };
-    this.refNumber =          { Show: true, Modify: true };
-    this.personalName =       { Show: true, Modify: true };
-    this.idNumber =           { Show: true, Modify: true };
-    this.correspondenceType = { Show: true, Modify: true };
-    this.baseType =           { Show: true, Modify: true };
-    this.arabicSubject =      { Show: true, Modify: true };
-    this.englishSubject =     { Show: true, Modify: true };
-    this.projectCode =        { Show: true, Modify: true };
-    this.budgetNumber =       { Show: true, Modify: true };
-    this.contractNumber =     { Show: true, Modify: true };
-    this.tenderNumber =       { Show: true, Modify: true };
-    this.corrNumber =         { Show: true, Modify: false };
-    this.fillinPlanPath =     { Show: true, Modify: true };
-    this.dispatchMethod =     { Show: true, Modify: true };
-    this.staffNumber =        { Show: true, Modify: true };
-    this.obType      =        { Show: true, Modify: true };
+    this.regDate =            { Show: true, Modify: false, Required: false };
+    this.docsDate =           { Show: true, Modify: true, Required: false };
+    this.confidential =       { Show: true, Modify: false, Required: false };
+    this.priority =           { Show: true, Modify: true, Required: false };
+    this.refNumber =          { Show: true, Modify: true, Required: true };
+    this.personalName =       { Show: true, Modify: true, Required: false };
+    this.idNumber =           { Show: true, Modify: true, Required: false };
+    this.correspondenceType = { Show: true, Modify: true, Required: false };
+    this.baseType =           { Show: true, Modify: true, Required: false };
+    this.arabicSubject =      { Show: true, Modify: true, Required: false };
+    this.englishSubject =     { Show: true, Modify: true, Required: false };
+    this.projectCode =        { Show: true, Modify: true, Required: false };
+    this.budgetNumber =       { Show: true, Modify: true, Required: false };
+    this.contractNumber =     { Show: true, Modify: true, Required: false };
+    this.tenderNumber =       { Show: true, Modify: true, Required: false };
+    this.corrNumber =         { Show: true, Modify: false, Required: false };
+    this.fillinPlanPath =     { Show: true, Modify: true, Required: false };
+    this.dispatchMethod =     { Show: true, Modify: true, Required: false };
+    this.staffNumber =        { Show: true, Modify: true, Required: false };
+    this.obType      =        { Show: true, Modify: true, Required: false };
   }
 }
 

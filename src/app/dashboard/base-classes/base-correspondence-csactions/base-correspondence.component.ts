@@ -19,30 +19,28 @@ export class BaseCorrespondenceComponent implements OnInit {
     coverID: string;
     userInfo: CorrResponse[];
     templatesDocList: any[];
+    public files: NgxFileDropEntry[] = [];
 
     ngOnInit() {
 
     }
 
-
     uploadCSDocument(files: File[], parentID: number, sectionName: any) {
-        //pick from one of the 4 styles of file uploads below        
-        this.csdocumentupload.uploadDocument(files, "" + parentID).subscribe(
+        // pick from one of the 4 styles of file uploads below
+        this.csdocumentupload.uploadDocument(files, '' + parentID).subscribe(
             () => '',
             () => '',
             () => {
-                if (sectionName === "COVER") {
+                if (sectionName === 'COVER') {
                     this.getCoverSection();
-                }
-                else if (sectionName === "ATTACHMENT") {
+                } else if (sectionName === 'ATTACHMENT') {
                     this.getAttachmentSection();
-                }
-                else if (sectionName === "MISC") {
+                } else if (sectionName === 'MISC') {
                 }
             }
-        )
+        );
     }
-    public files: NgxFileDropEntry[] = [];
+
     public dropped(files: NgxFileDropEntry[], parentID: string, section: string) {
         for (const droppedFile of files) {
             if (droppedFile.fileEntry.isFile) {
@@ -52,14 +50,12 @@ export class BaseCorrespondenceComponent implements OnInit {
                         () => '',
                         () => '',
                         () => {
-                            if (section == "COVER") {
+                            if (section === 'COVER') {
                                 this.getCoverSection();
-                            }
-                            else if (section == "ATTACHMENT") {
+                            } else if (section === 'ATTACHMENT') {
                                 this.getAttachmentSection();
-                            }
-                            else if (section == "MISC") {
-                                //this.GetMiscSection();
+                            } else if (section === 'MISC') {
+                                // this.GetMiscSection();
                             }
                         }
                     );
@@ -71,47 +67,43 @@ export class BaseCorrespondenceComponent implements OnInit {
             }
         }
     }
-    public fileOver(event) {
 
+    public fileOver(event) {
     }
 
     public fileLeave(event) {
-
     }
+
     deleteDocument(documentDataid: string, section: string) {
         this.csdocumentupload.deleteDocument(documentDataid).subscribe(
             () => { },
             () => { },
             () => {
-                if (section == "COVER") {
+                if (section === 'COVER') {
                     this.coverID = undefined;
                     this.getCoverSection();
-                }
-                else if (section == "ATTACHMENT") {
+                } else if (section === 'ATTACHMENT') {
                     this.getAttachmentSection();
-                }
-                else if (section == "MISC") {
-                    //this.GetMiscSection();
+                } else if (section === 'MISC') {
+                    // this.GetMiscSection();
                 }
             }
         );
     }
 
     addDocumentVersion(files: File[], documentDataid: number, sectionName: any) {
-        this.csdocumentupload.uploadDocumentVersion(files, "" + documentDataid).subscribe(
+        this.csdocumentupload.uploadDocumentVersion(files, '' + documentDataid).subscribe(
             () => '',
             () => '',
             () => {
-                if (sectionName === "COVER") {
+                if (sectionName === 'COVER') {
                     this.getCoverSection();
-                }
-                else if (sectionName === "ATTACHMENT") {
+                } else if (sectionName === 'ATTACHMENT') {
                     this.getAttachmentSection();
-                }
-                else if (sectionName === "MISC") {
+                } else if (sectionName === 'MISC') {
                 }
             }
-        )
+        );
     }
 
     getUserInfo() {
@@ -121,10 +113,11 @@ export class BaseCorrespondenceComponent implements OnInit {
                 this.userInfo = userInfoVal
             );
     }
+
     getTempFolderAttachments(corrflowType: string): void {
         this.correspondenceDetailsService.createTempAttachments(corrflowType).subscribe(
             tempAttachment => {
-                this.corrFolderData = tempAttachment
+                this.corrFolderData = tempAttachment;
             }
         );
     }
@@ -137,27 +130,29 @@ export class BaseCorrespondenceComponent implements OnInit {
             }
         );
     }
+
     getAttachmentSection() {
         this.correspondenceDetailsService.getAttachmentFolderDetails(this.corrFolderData.AttachCorrAttachmentsID).subscribe(
             attachmentFolderdetails => this.AttachmentFolderData = attachmentFolderdetails
         );
     }
+
     openBrowseDocument(event: any, elementID: string) {
         event.preventDefault();
-        let element: HTMLElement = document.getElementById(elementID) as HTMLElement;
+        const element: HTMLElement = document.getElementById(elementID) as HTMLElement;
         element.click();
     }
 
     convertUndefindedOrNulltoemptyString(obj: any) {
         if (typeof obj == undefined || obj == null) {
-            return "";
-        }
-        else { return obj }
+            return '';
+        } else { return obj; }
     }
+
     getTemplatesSectionData(corrFlowType: string, templateType: string = 'Default', onBehalfOf: string = '') {
         this.correspondenceDetailsService.getTemplatesList(corrFlowType, templateType, onBehalfOf).subscribe(
             listoftemplates => {
-                this.templatesDocList = listoftemplates
+                this.templatesDocList = listoftemplates;
             }
         );
     }

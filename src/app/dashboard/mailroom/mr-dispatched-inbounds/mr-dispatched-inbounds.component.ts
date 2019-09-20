@@ -26,7 +26,7 @@ export class MrDispatchedInboundsComponent extends BaseDashboardComponent implem
   ) {
       super(router, dialogU, correspondenceService, сorrespondenceShareService, errorHandlerFctsService, appLoadConstService);
       this.reportType = 'MRExtInbDis';
-      this.routerFormStep = '/dashboard/mailroom/correspondence-form-step';
+      this.routerFormStep = '/dashboard/mailroom/correspondence-form-step-inc';
   }
 
   ngOnInit() {

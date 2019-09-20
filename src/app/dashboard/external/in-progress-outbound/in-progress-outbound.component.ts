@@ -26,6 +26,7 @@ export class InProgressOutboundComponent extends BaseDashboardActiveComponent im
   ) {
     super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService);
     this.reportType = 'ExtOutSig';
+    this.routerFormStep = '/dashboard/external/correspondence-form-step-out';
   }
 
   ngOnInit() {

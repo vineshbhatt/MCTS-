@@ -26,6 +26,7 @@ export class MrNewOutboundsComponent extends BaseDashboardComponent implements O
     ) {
         super(router, dialogU, correspondenceService, сorrespondenceShareService, errorHandlerFctsService, appLoadConstService);
         this.reportType = 'MRExtOutWIP';
+        this.routerFormStep = '/dashboard/mailroom/correspondence-form-step-out';
     }
 
     ngOnInit() {

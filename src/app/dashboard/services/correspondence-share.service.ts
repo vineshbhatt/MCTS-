@@ -148,7 +148,6 @@ export class CorrespondenceShareService {
   }
 
   prepSetTransferStatus(transfered: any, commonData: StatusRequest, status: Number, NotesComplete: string): void {
-
     const rowsArray: SetStatusRow[] = [];
     const statusRow: SetStatusRow = new SetStatusRow;
     const setStatusRequest: StatusRequest = new StatusRequest;
@@ -251,6 +250,62 @@ export class CorrespondenceShareService {
         return throwError(error);
       })
     );
+  }
+
+   getCommentsData(volumeID: string): Observable<CorrResponse[]> {
+    const params = new HttpParams()
+      .set('ReferenceID', volumeID);
+    return this.httpServices.get<CorrResponse[]>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${
+      FCTSDashBoard.WorkflowCommentsList
+      }?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    )
+    .pipe (
+      map (data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
+  deleteComment(commentParams: CommentsNode): Observable<any> {
+    const params = new HttpParams()
+    .set('CommentID', commentParams.ID )
+    .set('ReferenceID', commentParams.ReferenceID )
+    .set('ReferenceType', commentParams.ReferenceType);
+    return this.httpServices.get<any>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${
+      FCTSDashBoard.DeleteComment
+      }?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    )
+    .pipe (
+      map (data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
    }
+
+   DateToISOStringAbs(mDate): string {
+    function pad(n) { return n < 10 ? '0' + n : n; }
+    return mDate.getFullYear() + '-'
+      + pad(mDate.getMonth() + 1) + '-'
+      + pad(mDate.getDate()) + 'T'
+      + pad(mDate.getHours()) + ':'
+      + pad(mDate.getMinutes()) + ':'
+      + pad(mDate.getSeconds()) + 'Z';
+  }
 
 }

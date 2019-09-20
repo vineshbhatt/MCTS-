@@ -35,7 +35,6 @@ import { CorrespondenceFormStepComponent } from './external/correspondence-form-
 import { ExternalOutgoing } from './create-correspondence/external-outgoing/external-outgoing.component';
 import { CorrespondenceFormStepExtOutComponent } from './external/correspondence-form-step-extout/correspondence-form-step-extout.component';
 
-
 const dashboardRoutes: Routes = [
   {
     path: '',
@@ -57,7 +56,7 @@ const dashboardRoutes: Routes = [
                   { path: 'inProgress-intoutbounds', component: InprogressIntOutboundComponent },
                   { path: 'archieved-intoutbounds', component: AchievedIntOutboundComponent },
                   { path: 'correspondence-detail', component: CorrespondenceDetailComponent },
-                  { path: 'correspondence-form-step', component: CorrespondenceFormStepComponent },
+                  { path: 'correspondence-form-step-int', component: InternalDashboardComponent }, // internal WF step isnt created yet
                   { path: '', component: InternalDashboardComponent }
                 ]
               }
@@ -88,7 +87,8 @@ const dashboardRoutes: Routes = [
                   { path: 'inProgress-outbounds', component: InProgressOutboundComponent },
                   { path: 'archieved-outbounds', component: AchievedOutboundComponent },
                   { path: 'correspondence-detail', component: CorrespondenceDetailComponent },
-                  { path: 'correspondence-form-step', component: CorrespondenceFormStepExtOutComponent },
+                  { path: 'correspondence-form-step-inc', component: CorrespondenceFormStepComponent },
+                  { path: 'correspondence-form-step-out', component: CorrespondenceFormStepExtOutComponent },
                   { path: '', component: ExternalDashboardComponent },
                 ]
               }
@@ -109,7 +109,8 @@ const dashboardRoutes: Routes = [
                   { path: 'mr-acknowledged-outbounds', component: MrAcknowledgedOutboundsComponent },
                   { path: 'mr-archieved-outbounds', component: MrArchievedOutboundsComponent },
                   { path: 'correspondence-detail', component: CorrespondenceDetailComponent },
-                  { path: 'correspondence-form-step', component: CorrespondenceFormStepComponent },
+                  { path: 'correspondence-form-step-inc', component: CorrespondenceFormStepComponent },
+                  { path: 'correspondence-form-step-out', component: CorrespondenceFormStepExtOutComponent },
                   { path: '', component: MailroomDasnboardComponent },
                 ]
               }

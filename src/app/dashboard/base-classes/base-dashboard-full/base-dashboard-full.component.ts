@@ -162,6 +162,20 @@ export class BaseDashboardFullComponent extends BaseDashboardComponent implement
     // overiding parent function to avoid error
   }
 
+  selectWFStepRoute(correspondData: Correspondence) {
+    switch (correspondData.CorrespondenceFlowType) {
+      case '1':
+        this.routerFormStep = '/dashboard/external/correspondence-form-step-inc'; //'/dashboard/external/correspondence-form-step-inc';
+        break;
+      case '5':
+        this.routerFormStep = '/dashboard/external/correspondence-form-step-out'; // '/dashboard/external/correspondence-form-step-out';
+        break;
+      case '7':
+        this.routerFormStep = '/'; // '/dashboard/internal/correspondence-form-step-int';
+        break;
+    }
+  }
+
 }
 
 export interface PeriodicElement {
