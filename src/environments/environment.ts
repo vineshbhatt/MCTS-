@@ -78,8 +78,8 @@ export const FCTSDashBoard = {
   getNotes: '532017',
   getWFTaskInfo: '529976',
   //BaseHref: '/img/fctsangular/fctsapp/',
-  SelectAttributes: '5414023',
-  InsertNewComment: '5058946',
+  SelectAttributes: '531053',
+  InsertNewComment: '532040',
   // BaseHref: '/img/fctsangular/fctsapp/',
   BaseHref: '/',
   CSUrl: 'http://manotcst02.mannaicorp.com.qa/otcs/cs.exe'

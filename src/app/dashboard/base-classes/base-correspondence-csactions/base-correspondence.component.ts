@@ -66,8 +66,7 @@ export class BaseCorrespondenceComponent implements OnInit {
                 });
             } else {
                 // It was a directory (empty directories are added, otherwise only files)
-                const fileEntry = droppedFile.fileEntry as FileSystemDirectoryEntry;
-                // console.log(droppedFile.relativePath, fileEntry);
+                const fileEntry = droppedFile.fileEntry as FileSystemDirectoryEntry;                
             }
         }
     }
@@ -84,7 +83,7 @@ export class BaseCorrespondenceComponent implements OnInit {
             () => { },
             () => {
                 if (section == "COVER") {
-                    this.coverID = undefined;
+                    this.coverID = undefined;                    
                     this.getCoverSection();
                 }
                 else if (section == "ATTACHMENT") {
@@ -134,6 +133,7 @@ export class BaseCorrespondenceComponent implements OnInit {
             coverFolderdetails => {
                 this.CoverLetterData = coverFolderdetails;
                 this.coverID = coverFolderdetails[0].myRows[0].Dataid;
+                
             }
         );
     }

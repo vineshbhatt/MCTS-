@@ -7,7 +7,7 @@
   <button (click)="expandeActionLeftButton()" matRipple class="corsp_ext_btn">
     <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
   </button>
-  <div class="detail_header">
+  <!-- <div class="detail_header">
     <div class="header_text" *ngIf = "correspondenceData">
       <div class="header_back_cpd_dtl">
         <button class="back_btn" (click)="backNavigation()">
@@ -16,6 +16,20 @@
         <h3 class="text_23 ltg_text" *ngIf="taskTitle">{{taskTitle}}</h3>
         <h3 class="text_23 ltg_text">: {{correspondenceData.CorrFolderName }} - {{CorrespondencType}}</h3>
       </div>
+    </div>
+  </div> -->
+  <div class="detail_header">
+    <div class="header_text" *ngIf="correspondenceData">
+      <div class="header_back_cpd_dtl">
+        <button class="back_btn" (click)="backNavigation()">
+          <img src="{{basehref}}assets/images/icons/left_arrow.svg" alt="">
+        </button>          
+          <h3 class="text_23 ltg_text">{{taskTitle}}</h3>          
+      </div>
+      <div>          
+          <br />
+          <h4 class="">{{correspondenceData.CorrFolderName }} - {{CorrespondencType}}</h4>
+      </div>      
     </div>
   </div>
   <form [formGroup]="senderDetailsForm">
@@ -42,7 +56,7 @@
                 <div class="input_item_wrp sm_input_wrapper">
                   <mat-form-field class="input_tbl_wrp">
                     <input type="text" aria-label="Number" matInput formControlName="ExternalOrganization" [matAutocomplete]="extOrgName">
-                    <mat-autocomplete #extOrgName="matAutocomplete" [displayWith]="displaySearchFilterValueExt">
+                    <mat-autocomplete #extOrgName="matAutocomplete" class="longautocomplete" [displayWith]="displaySearchFilterValueExt">
                       <mat-option *ngFor="let OrgName of (filteredExtOrgNames | async)" [value]="OrgName"
                         (onSelectionChange)="optionSelectionChangeExternal(OrgName, $event)">
                         {{OrgName?.OrgName_En}}
@@ -103,7 +117,7 @@
                 <div class="input_item_wrp sm_input_wrapper">
                   <mat-form-field class="input_tbl_wrp">
                     <input type="text" aria-label="Number" matInput formControlName="RecipientDepartment" [matAutocomplete]="recpientDepName">
-                    <mat-autocomplete #recpientDepName="matAutocomplete" [displayWith]="displaySearchFilterValueInt">
+                    <mat-autocomplete #recpientDepName="matAutocomplete" class="longautocomplete" [displayWith]="displaySearchFilterValueInt">
                       <mat-option *ngFor="let DepName of (filteredIntDepNames | async)" [value]="DepName"
                         (onSelectionChange)="optionSelectionChangeInternal(DepName, $event)">
                         <span>{{DepName?.DepName_En}}</span><span *ngIf = "DepName.SecName_En">, {{DepName.SecName_En}}</span>
@@ -359,7 +373,7 @@
                   <th class="name">Name</th>
                   <th></th>
                   <th class="size">Size</th>
-                  <th class="modified">Modified</th>
+                  <!-- <th class="modified">Modified</th> -->
                 </tr>
                 <tbody *ngFor="let correspondenceCoverDetails of externalIncCoverLetterData">
                   <tr *ngFor="let coverLetterData of correspondenceCoverDetails.myRows">
@@ -386,9 +400,9 @@
                     <td class="size">
                       {{coverLetterData.CoverSize}}
                     </td>
-                    <td class="modified">
+                    <!-- <td class="modified">
                       {{coverLetterData.ModifyDate}}
-                    </td>
+                    </td> -->
                   </tr>
                 </tbody>
               </table>
@@ -723,16 +737,16 @@
     </div>
 
   </ng-scrollbar>
-  <ng-scrollbar class="correspondence_deatil_prview_wrappper" [ngClass]="expandedRightAction ? 'unActive' : 'ActiveRight'"
-    *ngIf="expandedAction">
-    <!-- <button (click)="expandeActionRightButton()" matRipple class="corsp_ext_btn">
-              <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
-            </button> -->
-    <ng-container *ngIf="showPreviewCoverLetter">
-      <div class="documentViewerDiv" *ngFor="let docpreviewData of documentPreviewURL">
-        <iframe class="iframeclass" [src]="docpreviewData.CorrespondencedocumentURL|safe"></iframe>
-      </div>
-    </ng-container>
+  <ng-scrollbar class="correspondence_deatil_prview_wrappper"
+  [ngClass]="expandedRightAction ? 'unActive' : 'ActiveRight'" *ngIf="expandedAction">
+  <button (click)="expandeActionRightButton()" matRipple class="corsp_ext_btn">
+    <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
+  </button>
+  <ng-container *ngIf="showPreviewCoverLetter">
+    <div class="documentViewerDiv" *ngFor="let docpreviewData of documentPreviewURL">
+      <iframe class="iframeclass" [src]="docpreviewData.CorrespondencedocumentURL|safe"></iframe>
+    </div>
+  </ng-container>
     
     <div *ngIf="showPreviewTreeArea">
         <div class="spinner_sm_wrappar" *ngIf="dataSource.data.length == 0"

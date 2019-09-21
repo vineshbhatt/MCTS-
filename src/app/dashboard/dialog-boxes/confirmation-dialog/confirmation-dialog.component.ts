@@ -22,7 +22,7 @@ export class ConfirmationDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) { }
 
-  private _chooseMessage(): void {
+  private _chooseMessage(): void {    
     // choose confirmation message
     switch (this.data.message) {
       case 'assignTransfer': {

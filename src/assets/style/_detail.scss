@@ -10,43 +10,47 @@ app-correspondence-detail {
   padding-right: 40px;
   box-sizing: border-box;
   position: relative;
+
   &.correspondence_detail_pad_0_wrp {
-      width: 50% !important;
-      padding: 0;
+    width: 50% !important;
+    padding: 0;
 
-      &.ActiveLeft {
-          width: 100% !important;
-          padding-right: 0;
-          box-shadow: none;
-
-          .corsp_ext_btn {
-              right: -5px;
-          }
-      }
-      .ng-scroll-view  {
-          padding: 50px 0 !important;
-          box-sizing: border-box;
-          width: 100% !important;
-          padding-right: 25px !important;
-      }
+    &.ActiveLeft {
+      width: 100% !important;
+      padding-right: 0;
+      box-shadow: none;
 
       .corsp_ext_btn {
-         right:22px;
+        right: -5px;
       }
-  }
-  .corsp_ext_btn {
-      position: absolute;
-      right: 35px;
-      top: 20px;
-      border: none;
-      background: transparent;
-      padding: 5px;
-      outline: none;
+    }
 
-      img {
-          max-width: 20px;
-      }
+    .ng-scroll-view {
+      padding: 50px 0 !important;
+      box-sizing: border-box;
+      width: 100% !important;
+      padding-right: 25px !important;
+    }
+
+    .corsp_ext_btn {
+      right: 22px;
+    }
   }
+
+  .corsp_ext_btn {
+    position: absolute;
+    right: 35px;
+    top: 20px;
+    border: none;
+    background: transparent;
+    padding: 5px;
+    outline: none;
+
+    img {
+      max-width: 20px;
+    }
+  }
+
   .text_23 {
     color: #252525
   }
@@ -223,22 +227,24 @@ app-correspondence-detail {
 
 .correspondence_deatil_prview_wrappper {
   width: 50%;
-  padding: 50px 40px;
+  padding: 50px 0px;
   padding-right: 0;
   box-sizing: border-box;
 
   .doc_iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
+    width: 100%;
+    height: 100%;
+    border: none;
   }
+
   &.scroll_pr_0 {
-      .ng-scroll-view {
-          padding-right: 0 !important;
-         .corsp_ext_btn {
-             right: 15px;
-         }
+    .ng-scroll-view {
+      padding-right: 0 !important;
+
+      .corsp_ext_btn {
+        right: 15px;
       }
+    }
   }
 
   position: relative;
@@ -425,8 +431,7 @@ app-correspondence-detail {
 .userConfirmation,
 .message-dialog,
 .complete-dialog,
-.transfer-reply-dialog
- {
+.transfer-reply-dialog {
   margin: auto !important;
 
   .closeButton {
@@ -1157,7 +1162,14 @@ app-correspondence-detail {
   top: 0;
   left: 0;
   z-index: 99999999999;
+
   .spinner_md_wrappar {
-      margin: auto;
+    margin: auto;
   }
+}
+
+.longautocomplete {
+  width: 100% !important;
+  max-width: 400px !important;
+  min-width: 400px !important;
 }

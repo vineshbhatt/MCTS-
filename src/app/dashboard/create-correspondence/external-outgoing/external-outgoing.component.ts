@@ -109,6 +109,7 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
   templateLanguage: string;
   documentMetadataSync = new SyncDocumentMetadataModel;
   showCommentsTextArea: boolean = false;
+  spinnerDataLoaded: boolean = false;
 
   @Input() data: number;
   @Output() focusOut: EventEmitter<number> = new EventEmitter<number>();
@@ -192,10 +193,15 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
     this.correspondencservice
       .getDashboardFilters()
       .subscribe(
-        (MetadataFilters: any[]) => (this.MetadataFilters = MetadataFilters)
+        (MetadataFilters: any[]) => {
+          this.MetadataFilters = MetadataFilters;
+          this.SetDefaultPriority();
+        }
       );
   }
-
+  SetDefaultPriority() {
+    this.correspondenceDetailsForm.get('priority').setValue({ EN: 'Normal', ID: 1, AR: 'Normal' });
+  }
   public optionSelectionChangeExternal(orgInfo: OrgNameAutoFillModel, event: MatOptionSelectionChange) {
     this.ExtSenderInfo = orgInfo;
   }
@@ -493,6 +499,7 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
     return true;
   }
   initiateWFCorrespondence(Disposition1: string, Disposition2: string, Dispostion3: string) {
+    this.spinnerDataLoaded = true;
     //Set each and every Value ofr the three Forms to one Single Object For Post
     this.initiateOutgoingCorrespondenceDetails.CorrespondenceID = this.corrFolderData.AttachCorrID.toString();
     this.initiateOutgoingCorrespondenceDetails.SenderDetails = this.userInfo[0].myRows[0]
@@ -534,6 +541,7 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
 
     this.correspondencservice.initiateWF(this.initiateOutgoingCorrespondenceDetails, this.corrFlowType).subscribe(
       () => {
+        this.spinnerDataLoaded = false;
         this.notificationmessage.success('Correspondence Created Succesfully', 'Your Correspondence has been created successfullly', 2500);
         this.backNavigation();
       }
@@ -566,6 +574,7 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
       }
     }
   }
+
 
   clearDetails(clearFormName: string) {
     switch (clearFormName) {
@@ -718,6 +727,7 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
     }
   }
   setLanguage(language: string) {
+    debugger;
     switch (language.toUpperCase()) {
       case 'ENGLISH':
         this.templateLanguage = 'EN';
@@ -771,7 +781,10 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
       .subscribe(
         () => { },
         () => { },
-        () => { this.getCoverSection(); }
+        () => {
+          this.getCoverSection();
+          this.getCoverDocumentURL(this.coverID);
+        }
       );
   }
 

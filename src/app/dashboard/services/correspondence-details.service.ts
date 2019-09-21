@@ -353,7 +353,8 @@ export class CorrespondenceDetailsService {
     // let searchResults: Observable<OrgNameAutoFillModel[]>;
     if (searchText.length >= 3) {
       const params = new HttpParams()
-        .set('NameVal', '%' + searchText + '%')
+        // .set('NameVal', '%' + searchText + '%')
+        .set('NameVal', searchText + '%')
         .set(searchField, 'true');
       return this.httpServices.get<OrgNameAutoFillModel[]>(
         this.CSUrl +

@@ -79,6 +79,7 @@ export class CorrespondenceDetailComponent implements OnInit {
   corrConnectionsProgbar = false;
   sectionDisplay = new ShowSections();
   buttonsDisplay = new ShowButtons();
+  correspondenceTabLoaded: boolean = false;
 
   ngOnInit() {
     this.VolumeID = this.route.snapshot.queryParamMap.get('VolumeID');
@@ -100,6 +101,7 @@ export class CorrespondenceDetailComponent implements OnInit {
     this.getCorrespondenceCoverDetail(this.VolumeID);
     // Load Preview
     this.getCoverDocumentURL(this.CoverID);
+    this.correspondenceShowData();
   }
 
   ngAfterViewInit() {
@@ -155,6 +157,7 @@ export class CorrespondenceDetailComponent implements OnInit {
   }
 
   getCorrespondenceCoverDetail(VolumeID: String): void {
+    debugger;
     this.coverProgbar = true;
     this._correspondenceDetailsService.getCorrespondenceCoverDetail(VolumeID)
       .subscribe(correspondenceCovertData => {
@@ -179,13 +182,16 @@ export class CorrespondenceDetailComponent implements OnInit {
   }
 
   getCorrespondenceInfoData(): void {
-    this.correspondenceProgbar = true;
+    if (!this.correspondenceTabLoaded) {
+      this.correspondenceProgbar = true;
 
-    this._correspondenceDetailsService.getCorrespondenceMetadataDetail(this.VolumeID, this.CorrespondencType)
-      .subscribe(correspondenceMetadata => {
-        this.correspondenceMetadata = correspondenceMetadata;
-        this.correspondenceProgbar = false;
-      });
+      this._correspondenceDetailsService.getCorrespondenceMetadataDetail(this.VolumeID, this.CorrespondencType)
+        .subscribe(correspondenceMetadata => {
+          this.correspondenceMetadata = correspondenceMetadata;
+          this.correspondenceProgbar = false;
+          this.correspondenceTabLoaded = true;
+        });
+    }
   }
 
   getTransferHistoryData(VolumeID: String): void {
@@ -306,10 +312,6 @@ export class CorrespondenceDetailComponent implements OnInit {
       });
   }
 
-  GetCoverLetter() {
-    alert('asd');
-  }
-
   showActionProperties(dataID: string): void {
     this._correspondenceDetailsService.getDocumentPropertiesURL(dataID)
       .subscribe(correspondenceCovertData => this.documentPreviewURL = correspondenceCovertData);
@@ -320,11 +322,8 @@ export class CorrespondenceDetailComponent implements OnInit {
       data => {
 
         if (data.transfer_status_changes.length > 0 && data.transfer_status_changes[0].ID.toString() === this.correspondenceData.ID.toString()) {
-          console.log('Success operation - ' + toggleAction);
-          this.showMessage('Success operation - ' + toggleAction);
           this.RefreshRecord();
         } else {
-          console.log('An error occurred within the Transfer action - ' + toggleAction + ' , please contact the administrator');
           this.showMessage('An error occurred within the Transfer action - ' + toggleAction + ' , please contact the administrator');
         }
 
