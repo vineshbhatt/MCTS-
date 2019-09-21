@@ -88,6 +88,10 @@ import {DatePipe} from '@angular/common';
 import { CorrespondenceFormStepExtOutComponent } from './external/correspondence-form-step-extout/correspondence-form-step-extout.component';
 import { SendBackDialogComponent } from './dialog-boxes/send-back-dialog/send-back-dialog.component';
 
+import { CommentDialogComponent } from './comments/comment-dialog/comment-dialog.component';
+import { CommentsTreeComponent } from './comments/comments-tree/comments-tree.component';
+import { MatRadioModule } from '@angular/material';
+import { CommentSectionComponent } from './comments/comment-section/comment-section.component';
 
 @NgModule({
   imports: [
@@ -118,7 +122,7 @@ import { SendBackDialogComponent } from './dialog-boxes/send-back-dialog/send-ba
     OwlNativeDateTimeModule,
     MatTreeModule,
     MatIconModule,
-    NgxFileDropModule, NgxPrintModule, NgxBarcodeModule, PreventDoubleSubmitModule, NgScrollbarModule
+    NgxFileDropModule, NgxPrintModule, NgxBarcodeModule, PreventDoubleSubmitModule, NgScrollbarModule, MatRadioModule
   ],
   declarations: [
     DashboardComponent,
@@ -176,7 +180,10 @@ import { SendBackDialogComponent } from './dialog-boxes/send-back-dialog/send-ba
     ExternalOutgoing,
     CorrespondenceFormStepComponent,
     CorrespondenceFormStepExtOutComponent,
-    SendBackDialogComponent
+    SendBackDialogComponent,
+    CommentDialogComponent,
+    CommentsTreeComponent,
+    CommentSectionComponent
   ],
   entryComponents: [
     MailDetailView,
@@ -188,7 +195,8 @@ import { SendBackDialogComponent } from './dialog-boxes/send-back-dialog/send-ba
     TransferRecallDialogComponent,
     TransferReplyDialogComponent,
     TransferReturntoasDialogComponent,
-    SendBackDialogComponent
+    SendBackDialogComponent,
+    CommentDialogComponent
   ],
   providers: [ErrorHandlerFctsService, NotificationService, DatePipe]
 })

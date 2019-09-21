@@ -53,7 +53,7 @@
             <td class="icon_wrapper ">
               <span *ngFor="let inboxCorrespondenceIcons of correspondData.inboxCorrespondenceIcon" [matTooltip]="inboxCorrespondenceIcons.title"
                 class="icon_004" [ngClass]="inboxCorrespondenceIcons.active">
-                        <img class="inbox_icon_img" [src]="inboxCorrespondenceIcons.icon" alt="">
+                        <img class="inbox_icon_img" [src]="inboxCorrespondenceIcons.icon" alt="" (click) = "correspondenceIconsFunction(correspondData,inboxCorrespondenceIcons.runfunc)">
                     </span>
             </td>
             <td (click)="previewViewWrapper(correspondData)">
@@ -122,7 +122,7 @@
                 <div class="priview_header">
                   <button class="pre_close" (click)="previewViewWrapper(!correspondData)"><img src="{{basehref}}assets/images/icons/delete-button.svg" alt=""></button>
                   <a (click)="routeToDetailsPage(correspondData)" class="oppr_icon_001">
-                            <img matTooltip="Open" src="{{basehref}}assets/images/icons/external-link-white.svg" alt="">
+                            <img matTooltip="Openn" src="{{basehref}}assets/images/icons/external-link-white.svg" alt="">
                           </a>
                   <button class="oppr_icon_002" (click)="previewViewWrapper(!correspondData)">
                             <img  matTooltip="Quick view" (click)="quickViewWrapper(correspondData)" src="{{basehref}}assets/images/icons/info_icon-white.svg" alt="">

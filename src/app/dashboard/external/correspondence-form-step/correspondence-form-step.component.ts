@@ -18,6 +18,7 @@ import { SendBackDialogComponent } from '../../dialog-boxes/send-back-dialog/sen
 import { organizationalChartModel, organizationalChartEmployeeModel } from 'src/app/dashboard/models/organizational-Chart.model';
 import { DocumentPreview } from 'src/app/dashboard/services/documentpreview.model';
 import { CorrespondenceWFFormModel } from 'src/app/dashboard/models/CorrepondenceWFFormModel';
+import { RecallStepsInfo } from '../../services/correspondence.model';
 
 import { TransferDialogBox } from '../correspondence-detail/correspondence-transfer-dialog/correspondence-transfer-dialog.component';
 
@@ -30,7 +31,7 @@ import { AppLoadConstService } from 'src/app/app-load-const.service';
 import { CorrespondenceShareService } from '../../services/correspondence-share.service';
 
 import { ShowSections, ShowCorrItems, ShowWFButtons } from 'src/app/dashboard/external/correspondence-detail/correspondence-show-sections';
-
+import { NotificationService } from 'src/app/dashboard/services/notification.service';
 
 @Component({
   selector: 'app-correspondence-form-step',
@@ -53,6 +54,7 @@ export class CorrespondenceFormStepComponent implements OnInit {
     , private _errorHandlerFctsService: ErrorHandlerFctsService
     , private appLoadConstService: AppLoadConstService
     , private correspondenceShareService: CorrespondenceShareService
+    , private notificationmessage: NotificationService,
     ) { }
 
   get f() { return this.correspondenceDetailsForm.controls; }
@@ -129,7 +131,7 @@ export class CorrespondenceFormStepComponent implements OnInit {
   correspondenceCollaborationDetail: CorrResponse[]; // make model
   progbar = false;
   ccProgbar = false;
-  commentsProgbar = false;
+  commentsProgbar = true;
   correspondenceCCtData: CorrResponse[];
   correspondenceCommentsDetail: CorrResponse[];
   transferhistorytabData: CorrResponse[];
@@ -151,7 +153,8 @@ export class CorrespondenceFormStepComponent implements OnInit {
   CCLoaded = false;
   returnReason: string;
   returnComment: string;
-
+  CorrespondenceFlowType: string; /* 1,5,7 */
+  stepsInfo = new RecallStepsInfo();  /* for Dispositin1 custom audit */
 
   ngOnInit() {
     this.VolumeID = this.route.snapshot.queryParamMap.get('VolumeID');
@@ -428,6 +431,7 @@ export class CorrespondenceFormStepComponent implements OnInit {
     this.correspondenceDetailsForm.get('fillinPlanPath').setValue(this.body.values.WorkflowForm_1x4x1x133);
     this.correspondenceDetailsForm.get('staffNumber').setValue(this.body.values.WorkflowForm_1x4x1x41);
     this.correspondenceDetailsForm.get('dispatchMethod').setValue({EN: this.getDefaultaValue('DispatchMethod', this.body.values.WorkflowForm_1x4x1x49)});
+    this.CorrespondenceFlowType = this.body.values.WorkflowForm_1x4x1x70;
     this.barcodeNumberToPrint = this.body.values.WorkflowForm_1x4x1x9;
   }
 
@@ -460,6 +464,7 @@ export class CorrespondenceFormStepComponent implements OnInit {
     this.progbar = true;
     if (this.taskID === '32') {
       this.body.values = {};
+      this.body.values.WorkflowForm_1x4x1x75 = action;
     } else {
       this.makeFormObjectToSubmit(action);
     }
@@ -482,12 +487,14 @@ export class CorrespondenceFormStepComponent implements OnInit {
         this.sendOnCorrespondence();
       },
       responseError => {
+        this.progbar = false;
         this._errorHandlerFctsService.handleError(responseError).subscribe();
       }
     );
   }
 
   sendOnCorrespondence() {
+    this.setDispAudit(); /* set custom Audit for Disposition1 */
     this.correspondenceDetailsService.sendOnCorrespondence(this.VolumeID, this.taskID)
     .subscribe(
       response => {
@@ -496,6 +503,7 @@ export class CorrespondenceFormStepComponent implements OnInit {
         // console.log(response);
       },
       responseError => {
+        this.progbar = false;
         this._errorHandlerFctsService.handleError(responseError).subscribe();
       }
     );
@@ -1132,6 +1140,35 @@ export class CorrespondenceFormStepComponent implements OnInit {
         this.body.values.WorkflowForm_1x4x1x96 = '4'; // CorrespondencePhase
         break;
     }
+  }
+
+  getInfoDispAudit() {
+    /* needs to unify function with Dashboard components
+    set only necessary variable  */
+      this.stepsInfo.CorrespondenceFlowType = this.CorrespondenceFlowType;
+      this.stepsInfo.currTask = Number(this.taskID);
+      this.stepsInfo.iterNum = '';
+      this.stepsInfo.subWorkID = Number(this.VolumeID);
+  }
+
+  setDispAudit(): void {
+    this.notificationmessage.error('Set Disposition1 audit', 'Disposition1 is stored for the custom audit', 2500);
+    this.getInfoDispAudit();
+    const disposition1 = this.body.values.WorkflowForm_1x4x1x75;
+    const setDisp = this.correspondencservice.returnDisp1ForAudit(this.stepsInfo, disposition1);
+    this.correspondencservice.setCustomDispositionAudit(this.stepsInfo, setDisp).subscribe(
+      response => {
+        if ( response.toString().trim() === this.stepsInfo.subWorkID.toString() ) {
+          // DispAudit is set
+        } else {
+          // this.showMessage('Error withing saving Disposition1 for Correspondence, VolumeID = ' + stepsInfo.subWorkID.toString());
+          alert('Error withing saving Disposition1 for Correspondence, VolumeID = ' + this.stepsInfo.subWorkID.toString());
+        }
+      },
+      responseError => {
+        this._errorHandlerFctsService.handleError(responseError).subscribe();
+      }
+    );
   }
 
 }

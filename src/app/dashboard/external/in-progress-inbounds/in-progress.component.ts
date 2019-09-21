@@ -32,7 +32,7 @@ export class InProgressComponent extends BaseDashboardActiveComponent implements
     ) {
       super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService);
       this.reportType = 'ExtInbAck';
-      this.routerFormStep = '/dashboard/external/correspondence-form-step';
+      this.routerFormStep = '/dashboard/external/correspondence-form-step-inc';
     }
 
   ngOnInit() {

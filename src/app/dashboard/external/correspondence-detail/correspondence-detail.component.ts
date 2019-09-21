@@ -72,7 +72,7 @@ export class CorrespondenceDetailComponent implements OnInit {
   attachmentsProgbar = false;
   transferProgbar = false;
   userCollaborationProgbar = false;
-  commentsProgbar = false;
+  commentsProgbar = true;
   openedSubComment = false;
   openedComment = false;
   openedSubReplies = false;
@@ -104,12 +104,7 @@ export class CorrespondenceDetailComponent implements OnInit {
     this.correspondenceShowData();
   }
 
-  ngAfterViewInit() {
-
-  }
-
   ReadRecord(locationid: string, transid: string) {
-    debugger;
     this._correspondenceDetailsService
       .getCorrRecord(locationid, transid, CSConfig.globaluserid)
       .subscribe(correspondenceData => {
@@ -286,7 +281,7 @@ export class CorrespondenceDetailComponent implements OnInit {
       });
   }
 
-  showCommentsData() {
+/*  showCommentsData() {
     this.getCommentsData();
   }
 
@@ -297,7 +292,7 @@ export class CorrespondenceDetailComponent implements OnInit {
         this.correspondenceCommentsDetail = correspondenceCommentsDetail;
         this.commentsProgbar = false;
       });
-  }
+  }*/
 
   corrconnectionsData() {
     this.getCorrConnectionsData();
@@ -320,7 +315,6 @@ export class CorrespondenceDetailComponent implements OnInit {
   toggleTransferTo(toggleAction: string) {
     this._correspondenceShareService.ToggleTransStatus(this.correspondenceData.ID, toggleAction).subscribe(
       data => {
-
         if (data.transfer_status_changes.length > 0 && data.transfer_status_changes[0].ID.toString() === this.correspondenceData.ID.toString()) {
           this.RefreshRecord();
         } else {

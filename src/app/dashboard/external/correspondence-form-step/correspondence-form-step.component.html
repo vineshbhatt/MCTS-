@@ -528,8 +528,8 @@
             </div>
           </div>
         </mat-expansion-panel>
-        <mat-expansion-panel class="mat-elevation-z " >
-            <mat-expansion-panel-header (click)="showCommentsData();">
+        <mat-expansion-panel class="mat-elevation-z bg_001" *ngIf="sectionDisplay.Comments.Show">
+            <mat-expansion-panel-header (click)="commentsProgbar = false">
               <div class="icon_wrapper">
                 <div class="icon_typ icon_typ_009">
                   <img src="{{basehref}}assets/images/icons/comment_icon.svg" alt="">
@@ -541,67 +541,8 @@
               <div *ngIf="commentsProgbar" class="spinner_sm_wrappar">
                 <mat-spinner class="spinner_sm"></mat-spinner>
               </div>
-              <div *ngIf="!commentsProgbar" class="corres_comnt_area">
-                <div class="cmnt_wrapper" *ngFor="let correspondenceCommentsDetails of correspondenceCommentsDetail">
-                  <div class="main_cmd" *ngFor="let correspondenceCommentsCnt of correspondenceCommentsDetails.myRows;let rowNumber = index">
-                    <div class="camnd_wrp_white" *ngIf="rowNumber < 2">
-                      <p class="cmnd_name">{{correspondenceCommentsCnt.CreatorName_EN}}</p>
-                      <div class="amnd_dt_typ_wrp">
-                        <p class="cmnd_date">{{correspondenceCommentsCnt.CreationDate}}</p>
-                        <p class="cmnd_type">{{correspondenceCommentsCnt.ReferenceType}}</p>
-                      </div>
-                      <div class="cmnd_cnt_wrp">
-                        <p class="cnt_text">{{correspondenceCommentsCnt.CommentText}}</p>
-                      </div>
-                    </div>
-                    <div *ngIf="openedComment">
-                      <div class="camnd_wrp_white" *ngIf="rowNumber >= 2">
-                        <p class="cmnd_name">{{correspondenceCommentsCnt.CreatorName_EN}}</p>
-                        <div class="amnd_dt_typ_wrp">
-                          <p class="cmnd_date">{{correspondenceCommentsCnt.CreationDate}}</p>
-                          <p class="cmnd_type">{{correspondenceCommentsCnt.ReferenceType}}</p>
-                        </div>
-                        <div class="cmnd_cnt_wrp">
-                          <p class="cnt_text">{{correspondenceCommentsCnt.CommentText}}</p>
-                        </div>
-                      </div>
-                    </div>
-                    <button class="cmd_mr_btn_wrp" (click)="openedSubComment = !openedSubComment" *ngIf="correspondenceCommentsCnt.ReplyAvailable">View Replies.</button>
-                    <div *ngIf="openedSubComment" class="cmnt_wrapper inner_cmd">
-                      <div *ngFor="let correspondenceCommentsNextCnt  of correspondenceCommentsCnt.subComments">
-                        <div class="camnd_wrp_white">
-                          <p class="cmnd_name">{{correspondenceCommentsNextCnt.CreatorName_EN}}</p>
-                          <div class="amnd_dt_typ_wrp">
-                            <p class="cmnd_date">{{correspondenceCommentsNextCnt.CreationDate}}</p>
-                            <p class="cmnd_type">{{correspondenceCommentsNextCnt.ReferenceType}}</p>
-                          </div>
-                          <div class="cmnd_cnt_wrp">
-                            <p class="cnt_text">{{correspondenceCommentsNextCnt.CommentText}}</p>
-                          </div>
-                        </div>
-                        <button class="cmd_mr_btn_wrp" (click)="openedSubReplies = !openedSubReplies" *ngIf=correspondenceCommentsNextCnt.ReplyAvailable>View Replies.</button>
-                        <div *ngIf="openedSubReplies" class="cmnt_wrapper inner_cmd">
-                          <div *ngFor="let correspondenceCommentsNextCmnt  of correspondenceCommentsNextCnt.subComments">
-                            <div class="camnd_wrp_white">
-                              <p class="cmnd_name">{{correspondenceCommentsNextCmnt.CreatorName_EN}}</p>
-                              <div class="amnd_dt_typ_wrp">
-                                <p class="cmnd_date">{{correspondenceCommentsNextCmnt.CreationDate}}</p>
-                                <p class="cmnd_type">{{correspondenceCommentsNextCmnt.ReferenceType}}</p>
-                              </div>
-                              <div class="cmnd_cnt_wrp">
-                                <p class="cnt_text">{{correspondenceCommentsNextCmnt.CommentText}}</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="frst_wrk_btn">
-                    <button class="cmd_mr_btn_wrp" *ngIf="!openedComment" (click)="openedComment = !openedComment">View more comments.</button>
-                    <button class="cmd_mr_btn_wrp" *ngIf="openedComment" (click)="openedComment = !openedComment">View less comments.</button>
-                  </div>
-                </div>
+              <div *ngIf="!commentsProgbar && correspondenceData" class="input_item_wrp corres_comnt_area">
+                <app-comment-section [data]="correspondenceData" [corrType]="CorrespondencType" [corrTaskID] = "taskID"></app-comment-section>
               </div>
             </div>
         </mat-expansion-panel>

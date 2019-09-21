@@ -607,8 +607,7 @@ export class CorrespondenceDetailsService {
     );
   }
   syncDocumentMetadata(documentMetadataSync: SyncDocumentMetadataModel): Observable<any> {
-
-    var formData = new FormData();
+    const formData = new FormData();
     formData.append('docFolderID', documentMetadataSync.docFolderID);
     formData.append('srcDocID', documentMetadataSync.srcDocID);
     formData.append('SenderOrganization', documentMetadataSync.SenderOrganization);
@@ -636,7 +635,7 @@ export class CorrespondenceDetailsService {
 
     const params = new HttpParams()
       .set('NoteText', notes)
-      .set('prompting', 'done')
+      .set('prompting', 'done');
 
     return this.httpServices.get<any>(
       this.CSUrl +
@@ -653,7 +652,7 @@ export class CorrespondenceDetailsService {
 
     const params = new HttpParams()
       .set('subworkId', subworkId)
-      .set('taskId', taskId)
+      .set('taskId', taskId);
 
     return this.httpServices.get<any>(
       this.CSUrl +
@@ -669,7 +668,7 @@ export class CorrespondenceDetailsService {
   getNotesText(notesID: string, volumeID: string): Observable<any> {
     const params = new HttpParams()
       .set('NotesID', notesID)
-      .set('SubWorkID', volumeID)
+      .set('SubWorkID', volumeID);
 
     return this.httpServices.get<any>(
       this.CSUrl +

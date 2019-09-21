@@ -26,6 +26,7 @@ export class InternalDashboardComponent extends BaseDashboardFullComponent  impl
     ) {
       super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService);
       this.reportType = 'IntFullSearch';
+      this.routerFormStep = '/dashboard/internal/correspondence-form-step-int';
   }
 
 }

@@ -26,6 +26,7 @@ export class MrDispatchedOutboundsComponent extends BaseDashboardComponent imple
     ) {
         super(router, dialogU, correspondenceService, сorrespondenceShareService, errorHandlerFctsService, appLoadConstService);
         this.reportType = 'MRExtOutDis';
+        this.routerFormStep = '/dashboard/mailroom/correspondence-form-step-out';
     }
 
     ngOnInit() {

@@ -26,6 +26,7 @@ export class MrArchievedOutboundsComponent extends BaseDashboardComponent implem
   ) {
       super(router, dialogU, correspondenceService, сorrespondenceShareService, errorHandlerFctsService, appLoadConstService);
       this.reportType = 'MRExtOutArc';
+      this.routerFormStep = '/dashboard/mailroom/correspondence-form-step-out';
   }
 
   ngOnInit() {

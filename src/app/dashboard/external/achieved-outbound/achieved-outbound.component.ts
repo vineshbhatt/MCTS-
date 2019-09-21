@@ -26,6 +26,7 @@ export class AchievedOutboundComponent extends BaseDashboardComponent implements
   ) {
       super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService);
       this.reportType = 'ExtOutArc';
+      this.routerFormStep = '/dashboard/external/correspondence-form-step-out';
   }
 
   ngOnInit() {

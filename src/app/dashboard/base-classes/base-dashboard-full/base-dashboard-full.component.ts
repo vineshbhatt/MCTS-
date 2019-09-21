@@ -160,7 +160,8 @@ export class BaseDashboardFullComponent extends BaseDashboardComponent implement
 
   setItemCount() {
     // overiding parent function to avoid error
-  }
+  } 
+
   selectWFStepRoute(correspondData: Correspondence) {
     switch (correspondData.CorrespondenceFlowType) {
       case '1':

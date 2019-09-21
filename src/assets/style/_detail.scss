@@ -111,11 +111,7 @@ app-correspondence-detail {
     padding: 16px 15px;
     box-sizing: border-box;
     display: block;
-
-    .corres_data_area {
-      // width: calc(100% - 55px);
-    }
-
+  
     .acdn_open_header {
       display: flex;
 
@@ -431,7 +427,9 @@ app-correspondence-detail {
 .userConfirmation,
 .message-dialog,
 .complete-dialog,
-.transfer-reply-dialog {
+.transfer-reply-dialog,
+.commentsDialogBox
+ {
   margin: auto !important;
 
   .closeButton {

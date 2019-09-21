@@ -1,0 +1,157 @@
+import { Component, OnInit, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA, MatRadioButton } from '@angular/material';
+import { CorrespondenceShareService } from '../../services/correspondence-share.service';
+import { ErrorHandlerFctsService } from '../../services/error-handler-fcts.service';
+import { CorrResponse, CommentsNode } from '../../services/correspondence-response.model';
+import { AppLoadConstService } from 'src/app/app-load-const.service';
+
+@Component({
+  selector: 'app-comment-dialog',
+  templateUrl: './comment-dialog.component.html',
+  styleUrls: ['./comment-dialog.component.scss']
+})
+export class CommentDialogComponent implements OnInit {
+  public globalConstants = this.appLoadConstService.getConstants();
+  commentsProgbar = false;
+  correspondenceCommentsDetail: CorrResponse[];
+  VolumeID: string;
+  commentsDataBufer: CommentsNode[];
+  showAddCommentField: Boolean = false;
+  addCommentObj: CommentsNode = {
+    CommentText:    '',
+    CreationDate:   '',
+    CreatorID:      '',
+    CreatorName_AR: '',
+    CreatorName_EN: '',
+    Deleted:        '',
+    ID:             '',
+    Private:        '',
+    ReferenceID:    '',
+    ReferenceType:  '',
+    ReplyAvailable: '',
+    ReplyTo:        '',
+    Version:        '',
+    shortComment:   ''
+  };
+  privateLabels: string[] = ['Private', 'Public'];
+  infoText: string;
+  replyToComment: string;
+  replyToDate: string;
+  checkedPrivate: Boolean = true;
+  commentsEditable: Boolean = false;
+  expandedRightAction: Boolean = false;
+  ReferenceType = 'Workflow';
+  CurrTaskID = '';
+  currPerformerID: string;
+
+  constructor(
+    public dialogRef: MatDialogRef<CommentDialogComponent>,
+    public correspondenceShareService: CorrespondenceShareService,
+    private _errorHandlerFctsService: ErrorHandlerFctsService,
+    public appLoadConstService: AppLoadConstService,
+    @Inject(MAT_DIALOG_DATA) public corrData: any,
+  ) { }
+
+  ngOnInit() {
+    this.VolumeID = this.corrData.data.VolumeID;
+    this.checkEditable();
+    this.getCommentsData();
+    console.log('commentsEditable');
+    console.log(this.corrData.data);
+    console.log(this.commentsEditable);
+  }
+
+  closeDialog(): void {
+    this.dialogRef.close('close');
+  }
+
+  getCommentsData(): void {
+    this.commentsProgbar = true;
+    this.correspondenceShareService.getCommentsData(this.VolumeID)
+      .subscribe(response => {
+        this.correspondenceCommentsDetail = response;
+        if ( Array.isArray(this.correspondenceCommentsDetail) && this.correspondenceCommentsDetail.length) {
+          this.commentsDataBufer = this.correspondenceCommentsDetail[0].myRows;
+        } else {
+          console.log('Comments data error!!!');
+        }
+        this.commentsProgbar = false;
+      },
+      responseError => {
+        this._errorHandlerFctsService.handleError(responseError).subscribe();
+        this.closeDialog();
+      });
+  }
+
+  saveComment(): void {
+    this.correspondenceShareService.setComment(this.addCommentObj ,  this.CurrTaskID === '' ? this.corrData.data.SubWorkTask_TaskID : this.CurrTaskID )
+     .subscribe(response => {
+        this.showAddCommentField = false;
+        this.getCommentsData();
+    },
+    responseError => {
+      this._errorHandlerFctsService.handleError(responseError).subscribe();
+    });
+  }
+
+  openAddReplyWindow(replyToObj: CommentsNode): void {
+    this.defaltRadio(0);
+    this.replyToComment = replyToObj.CommentText;
+    this.replyToDate = replyToObj.CreationDate;
+    // tslint:disable-next-line: max-line-length
+    this.infoText = 'Reply to ' + (replyToObj.Private ? 'Private' : 'Public')  + ' comment posted by ' + replyToObj.CreatorName_EN + ' on ';
+    this.addCommentObj.CommentText    = '';
+   /*  this.addCommentObj.Private        = '0'; */
+    this.addCommentObj.ReferenceID    = this.corrData.data.VolumeID;
+    this.addCommentObj.ReferenceType  = this.ReferenceType;
+    this.addCommentObj.ReplyTo        = replyToObj.ID;
+    this.showAddCommentField = true;
+
+  }
+
+  openAddCommentWindow(): void {
+    this.defaltRadio(0);
+    this.infoText = 'Write new comment :';
+    this.replyToComment = '';
+    this.addCommentObj.CommentText    = '';
+    this.addCommentObj.ReferenceID    = this.corrData.data.VolumeID;
+    this.addCommentObj.ReferenceType  = this.ReferenceType;
+    this.addCommentObj.ReplyTo        = '';
+    this.showAddCommentField = true;
+  }
+
+
+  defaltRadio(val: number): void {
+    this.checkedPrivate = !val;
+    this.addCommentObj.Private = val.toString();
+  }
+
+  checkEditable(): void {
+    // debugger;
+    if (this.corrData.reportType !== 'ExtFullSearch' && this.corrData.reportType !== 'IntFullSearch') {
+/*       console.log(this.corrData.reportType);
+      console.log('this.corrData.data');
+      console.log(this.corrData.data); */
+      const isAssignee = this.globalConstants.FCTS_Dashboard.UserGroupsArray.includes(this.corrData.data.SubWorkTask_PerformerID);
+      // tslint:disable-next-line: max-line-length
+      if ( this.corrData.data.SubWorkTask_TaskID !== '0' && this.corrData.data.CorrespondencePhase !== '3' && (this.corrData.data.CorrespondenceFlowType === '1' || this.corrData.data.CorrespondenceFlowType === '7')) {
+        this.commentsEditable = true;
+        // console.log('Condition 1');
+      // tslint:disable-next-line: max-line-length
+      } else if ( this.corrData.data.SubWorkTask_TaskID !== '0' && this.corrData.data.CorrespondenceFlowType === '5' && (  isAssignee === true ||  this.corrData.data.transIsCC !== '1')) {
+        // console.log('Condition 2');
+        this.commentsEditable = true;
+      } else if ( this.corrData.data.transID.toString() !== '0' && this.corrData.data.transHoldSecretaryID.toString() === CSConfig.globaluserid && this.corrData.data.transStatus.toString() === '0') {
+        // console.log('Condition 3');
+        this.commentsEditable = true;
+        this.ReferenceType = 'Transfer';
+        this.CurrTaskID = this.corrData.data.transID;
+        this.currPerformerID = this.corrData.data.transHoldSecretaryID;
+        // console.log(this.ReferenceType + '-' + this.CurrTaskID + '-' + this.currPerformerID);
+      } else {
+        // console.log('Condition 4');
+      }
+      // this.commentsEditable = false;
+    }
+  }
+}

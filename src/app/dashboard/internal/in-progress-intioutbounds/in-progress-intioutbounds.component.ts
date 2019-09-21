@@ -26,6 +26,7 @@ export class InprogressIntOutboundComponent extends BaseDashboardActiveComponent
     ) {
       super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService);
       this.reportType = 'IntOutSig';
+      this.routerFormStep = '/dashboard/internal/correspondence-form-step-int';
     }
 
   ngOnInit() {
