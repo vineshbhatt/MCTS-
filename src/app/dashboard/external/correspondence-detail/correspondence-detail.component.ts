@@ -233,7 +233,10 @@ export class CorrespondenceDetailComponent implements OnInit {
         }
       })
         .afterClosed().subscribe(result => {
-          if (result === 'Reload') { this.RefreshRecord(); }
+          if (result === 'Reload') {
+            this.backNavigation();
+            //this.RefreshRecord(); 
+          }
         });
     } else {
       let CompleteRequestFinal: StatusRequest = new StatusRequest;
@@ -281,18 +284,18 @@ export class CorrespondenceDetailComponent implements OnInit {
       });
   }
 
-/*  showCommentsData() {
-    this.getCommentsData();
-  }
-
-  getCommentsData(): void {
-    this.commentsProgbar = true;
-    this._correspondenceDetailsService.getCommentsData(this.VolumeID)
-      .subscribe(correspondenceCommentsDetail => {
-        this.correspondenceCommentsDetail = correspondenceCommentsDetail;
-        this.commentsProgbar = false;
-      });
-  }*/
+  /*  showCommentsData() {
+      this.getCommentsData();
+    }
+  
+    getCommentsData(): void {
+      this.commentsProgbar = true;
+      this._correspondenceDetailsService.getCommentsData(this.VolumeID)
+        .subscribe(correspondenceCommentsDetail => {
+          this.correspondenceCommentsDetail = correspondenceCommentsDetail;
+          this.commentsProgbar = false;
+        });
+    }*/
 
   corrconnectionsData() {
     this.getCorrConnectionsData();
@@ -346,7 +349,13 @@ export class CorrespondenceDetailComponent implements OnInit {
         transferUser: transUser,
         callPlace: 'CorrDetails'
       }
-    }).afterClosed().subscribe();
+    }).afterClosed().subscribe(
+      result => {
+        if (result === 'Reload') {
+          this.backNavigation();
+          //this.RefreshRecord(); 
+        }
+      });
   }
 
   transferReply(): void {

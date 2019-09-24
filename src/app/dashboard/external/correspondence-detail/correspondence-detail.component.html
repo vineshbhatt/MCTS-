@@ -374,7 +374,8 @@
             </div>
           </div>
         </mat-expansion-panel>
-        <mat-expansion-panel class="mat-elevation-z linked_crsp_exp_view" *ngIf="sectionDisplay.LinkedCorrespondence.Show">
+        <mat-expansion-panel class="mat-elevation-z linked_crsp_exp_view"
+          *ngIf="sectionDisplay.LinkedCorrespondence.Show">
           <mat-expansion-panel-header (click)="corrconnectionsData();">
             <div class="icon_wrapper">
               <div class="icon_typ icon_typ_008">
@@ -490,25 +491,26 @@
               </div>
             </div>
           </div>
-        </div>
-      </mat-expansion-panel>
-      <mat-expansion-panel class="mat-elevation-z bg_001" *ngIf="sectionDisplay.Comments.Show">
-        <mat-expansion-panel-header (click)="commentsProgbar = false">
-          <div class="icon_wrapper">
-            <div class="icon_typ icon_typ_009">
-              <img src="{{basehref}}assets/images/icons/comment_icon.svg" alt="">
+        </mat-expansion-panel>
+        <mat-expansion-panel class="mat-elevation-z bg_001" *ngIf="sectionDisplay.Comments.Show">
+          <mat-expansion-panel-header (click)="commentsProgbar = false">
+            <div class="icon_wrapper">
+              <div class="icon_typ icon_typ_009">
+                <img src="{{basehref}}assets/images/icons/comment_icon.svg" alt="">
+              </div>
+            </div>
+            <p class="title_001">Comments</p>
+          </mat-expansion-panel-header>
+          <div class="corres_data_area">
+            <div *ngIf="commentsProgbar" class="spinner_sm_wrappar">
+              <mat-spinner class="spinner_sm"></mat-spinner>
+            </div>
+            <div *ngIf="!commentsProgbar && correspondenceData" class="input_item_wrp corres_comnt_area">
+              <app-comment-section [data]="correspondenceData" [corrType]="CorrespondencType" [corrTaskID]="taskID">
+              </app-comment-section>
             </div>
           </div>
-          <p class="title_001">Comments</p>
-        </mat-expansion-panel-header>
-        <div class="corres_data_area">
-          <div *ngIf="commentsProgbar" class="spinner_sm_wrappar">
-            <mat-spinner class="spinner_sm"></mat-spinner>
-          </div>
-          <div *ngIf="!commentsProgbar && correspondenceData" class="input_item_wrp corres_comnt_area">
-            <app-comment-section [data]="correspondenceData" [corrType]="CorrespondencType" [corrTaskID] = "taskID"></app-comment-section>
-          </div>
-        </mat-expansion-panel>        
+        </mat-expansion-panel>
         <mat-expansion-panel class="mat-elevation-z panal_pd_0" *ngIf="sectionDisplay.Transfer.Show">
           <mat-expansion-panel-header (click)="transferTabShowData()">
             <div class="icon_wrapper">
@@ -574,6 +576,12 @@
       </mat-accordion>
     </div>
     <div class="corp_dtl_btn_btm_wrapper">
+      <button class="btn_008" *ngIf="buttonsDisplay.corrTrReply" (click)="transferReply(correspondData)">Reply</button>
+      <button class="btn_008" *ngIf="buttonsDisplay.corrComplete" (click)="OpenCompleteDialog('1')">Complete</button>
+      <button class="btn_008" *ngIf="buttonsDisplay.corrArchive" (click)="OpenCompleteDialog('2')">Archive</button>
+      <button class="btn_008" *ngIf="buttonsDisplay.corrSave" (click)="saveTransferTo()">Save</button>
+      <button class="btn_008"  (click)="backNavigation()">Back</button>
+
       <button (click)="expandeActionLeftButton()" matRipple class="corsp_ext_btn">
         <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
       </button>
@@ -582,9 +590,9 @@
   </ng-scrollbar>
   <ng-scrollbar thumbClass="scroll_001" class="correspondence_deatil_prview_wrappper scroll_wrp_001 scroll_pr_0"
     [ngClass]="expandedRightAction ? 'unActive' : 'ActiveRight'" *ngIf="expandedAction">
-     <button (click)="expandeActionRightButton()" matRipple class="corsp_ext_btn">
-        <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
-      </button>
+    <button (click)="expandeActionRightButton()" matRipple class="corsp_ext_btn">
+      <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
+    </button>
     <div class="documentViewerDiv" *ngFor="let docpreviewData of documentPreviewURL">
       <iframe class="iframeclass" [src]="docpreviewData.CorrespondencedocumentURL|safe"></iframe>
     </div>

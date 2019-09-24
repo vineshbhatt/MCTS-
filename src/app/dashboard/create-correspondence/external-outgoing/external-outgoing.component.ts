@@ -17,7 +17,9 @@ import { NotificationService } from '../../services/notification.service';
 import { BaseCorrespondenceComponent } from '../../base-classes/base-correspondence-csactions/base-correspondence.component';
 import { CorrespondenceDetailsService } from 'src/app/dashboard/services/correspondence-details.service';
 import { CSDocumentUploadService } from '../../services/CSDocumentUpload.service'
-
+import { ActivatedRoute } from '@angular/router';
+import { RecipientDetailsData, SenderDetailsData } from '../../services/correspondence-response.model';
+import { ErrorHandlerFctsService } from '../../services/error-handler-fcts.service';
 
 
 
@@ -78,6 +80,7 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
   uploadSuccess: boolean;
 
   initiateOutgoingCorrespondenceDetails = new CorrespondenceWFFormModel;
+  parentIncomingCorrespondenceDetails = new CorrespondenceWFFormModel;
 
   showGeneratebarcodeButton: boolean = true;
   showSendOnButton: boolean = false;
@@ -111,6 +114,12 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
   showCommentsTextArea: boolean = false;
   spinnerDataLoaded: boolean = false;
 
+  VolumeID: string;
+  action: string;
+  parentLocationID: string;
+
+  correspondenceParentSenderDetails: SenderDetailsData;
+
   @Input() data: number;
   @Output() focusOut: EventEmitter<number> = new EventEmitter<number>();
   viewNoteStatus;
@@ -121,10 +130,18 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
     private organizationalChartService: OrganizationalChartService, private formBuilder: FormBuilder,
     private correspondencservice: CorrespondenceService,
     private notificationmessage: NotificationService,
-    public csdocumentupload: CSDocumentUploadService, public correspondenceDetailsService: CorrespondenceDetailsService) {
+    public csdocumentupload: CSDocumentUploadService, public correspondenceDetailsService: CorrespondenceDetailsService,
+    private route: ActivatedRoute, private _errorHandlerFctsService: ErrorHandlerFctsService) {
     super(csdocumentupload, correspondenceDetailsService)
   }
   ngOnInit() {
+
+    this.VolumeID = this.route.snapshot.queryParamMap.get('VolumeID');
+    this.parentLocationID = this.route.snapshot.queryParamMap.get('locationid');
+    this.action = this.route.snapshot.queryParamMap.get('action');
+
+
+
     //Get Logged in user Information
     this.getSenderUserInfromation('', this.corrFlowType);
     this.getOrganizationalChartDetail();
@@ -181,11 +198,21 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
           this.correspondenceDetailsService.searchFieldForAutoFill(value, 'ExtOrganization', '')
         )
       );
+
+
   }
   ngAfterViewInit() {
     this.getTempFolderAttachments(this.corrFlowType);
     this.getApprovers('iApprover_2_37');
     this.getApprovers('iApprover_2_33');
+
+    if (this.VolumeID != '' && this.VolumeID != undefined) {
+      switch (this.action) {
+        case 'reply':
+          this.setreplyCorrespondence();
+          break;
+      }
+    }
 
   }
 
@@ -522,13 +549,11 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
     this.initiateOutgoingCorrespondenceDetails.StaffNumber = this.correspondenceDetailsForm.get('staffNumber').value;
     this.initiateOutgoingCorrespondenceDetails.Confidential = this.correspondenceDetailsForm.get('confidential').value;
 
-
-
     this.initiateOutgoingCorrespondenceDetails.Disposition1 = Disposition1;
     this.initiateOutgoingCorrespondenceDetails.Disposition2 = Disposition2;
     this.initiateOutgoingCorrespondenceDetails.Disposition3 = Dispostion3;
 
-    this.initiateOutgoingCorrespondenceDetails.CorrespondenceType2 = this.correspondenceDetailsForm.get('correspondenceType').value;
+    this.initiateOutgoingCorrespondenceDetails.CorrespondenceType2 = this.getIDVal(this.correspondenceDetailsForm.get('correspondenceType').value);
     this.initiateOutgoingCorrespondenceDetails.CoverID = this.coverID;
     this.initiateOutgoingCorrespondenceDetails.TemplateLanguage = this.templateLanguage;
 
@@ -825,6 +850,86 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
   }
   SaveComments(Comments: string) {
 
+  }
+
+  setreplyCorrespondence() {
+
+    let connectiontype = 3;
+    let copy = 'false';
+    let referencetype = 'Correspondence';
+    let connectedtype = 'Correspondence';
+    this.setConnection(this.parentLocationID, connectiontype, referencetype, connectedtype, this.corrFlowType, copy);
+  }
+  setConnection(connectedid, connectiontype, referenceType, connectedtype, flowType, copy) {
+
+    //WRInsertConnection
+    this.correspondenceDetailsService.setConnectionn(connectedid, connectiontype,
+      referenceType, connectedtype, CSConfig.globaluserid, '1').subscribe(
+        (resultVal) => {
+          this.initiateOutgoingCorrespondenceDetails.ConnectedRefID = resultVal[0].ID;
+          this.initiateOutgoingCorrespondenceDetails.ConnectedID = connectedid;
+          this.getParentCorrespondenceSenderDetails();
+          this.getParentCorrespondenceMetadataDetails();
+        }
+
+      );
+
+
+  }
+
+  getParentCorrespondenceMetadataDetails() {
+    this.correspondenceDetailsService.getCorrespondenceMetadataDetails(this.VolumeID).subscribe(
+      corrDetailsMetadata => {
+        this.parentIncomingCorrespondenceDetails = corrDetailsMetadata[0];
+        this.setReplyMetadata();
+      }
+    )
+
+  }
+  getParentCorrespondenceSenderDetails(): void {
+    this.correspondenceDetailsService
+      .getCorrespondenceSenderDetails(this.VolumeID, 'Incoming', false, '')
+      .subscribe(
+        correspondenceSenderDetailsData => {
+          if ((typeof correspondenceSenderDetailsData[0].myRows !== 'undefined') && correspondenceSenderDetailsData[0].myRows.length > 0) {
+
+            this.correspondenceParentSenderDetails = correspondenceSenderDetailsData[0].myRows[0];
+            this.recipientDetailsForm.get('RecipientName').setValue(this.correspondenceParentSenderDetails.Name_EN);
+            this.recipientDetailsForm.get('RecipientDepartment').setValue(this.correspondenceParentSenderDetails.DepartmentName_EN);
+            this.recipientDetailsForm.get('ExternalOrganization').setValue({ OrgName_En: this.correspondenceParentSenderDetails.OrganizationName_EN, OrgName_Ar: this.correspondenceParentSenderDetails.OrganizationName_AR, OrgID: this.correspondenceParentSenderDetails.ExternalOrganization });
+          }
+        },
+        responseError => {
+          this._errorHandlerFctsService.handleError(responseError).subscribe();
+        }
+      );
+  }
+  setReplyMetadata() {
+    this.correspondenceDetailsForm.get('arabicSubject').setValue(this.parentIncomingCorrespondenceDetails.ArabicSubject);
+    this.correspondenceDetailsForm.get('englishSubject').setValue(this.parentIncomingCorrespondenceDetails.EnglishSubject);
+    this.correspondenceDetailsForm.get('projectCode').setValue(this.parentIncomingCorrespondenceDetails.ProjectCode);
+    this.correspondenceDetailsForm.get('budgetNumber').setValue(this.parentIncomingCorrespondenceDetails.BudgetNumber);
+    this.correspondenceDetailsForm.get('tenderNumber').setValue(this.parentIncomingCorrespondenceDetails.TenderNumber);
+    this.correspondenceDetailsForm.get('contractNumber').setValue(this.parentIncomingCorrespondenceDetails.ContractNumber);
+    this.correspondenceDetailsForm.get('correspondenceType').setValue(this.setDropDownValue('CorrespondenceType',
+      this.parentIncomingCorrespondenceDetails.CorrespondenceType2));
+  }
+
+  setDropDownValue(Attrname: string, ID: string): any {
+    debugger;
+    if (ID == undefined || ID === '' || ID === '0') {
+      return '';
+    } else {
+      let obj: any = {};
+      this.MetadataFilters.forEach(element => {
+        if (element.AttrName === Attrname && element.ID === ID) {
+          obj.EN = element.Name_EN;
+          obj.AR = element.Name_EN;
+          obj.ID = element.ID;
+        }
+      });
+      return obj;
+    }
   }
 
 }

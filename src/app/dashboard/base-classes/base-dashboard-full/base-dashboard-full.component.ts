@@ -163,6 +163,7 @@ export class BaseDashboardFullComponent extends BaseDashboardComponent implement
   } 
 
   selectWFStepRoute(correspondData: Correspondence) {
+    debugger;    
     switch (correspondData.CorrespondenceFlowType) {
       case '1':
         this.routerFormStep = '/dashboard/external/correspondence-form-step-inc'; //'/dashboard/external/correspondence-form-step-inc';

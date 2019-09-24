@@ -12,13 +12,13 @@
         <div class="header_back_cpd_dtl">
           <button class="back_btn" (click)="backNavigation()">
             <img src="{{basehref}}assets/images/icons/left_arrow.svg" alt="">
-          </button>          
-            <h3 class="text_23 ltg_text">{{taskTitle}}</h3>          
+          </button>
+          <h3 class="text_23 ltg_text">{{taskTitle}}</h3>
         </div>
-        <div>          
-            <br />
-            <h4 class="">{{correspondenceData.CorrFolderName }} - {{CorrespondencType}}</h4>
-        </div>      
+        <div>
+          <br />
+          <h4 class="">{{correspondenceData.CorrFolderName }} - {{CorrespondencType}}</h4>
+        </div>
       </div>
     </div>
     <form [formGroup]="senderDetailsForm">
@@ -79,7 +79,8 @@
                       <input type="text" aria-label="Number" matInput formControlName="ExternalOrganization"
                         [matAutocomplete]="extOrgName">
                     </mat-form-field>
-                    <mat-autocomplete #extOrgName="matAutocomplete" class="longautocomplete" [displayWith]="displaySearchFilterValueExt">
+                    <mat-autocomplete #extOrgName="matAutocomplete" class="longautocomplete"
+                      [displayWith]="displaySearchFilterValueExt">
                       <mat-option *ngFor="let OrgName of (filteredExtOrgNames | async)" [value]="OrgName"
                         (onSelectionChange)="optionSelectionChangeExternal(OrgName, $event)">
                         {{OrgName?.OrgName_En}}
@@ -447,7 +448,7 @@
                 </tr>
                 <tbody *ngFor="let corrAttachmentDetails of AttachmentFolderData">
                   <tr *ngFor="let attachmentData of corrAttachmentDetails.myRows">
-                    <td class="size_45" [innerHtml]="attachmentData.attachmentType">        
+                    <td class="size_45" [innerHtml]="attachmentData.attachmentType">
                     </td>
                     <td>
                       <a class="coverLink" (click)="getCoverDocumentURL(attachmentData.Dataid)">{{attachmentData.Name}}
@@ -590,6 +591,25 @@
             </div>
           </mat-expansion-panel>
         </form>
+        <mat-expansion-panel class="mat-elevation-z bg_001">
+          <mat-expansion-panel-header (click)="commentsProgbar = false">
+            <div class="icon_wrapper">
+              <div class="icon_typ icon_typ_009">
+                <img src="{{basehref}}assets/images/icons/comment_icon.svg" alt="">
+              </div>
+            </div>
+            <p class="title_001">Comments</p>
+          </mat-expansion-panel-header>
+          <div class="corres_data_area">
+            <div *ngIf="commentsProgbar" class="spinner_sm_wrappar">
+              <mat-spinner class="spinner_sm"></mat-spinner>
+            </div>
+            <div *ngIf="!commentsProgbar && correspondenceData" class="input_item_wrp corres_comnt_area">
+              <app-comment-section [data]="correspondenceData" [corrType]="CorrespondencType" [corrTaskID]="taskID">
+              </app-comment-section>
+            </div>
+          </div>
+        </mat-expansion-panel>
       </mat-accordion>
     </div>
     <div class="corp_dtl_btn_btm_wrapper">

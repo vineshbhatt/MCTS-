@@ -55,6 +55,7 @@ export class BaseDashboardComponent implements OnInit {
 
   reportType = '';
   routerCorrDetail = '/dashboard/external/correspondence-detail';
+  routerInitateExternal = '/dashboard/create/new-external-outgoing';
   routerFormStep = '/';
   basehref: String = FCTSDashBoard.BaseHref;
   CorrAttach: CorrAttachDocuments;
@@ -154,6 +155,7 @@ export class BaseDashboardComponent implements OnInit {
   }
 
   routeToDetailsPage(correspondData: Correspondence) {
+    debugger;
     this.selectWFStepRoute(correspondData);
     this.setPerformerPermission(correspondData);
     const isAssignee = this.globalConstants.FCTS_Dashboard.UserGroupsArray.includes(correspondData.SubWorkTask_PerformerID);
@@ -505,6 +507,7 @@ export class BaseDashboardComponent implements OnInit {
   /********************************************************* */
 
   correspondenceIconsFunction(correspondData: Correspondence, icon: string): void {
+    
     if (icon === 'openComments') {
       this.commentsDialogBox(correspondData);
     }

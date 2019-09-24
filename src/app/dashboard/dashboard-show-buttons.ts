@@ -13,11 +13,12 @@ interface DashboardCorrButtonsList {
     PrintBarcode: boolean;
     Recall: boolean;
     ReplyIntern: boolean;
+    ReplyExtern: boolean;
     ReplyTrans: boolean;
     ReturnToAS: boolean;
     SaveCorr: boolean;
     WFHistory: boolean;
-  }
+}
 
 export class DashboardShowButtons implements DashboardCorrButtonsList {
     private _Archive: boolean;
@@ -32,14 +33,15 @@ export class DashboardShowButtons implements DashboardCorrButtonsList {
     private _PrintBarcode: boolean;
     private _Recall: boolean;
     private _ReplyIntern: boolean;
+    private _ReplyExtern: boolean;
     private _ReplyTrans: boolean;
     private _ReturnToAS: boolean;
     private _SaveCorr: boolean;
     private _WFHistory: boolean;
     private _ShowMore: boolean;
 
-   // private _correspondData: Correspondence;
-   // private _reportType: string;
+    // private _correspondData: Correspondence;
+    // private _reportType: string;
 
     public get Archive(): boolean { return this._Archive; }
     public set Archive(value: boolean) { this._Archive = value; }
@@ -77,6 +79,9 @@ export class DashboardShowButtons implements DashboardCorrButtonsList {
     public get ReplyIntern(): boolean { return this._ReplyIntern; }
     public set ReplyIntern(value: boolean) { this._ReplyIntern = value; }
 
+    public get ReplyExtern(): boolean { return this._ReplyExtern; }
+    public set ReplyExtern(value: boolean) { this._ReplyExtern = value; }
+
     public get ReplyTrans(): boolean { return this._ReplyTrans; }
     public set ReplyTrans(value: boolean) { this._ReplyTrans = value; }
 
@@ -99,15 +104,16 @@ export class DashboardShowButtons implements DashboardCorrButtonsList {
     }
 
     private _setInitData() {
-        this.Archive        = false;
-        this.Complete       = false;
-        this.Copy           = false;
-        this.Delete         = false;
-      /*   this.DownloadAttach = false; */
+        this.Archive = false;
+        this.Complete = false;
+        this.Copy = false;
+        this.Delete = false;
+        /*   this.DownloadAttach = false; */
         this.MRRecall = false;
         this.PrintBarcode = false;
         this.Recall = false;
         this.ReplyIntern = false;
+        this.ReplyExtern = false;
         this.ReplyTrans = false;
         this.ReturnToAS = false;
         this.SaveCorr = false;
@@ -138,46 +144,53 @@ export class DashboardShowButtons implements DashboardCorrButtonsList {
         const allowsCompl = ['ExtInbNew', 'IntInbNew'];
         const allowCopy = ['IntInbAck', 'IntInbArc', 'IntOutSig', 'IntOutArc', 'ExtOutSig', 'ExtInbArc'];
         const allowMRRecall = ['ExtFullSearch', 'MRExtInbAckn'];
-        const allowsRecall = ['ExtInbAck', 'ExtOutWIP', 'IntInbAck', 'IntOutWIP' ];
+        const allowsRecall = ['ExtInbAck', 'ExtOutWIP', 'IntInbAck', 'IntOutWIP'];
         const allowReplayInt = ['IntFullSearch', 'IntInbNew', 'IntInbAck', 'IntInbArc'];
+        const allowReplayExt = ['ExtFullSearch', 'ExtInbNew', 'ExtInbAck', 'ExtInbArc'];
         const fullSearch = ['ExtFullSearch', 'IntFullSearch'];
-// Print Barcode
-        if ( correspondData.CorrespondenceCode !== '' ) {
+        // Print Barcode
+        if (correspondData.CorrespondenceCode !== '') {
             this.PrintBarcode = true;
         }
-// Reply Internal
+        // Reply Internal
         if (allowReplayInt.indexOf(reportType) > -1) {
             this.ReplyIntern = true;
         }
-// Copy
+
+        // Reply External
+        if (allowReplayExt.indexOf(reportType) > -1) {
+            this.ReplyExtern = true;
+        }
+
+        // Copy
         if (allowCopy.indexOf(reportType) > -1) {
             this.Copy = true;
         }
-// Archive
+        // Archive
         if (allowsArch.indexOf(reportType) > -1) {
             this.Archive = true;
         }
-// Recall
+        // Recall
         if (allowsRecall.indexOf(reportType) > -1) {
             this.Recall = true;
         } else if (fullSearch.indexOf(reportType) > -1 && correspondData.SubWorkTask_TaskID.toString() !== '0') {
             this.Recall = true;
         }
-// MR Recall
-        if ( allowMRRecall.indexOf(reportType) > -1
+        // MR Recall
+        if (allowMRRecall.indexOf(reportType) > -1
             && correspondData.CorrespondenceFlowType === '1'
             && ['32', '0', '?', ''].indexOf(correspondData.SubWorkTask_TaskID.toString()) > -1
         ) { this.MRRecall = true; }
-// Complete
-// Reply Transfer
+        // Complete
+        // Reply Transfer
         if (allowsCompl.indexOf(reportType) > -1) {
             this.Complete = true;
             if (correspondData.transID.toString() !== '0') {
                 this.ReplyTrans = true;
             }
         }
-// Return to AS
-        if ( reportType === 'ExtInbAck' && correspondData.performer07.toString() === '1') {
+        // Return to AS
+        if (reportType === 'ExtInbAck' && correspondData.performer07.toString() === '1') {
             this.ReturnToAS = true;
         }
 

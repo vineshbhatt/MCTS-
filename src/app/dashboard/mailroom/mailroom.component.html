@@ -5,7 +5,7 @@
       <img class="menu_arow_icon_001" src="{{basehref}}assets/images/icons/arrow_point_icon_001.svg" alt="" />
     </button>
     <div class="menu_item_active">
-      <p class="text_12">MR INBOUND</p>
+      <p class="text_12">INBOUND</p>
       <ul class="menu_item_wrapper" *ngFor="let menuItem of menuItems">
         <li class="menu_item" *ngFor="let inbound of menuItem.inbounds">
           <a class="color_001 text_14" [routerLink]="[inbound.router]" routerLinkActive="sideNavActive">
@@ -15,7 +15,7 @@
           </a>
         </li>
       </ul>
-      <p class="text_12">MR OUTBOUND</p>
+      <p class="text_12">OUTBOUND</p>
       <ul class="menu_item_wrapper" *ngFor="let menuItem of menuItems">
         <li class="menu_item" *ngFor="let outbound of menuItem.outbounds">
           <a class="color_001 text_14" [routerLink]="[outbound.router]" routerLinkActive="sideNavActive">
