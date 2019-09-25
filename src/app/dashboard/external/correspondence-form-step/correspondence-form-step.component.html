@@ -187,7 +187,7 @@
             </mat-expansion-panel>
           </form>
 
-        <mat-expansion-panel class="mat-elevation-z ">
+        <mat-expansion-panel class="mat-elevation-z">
           <mat-expansion-panel-header>
             <div class="icon_wrapper">
               <div class="icon_typ icon_typ_004">
@@ -201,47 +201,41 @@
               <mat-spinner class="spinner_sm"></mat-spinner>
             </div>
             <div *ngIf="!coverProgbar" class="corres_fld_wrapper">
-              <form class="cust_row" [formGroup]="correspondenceDetailsForm" (ngSubmit)="onSubmit()">
+              <form class="cust_row" [formGroup]="correspondenceDetailsForm" (ngSubmit)="checkFields()">
                 <mat-form-field class="col_6" *ngIf="showCorrItems.regDate.Show">
                   <input matInput placeholder="Reg Date" formControlName="regDate" >
                 </mat-form-field>
                 <div class="doc_date_wrp col_6">
                   <mat-form-field class="" *ngIf="showCorrItems.docsDate.Show">
-                    <input matInput placeholder="Doc Date" [owlDateTimeTrigger]="docDate" [owlDateTime]="docDate"
-                      autocomplete="off" formControlName="docsDate">
+                    <input matInput placeholder="Doc Date" [owlDateTimeTrigger]="docDate" [owlDateTime]="docDate" autocomplete="off" formControlName="docsDate" [required]="showCorrItems.docsDate.Reguired" >
                     <owl-date-time [pickerType]="'calendar'" #docDate></owl-date-time>
                   </mat-form-field>
                   <mat-checkbox formControlName="confidential" *ngIf="showCorrItems.confidential.Show">Confidential</mat-checkbox>
                 </div>
 
-              <mat-form-field class="col_6" *ngIf="showCorrItems.priority.Show">
-                <input type="text" [(ngModel)]="PriorityVal" placeholder="Priority" matInput
-                  [matAutocomplete]="Priority" formControlName="priority">
-                <mat-autocomplete #Priority="matAutocomplete" [displayWith]="displayFn" autoActiveFirstOption>
-                  <mat-option *ngFor="let option of MetadataFilters | attrfilter:'Priority':PriorityVal"
-                    [value]="option">
-                    {{option.EN}}
-                  </mat-option>
-                </mat-autocomplete>
-              </mat-form-field>
+                <mat-form-field class="col_6" *ngIf="showCorrItems.priority.Show">
+                  <input matInput type="text" [(ngModel)]="PriorityVal" placeholder="Priority"
+                    [matAutocomplete]="Priority" formControlName="priority" [required]="showCorrItems.priority.Reguired">
+                    <mat-autocomplete #Priority="matAutocomplete" [displayWith]="displayFn">
+                        <mat-option *ngFor="let option of MetadataFilters | attrfilter:'Priority':PriorityVal"
+                          [value]="option">
+                          {{option.EN}}
+                        </mat-option>
+                      </mat-autocomplete>
+                </mat-form-field>
 
                 <mat-form-field class="col_6" *ngIf="showCorrItems.refNumber.Show">
-                  <input matInput autocomplete="off" placeholder="Ref Number" formControlName="refNumber"
-                    [ngClass]="{ 'is-invalid': submitted && f.refNumber.errors }" required>
-                  <mat-error *ngIf="submitted && f.refNumber.errors">Please enter Ref number</mat-error>
+                  <input matInput autocomplete="off" placeholder="Ref Number" formControlName="refNumber" [required]="showCorrItems.refNumber.Reguired">
                 </mat-form-field>
                 <mat-form-field class="col_6" *ngIf="showCorrItems.personalName.Show">
-                  <input matInput autocomplete="off" placeholder="Personal Name" formControlName="personalName"  [(ngModel)]="name">
-                  <!-- <mat-error *ngIf="submitted && f.personalName.errors">Please enter Personal Name</mat-error> -->
+                  <input matInput autocomplete="off" placeholder="Personal Name" formControlName="personalName" [(ngModel)]="name" [required]="showCorrItems.personalName.Reguired">
                 </mat-form-field>
                 <mat-form-field class="col_6" *ngIf="showCorrItems.idNumber.Show">
-                  <input matInput autocomplete="off" placeholder="ID Number" formControlName="idNumber"
-                    [ngClass]="{ 'is-invalid': submitted && f.IDNumber.errors }">
-                  <!-- <mat-error *ngIf="submitted && f.IDNumber.errors">Please enter ID</mat-error> -->
+                  <input matInput autocomplete="off" placeholder="ID Number" formControlName="idNumber" [required]="showCorrItems.idNumber.Reguired">
                 </mat-form-field>
                 <mat-form-field class="col_6" *ngIf="showCorrItems.correspondenceType.Show">
                   <input type="text" [(ngModel)]="CorrespondenceTypeVal" placeholder="Correspondence Type" matInput
-                    [matAutocomplete]="CorrespondenceType" formControlName="correspondenceType">
+                    [matAutocomplete]="CorrespondenceType" formControlName="correspondenceType" [required]="showCorrItems.correspondenceType.Reguired">
                   <mat-autocomplete #CorrespondenceType="matAutocomplete" [displayWith]="displayFn"
                     autoActiveFirstOption>
                     <mat-option
@@ -251,10 +245,9 @@
                     </mat-option>
                   </mat-autocomplete>
                 </mat-form-field>
-
                 <mat-form-field class="col_6" *ngIf="showCorrItems.baseType.Show">
                   <input type="text" [(ngModel)]="BaseTypeVal" placeholder="Base Type" matInput
-                    [matAutocomplete]="BaseType" formControlName="baseType">
+                    [matAutocomplete]="BaseType" formControlName="baseType" [required]="showCorrItems.baseType.Reguired">
                   <mat-autocomplete #BaseType="matAutocomplete" [displayWith]="displayFn" autoActiveFirstOption>
                     <mat-option *ngFor="let option of MetadataFilters | attrfilter:'BaseType':BaseTypeVal"
                       [value]="option">
@@ -263,29 +256,29 @@
                   </mat-autocomplete>
                 </mat-form-field>
                 <mat-form-field class="col_12" *ngIf="showCorrItems.arabicSubject.Show">
-                  <input matInput autocomplete="off" placeholder="Arabic Subject" formControlName="arabicSubject">
+                  <input matInput autocomplete="off" placeholder="Arabic Subject" formControlName="arabicSubject" [required]="showCorrItems.arabicSubject.Reguired">
                 </mat-form-field>
                 <mat-form-field class="col_12" *ngIf="showCorrItems.englishSubject.Show">
-                  <input matInput autocomplete="off" placeholder="English Subject" formControlName="englishSubject">
+                  <input matInput autocomplete="off" placeholder="English Subject" formControlName="englishSubject" [required]="showCorrItems.englishSubject.Reguired">
                 </mat-form-field>
                 <mat-form-field class="col_6" *ngIf="showCorrItems.projectCode.Show">
-                  <input matInput autocomplete="off" placeholder="Project Code" formControlName="projectCode">
+                  <input matInput autocomplete="off" placeholder="Project Code" formControlName="projectCode" [required]="showCorrItems.projectCode.Reguired">
                 </mat-form-field>
                 <mat-form-field class="col_6" *ngIf="showCorrItems.budgetNumber.Show">
-                  <input matInput autocomplete="off" placeholder="Budget Number" formControlName="budgetNumber">
+                  <input matInput autocomplete="off" placeholder="Budget Number" formControlName="budgetNumber" [required]="showCorrItems.budgetNumber.Reguired">
                 </mat-form-field>
                 <mat-form-field class="col_6" *ngIf="showCorrItems.contractNumber.Show">
-                  <input matInput autocomplete="off" placeholder="Contract Number" formControlName="contractNumber">
+                  <input matInput autocomplete="off" placeholder="Contract Number" formControlName="contractNumber" [required]="showCorrItems.contractNumber.Reguired">
                 </mat-form-field>
                 <mat-form-field class="col_6" *ngIf="showCorrItems.tenderNumber.Show">
-                  <input matInput autocomplete="off" placeholder="Tender Number" formControlName="tenderNumber">
+                  <input matInput autocomplete="off" placeholder="Tender Number" formControlName="tenderNumber" [required]="showCorrItems.tenderNumber.Reguired">
                 </mat-form-field>
                 <mat-form-field class="col_6"  *ngIf="showCorrItems.corrNumber.Show" disabled>
-                  <input matInput autocomplete="off" placeholder="Corr Number" formControlName="corrNumber" >
+                  <input matInput autocomplete="off" placeholder="Corr Number" formControlName="corrNumber">
                 </mat-form-field>
                 <mat-form-field class="col_6" *ngIf="showCorrItems.fillinPlanPath.Show">
                   <input type="text" [(ngModel)]="FillingPlanPathVal" placeholder="Filling Plan Path" matInput
-                    [matAutocomplete]="FillingPlanPath" formControlName="fillinPlanPath">
+                    [matAutocomplete]="FillingPlanPath" formControlName="fillinPlanPath" [required]="showCorrItems.fillinPlanPath.Reguired">
                   <mat-autocomplete #FillingPlanPath="matAutocomplete" [displayWith]="displayFn" autoActiveFirstOption>
                     <mat-option *ngFor="let option of MetadataFilters | attrfilter:'FillingPlanPath':FillingPlanPathVal"
                       [value]="option">
@@ -296,7 +289,7 @@
 
                 <mat-form-field class="col_6" *ngIf="showCorrItems.dispatchMethod.Show">
                   <input type="text" [(ngModel)]="DispatchMethodVal" placeholder="Dispatch Method" matInput
-                    [matAutocomplete]="DispatchMethod" formControlName="dispatchMethod">
+                    [matAutocomplete]="DispatchMethod" formControlName="dispatchMethod" [required]="showCorrItems.dispatchMethod.Reguired">
                   <mat-autocomplete #DispatchMethod="matAutocomplete" [displayWith]="displayFn" autoActiveFirstOption>
                     <mat-option *ngFor="let option of MetadataFilters | attrfilter:'DispatchMethod':DispatchMethodVal"
                       [value]="option">
@@ -306,7 +299,7 @@
                 </mat-form-field>
 
                 <mat-form-field class="col_6" *ngIf="showCorrItems.staffNumber.Show">
-                  <input matInput autocomplete="off" placeholder="Staff Number" formControlName="staffNumber">
+                  <input matInput autocomplete="off" placeholder="Staff Number" formControlName="staffNumber" [required]="showCorrItems.staffNumber.Reguired">
                 </mat-form-field>
               </form>
             </div>

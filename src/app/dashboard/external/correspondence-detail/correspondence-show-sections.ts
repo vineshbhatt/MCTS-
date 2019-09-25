@@ -28,25 +28,25 @@ import { CorrespondenenceDetailsModel } from '../../models/CorrespondenenceDetai
   }
 
   interface CorrItemsList {
-    regDate:            SectionParam;
-    docsDate:           SectionParam;
-    confidential:       SectionParam;
-    priority:           SectionParam;
-    refNumber:          SectionParam;
-    personalName:       SectionParam;
-    idNumber:           SectionParam;
-    correspondenceType: SectionParam;
-    baseType:           SectionParam;
-    arabicSubject:      SectionParam;
-    englishSubject:     SectionParam;
-    projectCode:        SectionParam;
-    budgetNumber:       SectionParam;
-    contractNumber:     SectionParam;
-    tenderNumber:       SectionParam;
-    corrNumber:         SectionParam;
-    fillinPlanPath:     SectionParam;
-    dispatchMethod:     SectionParam;
-    staffNumber:        SectionParam;
+    regDate:            FieldParam;
+    docsDate:           FieldParam;
+    confidential:       FieldParam;
+    priority:           FieldParam;
+    refNumber:          FieldParam;
+    personalName:       FieldParam;
+    idNumber:           FieldParam;
+    correspondenceType: FieldParam;
+    baseType:           FieldParam;
+    arabicSubject:      FieldParam;
+    englishSubject:     FieldParam;
+    projectCode:        FieldParam;
+    budgetNumber:       FieldParam;
+    contractNumber:     FieldParam;
+    tenderNumber:       FieldParam;
+    corrNumber:         FieldParam;
+    fillinPlanPath:     FieldParam;
+    dispatchMethod:     FieldParam;
+    staffNumber:        FieldParam;
   }
 
   export class ShowSections implements CorrSectionList {

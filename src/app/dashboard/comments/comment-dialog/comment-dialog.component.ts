@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, ElementRef } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatRadioButton } from '@angular/material';
 import { CorrespondenceShareService } from '../../services/correspondence-share.service';
 import { ErrorHandlerFctsService } from '../../services/error-handler-fcts.service';
@@ -43,6 +43,7 @@ export class CommentDialogComponent implements OnInit {
   ReferenceType = 'Workflow';
   CurrTaskID = '';
   currPerformerID: string;
+  @ViewChild('txtArea') textArea: ElementRef;
 
   constructor(
     public dialogRef: MatDialogRef<CommentDialogComponent>,
@@ -98,14 +99,13 @@ export class CommentDialogComponent implements OnInit {
     this.defaltRadio(0);
     this.replyToComment = replyToObj.CommentText;
     this.replyToDate = replyToObj.CreationDate;
-    // tslint:disable-next-line: max-line-length
     this.infoText = 'Reply to ' + (replyToObj.Private ? 'Private' : 'Public')  + ' comment posted by ' + replyToObj.CreatorName_EN + ' on ';
     this.addCommentObj.CommentText    = '';
-   /*  this.addCommentObj.Private        = '0'; */
     this.addCommentObj.ReferenceID    = this.corrData.data.VolumeID;
     this.addCommentObj.ReferenceType  = this.ReferenceType;
     this.addCommentObj.ReplyTo        = replyToObj.ID;
     this.showAddCommentField = true;
+	this.textArea.nativeElement.focus();
 
   }
 
@@ -127,17 +127,14 @@ export class CommentDialogComponent implements OnInit {
   }
 
   checkEditable(): void {
-    // debugger;
     if (this.corrData.reportType !== 'ExtFullSearch' && this.corrData.reportType !== 'IntFullSearch') {
 /*       console.log(this.corrData.reportType);
       console.log('this.corrData.data');
       console.log(this.corrData.data); */
       const isAssignee = this.globalConstants.FCTS_Dashboard.UserGroupsArray.includes(this.corrData.data.SubWorkTask_PerformerID);
-      // tslint:disable-next-line: max-line-length
       if ( this.corrData.data.SubWorkTask_TaskID !== '0' && this.corrData.data.CorrespondencePhase !== '3' && (this.corrData.data.CorrespondenceFlowType === '1' || this.corrData.data.CorrespondenceFlowType === '7')) {
         this.commentsEditable = true;
         // console.log('Condition 1');
-      // tslint:disable-next-line: max-line-length
       } else if ( this.corrData.data.SubWorkTask_TaskID !== '0' && this.corrData.data.CorrespondenceFlowType === '5' && (  isAssignee === true ||  this.corrData.data.transIsCC !== '1')) {
         // console.log('Condition 2');
         this.commentsEditable = true;

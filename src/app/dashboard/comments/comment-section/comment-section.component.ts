@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, ElementRef } from '@angular/core';
 import { CorrespondenceShareService } from '../../services/correspondence-share.service';
 import { ErrorHandlerFctsService } from '../../services/error-handler-fcts.service';
 import { CorrResponse, CommentsNode } from '../../services/correspondence-response.model';
@@ -48,9 +48,9 @@ export class CommentSectionComponent implements OnInit {
 
   @Input() data;
   @Input() corrType;
-  @Input() corrPhase;
   @Input() corrTaskID;
   @ViewChild(CommentsTreeComponent) child;
+  @ViewChild('txtArea') textArea: ElementRef;
   constructor(
     public correspondenceShareService: CorrespondenceShareService,
     private _errorHandlerFctsService: ErrorHandlerFctsService,
@@ -80,7 +80,6 @@ export class CommentSectionComponent implements OnInit {
         if (this.child) {
           this.refresh();
         }
-/*         this.displayTree = true; */
       },
       responseError => {
         this._errorHandlerFctsService.handleError(responseError).subscribe();
@@ -97,6 +96,7 @@ export class CommentSectionComponent implements OnInit {
     this.addCommentObj.ReferenceType  = this.ReferenceType;
     this.addCommentObj.ReplyTo        = replyToObj.ID;
     this.showAddCommentField = true;
+    this.textArea.nativeElement.focus();
   }
 
   defaltRadio(val: number): void {
@@ -127,21 +127,19 @@ export class CommentSectionComponent implements OnInit {
   }
 
   checkEditable(): void {
-    // debugger;
  /*    console.log('this.corrType -' + this.corrType);
     console.log('this.corrPhase -' + this.corrPhase);
     console.log(typeof this.corrPhase);
     console.log('corrTaskID - ' + this.corrTaskID);
     console.log(this.data ); */
-
-    const isAssignee = this.globalConstants.FCTS_Dashboard.UserGroupsArray.includes(this.data.UserID);
-    if ( (this.corrTaskID != 0 && this.corrTaskID != undefined) && this.corrPhase !== 3 && (this.corrType === 'Internal' || this.corrType === 'Incoming')) {
+     const isAssignee = this.globalConstants.FCTS_Dashboard.UserGroupsArray.includes(this.data.UserID);
+    if ( (this.corrTaskID != 0 && this.corrTaskID != undefined) && this.data.CorrespondencePhase.toString() != '3' && (this.corrType === 'Internal' || this.corrType === 'Incoming')) {
       this.commentsEditable = true;
       // console.log('Condition 1');
     } else if ( (this.corrTaskID != 0 && this.corrTaskID != undefined) && this.corrType === 'Outgoing' && (  isAssignee === true ||  this.data.isCC !== 1)) {
       // console.log('Condition 2');
       this.commentsEditable = true;
-    } else if ( this.data.ID.toString() !== '0' && this.data.Status.toString() !== '0' && this.data.holdSecretaryID.toString() === CSConfig.globaluserid ) {
+    } else if ( this.data.ID.toString() !== '0' && this.data.Status.toString() === '0' && this.data.holdSecretaryID.toString() === CSConfig.globaluserid ) {
       // console.log('Condition 3');
       this.commentsEditable = true;
       this.ReferenceType = 'Transfer';

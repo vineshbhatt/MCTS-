@@ -22,7 +22,8 @@
           <p><i>{{(replyToComment | slice:0:100) + (replyToComment?.length > 100 ? '...' : '')}}</i></p>
         </div>
       <mat-form-field>
-          <textarea 
+          <textarea
+			#txtArea
             cdkTextareaAutosize
             cdkAutosizeMinRows="2" 
             cdkAutosizeMaxRows = "6"

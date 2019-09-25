@@ -145,7 +145,8 @@ export class CorrespondenceFormStepComponent implements OnInit {
   // UI elements show/hide
   stepUIData: any;
   sectionDisplay: ShowSections;
-  showCorrItems = new ShowCorrItems();
+  // showCorrItems = new ShowCorrItems();
+  showCorrItems: ShowCorrItems;
   showWFButtons: ShowWFButtons;
 
   employeeMap = new Map<number, organizationalChartEmployeeModel[]>();
@@ -155,6 +156,8 @@ export class CorrespondenceFormStepComponent implements OnInit {
   returnComment: string;
   CorrespondenceFlowType: string; /* 1,5,7 */
   stepsInfo = new RecallStepsInfo();  /* for Dispositin1 custom audit */
+  corrPhase: string;
+
 
   ngOnInit() {
     this.VolumeID = this.route.snapshot.queryParamMap.get('VolumeID');
@@ -166,9 +169,10 @@ export class CorrespondenceFormStepComponent implements OnInit {
     this.getCorrespondenceSenderDetails();
     this.getCorrespondenceRecipientDetails();
     this.stepUIData = this.toShowWFButtons(this.taskID);
+    this.showCorrItems = this.stepUIData.ShowFields;
     this.showWFButtons =  this.stepUIData.ShowButtons;
     this.sectionDisplay = this.stepUIData.ShowSections;
-    // this.sectionDisplay.ShowCorrSectionWF();
+    // this.showCorrItems = this.stepUIData.ShowFields;
 
     // Get Logged in user Information
     this.getUserInfo();
@@ -198,13 +202,14 @@ export class CorrespondenceFormStepComponent implements OnInit {
 
       ])
     });
-
+    // const validators = [ Validators.required ];
     this.correspondenceDetailsForm = this.formBuilder.group({
       regDate: new FormControl({ value: '', disabled: !this.showCorrItems.regDate.Modify }),
       docsDate: new FormControl({ value: '', disabled: !this.showCorrItems.docsDate.Modify }),
       confidential: new FormControl({ value: '', disabled: !this.showCorrItems.confidential.Modify }),
       priority: new FormControl({ value: '', disabled: !this.showCorrItems.priority.Modify }),
-      refNumber: ['', Validators.required],
+      // refNumber: ['', Validators.required],
+      refNumber: new FormControl({ value: '', disabled: !this.showCorrItems.refNumber.Modify }),
       personalName: new FormControl({ value: '', disabled: !this.showCorrItems.personalName.Modify }),
       idNumber: new FormControl({ value: '', disabled: !this.showCorrItems.idNumber.Modify }),
       correspondenceType: new FormControl({ value: '', disabled: !this.showCorrItems.correspondenceType.Modify }),
@@ -221,6 +226,14 @@ export class CorrespondenceFormStepComponent implements OnInit {
       staffNumber: new FormControl({ value: '', disabled: !this.showCorrItems.staffNumber.Modify }),
     });
 
+    // mark fields as Required
+    for (const obj in this.showCorrItems) {
+      if (this.showCorrItems[obj].Reguired) {
+        this.correspondenceDetailsForm.get(obj).setValidators(Validators.required);
+      }
+    }
+
+    console.log(this.correspondenceDetailsForm.controls);
     this.filteredExtOrgNames = this.senderDetailsForm.get('ExternalOrganization').valueChanges
       .pipe(
         debounceTime(300),
@@ -433,6 +446,7 @@ export class CorrespondenceFormStepComponent implements OnInit {
     this.correspondenceDetailsForm.get('dispatchMethod').setValue({EN: this.getDefaultaValue('DispatchMethod', this.body.values.WorkflowForm_1x4x1x49)});
     this.CorrespondenceFlowType = this.body.values.WorkflowForm_1x4x1x70;
     this.barcodeNumberToPrint = this.body.values.WorkflowForm_1x4x1x9;
+    this.corrPhase =  this.body.values.WorkflowForm_1x4x1x96;
   }
 
   getDefaultaValue(Attrname: string, ID: number): string {
@@ -461,6 +475,10 @@ export class CorrespondenceFormStepComponent implements OnInit {
   }
 
   submitCorrespondenceInfo(action: string) {
+    if (!this.checkFields()) {
+      return;
+    }
+
     this.progbar = true;
     if (this.taskID === '32') {
       this.body.values = {};
@@ -601,13 +619,21 @@ export class CorrespondenceFormStepComponent implements OnInit {
     );
   }
 
-  onSubmit() {
-    this.submitted = true;
-    // stop here if form is invalid
+  checkFields(): boolean {
+    let result = true;
+    // const popUps = ['priority', 'dispatchMethod', 'correspondenceType', 'baseType'];
     if (this.correspondenceDetailsForm.invalid) {
-      return;
+      this.notificationmessage.warning('Mandatoty fields', 'Please fill in manadatory correspondence details', 3000);
+      for (const obj in this.f) {
+        if (this.f[obj].invalid) {
+          this.f[obj].markAsTouched();
+          console.log(obj);
+        }
+      }
+      result = false;
     }
-    // console.log(JSON.stringify(this.correspondenceDetailsForm.value));
+
+    return result;
   }
 
   displayFn(attribute?: any): string | undefined {
@@ -1152,7 +1178,7 @@ export class CorrespondenceFormStepComponent implements OnInit {
   }
 
   setDispAudit(): void {
-    this.notificationmessage.error('Set Disposition1 audit', 'Disposition1 is stored for the custom audit', 2500);
+    // this.notificationmessage.error('Set Disposition1 audit', 'Disposition1 is stored for the custom audit', 2500);
     this.getInfoDispAudit();
     const disposition1 = this.body.values.WorkflowForm_1x4x1x75;
     const setDisp = this.correspondencservice.returnDisp1ForAudit(this.stepsInfo, disposition1);
