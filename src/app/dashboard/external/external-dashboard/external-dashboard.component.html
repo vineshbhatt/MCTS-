@@ -1,3 +1,12 @@
+<div class="header_location_wrapper">
+  <div class="header_back">
+    <a href="http://manotcst02.mannaicorp.com.qa/otcs/cs.exe/app/nodes/2000">
+      <span matTooltip="Back to CS">
+        <img class="homeimg" src="{{basehref}}assets/images/icons/home.svg" alt="">
+      </span>
+    </a>
+  </div>
+</div>
 <div class="header_search_wrapper">
   <div class="header_text_area" *ngFor="let userDatas of userData">
     <div *ngFor="let userDetail of userDatas.userDetails">
@@ -8,6 +17,7 @@
       <p class="text_15 color_002">{{userDetail.userMessage}}</p>
     </div>
   </div>
+
   <div class="header_search">
     <input type="text" class="search_box" placeholder="search">
   </div>
@@ -43,8 +53,9 @@
       <div class="chart_001">
         <p class="text_20">Priority</p>
         <div class="chart_sp_001">
-          <canvas height="100%" width="100%" baseChart [data]="doughnutChartData" [labels]="doughnutChartLabels" [legend]="false" [options]="doughnutChartOptions"
-            [colors]="doughnutChartColor" [chartType]="doughnutChartType">
+          <canvas height="100%" width="100%" baseChart [data]="doughnutChartData" [labels]="doughnutChartLabels"
+            [legend]="false" [options]="doughnutChartOptions" [colors]="doughnutChartColor"
+            [chartType]="doughnutChartType">
           </canvas>
         </div>
         <div class="legend_wrp sp_adjst_001">
@@ -72,11 +83,11 @@
         </div>
         <div class="over_data_wrapper">
           <div class="over_row">
-            <img class="over_icon_001" src="assets/images/icons/external_nav_icon.svg" alt="">
+            <img class="over_icon_001" src="{{basehref}}assets/images/icons/external_nav_icon.svg" alt="">
             <p class="text_center text_15 mt_10">External</p>
           </div>
           <div class="over_row">
-            <img class="over_icon_001" src="assets/images/icons/internal_nav_icon.svg" alt="">
+            <img class="over_icon_001" src="{{basehref}}assets/images/icons/internal_nav_icon.svg" alt="">
             <p class="text_center text_15 mt_10">Internal</p>
           </div>
         </div>
@@ -172,7 +183,7 @@
           </td>
           <td>
           </td>
-          <td>PWA Reference</td>
+          <td>Reference</td>
           <td>Subject</td>
           <!-- <td>Step</td> -->
           <td>From Dep</td>
@@ -182,40 +193,46 @@
           <td></td>
         </tr>
       </thead>
-      <tbody [class.sub_correspondence_open]="correspondData === openedSubCorrespond" class="flex-container flex-column" *ngFor="let correspondData of correspondenceData | paginate: { id: 'server', itemsPerPage: itemsPerPage, currentPage: pagenumber, totalItems: totalCount }">
-        <tr [ngClass]="correspondData.selectedValue ? 'selectedWithCheckbox' : 'unSelected'" class="mat-row" [class.selected]="correspondData === selectedCorrespondence">
+      <tbody [class.sub_correspondence_open]="correspondData === openedSubCorrespond" class="flex-container flex-column"
+        *ngFor="let correspondData of correspondenceData | paginate: { id: 'server', itemsPerPage: itemsPerPage, currentPage: pagenumber, totalItems: totalCount }">
+        <tr [ngClass]="correspondData.selectedValue ? 'selectedWithCheckbox' : 'unSelected'" class="mat-row"
+          [class.selected]="correspondData === selectedCorrespondence">
           <td>
             <!--    <mat-checkbox [(ngModel)]="correspondData.selectedValue" [checked]="selection.isSelected(correspondData)"></mat-checkbox>
 				(click)="$event.stopPropagation()"
                   (change)="$event ? selection.toggle(correspondData) : null"
                   [checked]="selection.isSelected(correspondData)" [value]='correspondData.inboxCorrespondenceValue' -->
-				  <mat-checkbox disabled class="disabledInput"></mat-checkbox> 															  
+            <mat-checkbox disabled class="disabledInput"></mat-checkbox>
           </td>
           <td class="icon_wrapper ">
             <div class="sub_correspondence">
               <div style="height: 20px;">
-                <span *ngFor="let inboxCorrespondenceIcons of correspondData.inboxCorrespondenceIcon" [matTooltip]="inboxCorrespondenceIcons.title"
-                  class="icon_004" [ngClass]="inboxCorrespondenceIcons.active">
-                          <img class="inbox_icon_img" [src]="inboxCorrespondenceIcons.icon" alt="" (click) = "correspondenceIconsFunction(correspondData,inboxCorrespondenceIcons.runfunc)">
-                      </span>
+                <span *ngFor="let inboxCorrespondenceIcons of correspondData.inboxCorrespondenceIcon"
+                  [matTooltip]="inboxCorrespondenceIcons.title" class="icon_004"
+                  [ngClass]="inboxCorrespondenceIcons.active">
+                  <img class="inbox_icon_img" [src]="inboxCorrespondenceIcons.icon" alt=""
+                    (click)="correspondenceIconsFunction(correspondData,inboxCorrespondenceIcons.runfunc)">
+                </span>
               </div>
               <div class="sub_correspondence">
-                <span matTooltip="{{correspondData.subCorrespondenceNumber}} sub correspondence" *ngIf="correspondData.subCorrespondence"
-                  (click)="openSubCorrespond(correspondData)" class="sub_correspondence_btn sub_show_btn">
-                            <img src="{{basehref}}assets/images/icons/arrow_point_down.svg" alt="">
-                              {{correspondData.subCorrespondenceNumber}}
-                          </span>
-                <span *ngIf="correspondData.subCorrespondence" (click)="openSubCorrespond(!correspondData)" class="sub_correspondence_btn sub_hide_btn">
-                              <img src="{{basehref}}assets/images/icons/arrow-point-to-up.svg" alt="">
-                              {{correspondData.subCorrespondenceNumber}}
-                            </span>
+                <span matTooltip="{{correspondData.subCorrespondenceNumber}} sub correspondence"
+                  *ngIf="correspondData.subCorrespondence" (click)="openSubCorrespond(correspondData)"
+                  class="sub_correspondence_btn sub_show_btn">
+                  <img src="{{basehref}}assets/images/icons/arrow_point_down.svg" alt="">
+                  {{correspondData.subCorrespondenceNumber}}
+                </span>
+                <span *ngIf="correspondData.subCorrespondence" (click)="openSubCorrespond(!correspondData)"
+                  class="sub_correspondence_btn sub_hide_btn">
+                  <img src="{{basehref}}assets/images/icons/arrow-point-to-up.svg" alt="">
+                  {{correspondData.subCorrespondenceNumber}}
+                </span>
               </div>
             </div>
           </td>
           <td (click)="previewViewWrapper(correspondData)">
             <span class="pwa_btn" (click)="onSelect(correspondData)">
-                      {{correspondData.ReferenceNumber}}
-                  </span>
+              {{correspondData.ReferenceNumber}}
+            </span>
           </td>
           <td class="td_002">
             <span class="subject_text_wrpper">{{correspondData.EnglishSubject}}</span>
@@ -229,55 +246,61 @@
             <ul class="inbt_icon_wrapper">
               <li class="inbt_icons_wrapper" (click)="onSelect(correspondData)">
                 <button class="inbt_icon_btn" (click)="quickViewWrapper(correspondData)">
-                          <img src="{{basehref}}assets/images/icons/info_icon.svg"alt="">
-                        </button>
+                  <img src="{{basehref}}assets/images/icons/info_icon.svg" alt="">
+                </button>
               </li>
               <li class="inbt_icons_wrapper">
                 <button matTooltip="Workflow History" (click)="openDialog(correspondData)" class="inbt_icon_btn">
-                  <img src="{{basehref}}assets/images/icons/history.svg"alt="">
+                  <img src="{{basehref}}assets/images/icons/history.svg" alt="">
                 </button>
               </li>
               <li class="inbt_icons_wrapper" (click)="onSelect(correspondData)">
                 <a class="inbt_icon_btn" matTooltip="Open" (click)="routeToDetailsPage(correspondData)">
-                          <img src="{{basehref}}assets/images/icons/external-link.svg"alt="">
-                        </a>
+                  <img src="{{basehref}}assets/images/icons/external-link.svg" alt="">
+                </a>
               </li>
               <li class="inbt_icons_wrapper" (click)="onSelect(correspondData)">
                 <button class="inbt_icon_btn" (click)="previewViewWrapper(correspondData)">
-                          <img src="{{basehref}}assets/images/icons/eye-close-up.svg"alt="">
-                        </button>
+                  <img src="{{basehref}}assets/images/icons/eye-close-up.svg" alt="">
+                </button>
               </li>
               <li class="inbt_icons_wrapper" *ngIf=(correspondData.showButtons.ShowMore)>
-                <button (click)="onSelect(correspondData)" [matMenuTriggerFor]="options_001" xPosition="after" yPosition="above" mat-button
-                  class="dote_btn">
-                        <img src="{{basehref}}assets/images/icons/menu.svg" alt="">
-                      </button>
+                <button (click)="onSelect(correspondData)" [matMenuTriggerFor]="options_001" xPosition="after"
+                  yPosition="above" mat-button class="dote_btn">
+                  <img src="{{basehref}}assets/images/icons/menu.svg" alt="">
+                </button>
                 <mat-menu #options_001="matMenu">
                   <!-- <button mat-menu-item (click)="showWorkflowAudit(correspondData.VolumeID)">Workflow Audit</button> -->
-                  <button mat-menu-item (click)="OpenDashCompleteDialog(correspondData, '1')" *ngIf=(correspondData.showButtons.Complete)>Complete</button>
-                  <button mat-menu-item (click)="OpenDashCompleteDialog(correspondData, '2')" *ngIf=(correspondData.showButtons.Archive)>Archive</button>
-                  <button mat-menu-item (click)="startRecall(correspondData, 'SimpleRecall')" *ngIf=(correspondData.showButtons.Recall)>Recall</button>
-                  <button mat-menu-item  *ngIf=(correspondData.showButtons.MRRecall)>MR Recall</button>
-                  <button mat-menu-item  *ngIf=(correspondData.showButtons.ReturnToAS)>Returt to AS</button>
-                  <button mat-menu-item  *ngIf=(correspondData.showButtons.Copy)>Copy</button>
-                  <button mat-menu-item  *ngIf=(correspondData.showButtons.ReplyIntern)>Reply (Internal)</button>
-                  <button mat-menu-item (click)='transferReply(correspondData)' *ngIf=(correspondData.showButtons.ReplyTrans)>Reply (Transfer)</button>
-                  <button mat-menu-item  *ngIf=(correspondData.showButtons.SaveCorr)>Save Correspondence</button>
-                  <button mat-menu-item  *ngIf=(correspondData.showButtons.Delete)>Delete</button>
-                  <button mat-menu-item  *ngIf=(correspondData.showButtons.DownloadAttach)>Download Attachments</button>
-                  <button mat-menu-item  *ngIf=(correspondData.showButtons.PrintBarcode)>Print Barcode</button>
+                  <button mat-menu-item (click)="OpenDashCompleteDialog(correspondData, '1')"
+                    *ngIf=(correspondData.showButtons.Complete)>Complete</button>
+                  <button mat-menu-item (click)="OpenDashCompleteDialog(correspondData, '2')"
+                    *ngIf=(correspondData.showButtons.Archive)>Archive</button>
+                  <button mat-menu-item (click)="startRecall(correspondData, 'SimpleRecall')"
+                    *ngIf=(correspondData.showButtons.Recall)>Recall</button>
+                  <button mat-menu-item *ngIf=(correspondData.showButtons.MRRecall)>MR Recall</button>
+                  <button mat-menu-item *ngIf=(correspondData.showButtons.ReturnToAS)>Returt to AS</button>
+                  <button mat-menu-item *ngIf=(correspondData.showButtons.Copy)>Copy</button>
+                  <button mat-menu-item *ngIf=(correspondData.showButtons.ReplyIntern)>Reply (Internal)</button>
+                  <button mat-menu-item (click)='transferReply(correspondData)'
+                    *ngIf=(correspondData.showButtons.ReplyTrans)>Reply (Transfer)</button>
+                  <button mat-menu-item *ngIf=(correspondData.showButtons.SaveCorr)>Save Correspondence</button>
+                  <button mat-menu-item *ngIf=(correspondData.showButtons.Delete)>Delete</button>
+                  <button mat-menu-item *ngIf=(correspondData.showButtons.DownloadAttach)>Download Attachments</button>
+                  <button mat-menu-item *ngIf=(correspondData.showButtons.PrintBarcode)>Print Barcode</button>
                 </mat-menu>
-              </li> 
+              </li>
             </ul>
             <div class="priview_wrapper" [class.active]="correspondData === previewViewCorrespondence">
               <div class="priview_header">
-                <button class="pre_close" (click)="previewViewWrapper(!correspondData)"><img src="{{basehref}}assets/images/icons/delete-button.svg" alt=""></button>
+                <button class="pre_close" (click)="previewViewWrapper(!correspondData)"><img
+                    src="{{basehref}}assets/images/icons/delete-button.svg" alt=""></button>
                 <a (click)="routeToDetailsPage(correspondData)" class="oppr_icon_001">
-                          <img matTooltip="Open" src="{{basehref}}assets/images/icons/external-link-white.svg" alt="">
-                        </a>
+                  <img matTooltip="Open" src="{{basehref}}assets/images/icons/external-link-white.svg" alt="">
+                </a>
                 <button class="oppr_icon_002" (click)="previewViewWrapper(!correspondData)">
-                          <img  matTooltip="Quick view" (click)="quickViewWrapper(correspondData)" src="{{basehref}}assets/images/icons/info_icon-white.svg" alt="">
-                        </button>
+                  <img matTooltip="Quick view" (click)="quickViewWrapper(correspondData)"
+                    src="{{basehref}}assets/images/icons/info_icon-white.svg" alt="">
+                </button>
               </div>
               <div class="documentViewerDiv" *ngFor="let docpreviewData of documentPreviewURL">
                 <iframe class="iframeclass" [src]="docpreviewData.CorrespondencedocumentURL | safe">
@@ -287,20 +310,22 @@
 
             <div class="priview_wrapper qk_view active" [class.active]="correspondData === quickViewCorrespondence">
               <div class="priview_header">
-                <button class="pre_close pre_all_clos" (click)="quickViewWrapper(!correspondData)"><img src="{{basehref}}assets/images/icons/delete-button.svg" alt=""></button>
+                <button class="pre_close pre_all_clos" (click)="quickViewWrapper(!correspondData)"><img
+                    src="{{basehref}}assets/images/icons/delete-button.svg" alt=""></button>
                 <a matTooltip="Open" (click)="routeToDetailsPage(correspondData)" class="oppr_icon_001">
-                            <img src="{{basehref}}assets/images/icons/external-link-white.svg" alt="">                                                      
-                          </a>
+                  <img src="{{basehref}}assets/images/icons/external-link-white.svg" alt="">
+                </a>
                 <button class="oppr_icon_002" (click)="quickViewWrapper(!correspondData)">
-                            <img  matTooltip="Preview" (click)="previewViewWrapper(correspondData)" src="{{basehref}}assets/images/icons/eye-close-up-white.svg" alt="">
-                          </button>
+                  <img matTooltip="Preview" (click)="previewViewWrapper(correspondData)"
+                    src="{{basehref}}assets/images/icons/eye-close-up-white.svg" alt="">
+                </button>
                 <p class="heading_001 blt_text mb-4">{{correspondData.EnglishSubject}}</p>
                 <p class="text_16 blt_text">ID</p>
                 <p class="text_16"># {{correspondData.ReferenceNumber}}</p>
               </div>
               <div class="priview_body">
                 <div class="">
-                  <!-- <p class="text_16 blt_text">PWA Reference</p>
+                  <!-- <p class="text_16 blt_text">Reference</p>
                     <p class="text_16">{{correspondData.ReferenceNumber}}</p>
                     <p class="text_16 blt_text">Subject</p>
                     <p class="text_16">{{correspondData.EnglishSubject}}</p> -->
@@ -349,7 +374,8 @@
             </div>
           </td>
         </tr>
-        <tr [class.sub_correspondence_show]="correspondData === openedSubCorrespond" class="mat-row nrml_tr_bdr sub_ sub_correspondence_hide"
+        <tr [class.sub_correspondence_show]="correspondData === openedSubCorrespond"
+          class="mat-row nrml_tr_bdr sub_ sub_correspondence_hide"
           *ngFor="let subCorrespondData of correspondData.subCorrespondenceDetail">
           <td>
             <mat-checkbox></mat-checkbox>
@@ -358,28 +384,31 @@
           <td class="icon_wrapper ">
             <div class="sub_correspondence">
               <div style="height: 20px;">
-                <span *ngFor="let inboxCorrespondenceIcons of subCorrespondData.inboxCorrespondenceIcon" [matTooltip]="inboxCorrespondenceIcons.title"
-                  class="icon_004" [ngClass]="inboxCorrespondenceIcons.active">
-                            <img class="inbox_icon_img" [src]="inboxCorrespondenceIcons.icon" alt="">
-                        </span>
+                <span *ngFor="let inboxCorrespondenceIcons of subCorrespondData.inboxCorrespondenceIcon"
+                  [matTooltip]="inboxCorrespondenceIcons.title" class="icon_004"
+                  [ngClass]="inboxCorrespondenceIcons.active">
+                  <img class="inbox_icon_img" [src]="inboxCorrespondenceIcons.icon" alt="">
+                </span>
               </div>
               <div class="sub_correspondence">
-                <span matTooltip="{{subCorrespondData.subCorrespondenceNumber}} sub correspondence" *ngIf="subCorrespondData.subCorrespondence"
-                  (click)="openSubCorrespond(subCorrespondData)" class="sub_correspondence_btn sub_show_btn">
-                              <img src="{{basehref}}assets/images/icons/arrow_point_down.svg" alt="">
-                                {{subCorrespondData.subCorrespondenceNumber}}
-                            </span>
-                <span *ngIf="subCorrespondData.subCorrespondence" (click)="openSubCorrespond(!subCorrespondData)" class="sub_correspondence_btn sub_hide_btn">
-                                <img src="{{basehref}}assets/images/icons/arrow-point-to-up.svg" alt="">
-                                {{subCorrespondData.subCorrespondenceNumber}}
-                              </span>
+                <span matTooltip="{{subCorrespondData.subCorrespondenceNumber}} sub correspondence"
+                  *ngIf="subCorrespondData.subCorrespondence" (click)="openSubCorrespond(subCorrespondData)"
+                  class="sub_correspondence_btn sub_show_btn">
+                  <img src="{{basehref}}assets/images/icons/arrow_point_down.svg" alt="">
+                  {{subCorrespondData.subCorrespondenceNumber}}
+                </span>
+                <span *ngIf="subCorrespondData.subCorrespondence" (click)="openSubCorrespond(!subCorrespondData)"
+                  class="sub_correspondence_btn sub_hide_btn">
+                  <img src="{{basehref}}assets/images/icons/arrow-point-to-up.svg" alt="">
+                  {{subCorrespondData.subCorrespondenceNumber}}
+                </span>
               </div>
             </div>
           </td>
           <td (click)="previewViewWrapper(subCorrespondData)">
             <span class="pwa_btn" (click)="onSelect(subCorrespondData)">
-                        {{subCorrespondData.ReferenceNumber}}
-                    </span>
+              {{subCorrespondData.ReferenceNumber}}
+            </span>
           </td>
           <td class="td_002">
             <span class="subject_text_wrpper">{{subCorrespondData.EnglishSubject}}</span>
@@ -393,34 +422,36 @@
             <ul class="inbt_icon_wrapper">
               <li class="inbt_icons_wrapper" (click)="onSelect(subCorrespondData)">
                 <button class="inbt_icon_btn" (click)="quickViewWrapper(subCorrespondData)">
-                            <img src="{{basehref}}assets/images/icons/info_icon.svg"alt="">
-                          </button>
+                  <img src="{{basehref}}assets/images/icons/info_icon.svg" alt="">
+                </button>
               </li>
               <li class="inbt_icons_wrapper">
                 <button matTooltip="Workflow History" (click)="openDialog(subCorrespondData)" class="inbt_icon_btn">
-                    <img src="{{basehref}}assets/images/icons/history.svg"alt="">
-                  </button>
+                  <img src="{{basehref}}assets/images/icons/history.svg" alt="">
+                </button>
               </li>
               <li class="inbt_icons_wrapper" (click)="onSelect(subCorrespondData)">
                 <a class="inbt_icon_btn" matTooltip="Open" (click)="routeToDetailsPage(subCorrespondData)">
-                            <img src="{{basehref}}assets/images/icons/external-link.svg"alt="">
-                          </a>
+                  <img src="{{basehref}}assets/images/icons/external-link.svg" alt="">
+                </a>
               </li>
               <li class="inbt_icons_wrapper" (click)="onSelect(subCorrespondData)">
                 <button class="inbt_icon_btn" (click)="previewViewWrapper(subCorrespondData)">
-                            <img src="{{basehref}}assets/images/icons/eye-close-up.svg"alt="">
-                          </button>
+                  <img src="{{basehref}}assets/images/icons/eye-close-up.svg" alt="">
+                </button>
               </li>
             </ul>
             <div class="priview_wrapper" [class.active]="subCorrespondData === previewViewCorrespondence">
               <div class="priview_header">
-                <button class="pre_close" (click)="previewViewWrapper(!subCorrespondData)"><img src="{{basehref}}assets/images/icons/delete-button.svg" alt=""></button>
+                <button class="pre_close" (click)="previewViewWrapper(!subCorrespondData)"><img
+                    src="{{basehref}}assets/images/icons/delete-button.svg" alt=""></button>
                 <a (click)="routeToDetailsPage(subCorrespondData)" class="oppr_icon_001">
-                            <img matTooltip="Open" src="{{basehref}}assets/images/icons/external-link-white.svg" alt="">
-                          </a>
+                  <img matTooltip="Open" src="{{basehref}}assets/images/icons/external-link-white.svg" alt="">
+                </a>
                 <button class="oppr_icon_002" (click)="previewViewWrapper(!subCorrespondData)">
-                            <img  matTooltip="Quick view" (click)="quickViewWrapper(subCorrespondData)" src="{{basehref}}assets/images/icons/info_icon-white.svg" alt="">
-                          </button>
+                  <img matTooltip="Quick view" (click)="quickViewWrapper(subCorrespondData)"
+                    src="{{basehref}}assets/images/icons/info_icon-white.svg" alt="">
+                </button>
               </div>
               <div class="documentViewerDiv" *ngFor="let docpreviewData of documentPreviewURL">
                 <iframe class="iframeclass" [src]="docpreviewData.CorrespondencedocumentURL | safe">
@@ -430,20 +461,22 @@
 
             <div class="priview_wrapper qk_view active" [class.active]="subCorrespondData === quickViewCorrespondence">
               <div class="priview_header">
-                <button class="pre_close pre_all_clos" (click)="quickViewWrapper(!subCorrespondData)"><img src="{{basehref}}assets/images/icons/delete-button.svg" alt=""></button>
+                <button class="pre_close pre_all_clos" (click)="quickViewWrapper(!subCorrespondData)"><img
+                    src="{{basehref}}assets/images/icons/delete-button.svg" alt=""></button>
                 <a matTooltip="Open" (click)="routeToDetailsPage(subCorrespondData)" class="oppr_icon_001">
-                              <img src="{{basehref}}assets/images/icons/external-link-white.svg" alt="">                                                      
-                            </a>
+                  <img src="{{basehref}}assets/images/icons/external-link-white.svg" alt="">
+                </a>
                 <button class="oppr_icon_002" (click)="quickViewWrapper(!subCorrespondData)">
-                              <img  matTooltip="Preview" (click)="previewViewWrapper(subCorrespondData)" src="{{basehref}}assets/images/icons/eye-close-up-white.svg" alt="">
-                            </button>
+                  <img matTooltip="Preview" (click)="previewViewWrapper(subCorrespondData)"
+                    src="{{basehref}}assets/images/icons/eye-close-up-white.svg" alt="">
+                </button>
                 <p class="heading_001 blt_text mb-4">{{subCorrespondData.EnglishSubject}}</p>
                 <p class="text_16 blt_text">ID</p>
                 <p class="text_16"># {{subCorrespondData.ReferenceNumber}}</p>
               </div>
               <div class="priview_body">
                 <div class="">
-                  <!-- <p class="text_16 blt_text">PWA Reference</p>
+                  <!-- <p class="text_16 blt_text">Reference</p>
                       <p class="text_16">{{subCorrespondData.ReferenceNumber}}</p>
                       <p class="text_16 blt_text">Subject</p>
                       <p class="text_16">{{subCorrespondData.EnglishSubject}}</p> -->

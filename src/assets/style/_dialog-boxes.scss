@@ -155,7 +155,7 @@
       transform: translateY(-7px) scale(0.75) perspective(100px) translateZ(0.001px);
     }
 
-&.text_area {
+    &.text_area {
       .mat-form-field {
         width: 98%;
         overflow-y: hidden;
@@ -212,21 +212,18 @@
       }
   }
   .addComment{
-      transition: height 1s, opacity 1s ease-out;
-      opacity: 0; 
-      height: auto;
+      transition: max-height 1s ease, opacity 1s ease;
+      opacity: 1; 
+      max-height: 0;
       overflow: hidden;
       margin-bottom: 10px;
       .replyToComment{
           max-height: 57px;
       }
-
   } 
-  .hide-block {
-      display: none;
-  }
-  .show-block{
-      display: block;
+  
+  .addbutton-hide {
+    visibility: hidden;
   }
 }
 
@@ -288,3 +285,49 @@
   height: 18vw;
 }
 
+.roleField .mat-form-field-infix{
+  border: none !important;
+  input{
+    margin-top: 0px !important;
+  }
+}
+
+.transferDialogBoxClass{
+  .errormassage{
+    margin-left: 25px;
+    font-family: "Roboto", sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: red;
+    p{
+      margin-top: 10px; 
+    }
+  }
+
+  .error-in-field{
+    border-color: red !important;
+  }
+
+  .input_item_wrp{
+    .mat-form-field-invalid.ng-touched{
+      .mat-form-field-infix{
+        border-color:red;
+      }
+    } 
+  }
+
+
+  .orgstructureError{
+    .mat-form-field-infix{
+      border-color:red !important;
+    }
+  } 
+
+  .input_item_wrp .mat-form-field-disabled {
+    opacity: 1;
+  }
+}
+
+.msghide{
+  visibility: hidden;
+}

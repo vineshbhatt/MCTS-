@@ -300,12 +300,16 @@ export class CorrespondenceShareService {
 
    DateToISOStringAbs(mDate): string {
     function pad(n) { return n < 10 ? '0' + n : n; }
-    return mDate.getFullYear() + '-'
-      + pad(mDate.getMonth() + 1) + '-'
-      + pad(mDate.getDate()) + 'T'
-      + pad(mDate.getHours()) + ':'
-      + pad(mDate.getMinutes()) + ':'
-      + pad(mDate.getSeconds()) + 'Z';
+    if (mDate instanceof Date) {
+      return mDate.getFullYear() + '-'
+        + pad(mDate.getMonth() + 1) + '-'
+        + pad(mDate.getDate()) + 'T'
+        + pad(mDate.getHours()) + ':'
+        + pad(mDate.getMinutes()) + ':'
+        + pad(mDate.getSeconds()) + 'Z';
+    } else {
+      return '';
+    }
   }
 
 }

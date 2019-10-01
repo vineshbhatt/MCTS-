@@ -38,7 +38,7 @@
             </td>
             <td>
             </td>
-            <td>PWA References</td>
+            <td>Reference</td>
             <td>Subject</td>
             <td>Step</td>
             <td>External Organization</td>
@@ -133,6 +133,7 @@
                     <button mat-menu-item *ngIf=(correspondData.showButtons.DownloadAttach)>Download
                       Attachments</button>
                     <button mat-menu-item *ngIf=(correspondData.showButtons.PrintBarcode)>Print Barcode</button>
+                    <button mat-menu-item  (click)='replyExternal(correspondData)' *ngIf=(correspondData.showButtons.ReplyExtern)>Reply External</button>
                   </mat-menu>
                 </li>
               </ul>
@@ -171,7 +172,7 @@
                 </div>
                 <div class="priview_body">
                   <div class="">
-                    <!-- <p class="text_16 blt_text">PWA Reference</p>
+                    <!-- <p class="text_16 blt_text">Reference</p>
                       <p class="text_16">{{correspondData.ReferenceNumber}}</p>
                       <p class="text_16 blt_text">Subject</p>
                       <p class="text_16">{{correspondData.EnglishSubject}}</p> -->

@@ -13,6 +13,7 @@ import { StatusRequest, SetStatusRow } from '../models/Shared.model';
 import { CorrespondenceShareService } from '../services/correspondence-share.service';
 import { map, catchError } from 'rxjs/operators'; /* added 24/06/2019 */
 import { EMPTY } from 'rxjs';
+import { CorrespondenceWFFormModel } from '../models/CorrepondenceWFFormModel';
 @Injectable({
   providedIn: 'root'
 })
@@ -136,8 +137,8 @@ export class CorrespondenceDetailsService {
     );
   }
 
-  getTransferPurposeAndPriority(): Observable<TransferAttributes[]> {
-    return this.httpServices.get<TransferAttributes[]>(
+  getTransferPurposeAndPriority(): Observable<TransferAttributes> {
+    return this.httpServices.get<TransferAttributes>(
       this.CSUrl +
       `${FCTSDashBoard.WRApiV1}${
       FCTSDashBoard.TransferAttributes
@@ -700,6 +701,81 @@ export class CorrespondenceDetailsService {
         return throwError(error);
       })
     );
+  }
+
+  setConnectionn(ConnectedID: string, ConnectionType: string, ReferenceType: string, ConnectedType: string, creatorID: string, Deleted: string) {
+    const params = new HttpParams()
+      .set('ConnectedID', ConnectedID)
+      .set('ConnectionType', ConnectionType)
+      .set('ReferenceType', ReferenceType)
+      .set('ConnectedType', ConnectedType)
+      .set('creatorID', creatorID)
+      .set('Deleted', Deleted);
+    return this.httpServices.get<any>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${
+      FCTSDashBoard.setConnection
+      }?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
+  getCorrespondenceMetadataDetails(VolumeID: string): Observable<CorrespondenceWFFormModel> {
+    const params = new HttpParams()
+      .set('VolumeID', VolumeID);
+    return this.httpServices.get<CorrespondenceWFFormModel>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${
+      FCTSDashBoard.getCorrespondenceFormValues
+      }?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
+  setSubfolderPermission(corrDataDetail): Observable<any> {
+    const params = new HttpParams()
+      .set('locationid', corrDataDetail.locationid)
+      .set('corrDataID', corrDataDetail.corrDataID)
+      .set('CorrFlowType', corrDataDetail.CorrFlowType)
+      .set('TaskID', corrDataDetail.TaskID)
+      .set('UserID', CSConfig.globaluserid);
+
+      return this.httpServices
+      .get(
+        this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.setSubfolderPerm}?Format=webreport`,
+        {
+          headers:
+            { OTCSTICKET: CSConfig.AuthToken },
+          params: params
+        }
+      )
+      .pipe(
+        map(data => {
+          console.log('performer permission is set');
+          return data;
+        }),
+        catchError(error => {
+          return error;
+        })
+      );
   }
 
 }

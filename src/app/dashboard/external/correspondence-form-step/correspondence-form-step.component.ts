@@ -40,7 +40,6 @@ import { NotificationService } from 'src/app/dashboard/services/notification.ser
 })
 
 export class CorrespondenceFormStepComponent implements OnInit {
-
   constructor(
       private correspondenceDetailsService: CorrespondenceDetailsService
     , private _location: Location
@@ -55,7 +54,7 @@ export class CorrespondenceFormStepComponent implements OnInit {
     , private appLoadConstService: AppLoadConstService
     , private correspondenceShareService: CorrespondenceShareService
     , private notificationmessage: NotificationService,
-    ) { }
+  ) { }
 
   get f() { return this.correspondenceDetailsForm.controls; }
 
@@ -122,6 +121,7 @@ export class CorrespondenceFormStepComponent implements OnInit {
   locationid: string;
   CorrespondencType: string;
   taskID: string;
+  skipTaskID: string; // TaskID that will be skiped in case of SendOnAndSkip
   CorrespondenceFolderName: Observable<any>;
   barcodeNumberToPrint = '';
   barcodeDate = new Date().toLocaleDateString();
@@ -157,6 +157,7 @@ export class CorrespondenceFormStepComponent implements OnInit {
   CorrespondenceFlowType: string; /* 1,5,7 */
   stepsInfo = new RecallStepsInfo();  /* for Dispositin1 custom audit */
   corrPhase: string;
+  attachLoaded = false;
 
 
   ngOnInit() {
@@ -168,11 +169,7 @@ export class CorrespondenceFormStepComponent implements OnInit {
     this.readCorrespondenceInfo();
     this.getCorrespondenceSenderDetails();
     this.getCorrespondenceRecipientDetails();
-    this.stepUIData = this.toShowWFButtons(this.taskID);
-    this.showCorrItems = this.stepUIData.ShowFields;
-    this.showWFButtons =  this.stepUIData.ShowButtons;
-    this.sectionDisplay = this.stepUIData.ShowSections;
-    // this.showCorrItems = this.stepUIData.ShowFields;
+    this.getUIData(this.taskID, 'Init');
 
     // Get Logged in user Information
     this.getUserInfo();
@@ -225,15 +222,8 @@ export class CorrespondenceFormStepComponent implements OnInit {
       dispatchMethod: new FormControl({ value: '', disabled: !this.showCorrItems.dispatchMethod.Modify }),
       staffNumber: new FormControl({ value: '', disabled: !this.showCorrItems.staffNumber.Modify }),
     });
+    this.setValidators();
 
-    // mark fields as Required
-    for (const obj in this.showCorrItems) {
-      if (this.showCorrItems[obj].Reguired) {
-        this.correspondenceDetailsForm.get(obj).setValidators(Validators.required);
-      }
-    }
-
-    console.log(this.correspondenceDetailsForm.controls);
     this.filteredExtOrgNames = this.senderDetailsForm.get('ExternalOrganization').valueChanges
       .pipe(
         debounceTime(300),
@@ -249,6 +239,25 @@ export class CorrespondenceFormStepComponent implements OnInit {
           this.correspondenceDetailsService.searchFieldForAutoFill(value, 'IntDepartment', '')
         )
       );
+  }
+
+  getUIData(taskID: string, source: string) {
+    this.stepUIData = this.toShowWFButtons(taskID);
+    if (source === 'Init') {
+      this.showWFButtons =  this.stepUIData.ShowButtons;
+    }
+    this.showCorrItems = this.stepUIData.ShowFields;
+    this.sectionDisplay = this.stepUIData.ShowSections;
+  }
+
+  setValidators() {
+    // mark fields as Required
+    for (const obj in this.showCorrItems) {
+      if (this.showCorrItems[obj].Reguired) {
+        this.correspondenceDetailsForm.get(obj).setValidators(Validators.required);
+        this.correspondenceDetailsForm.get(obj).updateValueAndValidity();
+      }
+    }
   }
 
   ReadRecord(locationid: string, transid: string) {
@@ -387,7 +396,7 @@ export class CorrespondenceFormStepComponent implements OnInit {
     this.body.values.WorkflowForm_1x4x1x22 = this.setPopupCheckedValue('Priority', this.correspondenceDetailsForm.get('priority').value.EN);
     this.body.values.WorkflowForm_1x4x1x2 = this.correspondenceDetailsForm.get('regDate').value;
     // this.body.values.WorkflowForm_1x4x1x124 = this.correspondenceDetailsForm.get('docsDate').value.toISOString();
-    this.body.values.WorkflowForm_1x4x1x124 = this.correspondenceDetailsForm.get('docsDate').value;
+    this.body.values.WorkflowForm_1x4x1x124 = this.correspondenceShareService.DateToISOStringAbs(this.correspondenceDetailsForm.get('docsDate').value);
     this.body.values.WorkflowForm_1x4x1x28 = this.correspondenceDetailsForm.get('refNumber').value;
     this.body.values.WorkflowForm_1x4x1x88 = this.correspondenceDetailsForm.get('personalName').value;
     this.body.values.WorkflowForm_1x4x1x27 = this.correspondenceDetailsForm.get('idNumber').value;
@@ -425,15 +434,17 @@ export class CorrespondenceFormStepComponent implements OnInit {
     this.senderDetailsForm.get('SenderName').setValue(this.correspondenceSenderDetailsData.Name_EN);
     this.senderDetailsForm.get('SenderDepartment').setValue(this.correspondenceSenderDetailsData.DepartmentName_EN);
     this.senderDetailsForm.get('ExternalOrganization').setValue({OrgName_En : this.correspondenceSenderDetailsData.OrganizationName_EN});
-    this.correspondenceDetailsForm.get('priority').setValue({EN: this.getDefaultaValue('Priority', this.body.values.WorkflowForm_1x4x1x22)});
+    this.correspondenceDetailsForm.get('priority').setValue(this.getDefaultaValue('Priority', this.body.values.WorkflowForm_1x4x1x22));
     this.correspondenceDetailsForm.get('confidential').setValue(this.body.values.WorkflowForm_1x4x1x78);
     this.correspondenceDetailsForm.get('regDate').setValue(this.body.values.WorkflowForm_1x4x1x2);
     this.correspondenceDetailsForm.get('docsDate').setValue(this.body.values.WorkflowForm_1x4x1x124);
     this.correspondenceDetailsForm.get('refNumber').setValue(this.body.values.WorkflowForm_1x4x1x28);
     this.correspondenceDetailsForm.get('personalName').setValue(this.body.values.WorkflowForm_1x4x1x88);
     this.correspondenceDetailsForm.get('idNumber').setValue(this.body.values.WorkflowForm_1x4x1x27);
-    this.correspondenceDetailsForm.get('correspondenceType').setValue({EN: this.getDefaultaValue('CorrespondenceType', this.body.values.WorkflowForm_1x4x1x30)});
-    this.correspondenceDetailsForm.get('baseType').setValue({EN: this.getDefaultaValue('BaseType', this.body.values.WorkflowForm_1x4x1x29)});
+    this.correspondenceDetailsForm.get('correspondenceType').setValue(this.getDefaultaValue('CorrespondenceType', this.body.values.WorkflowForm_1x4x1x30));
+//    this.correspondenceDetailsForm.get('correspondenceType').setValue({EN: this.getDefaultaValue('CorrespondenceType', this.body.values.WorkflowForm_1x4x1x30)});
+//    this.correspondenceDetailsForm.get('baseType').setValue({EN: this.getDefaultaValue('BaseType', this.body.values.WorkflowForm_1x4x1x29)});
+    this.correspondenceDetailsForm.get('baseType').setValue(this.getDefaultaValue('BaseType', this.body.values.WorkflowForm_1x4x1x29));
     this.correspondenceDetailsForm.get('arabicSubject').setValue(this.body.values.WorkflowForm_1x4x1x35);
     this.correspondenceDetailsForm.get('englishSubject').setValue(this.body.values.WorkflowForm_1x4x1x36);
     this.correspondenceDetailsForm.get('projectCode').setValue(this.body.values.WorkflowForm_1x4x1x37);
@@ -443,23 +454,30 @@ export class CorrespondenceFormStepComponent implements OnInit {
     this.correspondenceDetailsForm.get('corrNumber').setValue(this.body.values.WorkflowForm_1x4x1x9);
     this.correspondenceDetailsForm.get('fillinPlanPath').setValue(this.body.values.WorkflowForm_1x4x1x133);
     this.correspondenceDetailsForm.get('staffNumber').setValue(this.body.values.WorkflowForm_1x4x1x41);
-    this.correspondenceDetailsForm.get('dispatchMethod').setValue({EN: this.getDefaultaValue('DispatchMethod', this.body.values.WorkflowForm_1x4x1x49)});
+//    this.correspondenceDetailsForm.get('dispatchMethod').setValue({EN: this.getDefaultaValue('DispatchMethod', this.body.values.WorkflowForm_1x4x1x49)});
+    this.correspondenceDetailsForm.get('dispatchMethod').setValue(this.getDefaultaValue('DispatchMethod', this.body.values.WorkflowForm_1x4x1x49));
     this.CorrespondenceFlowType = this.body.values.WorkflowForm_1x4x1x70;
     this.barcodeNumberToPrint = this.body.values.WorkflowForm_1x4x1x9;
     this.corrPhase =  this.body.values.WorkflowForm_1x4x1x96;
   }
 
-  getDefaultaValue(Attrname: string, ID: number): string {
+  getDefaultaValue(Attrname: string, ID: number): object | string {
+    const result = {
+      ID: -1,
+      EN: '',
+      AR: ''
+    };
     if ( ID === 0 ) {
       return '';
     } else {
-      let Name_EN: string;
       this.MetadataFilters.forEach(element => {
         if (element.AttrName === Attrname && element.ID === ID) {
-          Name_EN = element.Name_EN;
+          result.ID = ID;
+          result.EN = element.Name_EN;
+          result.AR = element.Name_AR;
         }
       });
-      return Name_EN;
+      return result;
     }
   }
 
@@ -475,9 +493,6 @@ export class CorrespondenceFormStepComponent implements OnInit {
   }
 
   submitCorrespondenceInfo(action: string) {
-    if (!this.checkFields()) {
-      return;
-    }
 
     this.progbar = true;
     if (this.taskID === '32') {
@@ -493,15 +508,14 @@ export class CorrespondenceFormStepComponent implements OnInit {
       this.SetDisposionsSendBack();
     }
 
+    if (!this.checkFields()) {
+      this.progbar = false;
+      return;
+    }
+
     this.correspondenceDetailsService.submitCorrespondenceInfo(this.VolumeID, this.taskID, this.body)
     .subscribe(
       response => {
-        /* if (action === 'TEST') {
-          console.log(this.body.values);
-          this.progbar = false;
-        } else {
-          this.sendOnCorrespondence();
-        } */
         this.sendOnCorrespondence();
       },
       responseError => {
@@ -518,7 +532,6 @@ export class CorrespondenceFormStepComponent implements OnInit {
       response => {
         // ?? needs to validate response if send on was correct
         this.backNavigation();
-        // console.log(response);
       },
       responseError => {
         this.progbar = false;
@@ -620,19 +633,18 @@ export class CorrespondenceFormStepComponent implements OnInit {
   }
 
   checkFields(): boolean {
+    /* check if FormGroup is valid and higlight invalid fields */
     let result = true;
-    // const popUps = ['priority', 'dispatchMethod', 'correspondenceType', 'baseType'];
     if (this.correspondenceDetailsForm.invalid) {
       this.notificationmessage.warning('Mandatoty fields', 'Please fill in manadatory correspondence details', 3000);
       for (const obj in this.f) {
         if (this.f[obj].invalid) {
           this.f[obj].markAsTouched();
-          console.log(obj);
+          // console.log(obj);
         }
       }
       result = false;
     }
-
     return result;
   }
 
@@ -645,6 +657,7 @@ export class CorrespondenceFormStepComponent implements OnInit {
   }
 
   refreshAttachmentSection() {
+    this.attachLoaded = false;
     this.getAttachmentSection();
   }
 
@@ -664,13 +677,16 @@ export class CorrespondenceFormStepComponent implements OnInit {
   }
 
   getAttachmentSection() {
-    this.correspondenceDetailsService.getAttachmentFolderDetails(Number(this.correspondenceData.AttachCorrAttachmentsID)).subscribe(
-      attachmentFolderdetails => {this.externalAttachmentFolderData = attachmentFolderdetails;
-      },
-      responseError => {
-        this._errorHandlerFctsService.handleError(responseError).subscribe();
-      }
-    );
+    if (!this.attachLoaded) {
+      this.setAttachMiscItemsPermiss(this.correspondenceData.AttachCorrAttachmentsID);
+      this.correspondenceDetailsService.getAttachmentFolderDetails(Number(this.correspondenceData.AttachCorrAttachmentsID)).subscribe(
+        attachmentFolderdetails => {this.externalAttachmentFolderData = attachmentFolderdetails;
+        },
+        responseError => {
+          this._errorHandlerFctsService.handleError(responseError).subscribe();
+        }
+      );
+  }
   }
 
   getCoverDocumentURL(CoverID: String): void {
@@ -1060,13 +1076,17 @@ export class CorrespondenceFormStepComponent implements OnInit {
             this.body.values.WorkflowForm_1x4x1x76 = 'WR2b'; // Disposition2
             if (IncomingType > 1) {
               if (IncomingType === 2) {
-                  this.avoidConfirmDialog('3');
+                this.skipTaskID = '6';
+                this.avoidConfirmDialog('3');
               } else if (IncomingType === 3) { // I can do step 3 - skip and go to step 4
-                  this.avoidConfirmDialog('4');
+                this.skipTaskID = '18';
+                this.avoidConfirmDialog('4');
               } else if (IncomingType === 4) { // I can do step 4 - skip and go to step 5
-                  this.avoidConfirmDialog('5');
+                this.skipTaskID = '24';
+                this.avoidConfirmDialog('5');
               } else if (IncomingType === 5) { // I can do step 5 - skip and go to eva 6
-                  this.avoidConfirmDialog('6');
+                this.skipTaskID = '18';
+                this.avoidConfirmDialog('6');
               }
             }
             break;
@@ -1076,10 +1096,13 @@ export class CorrespondenceFormStepComponent implements OnInit {
               this.body.values.WorkflowForm_1x4x1x75 = 'SendOnAndSkip'; // Disposition1
               this.body.values.WorkflowForm_1x4x1x76 = 'WR2b'; // Disposition2
               if (IncomingType === 3) { // I can do step 3 - skip and go to step 4
+                this.skipTaskID = '18';
                 this.avoidConfirmDialog('4');
               } else if (IncomingType === 4) { // I can do step 4 - skip and go to step 5
+                this.skipTaskID = '24';
                 this.avoidConfirmDialog('5');
               } else if (IncomingType === 5) { // I can do step 5 - skip and go to eva 6
+                this.skipTaskID = '18';
                 this.avoidConfirmDialog('6');
               }
             }
@@ -1089,8 +1112,10 @@ export class CorrespondenceFormStepComponent implements OnInit {
             if (IncomingType > 3) {
               this.body.values.WorkflowForm_1x4x1x75 = 'SendOnAndSkip'; // Disposition1
               if (IncomingType === 4) { // I can do step 4 - skip and go to step 5
+                this.skipTaskID = '24';
                 this.avoidConfirmDialog('5');
               } else if (IncomingType === 5) { // I can do step 5 - skip and go to eva 6
+                this.skipTaskID = '18';
                 this.avoidConfirmDialog('6');
               }
             }
@@ -1100,6 +1125,7 @@ export class CorrespondenceFormStepComponent implements OnInit {
             if (IncomingType > 4) {
               this.body.values.WorkflowForm_1x4x1x75 = 'SendOnAndSkip'; // Disposition1
               if (IncomingType === 5) { // I can do step 5 - skip and go to eva 6
+                this.skipTaskID = '18';
                 this.avoidConfirmDialog('6');
               }
             }
@@ -1112,7 +1138,7 @@ export class CorrespondenceFormStepComponent implements OnInit {
         case '32':
             const now = new Date();
             this.body.values.WorkflowForm_1x4x1x75 = 'SendOn'; // Disposition1
-            this.body.values.WorkflowForm_1x4x1x6 = now.toISOString(); // AcknowledgementDate
+            this.body.values.WorkflowForm_1x4x1x6 = this.correspondenceShareService.DateToISOStringAbs(now); // AcknowledgementDate
     }
   }
 
@@ -1121,6 +1147,7 @@ export class CorrespondenceFormStepComponent implements OnInit {
       this.body.values.WorkflowForm_1x4x1x75 = 'SendOnAndSkip'; // Disposition1
       this.body.values.WorkflowForm_1x4x1x76 = 'WR2b';          // Disposition2
       this.body.values.WorkflowForm_1x4x1x77 = NextID;          // Disposition3
+      this.checkSkipedValidation();
     }
     if (NextID === '6') {
       const now = new Date();
@@ -1128,12 +1155,16 @@ export class CorrespondenceFormStepComponent implements OnInit {
       const days = 5; // see comment below
       tempDate.setDate(tempDate.getDate() + days);
 
-      this.body.values.WorkflowForm_1x4x1x7 = now.toISOString();          // DispatchDate
-      this.body.values.WorkflowForm_1x4x1x128 = tempDate.toISOString();   // ResponseDueDate
-      console.log(tempDate.toISOString());
+      this.body.values.WorkflowForm_1x4x1x7 = this.correspondenceShareService.DateToISOStringAbs(now);          // DispatchDate
+      this.body.values.WorkflowForm_1x4x1x128 = this.correspondenceShareService.DateToISOStringAbs(tempDate);   // ResponseDueDate
       // !!! NEEDS TO BE CHANGE !!! check with existing solution - ResponseDueDate based on Priority date
 
     }
+  }
+  /* checks required fields in case of SendOnAndSkip */
+  checkSkipedValidation() {
+    this.getUIData(this.skipTaskID, 'SendonAndSkip');
+    this.setValidators();
   }
 
   SetDisposionsSendBack() {
@@ -1190,6 +1221,26 @@ export class CorrespondenceFormStepComponent implements OnInit {
           // this.showMessage('Error withing saving Disposition1 for Correspondence, VolumeID = ' + stepsInfo.subWorkID.toString());
           alert('Error withing saving Disposition1 for Correspondence, VolumeID = ' + this.stepsInfo.subWorkID.toString());
         }
+      },
+      responseError => {
+        this._errorHandlerFctsService.handleError(responseError).subscribe();
+      }
+    );
+  }
+
+  setAttachMiscItemsPermiss(FolderID: string | number) {
+    console.log('call service to set subfolder permission');
+    const corrDataDetail = {
+      locationid: FolderID,
+      corrDataID: this.correspondenceData.AttachCorrID,
+      TaskID: this.taskID,
+      UserID: CSConfig.globaluserid,
+      CorrFlowType: this.CorrespondencType
+    };
+
+    this._correspondenceDetailsService.setSubfolderPermission(corrDataDetail).subscribe(
+      response => {
+        this.attachLoaded = true;
       },
       responseError => {
         this._errorHandlerFctsService.handleError(responseError).subscribe();

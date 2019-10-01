@@ -20,18 +20,18 @@ import { AppLoadConstService } from 'src/app/app-load-const.service';
 })
 
 export class BaseDashboardActiveComponent extends BaseDashboardComponent implements OnInit {
- constructor(
-  public router: Router,
-  public dialogU: MatDialog,
-  public correspondenceService: CorrespondenceService,
-  public correspondenceShareService: CorrespondenceShareService,
-  public errorHandlerFctsService: ErrorHandlerFctsService,
-  public appLoadConstService: AppLoadConstService,
+  constructor(
+    public router: Router,
+    public dialogU: MatDialog,
+    public correspondenceService: CorrespondenceService,
+    public correspondenceShareService: CorrespondenceShareService,
+    public errorHandlerFctsService: ErrorHandlerFctsService,
+    public appLoadConstService: AppLoadConstService,
   ) {
     super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService);
   }
 
-  ngOnInit() {   
+  ngOnInit() {
     super.ngOnInit();
   }
 
@@ -69,33 +69,51 @@ export class BaseDashboardActiveComponent extends BaseDashboardComponent impleme
     }
     return `${this.selection.isSelected(correspondData) ? 'deselect' : 'select'} row ${correspondData.position + 1}`;
   }
-/* *****************************  Transfer reply ******************************************* */
+  /* *****************************  Transfer reply ******************************************* */
   transferReplyDialog(correspondData: Correspondence, transUser: CorrResponse): void {
     const dialogRef = this.dialogU.open(TransferReplyDialogComponent, {
-    width: '100%',
-    panelClass: 'transfer-reply-dialog',
-    maxWidth: '60vw',
-    data: {
-      corrData: correspondData,
-      transferUser: transUser,
-      callPlace: 'SingleDashboard'
-    }
+      width: '100%',
+      panelClass: 'transfer-reply-dialog',
+      maxWidth: '60vw',
+      data: {
+        corrData: correspondData,
+        transferUser: transUser,
+        callPlace: 'SingleDashboard'
+      }
     }).afterClosed().subscribe(result => {
-      if (result === 'Reload') { this.getPage(this.pagenumber);
+      if (result === 'Reload') {
+        this.getPage(this.pagenumber);
       }
     });
   }
 
   transferReply(correspondData: Correspondence): void {
     this.correspondenceShareService.getTransferUser(correspondData.transDelegatorID.toString()).subscribe(
-    transferUser => {
-      this.transferReplyDialog(correspondData, transferUser);
-    },
-    responseError => {
-      this.errorHandlerFctsService.handleError(responseError).subscribe();
-    }
+      transferUser => {
+        this.transferReplyDialog(correspondData, transferUser);
+      },
+      responseError => {
+        this.errorHandlerFctsService.handleError(responseError).subscribe();
+      }
     );
   }
-/* ************************************************************************************** */
+
+
+
+  replyExternal(correspondData: Correspondence): void {
+    this.router.navigate([this.routerInitateExternal],
+      {
+        queryParams:
+        {
+          VolumeID: correspondData.VolumeID,
+          locationid: correspondData.DataID,
+          action: 'reply'
+
+        },
+        skipLocationChange: false
+      }
+    );
+  }
+  /* ************************************************************************************** */
 
 }

@@ -2,7 +2,6 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { CorrResponse } from '../services/correspondence-response.model';
 import { AuditHistoryDetailsService } from '../services/AuditHistoryDetails.service';
-import { Correspondence } from '../services/correspondence.model';
 import { FCTSDashBoard } from '../../../environments/environment';
 
 export interface DialogData {
@@ -18,15 +17,18 @@ export class WorkflowHistoryDialogBox implements OnInit {
     basehref: String = FCTSDashBoard.BaseHref;
     transferHistoryDetailData: CorrResponse[];
     workflowHistoryDetailData: CorrResponse[];
+    tranferHistory: boolean = false;
     constructor(
         public dialogRef: MatDialogRef<WorkflowHistoryDialogBox>,
         @Inject(MAT_DIALOG_DATA) public corrData: any,
         private _auditdetailservice: AuditHistoryDetailsService) { }
 
-        onNoClick(): void {
+    onNoClick(): void {
         this.dialogRef.close();
     }
-
+    workFlowDialogClose(): void {
+        this.dialogRef.close();
+    }
     ngOnInit() {
 
         this.getTransferHistoryDetails();
@@ -37,7 +39,10 @@ export class WorkflowHistoryDialogBox implements OnInit {
             .subscribe(
                 transferHistoryDetailData => {
                     this.transferHistoryDetailData = transferHistoryDetailData;
-                    console.log(this.transferHistoryDetailData);
+                    if (Number(transferHistoryDetailData[0].totalSourceRows) > 0) {
+                        this.tranferHistory = true;
+                    }
+
                 }
             );
     }

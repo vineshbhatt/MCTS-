@@ -7,7 +7,7 @@ export const FCTSDashBoard = {
   WRApiV1: '/api/v1/webreports/',
   WFApiV2: '/api/v2/',
   WFApiV1: '/api/v1/',
-  // WRApiV1: "/api/v1/nodes/",
+
   WRApiV2: '/output',
   getMenuCountExt: 'CTA_SidebarExtCount',
   getUserOverallData: 'CTA_UserDataDashboard',
@@ -50,7 +50,6 @@ export const FCTSDashBoard = {
   SendRecallEmail: 'FCTS_SendRecallEmail',
   SetDipsAudit: 'FCTS_SetDipsAudit',
   SetStatuses: 'CTA_SetStatus',
-
   SetStatusMultiApprove: 'FCTS_SetStatusMultiApprove',
   SetTransStatus: 'FCTS_UpdTransStatus',
   GetGlobalConst: 'CTA_ConstantsObject',
@@ -79,7 +78,11 @@ export const FCTSDashBoard = {
   SelectAttributes: '5414023',
   InsertNewComment: '5058946',
   DeleteComment: '5059399',
-  BaseHref: '/img/fctsangular/fctsapp/',
-  // BaseHref: '/',
+
+  setConnection: '5447238',
+  getCorrespondenceFormValues: '5447123',
+  setSubfolderPerm: 'CTA_SetSubfolderPerm',
+  // BaseHref: '/img/fctsangular/fctsapp/',
+  BaseHref: '/',
   CSUrl: 'http://mv2cdmsadp02/otcs/cs.exe'
 };

@@ -1,3 +1,6 @@
+<div class="new_edt_cont_wrapper" *ngIf="spinnerDataLoaded">
+  <mat-spinner></mat-spinner>
+</div>
 <div class="new_edt_cont_wrapper">
   <ng-scrollbar thumbClass="scroll_001" class="correspondence_detail scroll_wrp_001" *ngIf="expandedRightAction"
     [ngClass]="expandedAction ? 'unActive' : 'ActiveLeft'" compact="true">
@@ -48,7 +51,7 @@
                       <input type="text" aria-label="Number" matInput formControlName="ExternalOrganization"
                         [matAutocomplete]="extOrgName">
                     </mat-form-field>
-                    <mat-autocomplete #extOrgName="matAutocomplete" [displayWith]="displaySearchFilterValueExt">
+                    <mat-autocomplete #extOrgName="matAutocomplete" class="longautocomplete" [displayWith]="displaySearchFilterValueExt">
                       <mat-option *ngFor="let OrgName of (filteredExtOrgNames | async)" [value]="OrgName"
                         (onSelectionChange)="optionSelectionChangeExternal(OrgName, $event)">
                         {{OrgName?.OrgName_En}}
@@ -114,7 +117,7 @@
                     <mat-form-field class="input_tbl_wrp">
                       <input type="text" aria-label="Number" matInput formControlName="RecipientDepartment"
                         [matAutocomplete]="recpientDepName">
-                      <mat-autocomplete #recpientDepName="matAutocomplete" [displayWith]="displaySearchFilterValueInt">
+                      <mat-autocomplete #recpientDepName="matAutocomplete" class="longautocomplete" [displayWith]="displaySearchFilterValueInt">
                         <mat-option *ngFor="let DepName of (filteredIntDepNames | async)" [value]="DepName"
                           (onSelectionChange)="optionSelectionChangeInternal(DepName, $event)">
                           {{DepName?.DepName_En}} {{ (DepName.SecName_En != null) ? (","+DepName.SecName_En) : "" }}
@@ -414,7 +417,7 @@
                   <th class="name">Name</th>
                   <th></th>
                   <th class="size">Size</th>
-                  <th class="modified">Modified</th>
+                  <!-- <th class="modified">Modified</th> -->
                 </tr>
                 <tbody *ngFor="let correspondenceCoverDetails of CoverLetterData">
                   <tr *ngFor="let coverLetterData of correspondenceCoverDetails.myRows">
@@ -445,9 +448,9 @@
                     <td class="size">
                       {{coverLetterData.CoverSize}}
                     </td>
-                    <td class="modified">
+                    <!-- <td class="modified">
                       {{coverLetterData.ModifyDate}}
-                    </td>
+                    </td> -->
                   </tr>
                 </tbody>
               </table>
@@ -567,9 +570,7 @@
     <!-- cc code end -->
     <div class="corp_dtl_btn_btm_wrapper">
       <button *ngIf="showGeneratebarcodeButton" class="btn_008" (click)="GenerateBarcode()"
-        prevent-double-submit>Generate Barcode</button>
-        <button *ngIf="showGeneratebarcodeButton" class="btn_008" (click)="showSpinner()"
-        prevent-double-submit>Generate Barcode2</button>
+        prevent-double-submit>Generate Barcode</button>      
       <button *ngIf="showSendOnButton" class="btn_008" printTitle="Barcode" printSectionId="print-section"
         ngxPrint>Print Barcode</button>
       <button *ngIf="showSendOnButton" class="btn_008" printTitle="Reciept" printSectionId="print-reciept"
@@ -632,9 +633,9 @@
   </ng-scrollbar>
   <ng-scrollbar class="correspondence_deatil_prview_wrappper scroll_wrp_001" thumbClass="scroll_001"
     [ngClass]="expandedRightAction ? 'unActive' : 'ActiveRight'" *ngIf="expandedAction" compact="true">
-    <!-- <button (click)="expandeActionRightButton()" matRipple class="corsp_ext_btn">
+     <button (click)="expandeActionRightButton()" matRipple class="corsp_ext_btn">
               <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
-            </button> -->
+            </button>
     <ng-container *ngIf="showPreviewCoverLetter">
       <div class="documentViewerDiv" *ngFor="let docpreviewData of documentPreviewURL">
         <iframe class="iframeclass" [src]="docpreviewData.CorrespondencedocumentURL|safe"></iframe>
@@ -800,9 +801,4 @@
     </div>
 
   </ng-scrollbar>
-</div>
-<div  *ngIf="spinnerDataLoaded" class="spinner_container">
-  <div class="spinner_md_wrappar">
-    <mat-spinner strokeWidth="2px" diameter='50' class="spinner_md"></mat-spinner>
-  </div>
 </div>

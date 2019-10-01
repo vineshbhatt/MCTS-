@@ -1,448 +1,454 @@
 <div class="new_edt_cont_wrapper correspondence_detail_wrapper">
-  <ng-scrollbar thumbClass="scroll_001" *ngIf="expandedRightAction" [ngClass]="expandedAction ? 'unActive' : 'ActiveLeft'"  class="correspondence_detail correspondence_detail_pad_0_wrp scroll_wrp_001"  compact="true">
-  <button (click)="expandeActionLeftButton()" matRipple class="corsp_ext_btn">
-    <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
-  </button>
-  <div class="detail_header">
-    <div class="header_text" *ngFor="let correspondenceDetails of correspondenceSenderDetailsData">
-      <div class="header_back_cpd_dtl">
-        <button class="back_btn" (click)="backNavigation()">
-          <img src="{{basehref}}assets/images/icons/left_arrow.svg" alt="">
+  <ng-scrollbar thumbClass="scroll_001" *ngIf="expandedRightAction"
+    [ngClass]="expandedAction ? 'unActive' : 'ActiveLeft'"
+    class="correspondence_detail correspondence_detail_pad_0_wrp scroll_wrp_001" compact="true">
+    <button (click)="expandeActionLeftButton()" matRipple class="corsp_ext_btn">
+      <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
+    </button>
+    <div class="detail_header">
+      <div class="header_text">
+        <div class="header_back_cpd_dtl">
+          <button class="back_btn" (click)="backNavigation()">
+            <img src="{{basehref}}assets/images/icons/left_arrow.svg" alt="">
+          </button>
+          <h3 class="text_23 ltg_text">{{correspondenceData?.CorrFolderName }} - {{CorrespondencType}}</h3>
+        </div>
+      </div>
+
+      <div class="header_btn">
+        <button class="btn btn_005" matTooltip="Reply" (click)="transferReply(correspondData)"
+          *ngIf="buttonsDisplay.corrTrReply">
+          <img src="{{basehref}}assets/images/icons/back-arrow.svg" alt="">
         </button>
-        <h3 class="text_23 ltg_text">{{correspondenceData.CorrFolderName }} - {{CorrespondencType}}</h3>
+        <button class="btn btn_005" matTooltip="Complete" *ngIf="buttonsDisplay.corrComplete"
+          (click)="OpenCompleteDialog('1')">
+          <img src="{{basehref}}assets/images/icons/check-box.svg" alt="">
+        </button>
+        <button class="btn btn_005" matTooltip="Archive" *ngIf="buttonsDisplay.corrArchive"
+          (click)="OpenCompleteDialog('2')">
+          <img src="{{basehref}}assets/images/icons/file_archive_02.svg" alt="">
+        </button>
+        <button class="btn btn_005" matTooltip="Save" *ngIf="buttonsDisplay.corrSave" (click)="saveTransferTo()">
+          <img src="{{basehref}}assets/images/icons/save-button.svg" alt="">
+        </button>
+        <button class="btn btn_005">
+          <img src="{{basehref}}assets/images/icons/close_btn_icon.svg" alt=""
+            (click)="showMessage('it is a test message. Please indorm Administrator')">
+        </button>
       </div>
     </div>
-
-    <div class="header_btn">
-      <button class="btn btn_005" matTooltip="Reply" (click)="transferReply(correspondData)"
-        *ngIf="buttonsDisplay.corrTrReply">
-        <img src="{{basehref}}assets/images/icons/back-arrow.svg" alt="">
-      </button>
-      <button class="btn btn_005" matTooltip="Complete" *ngIf="buttonsDisplay.corrComplete"
-        (click)="OpenCompleteDialog('1')">
-        <img src="{{basehref}}assets/images/icons/check-box.svg" alt="">
-      </button>
-      <button class="btn btn_005" matTooltip="Archive" *ngIf="buttonsDisplay.corrArchive"
-        (click)="OpenCompleteDialog('2')">
-        <img src="{{basehref}}assets/images/icons/file_archive_02.svg" alt="">
-      </button>
-      <button class="btn btn_005" matTooltip="Save" *ngIf="buttonsDisplay.corrSave" (click)="saveTransferTo()">
-        <img src="{{basehref}}assets/images/icons/save-button.svg" alt="">
-      </button>
-      <button class="btn btn_005">
-        <img src="{{basehref}}assets/images/icons/close_btn_icon.svg" alt=""
-          (click)="showMessage('it is a test message. Please indorm Administrator')">
-      </button>
-    </div>
-  </div>
-  <div class="sender_wrapper corspnt_item" *ngIf="sectionDisplay.Sender.Show">
-    <div class="acdn_open_header">
-      <div class="icon_wrapper">
-        <div class="icon_typ icon_typ_001">
-          <img src="{{basehref}}assets/images/icons/sender_mail_icon.svg" alt="">
+    <div class="sender_wrapper corspnt_item" *ngIf="sectionDisplay.Sender.Show">
+      <div class="acdn_open_header">
+        <div class="icon_wrapper">
+          <div class="icon_typ icon_typ_001">
+            <img src="{{basehref}}assets/images/icons/sender_mail_icon.svg" alt="">
+          </div>
+        </div>
+        <p class="title_001">Sender</p>
+      </div>
+      <div class="corres_data_area">
+        <div class="corres_table_wrapper">
+          <table class="table">
+            <tr>
+              <th>Organization</th>
+              <th>Department</th>
+              <th>Name</th>
+            </tr>
+            <tr *ngFor="let correspondenceDetails of correspondenceSenderDetailsData">
+              <td *ngFor="let senderData of correspondenceDetails.myRows">{{senderData.OrganizationName_EN}} </td>
+              <td *ngFor="let senderData of correspondenceDetails.myRows"> {{senderData.DepartmentName_EN}} </td>
+              <td *ngFor="let senderData of correspondenceDetails.myRows"> {{senderData.SenderName}} </td>
+            </tr>
+          </table>
         </div>
       </div>
-      <p class="title_001">Sender</p>
     </div>
-    <div class="corres_data_area">
-      <div class="corres_table_wrapper">
-        <table class="table">
-          <tr>
-            <th>Organization</th>
-            <th>Department</th>
-            <th>Name</th>
-          </tr>
-          <tr *ngFor="let correspondenceDetails of correspondenceSenderDetailsData">
-            <td *ngFor="let senderData of correspondenceDetails.myRows">{{senderData.OrganizationName_EN}} </td>
-            <td *ngFor="let senderData of correspondenceDetails.myRows"> {{senderData.DepartmentName_EN}} </td>
-            <td *ngFor="let senderData of correspondenceDetails.myRows"> {{senderData.SenderName}} </td>
-          </tr>
-        </table>
+    <div class="recipient_wrapper corspnt_item" *ngIf="sectionDisplay.Recipient.Show">
+      <div class="acdn_open_header">
+        <div class="icon_wrapper">
+          <div class="icon_typ icon_typ_002">
+            <img src="{{basehref}}assets/images/icons/add-user.svg" alt="">
+          </div>
+        </div>
+        <p class="title_001">Recipient</p>
       </div>
-    </div>
-  </div>
-  <div class="recipient_wrapper corspnt_item" *ngIf="sectionDisplay.Recipient.Show">
-    <div class="acdn_open_header">
-      <div class="icon_wrapper">
-        <div class="icon_typ icon_typ_002">
-          <img src="{{basehref}}assets/images/icons/add-user.svg" alt="">
+      <div class="corres_data_area">
+
+        <div class="corres_table_wrapper">
+          <table class="table">
+            <tr>
+              <th>Organization</th>
+              <th>Department</th>
+              <th>Name</th>
+            </tr>
+            <tr *ngFor="let correspondenceRecipientsDetails of correspondenceRecipientDetailsData">
+              <td *ngFor="let recipientData of correspondenceRecipientsDetails.myRows">
+                {{recipientData.OrganizationName_EN}} </td>
+              <td *ngFor="let recipientData of correspondenceRecipientsDetails.myRows">
+                {{recipientData.DepartmentName_EN}} </td>
+              <td *ngFor="let recipientData of correspondenceRecipientsDetails.myRows"> {{recipientData.Name_EN}} </td>
+            </tr>
+          </table>
         </div>
       </div>
-      <p class="title_001">Recipient</p>
     </div>
-    <div class="corres_data_area">
-
-      <div class="corres_table_wrapper">
-        <table class="table">
-          <tr>
-            <th>Organization</th>
-            <th>Department</th>
-            <th>Name</th>
-          </tr>
-          <tr *ngFor="let correspondenceRecipientsDetails of correspondenceRecipientDetailsData">
-            <td *ngFor="let recipientData of correspondenceRecipientsDetails.myRows">
-              {{recipientData.OrganizationName_EN}} </td>
-            <td *ngFor="let recipientData of correspondenceRecipientsDetails.myRows">
-              {{recipientData.DepartmentName_EN}} </td>
-            <td *ngFor="let recipientData of correspondenceRecipientsDetails.myRows"> {{recipientData.Name_EN}} </td>
-          </tr>
-        </table>
-      </div>
-    </div>
-  </div>
-  <div class="corres_acdn_warapper mat_accordion_001">
-    <mat-accordion multi="true">
-      <mat-expansion-panel class="mat-elevation-z bg_001" *ngIf="sectionDisplay.CC.Show">
-        <mat-expansion-panel-header (click)="ccShowData();">
-          <div class="icon_wrapper">
-            <div class="icon_typ icon_typ_003">
-              <img src="{{basehref}}assets/images/icons/crsp_cc_iocn_white.svg" alt="">
+    <div class="corres_acdn_warapper mat_accordion_001">
+      <mat-accordion multi="true">
+        <mat-expansion-panel class="mat-elevation-z bg_001" *ngIf="sectionDisplay.CC.Show">
+          <mat-expansion-panel-header (click)="ccShowData();">
+            <div class="icon_wrapper">
+              <div class="icon_typ icon_typ_003">
+                <img src="{{basehref}}assets/images/icons/crsp_cc_iocn_white.svg" alt="">
+              </div>
             </div>
-          </div>
-          <p class="title_001">CC</p>
-        </mat-expansion-panel-header>
-        <div class="corres_data_area">
-          <div *ngIf="ccProgbar" class="spinner_sm_wrappar">
-            <mat-spinner class="spinner_sm"></mat-spinner>
-          </div>
-          <div *ngIf="!ccProgbar" class="corres_table_wrapper">
-            <table class="table">
-              <tr>
-                <th>Department</th>
-                <th>Role</th>
-                <th>Name</th>
-              </tr>
-              <tbody *ngFor="let correspondenceCCDetails of correspondenceCCtData">
-                <tr *ngFor="let ccData of correspondenceCCDetails.myRows">
-                  <td> {{ccData.DepartmentName_EN}} </td>
-                  <td> {{ccData.Role_EN}} </td>
-                  <td> {{ccData.Name_EN}} </td>
+            <p class="title_001">CC</p>
+          </mat-expansion-panel-header>
+          <div class="corres_data_area">
+            <div *ngIf="ccProgbar" class="spinner_sm_wrappar">
+              <mat-spinner class="spinner_sm"></mat-spinner>
+            </div>
+            <div *ngIf="!ccProgbar" class="corres_table_wrapper">
+              <table class="table">
+                <tr>
+                  <th>Department</th>
+                  <th>Role</th>
+                  <th>Name</th>
                 </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </mat-expansion-panel>
-      <mat-expansion-panel class="mat-elevation-z" *ngIf="sectionDisplay.Correspondence.Show">
-        <mat-expansion-panel-header (click)="correspondenceShowData()">
-          <div class="icon_wrapper">
-            <div class="icon_typ icon_typ_004">
-              <img src="{{basehref}}assets/images/icons/crsp_icon_white.svg" alt="">
+                <tbody *ngFor="let correspondenceCCDetails of correspondenceCCtData">
+                  <tr *ngFor="let ccData of correspondenceCCDetails.myRows">
+                    <td> {{ccData.DepartmentName_EN}} </td>
+                    <td> {{ccData.Role_EN}} </td>
+                    <td> {{ccData.Name_EN}} </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
-          <p class="title_001">Correspondence</p>
-        </mat-expansion-panel-header>
-        <div class="corres_data_area">
-          <div *ngIf="correspondenceProgbar" class="spinner_sm_wrappar">
-            <mat-spinner class="spinner_sm"></mat-spinner>
-          </div>
-          <div class="corres_fld_wrapper" *ngIf="!correspondenceProgbar">
-            <div *ngFor="let corrDataSet of correspondenceMetadata">
-              <div *ngFor="let corrData of corrDataSet.myRows">
-                <form class="cust_row">
-                  <mat-form-field class="col_12">
-                    <input matInput disabled placeholder="Arabic Subject" [value]="corrData.ArabicSubject">
-                  </mat-form-field>
-                  <mat-form-field class="col_12">
-                    <input matInput disabled placeholder="English Subject" [value]="corrData.EnglishSubject">
-                  </mat-form-field>
-                  <mat-form-field class="col_6">
-                    <input matInput disabled placeholder="Correspondence Code" [value]="corrData.CorrespondenceCode">
-                  </mat-form-field>
-                  <!-- <mat-form-field class="col_6">
+        </mat-expansion-panel>
+        <mat-expansion-panel class="mat-elevation-z" *ngIf="sectionDisplay.Correspondence.Show">
+          <mat-expansion-panel-header (click)="correspondenceShowData()">
+            <div class="icon_wrapper">
+              <div class="icon_typ icon_typ_004">
+                <img src="{{basehref}}assets/images/icons/crsp_icon_white.svg" alt="">
+              </div>
+            </div>
+            <p class="title_001">Correspondence</p>
+          </mat-expansion-panel-header>
+          <div class="corres_data_area">
+            <div *ngIf="correspondenceProgbar" class="spinner_sm_wrappar">
+              <mat-spinner class="spinner_sm"></mat-spinner>
+            </div>
+            <div class="corres_fld_wrapper" *ngIf="!correspondenceProgbar">
+              <div *ngFor="let corrDataSet of correspondenceMetadata">
+                <div *ngFor="let corrData of corrDataSet.myRows">
+                  <form class="cust_row">
+                    <mat-form-field class="col_12">
+                      <input matInput disabled placeholder="Arabic Subject" [value]="corrData.ArabicSubject">
+                    </mat-form-field>
+                    <mat-form-field class="col_12">
+                      <input matInput disabled placeholder="English Subject" [value]="corrData.EnglishSubject">
+                    </mat-form-field>
+                    <mat-form-field class="col_6">
+                      <input matInput disabled placeholder="Correspondence Code" [value]="corrData.CorrespondenceCode">
+                    </mat-form-field>
+                    <!-- <mat-form-field class="col_6">
                   <input matInput disabled placeholder="Correspondence purpose" [value]="corrData.EnglishSubject">>
                 </mat-form-field> -->
-                  <mat-form-field class="col_6">
-                    <input matInput disabled placeholder="Base Type" [value]="corrData.BaseType_EN">
-                  </mat-form-field>
-                  <mat-form-field class="col_6">
-                    <input matInput disabled placeholder="Document Type" [value]="corrData.CorrespondenceType_EN">
-                  </mat-form-field>
-                  <mat-form-field class="col_6">
-                    <input matInput disabled placeholder="Project Code" [value]="corrData.ProjectCode">
-                  </mat-form-field>
-                  <mat-form-field class="col_6">
-                    <input matInput disabled placeholder="Budget Number" [value]="corrData.BudgetNumber">
-                  </mat-form-field>
-                  <mat-form-field class="col_6">
-                    <input matInput disabled placeholder="Correspondence Type" [value]="corrData.CorrespondenceType_EN">
-                  </mat-form-field>
-                  <mat-form-field class="col_6">
-                    <input matInput disabled placeholder="Correspondence Date" [owlDateTimeTrigger]="correspondenceDate"
-                      [owlDateTime]="correspondenceDate">
-                    <!-- [(ngModel)]="dateTime" -->
-                    <owl-date-time #correspondenceDate></owl-date-time>
-                  </mat-form-field>
-                  <mat-form-field class="col_6">
-                    <input matInput disabled placeholder="Cover Date" [value]="corrData.CorrespondenceDate">
-                  </mat-form-field>
-                  <mat-form-field class="col_6">
-                    <input matInput disabled disabled placeholder="Correspondence Due Date"
-                      [value]="corrData.CorrespondenceDueDate">
-                  </mat-form-field>
-                  <!-- <mat-form-field class="col_6">
+                    <mat-form-field class="col_6">
+                      <input matInput disabled placeholder="Base Type" [value]="corrData.BaseType_EN">
+                    </mat-form-field>
+                    <mat-form-field class="col_6">
+                      <input matInput disabled placeholder="Document Type" [value]="corrData.CorrespondenceType_EN">
+                    </mat-form-field>
+                    <mat-form-field class="col_6">
+                      <input matInput disabled placeholder="Project Code" [value]="corrData.ProjectCode">
+                    </mat-form-field>
+                    <mat-form-field class="col_6">
+                      <input matInput disabled placeholder="Budget Number" [value]="corrData.BudgetNumber">
+                    </mat-form-field>
+                    <mat-form-field class="col_6">
+                      <input matInput disabled placeholder="Correspondence Type"
+                        [value]="corrData.CorrespondenceType_EN">
+                    </mat-form-field>
+                    <mat-form-field class="col_6">
+                      <input matInput disabled placeholder="Correspondence Date"
+                        [owlDateTimeTrigger]="correspondenceDate" [owlDateTime]="correspondenceDate">
+                      <!-- [(ngModel)]="dateTime" -->
+                      <owl-date-time #correspondenceDate></owl-date-time>
+                    </mat-form-field>
+                    <mat-form-field class="col_6">
+                      <input matInput disabled placeholder="Cover Date" [value]="corrData.CorrespondenceDate">
+                    </mat-form-field>
+                    <mat-form-field class="col_6">
+                      <input matInput disabled disabled placeholder="Correspondence Due Date"
+                        [value]="corrData.CorrespondenceDueDate">
+                    </mat-form-field>
+                    <!-- <mat-form-field class="col_6">
                   <input matInput disabled placeholder="Acknowledgement Date" [value]="corrData.CorrespondenceDueDate">
                 </mat-form-field> -->
-                  <mat-form-field class="col_6">
-                    <input matInput disabled placeholder="Response Due Date" [value]="corrData.ResponseDueDate">
-                  </mat-form-field>
-                  <mat-form-field class="col_6">
-                    <input matInput disabled placeholder="Priorty" [value]="corrData.Priority_EN">
-                  </mat-form-field>
-                  <mat-form-field class="col_6">
-                    <input matInput disabled placeholder="ID Number" [value]="corrData.DocumentNumber">
-                  </mat-form-field>
-                  <mat-form-field class="col_6">
-                    <input matInput disabled placeholder="Document Number" [value]="corrData.DocumentNumber">
-                  </mat-form-field>
-                  <mat-form-field class="col_6">
-                    <input matInput disabled placeholder="Company Registration Number"
-                      [value]="corrData.CompanyRegistrationNumber">
-                  </mat-form-field>
-                  <mat-form-field class="col_6">
-                    <input matInput disabled placeholder="Registered By" [value]="corrData.RegisteredBy">
-                  </mat-form-field>
-                  <mat-form-field class="col_6">
-                    <input matInput disabled placeholder="Commitment Number" [value]="corrData.CommitmentNumber">
-                  </mat-form-field>
-                  <mat-form-field class="col_6">
-                    <input matInput disabled placeholder="Tender Number" [value]="corrData.TenderNumber">
-                  </mat-form-field>
-                  <mat-form-field class="col_6">
-                    <input matInput disabled placeholder="Contract Number" [value]="corrData.ContractNumber">
-                  </mat-form-field>
-                  <mat-form-field class="col_6">
-                    <input matInput disabled placeholder="Staff Number" [value]="corrData.StaffNumber">
-                  </mat-form-field>
-                  <mat-form-field class="col_6">
-                    <input matInput disabled placeholder="File Path" [value]="corrData.Path_EN">
-                  </mat-form-field>
-                </form>
+                    <mat-form-field class="col_6">
+                      <input matInput disabled placeholder="Response Due Date" [value]="corrData.ResponseDueDate">
+                    </mat-form-field>
+                    <mat-form-field class="col_6">
+                      <input matInput disabled placeholder="Priorty" [value]="corrData.Priority_EN">
+                    </mat-form-field>
+                    <mat-form-field class="col_6">
+                      <input matInput disabled placeholder="ID Number" [value]="corrData.DocumentNumber">
+                    </mat-form-field>
+                    <mat-form-field class="col_6">
+                      <input matInput disabled placeholder="Document Number" [value]="corrData.DocumentNumber">
+                    </mat-form-field>
+                    <mat-form-field class="col_6">
+                      <input matInput disabled placeholder="Company Registration Number"
+                        [value]="corrData.CompanyRegistrationNumber">
+                    </mat-form-field>
+                    <mat-form-field class="col_6">
+                      <input matInput disabled placeholder="Registered By" [value]="corrData.RegisteredBy">
+                    </mat-form-field>
+                    <mat-form-field class="col_6">
+                      <input matInput disabled placeholder="Commitment Number" [value]="corrData.CommitmentNumber">
+                    </mat-form-field>
+                    <mat-form-field class="col_6">
+                      <input matInput disabled placeholder="Tender Number" [value]="corrData.TenderNumber">
+                    </mat-form-field>
+                    <mat-form-field class="col_6">
+                      <input matInput disabled placeholder="Contract Number" [value]="corrData.ContractNumber">
+                    </mat-form-field>
+                    <mat-form-field class="col_6">
+                      <input matInput disabled placeholder="Staff Number" [value]="corrData.StaffNumber">
+                    </mat-form-field>
+                    <mat-form-field class="col_6">
+                      <input matInput disabled placeholder="File Path" [value]="corrData.Path_EN">
+                    </mat-form-field>
+                  </form>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </mat-expansion-panel>
-      <mat-expansion-panel *ngIf="sectionDisplay.Cover.Show" class="mat-elevation-z bg_001" expanded>
-        <mat-expansion-panel-header>
-          <div class="icon_wrapper">
-            <div class="icon_typ icon_typ_005">
-              <img src="{{basehref}}assets/images/icons/cover-document.svg" alt="">
+        </mat-expansion-panel>
+        <mat-expansion-panel *ngIf="sectionDisplay.Cover.Show" class="mat-elevation-z bg_001" expanded>
+          <mat-expansion-panel-header>
+            <div class="icon_wrapper">
+              <div class="icon_typ icon_typ_005">
+                <img src="{{basehref}}assets/images/icons/cover-document.svg" alt="">
+              </div>
             </div>
-          </div>
-          <p class="title_001">Cover</p>
-        </mat-expansion-panel-header>
-        <div class="corres_data_area">
-          <div class="corres_table_wrapper">
-            <div *ngIf="coverProgbar" class="spinner_sm_wrappar">
-              <mat-spinner class="spinner_sm"></mat-spinner>
-            </div>
-            <div *ngIf="!coverProgbar" class="corres_table_wrapper">
-              <table class="table">
-                <tr>
-                  <th class="size_45">Type</th>
-                  <th>Name</th>
-                  <th></th>
-                  <th>Size</th>
-                  <th>Modified</th>
-                </tr>
-                <tbody *ngFor="let correspondenceCoverDetails of correspondenceCovertData">
-                  <tr *ngFor="let coverData of correspondenceCoverDetails.myRows">
-                    <td class="size_45" [innerHtml]="coverData.CoverType">
-                    </td>
-                    <td>
-                      <a class="coverLink" (click)="getCoverDocumentURL(coverData.Dataid)">{{coverData.Name}} </a>
-                    </td>
-                    <td>
-                      <div class="group_btn">
-                        <!-- <button matTooltip="Print" class="btn btn_006">
+            <p class="title_001">Cover</p>
+          </mat-expansion-panel-header>
+          <div class="corres_data_area">
+            <div class="corres_table_wrapper">
+              <div *ngIf="coverProgbar" class="spinner_sm_wrappar">
+                <mat-spinner class="spinner_sm"></mat-spinner>
+              </div>
+              <div *ngIf="!coverProgbar" class="corres_table_wrapper">
+                <table class="table">
+                  <tr>
+                    <th class="size_45">Type</th>
+                    <th>Name</th>
+                    <th></th>
+                    <th>Size</th>
+                    <!-- <th>Modified</th> -->
+                  </tr>
+                  <tbody *ngFor="let correspondenceCoverDetails of correspondenceCovertData">
+                    <tr *ngFor="let coverData of correspondenceCoverDetails.myRows">
+                      <td class="size_45" [innerHtml]="coverData.CoverType">
+                      </td>
+                      <td>
+                        <a class="coverLink" (click)="getCoverDocumentURL(coverData.Dataid)">{{coverData.Name}} </a>
+                      </td>
+                      <td>
+                        <div class="group_btn">
+                          <!-- <button matTooltip="Print" class="btn btn_006">
                           <img src="{{basehref}}assets/images/icons/printer-tool.svg" alt="">
                         </button> -->
-                        <a matTooltip="Download" class="btn btn_006" href="{{CSUrl}}{{coverData.DownloadURL}}">
-                          <img src="{{basehref}}assets/images/icons/download-to-storage-drive.svg" alt="">
+                          <a matTooltip="Download" class="btn btn_006" href="{{CSUrl}}{{coverData.DownloadURL}}">
+                            <img src="{{basehref}}assets/images/icons/download-to-storage-drive.svg" alt="">
+                          </a>
+                          <a matTooltip="Properties" class="btn btn_006" (click)=showActionProperties(coverData.Dataid)>
+                            <img src="{{basehref}}assets/images/icons/info-round-button.svg" alt="">
+                          </a>
+                        </div>
+                      </td>
+                      <td> {{coverData.CoverSize}} </td>
+                      <!-- <td> {{coverData.ModifyDate}} </td> -->
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </mat-expansion-panel>
+        <mat-expansion-panel class="mat-elevation-z" *ngIf="sectionDisplay.Attachments.Show">
+          <mat-expansion-panel-header (click)="attachmentShowData();">
+            <div class="icon_wrapper">
+              <div class="icon_typ icon_typ_006">
+                <img src="{{basehref}}assets/images/icons/attachment.svg" alt="">
+              </div>
+            </div>
+            <p class="title_001">Attachments <span>({{correspondenceData?.AttachementsDocCount}})</span></p>
+          </mat-expansion-panel-header>
+          <div class="corres_data_area">
+            <div class="atch_header_wrp">
+              <button class="ref_btn_sm" (click)="attachmentShowData()"><img
+                  src="{{basehref}}assets/images/icons/refresh-arrow.svg" alt=""></button>
+            </div>
+            <div class="corres_table_wrapper">
+              <div *ngIf="attachmentsProgbar" class="spinner_sm_wrappar">
+                <mat-spinner class="spinner_sm"></mat-spinner>
+              </div>
+              <div *ngIf="!attachmentsProgbar" class="corres_table_wrapper">
+                <table class="table">
+                  <tr>
+                    <th class="size_45">Type</th>
+                    <th>Name</th>
+                    <th></th>
+                    <th class="size_45">Size</th>
+                    <!-- <th>Modified</th> -->
+                  </tr>
+                  <tbody *ngFor="let correspondenceAttachmentDetails of correspondenceAttachmentsData">
+                    <tr *ngFor="let attachmentData of correspondenceAttachmentDetails.myRows">
+                      <td class="size_45" [innerHtml]="attachmentData.attachmentType">
+                      </td>
+                      <td>
+                        <a class="coverLink"
+                          (click)="getCoverDocumentURL(attachmentData.Dataid)">{{attachmentData.Name}}
                         </a>
-                        <a matTooltip="Properties" class="btn btn_006" (click)=showActionProperties(coverData.Dataid)>
-                          <img src="{{basehref}}assets/images/icons/info-round-button.svg" alt="">
-                        </a>
-                      </div>
-                    </td>
-                    <td> {{coverData.CoverSize}} </td>
-                    <td> {{coverData.ModifyDate}} </td>
+                      </td>
+                      <td>
+                        <div class="group_btn">
+                          <!-- <button matTooltip="Print" class="btn btn_006">
+                          <img src="{{basehref}}assets/images/icons/printer-tool.svg" alt="">
+                        </button> -->
+                          <a matTooltip="Download" class="btn btn_006" href="{{CSUrl}}{{attachmentData.DownloadURL}}">
+                            <img src="{{basehref}}assets/images/icons/download-to-storage-drive.svg" alt="">
+                          </a>
+                          <a matTooltip="Properties" class="btn btn_006"
+                            (click)=showActionProperties(attachmentData.Dataid)>
+                            <img src="{{basehref}}assets/images/icons/info-round-button.svg" alt="">
+                          </a>
+                        </div>
+                      </td>
+                      <td> {{attachmentData.AttachmentSize}} </td>
+                      <!-- <td> {{attachmentData.ModifyDate}} </td> -->
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </mat-expansion-panel>
+        <mat-expansion-panel class="mat-elevation-z bg_001" *ngIf="sectionDisplay.UserCollaboration.Show">
+          <mat-expansion-panel-header (click)="collaborationShowData();">
+            <div class="icon_wrapper">
+              <div class="icon_typ icon_typ_007">
+                <img src="{{basehref}}assets/images/icons/collaboration_icon.svg" alt="">
+              </div>
+            </div>
+            <p class="title_001">User Collaboration</p>
+          </mat-expansion-panel-header>
+          <div class="corres_data_area">
+            <div *ngIf="userCollaborationProgbar" class="spinner_sm_wrappar">
+              <mat-spinner class="spinner_sm"></mat-spinner>
+            </div>
+            <div *ngIf="!userCollaborationProgbar" class="corres_table_wrapper">
+              <table class="table table_collaboration">
+                <tr>
+                  <th class="name">Name</th>
+                  <th class="department">Department</th>
+                  <th class="status">Status</th>
+                  <th class="purpose">Purpose</th>
+                  <th class="due_date">Due Date</th>
+                  <th class="last_note">Last Notes</th>
+                </tr>
+                <tbody *ngFor="let correspondenceCollaborationDetails of correspondenceCollaborationDetail">
+                  <tr *ngFor="let collaborationData of correspondenceCollaborationDetails.myRows">
+                    <td>{{collaborationData.Name_EN}}</td>
+                    <td>{{collaborationData.DepartmentName_EN}}</td>
+                    <td>{{collaborationData.Status_EN}}</td>
+                    <td>{{collaborationData.Purpose_EN}}</td>
+                    <td>{{collaborationData.UserColl_DueDate}}</td>
+                    <td>{{collaborationData.UserColl_Notes}}</td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
-        </div>
-      </mat-expansion-panel>
-      <mat-expansion-panel class="mat-elevation-z" *ngIf="sectionDisplay.Attachments.Show">
-        <mat-expansion-panel-header (click)="attachmentShowData();">
-          <div class="icon_wrapper">
-            <div class="icon_typ icon_typ_006">
-              <img src="{{basehref}}assets/images/icons/attachment.svg" alt="">
+        </mat-expansion-panel>
+        <mat-expansion-panel class="mat-elevation-z linked_crsp_exp_view"
+          *ngIf="sectionDisplay.LinkedCorrespondence.Show">
+          <mat-expansion-panel-header (click)="corrconnectionsData();">
+            <div class="icon_wrapper">
+              <div class="icon_typ icon_typ_008">
+                <img src="{{basehref}}assets/images/icons/linked_correspondence.svg" alt="">
+              </div>
             </div>
-          </div>
-          <p class="title_001">Attachments <span>({{correspondenceData?.AttachementsDocCount}})</span></p>
-        </mat-expansion-panel-header>
-        <div class="corres_data_area">
-          <div class="atch_header_wrp">
-            <button class="ref_btn_sm" (click)="attachmentShowData()"><img
-                src="{{basehref}}assets/images/icons/refresh-arrow.svg" alt=""></button>
-          </div>
-          <div class="corres_table_wrapper">
-            <div *ngIf="attachmentsProgbar" class="spinner_sm_wrappar">
+            <p class="title_001">Linked Correspondence</p>
+          </mat-expansion-panel-header>
+          <div class="corres_data_area">
+            <div *ngIf="corrConnectionsProgbar" class="spinner_sm_wrappar">
               <mat-spinner class="spinner_sm"></mat-spinner>
             </div>
-            <div *ngIf="!attachmentsProgbar" class="corres_table_wrapper">
-              <table class="table">
-                <tr>
-                  <th class="size_45">Type</th>
-                  <th>Name</th>
-                  <th></th>
-                  <th class="size_45">Size</th>
-                  <th>Modified</th>
-                </tr>
-                <tbody *ngFor="let correspondenceAttachmentDetails of correspondenceAttachmentsData">
-                  <tr *ngFor="let attachmentData of correspondenceAttachmentDetails.myRows">
-                    <td class="size_45" [innerHtml]="attachmentData.attachmentType">
-                    </td>
-                    <td>
-                      <a class="coverLink" (click)="getCoverDocumentURL(attachmentData.Dataid)">{{attachmentData.Name}}
-                      </a>
-                    </td>
-                    <td>
-                      <div class="group_btn">
-                        <!-- <button matTooltip="Print" class="btn btn_006">
-                          <img src="{{basehref}}assets/images/icons/printer-tool.svg" alt="">
-                        </button> -->
-                        <a matTooltip="Download" class="btn btn_006" href="{{CSUrl}}{{attachmentData.DownloadURL}}">
-                          <img src="{{basehref}}assets/images/icons/download-to-storage-drive.svg" alt="">
-                        </a>
-                        <a matTooltip="Properties" class="btn btn_006"
-                          (click)=showActionProperties(attachmentData.Dataid)>
-                          <img src="{{basehref}}assets/images/icons/info-round-button.svg" alt="">
-                        </a>
-                      </div>
-                    </td>
-                    <td> {{attachmentData.AttachmentSize}} </td>
-                    <td> {{attachmentData.ModifyDate}} </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </mat-expansion-panel>
-      <mat-expansion-panel class="mat-elevation-z bg_001" *ngIf="sectionDisplay.UserCollaboration.Show">
-        <mat-expansion-panel-header (click)="collaborationShowData();">
-          <div class="icon_wrapper">
-            <div class="icon_typ icon_typ_007">
-              <img src="{{basehref}}assets/images/icons/collaboration_icon.svg" alt="">
-            </div>
-          </div>
-          <p class="title_001">User Collaboration</p>
-        </mat-expansion-panel-header>
-        <div class="corres_data_area">
-          <div *ngIf="userCollaborationProgbar" class="spinner_sm_wrappar">
-            <mat-spinner class="spinner_sm"></mat-spinner>
-          </div>
-          <div *ngIf="!userCollaborationProgbar" class="corres_table_wrapper">
-            <table class="table table_collaboration">
-              <tr>
-                <th class="name">Name</th>
-                <th class="department">Department</th>
-                <th class="status">Status</th>
-                <th class="purpose">Purpose</th>
-                <th class="due_date">Due Date</th>
-                <th class="last_note">Last Notes</th>
-              </tr>
-              <tbody *ngFor="let correspondenceCollaborationDetails of correspondenceCollaborationDetail">
-                <tr *ngFor="let collaborationData of correspondenceCollaborationDetails.myRows">
-                  <td>{{collaborationData.Name_EN}}</td>
-                  <td>{{collaborationData.DepartmentName_EN}}</td>
-                  <td>{{collaborationData.Status_EN}}</td>
-                  <td>{{collaborationData.Purpose_EN}}</td>
-                  <td>{{collaborationData.UserColl_DueDate}}</td>
-                  <td>{{collaborationData.UserColl_Notes}}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </mat-expansion-panel>
-      <mat-expansion-panel class="mat-elevation-z" *ngIf="sectionDisplay.LinkedCorrespondence.Show">
-        <mat-expansion-panel-header (click)="corrconnectionsData();">
-          <div class="icon_wrapper">
-            <div class="icon_typ icon_typ_008">
-              <img src="{{basehref}}assets/images/icons/linked_correspondence.svg" alt="">
-            </div>
-          </div>
-          <p class="title_001">Linked Correspondence</p>
-        </mat-expansion-panel-header>
-        <div class="corres_data_area">
-          <div *ngIf="corrConnectionsProgbar" class="spinner_sm_wrappar">
-            <mat-spinner class="spinner_sm"></mat-spinner>
-          </div>
-          <div *ngIf="!corrConnectionsProgbar" class="corres_data_area">
-            <div class="linked_corp_wrp">
-              <div class="link_btn_wrp">
-                <button class="ref_btn_sm" matTooltip="Refresh" (click)="corrconnectionsData();"><img alt=""
-                    src="assets/images/icons/refresh-arrow.svg"></button>
-              </div>
-              <div class="link_corsp_cnt">
-                <mat-accordion *ngFor="let correspondenceLinkedCorrespondenceDetails of corrConnectionsData">
-                  <mat-expansion-panel class="mat-elevation-z"
-                    *ngFor="let correspondenceLinkedCorrespondenceDetailsCnt of correspondenceLinkedCorrespondenceDetails.myRows">
-                    <mat-expansion-panel-header class="corspnd_main_head" [collapsedHeight]="'35px'"
-                      [expandedHeight]="'35px'">
-                      <span class="link_main_sub">
-                        {{correspondenceLinkedCorrespondenceDetailsCnt.EnglishSubject}}</span>
-                      <span class="link_main_code">
-                        {{correspondenceLinkedCorrespondenceDetailsCnt.CorrespondenceName}}</span>
-                      <!-- <button matTooltip="Remove" (click)="toggle(d.expanded)" class="remove_btn"><img src="assets/images/icons/rubbish-bin.svg" alt=""></button> -->
-                    </mat-expansion-panel-header>
-                    <div class="link_sub_cont">
-                      <mat-accordion multi="true">
-                        <mat-expansion-panel [expanded]="true" class="mat-elevation-z">
-                          <mat-expansion-panel-header [collapsedHeight]="'35px'" [expandedHeight]="'35px'"
-                            class="link_cmd_sub_head" hideToggle>Cover letter</mat-expansion-panel-header>
-                          <div class="link_sub_cont">
-                            <table class="link_corspd">
-                              <tr>
-                                <th class="Type">Type</th>
-                                <th class="Name">Name</th>
-                                <th></th>
-                                <th class="Size">Size</th>
-                                <th class="Modified">Modified</th>
-                              </tr>
-                              <tr>
-                                <td><img class="max_15" [src]="correspondenceLinkedCorrespondenceDetailsCnt.CoverType">
-                                </td>
+            <div *ngIf="!corrConnectionsProgbar" class="corres_data_area">
+              <div class="linked_corp_wrp">
+                <div class="link_btn_wrp">
+                  <button class="ref_btn_sm" matTooltip="Refresh" (click)="corrconnectionsData();"><img alt=""
+                      src="assets/images/icons/refresh-arrow.svg"></button>
+                </div>
+                <div class="link_corsp_cnt">
+                  <mat-accordion *ngFor="let correspondenceLinkedCorrespondenceDetails of corrConnectionsData">
+                    <mat-expansion-panel class="mat-elevation-z"
+                      *ngFor="let correspondenceLinkedCorrespondenceDetailsCnt of correspondenceLinkedCorrespondenceDetails.myRows">
+                      <mat-expansion-panel-header class="corspnd_main_head" [collapsedHeight]="'35px'"
+                        [expandedHeight]="'35px'">
+                        <span class="link_main_sub">
+                          {{correspondenceLinkedCorrespondenceDetailsCnt.EnglishSubject}}</span>
+                        <span class="link_main_code">
+                          {{correspondenceLinkedCorrespondenceDetailsCnt.CorrespondenceName}}</span>
+                        <!-- <button matTooltip="Remove" (click)="toggle(d.expanded)" class="remove_btn"><img src="assets/images/icons/rubbish-bin.svg" alt=""></button> -->
+                      </mat-expansion-panel-header>
+                      <div class="link_sub_cont">
+                        <mat-accordion multi="true">
+                          <mat-expansion-panel [expanded]="true" class="mat-elevation-z">
+                            <mat-expansion-panel-header [collapsedHeight]="'35px'" [expandedHeight]="'35px'"
+                              class="link_cmd_sub_head" hideToggle>Cover letter</mat-expansion-panel-header>
+                            <div class="link_sub_cont">
+                              <table class="link_corspd">
+                                <tr>
+                                  <th class="Type">Type</th>
+                                  <th class="Name">Name</th>
+                                  <th></th>
+                                  <th class="Size">Size</th>
+                                  <th class="Modified">Modified</th>
+                                </tr>
+                                <tr>
+                                  <td><img class="max_15"
+                                      [src]="correspondenceLinkedCorrespondenceDetailsCnt.CoverType">
+                                  </td>
 
-                                <!-- <td>{{correspondenceLinkedCorrespondenceDetailsCnt.CoverName}}</td> -->
-                                <td><a class="coverLink"
-                                    (click)="getCoverDocumentURL(correspondenceLinkedCorrespondenceDetailsCnt.CoverID)">{{correspondenceLinkedCorrespondenceDetailsCnt.CoverName}}
-                                  </a></td>
-                                <td>
-                                  <div class="group_btn">
-                                    <button matTooltip="Print" class="btn btn_006">
-                                      <img src="assets/images/icons/printer-tool.svg" alt="">
-                                    </button>
-                                    <button matTooltip="Download" class="btn btn_006">
-                                      <img src="assets/images/icons/download-to-storage-drive.svg" alt="">
-                                    </button>
-                                    <a matTooltip="Properties" class="btn btn_006">
-                                      <img src="assets/images/icons/info-round-button.svg" alt="">
-                                    </a>
-                                  </div>
-                                </td>
-                                <td>{{correspondenceLinkedCorrespondenceDetailsCnt.Size}}</td>
-                                <td>{{correspondenceLinkedCorrespondenceDetailsCnt.Modified}}</td>
-                              </tr>
-                            </table>
-                          </div>
-                        </mat-expansion-panel>
-                        <!-- <mat-expansion-panel class="mat-elevation-z">
+                                  <!-- <td>{{correspondenceLinkedCorrespondenceDetailsCnt.CoverName}}</td> -->
+                                  <td><a class="coverLink"
+                                      (click)="getCoverDocumentURL(correspondenceLinkedCorrespondenceDetailsCnt.CoverID)">{{correspondenceLinkedCorrespondenceDetailsCnt.CoverName}}
+                                    </a></td>
+                                  <td>
+                                    <div class="group_btn">
+                                      <button matTooltip="Print" class="btn btn_006">
+                                        <img src="assets/images/icons/printer-tool.svg" alt="">
+                                      </button>
+                                      <button matTooltip="Download" class="btn btn_006">
+                                        <img src="assets/images/icons/download-to-storage-drive.svg" alt="">
+                                      </button>
+                                      <a matTooltip="Properties" class="btn btn_006">
+                                        <img src="assets/images/icons/info-round-button.svg" alt="">
+                                      </a>
+                                    </div>
+                                  </td>
+                                  <td>{{correspondenceLinkedCorrespondenceDetailsCnt.Size}}</td>
+                                  <td>{{correspondenceLinkedCorrespondenceDetailsCnt.Modified}}</td>
+                                </tr>
+                              </table>
+                            </div>
+                          </mat-expansion-panel>
+                          <!-- <mat-expansion-panel class="mat-elevation-z">
                           <mat-expansion-panel-header [collapsedHeight]="'35px'" [expandedHeight]="'35px'" class="link_cmd_sub_head">Attachment</mat-expansion-panel-header>
                           <div class="link_sub_cont">
                             <div class="link_sub_cont">
@@ -477,96 +483,7 @@
                             </div>
                           </div>
                         </mat-expansion-panel> -->
-                      </mat-accordion>
-                    </div>
-                  </mat-expansion-panel>
-                </mat-accordion>
-              </div>
-            </div>
-          </div>
-        </div>
-      </mat-expansion-panel>
-      <mat-expansion-panel class="mat-elevation-z bg_001" *ngIf="sectionDisplay.Comments.Show">
-        <mat-expansion-panel-header (click)="commentsProgbar = false">
-          <div class="icon_wrapper">
-            <div class="icon_typ icon_typ_009">
-              <img src="{{basehref}}assets/images/icons/comment_icon.svg" alt="">
-            </div>
-          </div>
-          <p class="title_001">Comments</p>
-        </mat-expansion-panel-header>
-        <div class="corres_data_area">
-          <div *ngIf="commentsProgbar" class="spinner_sm_wrappar">
-            <mat-spinner class="spinner_sm"></mat-spinner>
-          </div>
-          <div *ngIf="!commentsProgbar && correspondenceData" class="input_item_wrp corres_comnt_area">
-            <app-comment-section [data]="correspondenceData" [corrType]="CorrespondencType" [corrTaskID] = "taskID"></app-comment-section>
-          </div>
-        </div>
-      </mat-expansion-panel>
-      <!--<mat-expansion-panel class="mat-elevation-z">
-            <mat-expansion-panel-header>
-              <div class="icon_wrapper">
-                <div class="icon_typ icon_typ_010">
-            <img src="{{basehref}}assets/images/icons/writing_notes.svg" alt="">
-                </div>
-              </div>
-              <p class="title_001">Notes</p>
-            </mat-expansion-panel-header>
-          </mat-expansion-panel>-->
-      <mat-expansion-panel class="mat-elevation-z bg_001 panal_pd_0" *ngIf="sectionDisplay.Transfer.Show">
-        <mat-expansion-panel-header (click)="transferTabShowData()">
-          <div class="icon_wrapper">
-            <div class="icon_typ icon_typ_011">
-              <img src="{{basehref}}assets/images/icons/transfer_icon.svg" alt="">
-            </div>
-          </div>
-          <p class="title_001">Transfer</p>
-        </mat-expansion-panel-header>
-        <div class="corres_data_area transfer_wrapper">
-          <div *ngIf="transferProgbar" class="spinner_sm_wrappar">
-            <mat-spinner class="spinner_sm"></mat-spinner>
-          </div>
-          <div *ngIf="!transferProgbar" class="corres_table_wrapper">
-            <div class="transfer_header" *ngIf="sectionDisplay.Transfer.Modify">
-              <button class="btn_007 mat-button" (click)="openDialog()"><img
-                  src="{{basehref}}assets/images/icons/plus_btn_green.svg" alt=""> Select Transfer</button>
-              <button class="btn_007 mat-button" (click)="transferTabShowData()"><img
-                  src="{{basehref}}assets/images/icons/refresh-page-button.svg" alt="">Refresh</button>
-            </div>
-            <div class="transfer_list_item_wrp">
-              <ul class="inside_acdn_header_002">
-                <li>From</li>
-                <li>To</li>
-                <li>Purpose</li>
-                <li>Transfer Date</li>
-                <li>Due Date</li>
-              </ul>
-              <div *ngFor="let transferDataDetails of transferhistorytabData">
-                <div *ngFor="let transferDataDetail of transferDataDetails.myRows">
-                  <mat-accordion class="inside_accordion_001">
-                    <mat-expansion-panel>
-                      <mat-expansion-panel-header [collapsedHeight]="'auto'" [expandedHeight]="'auto'">
-                        <ul class="inside_acdn_header_002 padd_none">
-
-                          <li>{{transferDataDetail.SenderName}}</li>
-                          <li>{{transferDataDetail.RecipientName}}</li>
-                          <li>{{transferDataDetail.Purpose}}</li>
-                          <li>{{transferDataDetail.TransferDate}}</li>
-                          <li>{{transferDataDetail.TransferDueDate}}</li>
-                        </ul>
-                      </mat-expansion-panel-header>
-                      <div class="inside_acdn_bdy">
-                        <ul class="inside_acdn_contnt_002">
-                          <li>
-                            <span class="titl">Comments :</span>
-                            <span>{{transferDataDetail.Notes}}</span>
-                          </li>
-                          <li>
-                            <span class="titl">Completion Notes:</span>
-                            <span>{{transferDataDetail.NotesComplete}}</span>
-                          </li>
-                        </ul>
+                        </mat-accordion>
                       </div>
                     </mat-expansion-panel>
                   </mat-accordion>
@@ -574,29 +491,110 @@
               </div>
             </div>
           </div>
-        </div>
-      </mat-expansion-panel>
-    </mat-accordion>
-  </div>
-  <div class="corp_dtl_btn_btm_wrapper">
-    <button (click)="expandeActionLeftButton()" matRipple class="corsp_ext_btn">
+        </mat-expansion-panel>
+        <mat-expansion-panel class="mat-elevation-z bg_001" *ngIf="sectionDisplay.Comments.Show">
+          <mat-expansion-panel-header (click)="commentsProgbar = false">
+            <div class="icon_wrapper">
+              <div class="icon_typ icon_typ_009">
+                <img src="{{basehref}}assets/images/icons/comment_icon.svg" alt="">
+              </div>
+            </div>
+            <p class="title_001">Comments</p>
+          </mat-expansion-panel-header>
+          <div class="corres_data_area">
+            <div *ngIf="commentsProgbar" class="spinner_sm_wrappar">
+              <mat-spinner class="spinner_sm"></mat-spinner>
+            </div>
+            <div *ngIf="!commentsProgbar && correspondenceData" class="input_item_wrp corres_comnt_area">
+              <app-comment-section [data]="correspondenceData" [corrType]="CorrespondencType" [corrTaskID]="taskID">
+              </app-comment-section>
+            </div>
+          </div>
+        </mat-expansion-panel>
+        <mat-expansion-panel class="mat-elevation-z panal_pd_0" *ngIf="sectionDisplay.Transfer.Show">
+          <mat-expansion-panel-header (click)="transferTabShowData()">
+            <div class="icon_wrapper">
+              <div class="icon_typ icon_typ_011">
+                <img src="{{basehref}}assets/images/icons/transfer_icon.svg" alt="">
+              </div>
+            </div>
+            <p class="title_001">Transfer</p>
+          </mat-expansion-panel-header>
+          <div class="corres_data_area transfer_wrapper">
+            <div *ngIf="transferProgbar" class="spinner_sm_wrappar">
+              <mat-spinner class="spinner_sm"></mat-spinner>
+            </div>
+            <div *ngIf="!transferProgbar" class="corres_table_wrapper">
+              <div class="transfer_header" *ngIf="sectionDisplay.Transfer.Modify">
+                <button class="btn_007 mat-button" (click)="openDialog()"><img
+                    src="{{basehref}}assets/images/icons/plus_btn_green.svg" alt=""> Select Transfer</button>
+                <button class="btn_007 mat-button" (click)="transferTabShowData()"><img
+                    src="{{basehref}}assets/images/icons/refresh-page-button.svg" alt="">Refresh</button>
+              </div>
+              <div class="transfer_list_item_wrp">
+                <ul class="inside_acdn_header_002">
+                  <li>From</li>
+                  <li>To</li>
+                  <li>Purpose</li>
+                  <li>Transfer Date</li>
+                  <li>Due Date</li>
+                </ul>
+                <div *ngFor="let transferDataDetails of transferhistorytabData">
+                  <div *ngFor="let transferDataDetail of transferDataDetails.myRows">
+                    <mat-accordion class="inside_accordion_001">
+                      <mat-expansion-panel>
+                        <mat-expansion-panel-header [collapsedHeight]="'auto'" [expandedHeight]="'auto'">
+                          <ul class="inside_acdn_header_002 padd_none">
+
+                            <li>{{transferDataDetail.SenderName}}</li>
+                            <li>{{transferDataDetail.RecipientName}}</li>
+                            <li>{{transferDataDetail.Purpose}}</li>
+                            <li>{{transferDataDetail.TransferDate}}</li>
+                            <li>{{transferDataDetail.TransferDueDate}}</li>
+                          </ul>
+                        </mat-expansion-panel-header>
+                        <div class="inside_acdn_bdy">
+                          <ul class="inside_acdn_contnt_002">
+                            <li>
+                              <span class="titl">Comments :</span>
+                              <span>{{transferDataDetail.Notes}}</span>
+                            </li>
+                            <li>
+                              <span class="titl">Completion Notes:</span>
+                              <span>{{transferDataDetail.NotesComplete}}</span>
+                            </li>
+                          </ul>
+                        </div>
+                      </mat-expansion-panel>
+                    </mat-accordion>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+    <div class="corp_dtl_btn_btm_wrapper">
+      <button class="btn_008" *ngIf="buttonsDisplay.corrTrReply" (click)="transferReply(correspondData)">Reply</button>
+      <button class="btn_008" *ngIf="buttonsDisplay.corrComplete" (click)="OpenCompleteDialog('1')">Complete</button>
+      <button class="btn_008" *ngIf="buttonsDisplay.corrArchive" (click)="OpenCompleteDialog('2')">Archive</button>
+      <button class="btn_008" *ngIf="buttonsDisplay.corrSave" (click)="saveTransferTo()">Save</button>
+      <button class="btn_008"  (click)="backNavigation()">Back</button>
+
+      <button (click)="expandeActionLeftButton()" matRipple class="corsp_ext_btn">
+        <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
+      </button>
+    </div>
+
+  </ng-scrollbar>
+  <ng-scrollbar thumbClass="scroll_001" class="correspondence_deatil_prview_wrappper scroll_wrp_001 scroll_pr_0"
+    [ngClass]="expandedRightAction ? 'unActive' : 'ActiveRight'" *ngIf="expandedAction">
+    <button (click)="expandeActionRightButton()" matRipple class="corsp_ext_btn">
       <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
     </button>
-  </div>
-
-</ng-scrollbar>
-<ng-scrollbar  thumbClass="scroll_001" class="correspondence_deatil_prview_wrappper scroll_wrp_001 scroll_pr_0" [ngClass]="expandedRightAction ? 'unActive' : 'ActiveRight'" *ngIf="expandedAction"  compact="true">
-  <!-- <button (click)="expandeActionRightButton()" matRipple class="corsp_ext_btn">
-        <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
-      </button> -->
-  <div class="documentViewerDiv" *ngFor="let docpreviewData of documentPreviewURL">
-    <iframe class="iframeclass" [src]="docpreviewData.CorrespondencedocumentURL|safe"></iframe>
-  </div>
-</ng-scrollbar>
+    <div class="documentViewerDiv" *ngFor="let docpreviewData of documentPreviewURL">
+      <iframe class="iframeclass" [src]="docpreviewData.CorrespondencedocumentURL|safe"></iframe>
+    </div>
+  </ng-scrollbar>
 </div>
-<!-- <div class="correspondence_deatil_prview_wrappper" *ngFor="let docpreviewData of documentPreviewURL" [ngClass]="expandedRightAction ? 'unActive' : 'ActiveRight'" *ngIf="expandedAction">
-      <button (click)="expandeActionRightButton()" matRipple class="corsp_ext_btn">
-          <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
-        </button>
-    <iframe class="doc_iframe" [src]="docpreviewData.CorrespondencedocumentURL|safe"></iframe>
-  </div> -->

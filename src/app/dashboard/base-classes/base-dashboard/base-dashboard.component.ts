@@ -55,6 +55,7 @@ export class BaseDashboardComponent implements OnInit {
 
   reportType = '';
   routerCorrDetail = '/dashboard/external/correspondence-detail';
+  routerInitateExternal = '/dashboard/create/new-external-outgoing';
   routerFormStep = '/';
   basehref: String = FCTSDashBoard.BaseHref;
   CorrAttach: CorrAttachDocuments;
@@ -154,46 +155,49 @@ export class BaseDashboardComponent implements OnInit {
   }
 
   routeToDetailsPage(correspondData: Correspondence) {
+    debugger;
     this.selectWFStepRoute(correspondData);
     this.setPerformerPermission(correspondData);
     const isAssignee = this.globalConstants.FCTS_Dashboard.UserGroupsArray.includes(correspondData.SubWorkTask_PerformerID);
     if (Number(correspondData.SubWorkTask_TaskID) > 0 && correspondData.SubWorkTask_PerformerID.toString() === CSConfig.globaluserid ) {
       this.routeToFormStepPage(correspondData);
     } else if (correspondData.SubWorkTask_TaskID > 0 && isAssignee && correspondData.SubWorkTask_PerformerID_Type.toString() !== '0') {
-      this.userConfirmation( 'assignWF', correspondData );
-    } else if (correspondData.transID > 0 && correspondData.transHoldSecretaryID !== CSConfig.globaluserid ) {
-      this.userConfirmation( 'assignTransfer', correspondData );
-    /*} else if (correspondenceData.transID > 0 && correspondenceData.transHoldSecretaryID != CSConfig.globaluserid ) {
-      console.log("transfer assigned to USER"); */
+      this.userConfirmation('assignWF', correspondData);
+    } else if (correspondData.transID > 0 && correspondData.transHoldSecretaryID !== CSConfig.globaluserid) {
+      this.userConfirmation('assignTransfer', correspondData);
+      /*} else if (correspondenceData.transID > 0 && correspondenceData.transHoldSecretaryID != CSConfig.globaluserid ) {
+        console.log("transfer assigned to USER"); */
     } else {
       this.router.navigate([this.routerCorrDetail],
-                            { queryParams:
-                              {
-                                VolumeID: correspondData.VolumeID,
-                                CorrType: correspondData.CorrFlowType,
-                                CoverID: correspondData.CoverID,
-                                locationid: correspondData.DataID,
-                                TaskID: correspondData.SubWorkTask_TaskID,
-                                TransID: correspondData.transID,
-                                TransIsCC: correspondData.transIsCC
-                                }
-                              }
-                          );
+        {
+          queryParams:
+          {
+            VolumeID: correspondData.VolumeID,
+            CorrType: correspondData.CorrFlowType,
+            CoverID: correspondData.CoverID,
+            locationid: correspondData.DataID,
+            TaskID: correspondData.SubWorkTask_TaskID,
+            TransID: correspondData.transID,
+            TransIsCC: correspondData.transIsCC
+          }
+        }
+      );
     }
   }
 
   routeToFormStepPage(correspondData: Correspondence) {
     // this.setPerformerPermission(correspondData);
-      this.router.navigate([this.routerFormStep],
-                            { queryParams:
-                              {
-                                VolumeID: correspondData.VolumeID,
-                                TaskID: correspondData.SubWorkTask_TaskID,
-                                CorrType: correspondData.CorrFlowType,
-                                locationid: correspondData.DataID
-                              }
-                            }
-                          );
+    this.router.navigate([this.routerFormStep],
+      {
+        queryParams:
+        {
+          VolumeID: correspondData.VolumeID,
+          TaskID: correspondData.SubWorkTask_TaskID,
+          CorrType: correspondData.CorrFlowType,
+          locationid: correspondData.DataID
+        }
+      }
+    );
   }
 
   getCoverDocumentURL(CoverID: String): void {
@@ -205,14 +209,14 @@ export class BaseDashboardComponent implements OnInit {
         responseError => {
           this.errorHandlerFctsService.handleError(responseError).subscribe();
         }
-        );
+      );
   }
 
   onSearchDashboardButtonClick(selecetedValues: any): void {
     this.SearchFilterData = selecetedValues;
     this.SearchDashboard();
   }
-/* ************************************* Correspondence History window *************************************** */
+  /* ************************************* Correspondence History window *************************************** */
   openDialog(correspondData: Correspondence): void {
     const dialogRef = this.dialogU.open(WorkflowHistoryDialogBox, {
       width: '100%',
@@ -226,7 +230,7 @@ export class BaseDashboardComponent implements OnInit {
 
   setPerformerPermission(correspondData: Correspondence): void {
     this.correspondenceService.setPerformerPermission(correspondData).subscribe(
-      response => {},
+      response => { },
       responseError => {
         this.errorHandlerFctsService.handleError(responseError).subscribe();
       }
@@ -243,7 +247,7 @@ export class BaseDashboardComponent implements OnInit {
       responseError => {
         this.errorHandlerFctsService.handleError(responseError).subscribe();
       }
-      );
+    );
   }
 
   /* *************************** Assign Group task ************************************ */
@@ -256,61 +260,63 @@ export class BaseDashboardComponent implements OnInit {
         message: mess
       }
     }).afterClosed().subscribe(
-        response => {
-        if ( mess === 'assignTransfer' && response === true) {
+      response => {
+        if (mess === 'assignTransfer' && response === true) {
           this.correspondenceShareService.ToggleTransStatus(correspondenceData.transID, 'holdTask').subscribe(
-              response => {
-                if (response.transfer_status_changes[0].ID.toString() === correspondenceData.transID.toString()) {
-                  console.log('DEV: transfer asiigned to current user');
-                  // open CorrView
-                  this.router.navigate([this.routerCorrDetail],
-                    { queryParams:
-                        {
-                          VolumeID: correspondenceData.VolumeID,
-                          CorrType: correspondenceData.CorrFlowType,
-                          CoverID: correspondenceData.CoverID,
-                          locationid: correspondenceData.DataID,
-                          TaskID: correspondenceData.SubWorkTask_TaskID,
-                          TransID: correspondenceData.transID,
-                          TransIsCC: correspondenceData.transIsCC
-                        }
-                      }
-                  );
-                } else {
-                  console.log('DEV: ERROR with assigning trarnsfer');
-                }
-              },
-              responseError => {
-                this.errorHandlerFctsService.handleError(responseError).subscribe();
-              });
-        } else if ( mess === 'assignTransfer' && response === false) {
-          console.log('DEV: Open with RO mode');
-          this.router.navigate([this.routerCorrDetail],
-              { queryParams:
-                  {
-                    VolumeID: correspondenceData.VolumeID,
-                    CorrType: correspondenceData.CorrFlowType,
-                    CoverID: correspondenceData.CoverID,
-                    locationid: correspondenceData.DataID,
-                    TaskID: correspondenceData.SubWorkTask_TaskID,
-                    TransID: correspondenceData.transID,
-                    TransIsCC: correspondenceData.transIsCC
-                  }
-                }
-            );
-        } else if ( mess === 'assignWF' && response === true) {
-          this.correspondenceService.assignWFStep(correspondenceData)
-          .subscribe(
             response => {
-             console.log('DEV: Assign WF step');
-            /* !!!!!! there should be opened WF step, temporary: withing development CorrespView is opened */
-            this.routeToFormStepPage(correspondenceData);
-            /* *************************************************** */
+              if (response.transfer_status_changes[0].ID.toString() === correspondenceData.transID.toString()) {
+
+                // open CorrView
+                this.router.navigate([this.routerCorrDetail],
+                  {
+                    queryParams:
+                    {
+                      VolumeID: correspondenceData.VolumeID,
+                      CorrType: correspondenceData.CorrFlowType,
+                      CoverID: correspondenceData.CoverID,
+                      locationid: correspondenceData.DataID,
+                      TaskID: correspondenceData.SubWorkTask_TaskID,
+                      TransID: correspondenceData.transID,
+                      TransIsCC: correspondenceData.transIsCC
+                    }
+                  }
+                );
+              } else {
+                console.log('DEV: ERROR with assigning trarnsfer');
+              }
             },
             responseError => {
               this.errorHandlerFctsService.handleError(responseError).subscribe();
+            });
+        } else if (mess === 'assignTransfer' && response === false) {
+
+          this.router.navigate([this.routerCorrDetail],
+            {
+              queryParams:
+              {
+                VolumeID: correspondenceData.VolumeID,
+                CorrType: correspondenceData.CorrFlowType,
+                CoverID: correspondenceData.CoverID,
+                locationid: correspondenceData.DataID,
+                TaskID: correspondenceData.SubWorkTask_TaskID,
+                TransID: correspondenceData.transID,
+                TransIsCC: correspondenceData.transIsCC
+              }
             }
           );
+        } else if (mess === 'assignWF' && response === true) {
+          this.correspondenceService.assignWFStep(correspondenceData)
+            .subscribe(
+              response => {
+
+                /* !!!!!! there should be opened WF step, temporary: withing development CorrespView is opened */
+                this.routeToFormStepPage(correspondenceData);
+                /* *************************************************** */
+              },
+              responseError => {
+                this.errorHandlerFctsService.handleError(responseError).subscribe();
+              }
+            );
         }
       },
       responseError => {
@@ -329,9 +335,9 @@ export class BaseDashboardComponent implements OnInit {
           data: correspondData,
           callplace: 'SingleDashboard'
         }
-      }).afterClosed().subscribe( result => {
+      }).afterClosed().subscribe(result => {
         if (result === 'Reload') { this.getPage(this.pagenumber); }
-        });
+      });
     } else {
       let CompleteRequestFinal: StatusRequest = new StatusRequest;
       CompleteRequestFinal = this.correspondenceShareService.buildObject(correspondData, status, 'SingleDashboard', '');
@@ -340,7 +346,7 @@ export class BaseDashboardComponent implements OnInit {
   }
 
   showMessage(message: string) {
-    const dialogRef = this.dialogU.open( MessageDialogComponent, {
+    const dialogRef = this.dialogU.open(MessageDialogComponent, {
       width: '100%',
       // margin: 'auto',
       panelClass: 'complete-dialog',
@@ -352,7 +358,7 @@ export class BaseDashboardComponent implements OnInit {
       );
   }
 
-/* ******************  START RECALL  ****************** */
+  /* ******************  START RECALL  ****************** */
   startRecall(correspondData: Correspondence, recallType: string): void {
     if ( recallType !== 'ReturnToAS' ) {
       if ( correspondData.SubWorkTask_TaskID > 0 ) {
@@ -377,7 +383,7 @@ export class BaseDashboardComponent implements OnInit {
       }
     }).afterClosed().subscribe(
       response => {
-        if ( response === 'recall') { this.getPage(this.pagenumber); }
+        if (response === 'recall') { this.getPage(this.pagenumber); }
       },
       responseError => {
         this.errorHandlerFctsService.handleError(responseError).subscribe();
@@ -390,11 +396,11 @@ export class BaseDashboardComponent implements OnInit {
       response => {
         // DEV: need to check
         const recallCreateDate = Date.parse('13 September 2018');
-        if ( recallCreateDate > Date.parse(response.initDate) ) {
+        if (recallCreateDate > Date.parse(response.initDate)) {
           this.showMessage('The Correspondence was initiated before Recall functionality has been created');
         } else {
           if (recallType === 'SimpleRecall') {
-            if (response.currTask !== -1 && response.prevTask !== -1 ) {
+            if (response.currTask !== -1 && response.prevTask !== -1) {
               console.log('DEV: simple WF recall');
               this.runWFRecall(response);
             } else {
@@ -404,7 +410,7 @@ export class BaseDashboardComponent implements OnInit {
             if (response.currTask !== -1 && response.ASAprevTask !== -1 && response.currTask === 32) {
               response.prevTask = 24; /* set ReturnStep 05 ArchiveCorrespondence */
               this.runWFRecall(response);
-              console.log('DIV: MR WF recall');
+
             } else {
               this.showMessage('You can not recall this Correspondence');
             }
@@ -445,7 +451,7 @@ export class BaseDashboardComponent implements OnInit {
     const setDisp = this.correspondenceService.returnDisp1ForAudit(stepsInfo, disposition1);
     this.correspondenceService.setCustomDispositionAudit(stepsInfo, setDisp).subscribe(
       response => {
-        if ( response.toString().trim() === stepsInfo.subWorkID.toString() ) {
+        if (response.toString().trim() === stepsInfo.subWorkID.toString()) {
           // DispAudit is set
         } else {
           this.showMessage('Error withing saving Disposition1 for Correspondence, VolumeID = ' + stepsInfo.subWorkID.toString());
@@ -459,7 +465,7 @@ export class BaseDashboardComponent implements OnInit {
   }
 
   multipleApprove_Recall(stepsInfo: RecallStepsInfo): void {
-    if ( (stepsInfo.CorrespondenceFlowType === '7' && stepsInfo.currTask === 37) || (stepsInfo.CorrespondenceFlowType === '5' && stepsInfo.currTask === 17) ) {
+    if ((stepsInfo.CorrespondenceFlowType === '7' && stepsInfo.currTask === 37) || (stepsInfo.CorrespondenceFlowType === '5' && stepsInfo.currTask === 17)) {
       this.correspondenceService.recallMultipleApprove(stepsInfo).subscribe(
         response => {
           console.log(response);
@@ -481,7 +487,7 @@ export class BaseDashboardComponent implements OnInit {
       }
     );
   }
-/* ******************  END RECALL  ****************** */
+  /* ******************  END RECALL  ****************** */
 
   itemsCountShare() {
     this.correspondenceService.changeItemsCount(this.totalCount);
@@ -501,6 +507,7 @@ export class BaseDashboardComponent implements OnInit {
   /********************************************************* */
 
   correspondenceIconsFunction(correspondData: Correspondence, icon: string): void {
+    
     if (icon === 'openComments') {
       this.commentsDialogBox(correspondData);
     }

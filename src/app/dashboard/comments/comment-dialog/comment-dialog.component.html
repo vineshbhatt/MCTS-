@@ -10,9 +10,9 @@
 
   <div class = "newCommentSection">
     <div class="buttonHolder">
-      <h4 (click)="openAddCommentWindow()" class = "btn_002" [ngClass]= "showAddCommentField ? 'hide-block' : 'show-block'" *ngIf="commentsEditable">Add comment</h4>
+      <h4 (click)="openAddCommentWindow()" class = "btn_002" [class.addbutton-hide]= "showAddCommentField" *ngIf="commentsEditable">Add comment</h4>
     </div>
-    <div class="addComment" [style.opacity]= "showAddCommentField ? '1' : '0'" [style.height]= "showAddCommentField ? 'auto' : '0'">
+    <div class="addComment" [style.opacity]= "showAddCommentField ? '1' : '0'" [style.max-height]= "showAddCommentField ? '180px' : '0'">
       <label id="radio-group-label"><b>{{infoText}} {{replyToDate | date: 'dd/MM/yyyy HH:mm'}}</b></label>
         <mat-radio-group aria-label="Select an option">
           <mat-radio-button class="radio-button" value="0" [checked]="checkedPrivate" (click)="defaltRadio(0)">Public</mat-radio-button>
@@ -32,7 +32,7 @@
             [value] = "addCommentObj.CommentText">
           </textarea>
       </mat-form-field>
-      <button  id="no-button" class = "btn_004" (click)="showAddCommentField=false">Cancel</button>
+      <button  id="no-button" class = "btn_004" (click)="showAddCommentField = false">Cancel</button>
       <button  id="yes-button" class = "btn_004" (click)="saveComment()">Save</button>
     </div>
   </div>

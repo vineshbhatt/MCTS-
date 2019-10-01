@@ -43,10 +43,10 @@ export class InternalComponent implements OnInit, AfterViewInit {
     if ( Array.isArray(this.menuItems) && this.menuItems.length) {
       const locationName = window.location.pathname.split('/').pop();
       this.menuItems[0].inbounds.forEach((element) => {
-        if (element.router === locationName) { element.Count = itemsCount; }
+        if (element.router === locationName) { element.Count = '(' + itemsCount + ')'; }
       });
       this.menuItems[0].outbounds.forEach((element) => {
-        if (element.router === locationName) { element.Count = itemsCount; }
+        if (element.router === locationName) { element.Count = '(' + itemsCount + ')'; }
       });
     }
   }

@@ -78,8 +78,8 @@ export class ExternalIncoming extends BaseCorrespondenceComponent implements OnI
   //
   initiateIncomingCorrespondenceDetails = new CorrespondenceWFFormModel;
 
-  showGeneratebarcodeButton = true;
-  showSendOnButton = false;
+  showGeneratebarcodeButton: boolean = true;
+  showSendOnButton: boolean = false;
 
 
   CCOUID: organizationalChartModel[] = [];
@@ -94,7 +94,7 @@ export class ExternalIncoming extends BaseCorrespondenceComponent implements OnI
 
   employeeMap = new Map<number, organizationalChartEmployeeModel[]>();
   employeeForOUID: organizationalChartEmployeeModel[] = [];
-  spinnerDataLoaded = false;
+  spinnerDataLoaded: boolean = false;
 
 
   constructor(private _location: Location,
@@ -181,8 +181,14 @@ export class ExternalIncoming extends BaseCorrespondenceComponent implements OnI
     this.correspondencservice
       .getDashboardFilters()
       .subscribe(
-        MetadataFilters => (this.MetadataFilters = MetadataFilters)
+        (MetadataFilters) => {
+          this.MetadataFilters = MetadataFilters
+          this.SetDefaultPriority();
+        }
       );
+  }
+  SetDefaultPriority() {
+    this.correspondenceDetailsForm.get('priority').setValue({ EN: 'Normal', ID: 1, AR: 'Normal' });
   }
 
   public optionSelectionChangeExternal(orgInfo: OrgNameAutoFillModel, event: MatOptionSelectionChange) {
@@ -428,14 +434,17 @@ export class ExternalIncoming extends BaseCorrespondenceComponent implements OnI
   }
 
   initiateWFCorrespondence(Disposition1: string, Disposition2: string, Dispostion3: string) {
+    
     if (this.correspondenceDetailsForm.invalid) {
       this.notificationmessage.warning('Correspondence details missing', 'Please fill in manadatory correspondence details', 2500);
     } else if (this.senderDetailsForm.invalid) {
       this.notificationmessage.warning('Sender information missing', 'Please fill in mandatory sender information', 2500);
     } else if (this.recipientDetailsForm.invalid) {
       this.notificationmessage.warning('Recipient infomration missing', 'Please fill in mandatory recipient information', 2500);
-    } else {
-      // Set each and every Value ofr the three Forms to one Single Object For Post
+    }
+    else {    
+      this.spinnerDataLoaded=true;
+      //Set each and every Value ofr the three Forms to one Single Object For Post
       this.initiateIncomingCorrespondenceDetails.CorrespondenceDate = this.correspondenceDetailsForm.get('regDate').value;
       this.initiateIncomingCorrespondenceDetails.Confidential = this.correspondenceDetailsForm.get('confidential').value;
       this.initiateIncomingCorrespondenceDetails.ConnectedID = '';
@@ -479,6 +488,7 @@ export class ExternalIncoming extends BaseCorrespondenceComponent implements OnI
 
       this.correspondencservice.initiateWF(this.initiateIncomingCorrespondenceDetails, 'Incoming').subscribe(
         () => {
+          this.spinnerDataLoaded=false;
           this.notificationmessage.success('Correspondence Created Succesfully', 'Your Correspondence has been created successfullly', 2500);
           this.backNavigation();
         }
@@ -591,7 +601,6 @@ export class ExternalIncoming extends BaseCorrespondenceComponent implements OnI
       }
     );
   }
-
   showSpinner() {
     this.spinnerDataLoaded = true;
   }

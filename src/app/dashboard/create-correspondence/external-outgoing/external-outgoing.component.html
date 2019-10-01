@@ -1,3 +1,6 @@
+<div class="new_edt_cont_wrapper" *ngIf="spinnerDataLoaded">
+  <mat-spinner></mat-spinner>
+</div>
 <div class="new_edt_cont_wrapper">
   <ng-scrollbar thumbClass="scroll_001" class="correspondence_detail scroll_wrp_001" *ngIf="expandedRightAction"
     [ngClass]="expandedAction ? 'unActive' : 'ActiveLeft'" compact="true">
@@ -80,7 +83,7 @@
                       <input type="text" aria-label="Number" matInput formControlName="ExternalOrganization"
                         [matAutocomplete]="extOrgName">
                     </mat-form-field>
-                    <mat-autocomplete #extOrgName="matAutocomplete" [displayWith]="displaySearchFilterValueExt">
+                    <mat-autocomplete #extOrgName="matAutocomplete" class="longautocomplete" [displayWith]="displaySearchFilterValueExt">
                       <mat-option *ngFor="let OrgName of (filteredExtOrgNames | async)" [value]="OrgName"
                         (onSelectionChange)="optionSelectionChangeExternal(OrgName, $event)">
                         {{OrgName?.OrgName_En}}
@@ -360,7 +363,7 @@
                   <th class="name">Name</th>
                   <th></th>
                   <th class="size">Size</th>
-                  <th class="modified">Modified</th>
+                  <!-- <th class="modified">Modified</th> -->
                 </tr>
                 <tbody *ngFor="let correspondenceCoverDetails of CoverLetterData">
                   <tr *ngFor="let coverLetterData of correspondenceCoverDetails.myRows">
@@ -373,11 +376,11 @@
                     <td>
                       <div class="group_btn">
                         <a matTooltip="Synchronize Metadata" class="btn btn_006" (click)=syncCoverData()>
-                          <img src="{{basehref}}assets/images/icons/eye-close-up.svg" alt="">
+                          <img src="{{basehref}}assets/images/icons/sync-data-icon.svg" alt="">
                         </a>
                         <a *ngIf="coverLetterData.addversionperm=='TRUE'" matTooltip="Add Version" class="btn btn_006"
                           (click)="openBrowseDocument($event,'file-inputAddversioncover')">
-                          <img src="{{basehref}}assets/images/icons/arrow-point-to-up.svg" alt="">
+                          <img src="{{basehref}}assets/images/icons/add-version.svg" alt="">
                         </a>
                         <input id="file-inputAddversioncover" class="hidden-button" type="file"
                           (change)="addDocumentVersion($event.target.files,coverLetterData.Dataid,'COVER')" />
@@ -397,9 +400,9 @@
                     <td class="size">
                       {{coverLetterData.CoverSize}}
                     </td>
-                    <td class="modified">
+                    <!-- <td class="modified">
                       {{coverLetterData.ModifyDate}}
-                    </td>
+                    </td> -->
                   </tr>
                 </tbody>
               </table>
@@ -458,7 +461,7 @@
                       <div class="group_btn">
                         <a *ngIf="attachmentData.addversionperm=='TRUE'" matTooltip="Add Version" class="btn btn_006"
                           (click)="openBrowseDocument($event,'file-inputAddversionAttachment')">
-                          <img src="{{basehref}}assets/images/icons/arrow-point-to-up.svg" alt="">
+                          <img src="{{basehref}}assets/images/icons/add-version.svg" alt="">
                         </a>
                         <input id="file-inputAddversionAttachment" class="hidden-button" type="file"
                           (change)="addDocumentVersion($event.target.files,attachmentData.Dataid,'ATTACHMENT')" />
@@ -633,6 +636,9 @@
   </ng-scrollbar>
   <ng-scrollbar class="correspondence_deatil_prview_wrappper scroll_wrp_001" thumbClass="scroll_001"
     [ngClass]="expandedRightAction ? 'unActive' : 'ActiveRight'" *ngIf="expandedAction" compact="true">
+    <button (click)="expandeActionRightButton()" matRipple class="corsp_ext_btn">
+      <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
+    </button>
     <ng-container *ngIf="showPreviewCoverLetter">
       <div class="documentViewerDiv" *ngFor="let docpreviewData of documentPreviewURL">
         <iframe class="iframeclass" [src]="docpreviewData.CorrespondencedocumentURL|safe"></iframe>

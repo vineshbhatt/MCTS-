@@ -57,9 +57,7 @@ export class CommentDialogComponent implements OnInit {
     this.VolumeID = this.corrData.data.VolumeID;
     this.checkEditable();
     this.getCommentsData();
-    console.log('commentsEditable');
-    console.log(this.corrData.data);
-    console.log(this.commentsEditable);
+
   }
 
   closeDialog(): void {
@@ -105,7 +103,7 @@ export class CommentDialogComponent implements OnInit {
     this.addCommentObj.ReferenceType  = this.ReferenceType;
     this.addCommentObj.ReplyTo        = replyToObj.ID;
     this.showAddCommentField = true;
-	this.textArea.nativeElement.focus();
+    this.textArea.nativeElement.focus();
 
   }
 
@@ -128,27 +126,21 @@ export class CommentDialogComponent implements OnInit {
 
   checkEditable(): void {
     if (this.corrData.reportType !== 'ExtFullSearch' && this.corrData.reportType !== 'IntFullSearch') {
-/*       console.log(this.corrData.reportType);
-      console.log('this.corrData.data');
-      console.log(this.corrData.data); */
+
       const isAssignee = this.globalConstants.FCTS_Dashboard.UserGroupsArray.includes(this.corrData.data.SubWorkTask_PerformerID);
       if ( this.corrData.data.SubWorkTask_TaskID !== '0' && this.corrData.data.CorrespondencePhase !== '3' && (this.corrData.data.CorrespondenceFlowType === '1' || this.corrData.data.CorrespondenceFlowType === '7')) {
         this.commentsEditable = true;
-        // console.log('Condition 1');
+
       } else if ( this.corrData.data.SubWorkTask_TaskID !== '0' && this.corrData.data.CorrespondenceFlowType === '5' && (  isAssignee === true ||  this.corrData.data.transIsCC !== '1')) {
-        // console.log('Condition 2');
+
         this.commentsEditable = true;
       } else if ( this.corrData.data.transID.toString() !== '0' && this.corrData.data.transHoldSecretaryID.toString() === CSConfig.globaluserid && this.corrData.data.transStatus.toString() === '0') {
-        // console.log('Condition 3');
         this.commentsEditable = true;
         this.ReferenceType = 'Transfer';
         this.CurrTaskID = this.corrData.data.transID;
         this.currPerformerID = this.corrData.data.transHoldSecretaryID;
-        // console.log(this.ReferenceType + '-' + this.CurrTaskID + '-' + this.currPerformerID);
-      } else {
-        // console.log('Condition 4');
       }
-      // this.commentsEditable = false;
     }
   }
+
 }

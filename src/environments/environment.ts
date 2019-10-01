@@ -53,7 +53,6 @@ export const FCTSDashBoard = {
   SendRecallEmail: 'FCTS_SendRecallEmail',
   SetDipsAudit: 'FCTS_SetDipsAudit',
   SetStatuses: 'CTA_SetStatus',
-
   SetStatusMultiApprove: 'FCTS_SetStatusMultiApprove',
   SetTransStatus: 'FCTS_UpdTransStatus',
   GetGlobalConst: 'CTA_ConstantsObject',
@@ -82,6 +81,10 @@ export const FCTSDashBoard = {
   SelectAttributes: '5414023',
   InsertNewComment: '5058946',
   DeleteComment: '5059399',
+
+  setConnection: '5447238',
+  getCorrespondenceFormValues: '5447123',
+  setSubfolderPerm: 'CTA_SetSubfolderPerm',
   // BaseHref: '/img/fctsangular/fctsapp/',
   BaseHref: '/',
   CSUrl: 'http://mv2cdmsadp02/otcs/cs.exe'

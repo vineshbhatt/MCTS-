@@ -78,7 +78,7 @@ export class BaseDashboardFullComponent extends BaseDashboardComponent implement
   // External Outbound
   public totalExternalOutboundRequests = 900;
   public externalOutboundRequests = 880;
-   // Doughnut
+  // Doughnut
   public doughnutChartLabels: string[] = [
     'Urgent',
     'Top Urgent',
@@ -128,7 +128,7 @@ export class BaseDashboardFullComponent extends BaseDashboardComponent implement
             myMap.set(obj.RowNum, obj);
           }
         }
-        // console.log(ab);
+
         const resultArray: Correspondence[] = [];
         // Iterate over map values
         for (const value of myMap.values()) {
@@ -160,9 +160,10 @@ export class BaseDashboardFullComponent extends BaseDashboardComponent implement
 
   setItemCount() {
     // overiding parent function to avoid error
-  }
+  } 
 
   selectWFStepRoute(correspondData: Correspondence) {
+    debugger;    
     switch (correspondData.CorrespondenceFlowType) {
       case '1':
         this.routerFormStep = '/dashboard/external/correspondence-form-step-inc'; //'/dashboard/external/correspondence-form-step-inc';
@@ -199,5 +200,5 @@ const overviewitem: PeriodicElement[] = inboxMail.mails;
 })
 
 export class MailDetailView {
-  constructor( @Inject(MAT_DIALOG_DATA) public data: PeriodicElement) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: PeriodicElement) { }
 }

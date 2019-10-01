@@ -26,7 +26,7 @@ export class MailroomsComponent implements OnInit, AfterViewInit {
     this._correspondenceService.getSideBarElementsHC('menuMR.json').subscribe(data => {
       this.menuItems = data as string[];
     });
-    console.log('mailrooom')
+
   }
 
   ngAfterViewInit() {
@@ -37,18 +37,17 @@ export class MailroomsComponent implements OnInit, AfterViewInit {
 
   menuActionButton() {
     this.menuAction = !this.menuAction;
-    console.log('this.menuAction');
     console.log(this.menuAction);
   }
 
   changeItem(itemsCount: number) {
-    if ( Array.isArray(this.menuItems) && this.menuItems.length) {
+    if (Array.isArray(this.menuItems) && this.menuItems.length) {
       const locationName = window.location.pathname.split('/').pop();
       this.menuItems[0].inbounds.forEach((element) => {
-        if (element.router === locationName) { element.Count = itemsCount; }
+        if (element.router === locationName) { element.Count = '(' + itemsCount + ')'; }
       });
       this.menuItems[0].outbounds.forEach((element) => {
-        if (element.router === locationName) { element.Count = itemsCount; }
+        if (element.router === locationName) { element.Count = '(' + itemsCount + ')'; }
       });
     }
   }

@@ -11,10 +11,12 @@ import { NgxFileDropEntry } from 'ngx-file-drop';
 import { DatePipe } from '@angular/common';
 import { FCTSDashBoard } from '../../../../environments/environment';
 import { OrgNameAutoFillModel, CorrespondenceFolderModel, CCUserSetModel, CorrespondenenceDetailsModel, CorrWFTaskInfoModel, SyncDocumentMetadataModel, ColUserSetModel } from 'src/app/dashboard/models/CorrespondenenceDetails.model';
-import { CorrResponse, CorrespondenceFormData, SenderDetailsData, RecipientDetailsData } from '../../services/correspondence-response.model';
+import { CorrResponse, CorrespondenceFormData, SenderDetailsData, RecipientDetailsData, CommentsNode } from '../../services/correspondence-response.model';
 import { organizationalChartModel, organizationalChartEmployeeModel } from 'src/app/dashboard/models/organizational-Chart.model';
 import { DocumentPreview } from '../../services/documentpreview.model';
 import { CorrespondenceWFFormModel } from '../../models/CorrepondenceWFFormModel';
+import { MatDialog } from '@angular/material';
+import { SendBackDialogComponent } from '../../dialog-boxes/send-back-dialog/send-back-dialog.component';
 
 import { CorrespondenceDetailsService } from 'src/app/dashboard/services/correspondence-details.service';
 import { CorrespondenceService } from 'src/app/dashboard/services/correspondence.service';
@@ -22,10 +24,12 @@ import { OrganizationalChartService } from 'src/app/dashboard/services/organizat
 import { CSDocumentUploadService } from '../../services/CSDocumentUpload.service';
 import { ErrorHandlerFctsService } from '../../services/error-handler-fcts.service';
 
-import { ShowSections, ShowCorrItems } from 'src/app/dashboard/external/correspondence-detail/correspondence-show-sections';
+import { ShowSections, ShowCorrItems, ShowWFButtons } from 'src/app/dashboard/external/correspondence-detail/correspondence-show-sections';
 import { BaseCorrespondenceComponent } from '../../base-classes/base-correspondence-csactions/base-correspondence.component';
 import { NotificationService } from '../../services/notification.service';
-
+import { AppLoadConstService } from 'src/app/app-load-const.service';
+import { CorrespondenceShareService } from '../../services/correspondence-share.service';
+import { TextFieldModule } from '@angular/cdk/text-field';
 
 @Component({
   selector: 'app-correspondence-form-step-extout',
@@ -43,13 +47,17 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     , private correspondencservice: CorrespondenceService
     , public csdocumentupload: CSDocumentUploadService
     , private _correspondenceDetailsService: CorrespondenceDetailsService
+    , public dialog: MatDialog
     , private route: ActivatedRoute
+    , private appLoadConstService: AppLoadConstService
+    , private correspondenceShareService: CorrespondenceShareService
     , private _errorHandlerFctsService: ErrorHandlerFctsService, private notificationmessage: NotificationService, private datePipe: DatePipe) { super(csdocumentupload, correspondenceDetailsService) }
 
   get f() { return this.correspondenceDetailsForm.controls; }
 
   basehref: String = FCTSDashBoard.BaseHref;
   CSUrl: String = FCTSDashBoard.CSUrl;
+  globalConstants = this.appLoadConstService.getConstants();
   expandedRightAction = true;
   expandedAction = true;
   userInfo: CorrResponse[];
@@ -113,7 +121,6 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
 
   correspondenceData: CorrespondenenceDetailsModel;
 
-  //
   VolumeID: string;
   CoverID: string;
   locationid: string;
@@ -131,9 +138,13 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
   transferhistorytabData: CorrResponse[];
   transferProgbar = false;
   userCollaborationProgbar = false;
+
+  // UI elements show/hide
+  stepUIData: any;
   sectionDisplay = new ShowSections();
   showCorrItems = new ShowCorrItems();
-
+  showFields = new ShowCorrItems();
+  showWFButtons: ShowWFButtons;
   skipDepSecratory: boolean = false;
   skipHOSSecratory: boolean = false;
   headOfSectionReview: boolean = false;
@@ -146,6 +157,7 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
   corrFlowType: string;
   collaborationNotes: string;
   showNotesVal: boolean = false;
+  taskTitle: string;
   body: CorrespondenceFormData = {
     action: 'formUpdate',
     values: {}
@@ -158,15 +170,21 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
 
   corrTaskInfo: CorrWFTaskInfoModel;
   documentMetadataSync = new SyncDocumentMetadataModel;
-
-
+  spinnerDataLoaded: boolean = false;
 
   @Input() data: number;
   @Output() focusOut: EventEmitter<number> = new EventEmitter<number>();
   viewNoteStatus;
   activeRowItem: any;
   editMode: any;
+  Disposition1: string = '';
+  Disposition2: string = '';
+  Disposition3: string = '';
 
+  barcodeNumberToPrint: string;
+  barcodeDate = new Date().toLocaleDateString();
+  returnReason: string;
+  returnComment: string;
 
   ngOnInit() {
 
@@ -177,13 +195,19 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     this.taskID = this.route.snapshot.queryParamMap.get('TaskID');
 
     this.corrFlowType = this.CorrespondencType;
+
     // Get Logged in user Information
     this.getUserInfo();
-    this.RefreshRecord();
-    this.getCorrTaskInfo();
-    this.readCorrespondenceInfo();
+
+    //this.getCorrTaskInfo();
     this.getCorrespondenceSenderDetails();
     this.getCorrespondenceRecipientDetails();
+    this.readCorrespondenceInfo();
+    this.RefreshRecord();
+    this.stepUIData = this.toShowWFButtons(this.taskID);
+    this.showWFButtons = this.stepUIData.ShowButtons;
+    this.sectionDisplay = this.stepUIData.ShowSections;
+    this.showFields = this.stepUIData.ShowFields;
 
     //this.sectionDisplay.ShowCorrSectionWF();
 
@@ -247,6 +271,7 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
 
   ngAfterViewInit() {
     this.getOrganizationalChartDetail();
+
   }
 
   ReadRecord(locationid: string, transid: string) {
@@ -260,6 +285,7 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
         this.corrFolderData.AttachCorrID = Number(this.correspondenceData.AttachCorrID);
         this.corrFolderData.AttachCorrMiscID = Number(this.correspondenceData.AttachCorrMiscID);
         this.getCoverSection();
+
       });
   }
 
@@ -268,12 +294,14 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
   }
 
   getCorrespondenceSenderDetails(): void {
+    this.spinnerDataLoaded = true;
     this._correspondenceDetailsService
       .getCorrespondenceSenderDetails(this.VolumeID, this.CorrespondencType, false, '')
       .subscribe(
         correspondenceSenderDetailsData => {
           if ((typeof correspondenceSenderDetailsData[0].myRows !== 'undefined') && correspondenceSenderDetailsData[0].myRows.length > 0) {
             this.correspondenceSenderDetailsData = correspondenceSenderDetailsData[0].myRows[0];
+            this.senderDetailsForm.get('SenderInfo').setValue(this.correspondenceSenderDetailsData);
           }
         },
         responseError => {
@@ -286,10 +314,16 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     this._correspondenceDetailsService
       .getCorrespondenceRecipientDetails(this.VolumeID, this.CorrespondencType)
       .subscribe(
+
         correspondenceRecipientDetailsData => {
+          debugger;
           if ((typeof correspondenceRecipientDetailsData[0].myRows !== 'undefined') && correspondenceRecipientDetailsData[0].myRows.length > 0) {
             this.correspondenceRecipientDetailsData = correspondenceRecipientDetailsData[0].myRows[0];
+            this.recipientDetailsForm.get('RecipientName').setValue(this.correspondenceRecipientDetailsData.Name_EN);
+            this.recipientDetailsForm.get('RecipientDepartment').setValue(this.correspondenceRecipientDetailsData.DepartmentName_EN);
+            this.recipientDetailsForm.get('ExternalOrganization').setValue({ OrgName_En: this.correspondenceRecipientDetailsData.OrganizationName_EN });
           }
+          this.spinnerDataLoaded = false;
         },
         responseError => {
           this._errorHandlerFctsService.handleError(responseError).subscribe();
@@ -408,6 +442,7 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
       response => {
         if ((typeof response.forms !== 'undefined') && response.forms.length > 0) {
           this.body.values = response.forms[0].data;
+          this.taskTitle = response.data.title;
           this.getMetadataFilters();
         }
       },
@@ -451,8 +486,10 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     this.body.values.WorkflowForm_1x4x1x61 = this.coverID;
     this.body.values.WorkflowForm_1x4x1x48 = this.templateLanguage;
 
+    this.body.values.WorkflowForm_1x4x1x75 = this.Disposition1;
+    this.body.values.WorkflowForm_1x4x1x76 = this.Disposition2;
+    this.body.values.WorkflowForm_1x4x1x77 = this.Disposition3;
 
-    this.body.values.WorkflowForm_1x4x1x75 = action;
     if (this.CCLoaded) {
       this.getCCtoFormObject();
     }
@@ -559,6 +596,12 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     this.coverID = this.body.values.WorkflowForm_1x4x1x61;
     this.templateLanguage = this.body.values.WorkflowForm_1x4x1x48;
 
+    this.Disposition1 = this.body.values.WorkflowForm_1x4x1x75;
+    this.Disposition2 = this.body.values.WorkflowForm_1x4x1x76;
+    this.Disposition3 = this.body.values.WorkflowForm_1x4x1x77;
+
+    this.getCoverDocumentURL(this.body.values.WorkflowForm_1x4x1x61);
+
     this.getApprovers('qApprover_2_37');
     this.getApprovers('qApprover_2_33');
 
@@ -634,14 +677,177 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
         });
       }
     }
+    return ID.toString();
+  }
+  SendOnCollaborators() {
+    //TODO      
+  }
+  submitCorrespondenceAction(action: string) {
+    //  set Disposition
+    //  Do some actions
+    //  validate
+    //  Submit    
+
+    switch (action) {
+      case 'StartCollaboration':
+        this.Disposition1 = 'StartCollaboration';
+        if (this.taskID === '45') {
+          this.SendOnCollaborators();
+        }
+        else if (this.taskID === '18') {
+          this.Disposition3 = 'A2b';
+        }
+        else if (this.taskID === '15') {
+          this.Disposition3 = 'A1b';
+        }
+        else {
+          this.Disposition3 = 'E1b';
+        }
+        break;
+      case 'Save':
+        this.Disposition1 = 'Save';
+        break;
+      case 'SendOn':
+        this.Disposition1 = 'SendOn';
+        if (this.taskID === '3') {
+          this.Disposition3 = '';
+        }
+        break;
+      case 'CompleteCollaboration':
+        //TODO
+        break;
+      case 'Wait':
+        this.Disposition1 = 'Wait';
+        break;
+      case 'SendOnForApproval':
+        this.Disposition1 = 'SendOn';
+        if (this.taskID === '9') {
+          this.body.values.WorkflowForm_1x4x1x96 = '2';
+        }
+        else if (this.taskID === '45') {
+          this.SendOnCollaborators();
+          this.Disposition3 = '1b';
+          this.body.values.WorkflowForm_1x4x1x96 = '2';
+        }
+        break;
+      case 'Approve':
+        this.Disposition1 = 'SendOn';
+        this.Disposition3 = 'E1b';
+        break;
+      case 'Reject':
+        this.Disposition1 = 'Reject';
+        switch (this.taskID) {
+          case '13':
+          case '17':
+          case '21':
+          case '3':
+          case '93':
+          case '5':
+          case '95':
+          case '98':
+            this.Disposition3 = '1';
+            this.body.values.WorkflowForm_1x4x1x96 = '1';
+            break;
+          case '15':
+            this.Disposition3 = '2';
+            this.body.values.WorkflowForm_1x4x1x96 = '1';
+            break;
+          case '18':
+            this.Disposition3 = '1';
+            this.body.values.WorkflowForm_1x4x1x96 = '1';
+            break;
+        }
+        break;
+      case 'Terminate':
+        this.Disposition1 = 'Terminate';
+        break;
+      case 'Cancel':
+        this.Disposition1 = 'Terminate';
+        break;
+      case 'SendBack':
+        switch (this.taskID) {
+          case '5':
+            this.Disposition3 = '7';
+            break;
+          case '95':
+            this.Disposition3 = '7';
+            break;
+          case '102':
+            this.Disposition3 = '7';
+            break;
+        }
+        break;
+    }
+    this.makeFormObjectToSubmit(action);
+    this.spinnerDataLoaded = true;
+    this.correspondenceDetailsService.submitCorrespondenceInfo(this.VolumeID, this.taskID, this.body)
+      .subscribe(
+        response => {
+          if (action === '') {
+            /* submits form but doesn't Send On */
+            console.log(this.body.values);
+          } else {
+            this.sendOnCorrespondence();
+          }
+        },
+        responseError => {
+          this._errorHandlerFctsService.handleError(responseError).subscribe();
+        }
+      );
+  }
+  openSendBackDialog(action: string) {
+    this.dialog.open(SendBackDialogComponent, {
+      data: this.body.values.WorkflowForm_1x4x1x96,
+      width: '100%',
+      panelClass: 'sendBackDialogBoxClass',
+      maxWidth: '30vw'
+    })
+      .afterClosed().subscribe(result => {
+        if (result) {
+          this.updateReturnReason(result.selectedID, result.selectedDescription, result.comment, action);
+        }
+      });
+  }
+
+  updateReturnReason(returnReason, returnDescription, comment, action) {
+    this.returnReason = returnReason;
+    this.returnComment = comment;
+    const CommentObj: CommentsNode = {
+      CommentText: returnDescription + ' - ' + comment,
+      CreationDate: '',
+      CreatorID: '',
+      CreatorName_AR: '',
+      CreatorName_EN: '',
+      Deleted: '',
+      ID: '',
+      Private: '0',
+      ReferenceID: this.VolumeID,
+      ReferenceType: 'Workflow',
+      ReplyAvailable: '',
+      ReplyTo: '',
+      Version: '',
+      shortComment: '',
+    };
+    this.insertComment(CommentObj, this.taskID, action);
+  }
+
+  insertComment(CommentObj, taskID, action) {
+    this.correspondenceShareService.setComment(CommentObj, taskID)
+      .subscribe(response => {
+        this.submitCorrespondenceAction(action);
+      },
+        responseError => {
+          this._errorHandlerFctsService.handleError(responseError).subscribe();
+        });
   }
 
   submitCorrespondenceInfo(action: string) {
+
     this.makeFormObjectToSubmit(action);
     this.correspondenceDetailsService.submitCorrespondenceInfo(this.VolumeID, this.taskID, this.body)
       .subscribe(
         response => {
-          if (action === 'TEST') {
+          if (action === '') {
             /* submits form but doesn't Send On */
             console.log(this.body.values);
           } else {
@@ -658,9 +864,9 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     this.correspondenceDetailsService.sendOnCorrespondence(this.VolumeID, this.taskID)
       .subscribe(
         response => {
+          this.spinnerDataLoaded = false;
           // ?? needs to validate response if send on was correct
           this.backNavigation();
-          console.log(response);
         },
         responseError => {
           this._errorHandlerFctsService.handleError(responseError).subscribe();
@@ -681,18 +887,18 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
   public optionSelectionChangeExternal(orgInfo: OrgNameAutoFillModel, event: MatOptionSelectionChange) {
     this.ExtSenderInfo = orgInfo;
     if (event.source.selected) {
-      this.updateSenderInfo();
+      this.updateRecipientInfo();
     }
   }
   public optionSelectionChangeInternal(DepInfo: OrgNameAutoFillModel, event: MatOptionSelectionChange) {
     this.IntRecipientInfo = DepInfo;
     if (event.source.selected) {
-      this.updateRecipientInfo();
+      this.updateSenderInfo();
     }
   }
 
   updateSenderInfo() {
-    this.senderDetailsForm.get('SenderName').setValue(this.ExtSenderInfo.Name_En);
+    this.recipientDetailsForm.get('SenderName').setValue(this.ExtSenderInfo.Name_En);
     this.senderDetailsForm.get('SenderDepartment').setValue(this.ExtSenderInfo.DepName_En);
     this.body.values.WorkflowForm_1x4x1x93 = this.ExtSenderInfo.OrgID;
     this.body.values.WorkflowForm_1x4x1x80 = this.ExtSenderInfo.DepID;
@@ -701,14 +907,14 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
   }
 
   updateRecipientInfo() {
-    this.recipientDetailsForm.get('RecipientName').setValue(this.IntRecipientInfo.Name_En);
-    this.body.values.WorkflowForm_1x4x1x14 = this.IntRecipientInfo.SecID ? this.IntRecipientInfo.SecID : this.IntRecipientInfo.DepID;
-    this.body.values.WorkflowForm_1x4x1x15 = this.IntRecipientInfo.RecipientUserID;
-    this.body.values.WorkflowForm_1x4x1x16 = this.IntRecipientInfo.RecipientVersion;
-    this.body.values.WorkflowForm_1x4x1x79 = this.IntRecipientInfo.Type;
-    this.body.values.WorkflowForm_1x4x1x83 = this.IntRecipientInfo.DepID;
-    this.body.values.WorkflowForm_1x4x1x84 = this.IntRecipientInfo.SecID;
-    this.body.values.WorkflowForm_1x4x1x85 = this.IntRecipientInfo.RoleID;
+
+    this.recipientDetailsForm.get('ExternalOrganization').setValue(this.ExtSenderInfo);
+    this.recipientDetailsForm.get('RecipientDepartment').setValue(this.ExtSenderInfo.DepName_En);
+    this.recipientDetailsForm.get('RecipientName').setValue(this.ExtSenderInfo.Name_En);
+    this.body.values.WorkflowForm_1x4x1x93 = this.ExtSenderInfo.OrgID;
+    this.body.values.WorkflowForm_1x4x1x83 = this.ExtSenderInfo.DepID;
+    this.body.values.WorkflowForm_1x4x1x89 = this.ExtSenderInfo.Name_En;
+    this.correspondenceDetailsForm.get('personalName').setValue(this.ExtSenderInfo.Name_En);
   }
 
   displaySearchFilterValueExt(searchList: OrgNameAutoFillModel) {
@@ -730,6 +936,7 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
   }
 
   getUserInfo() {
+
     this.correspondenceDetailsService
       .GetUserInformation()
       .subscribe(userInfoVal =>
@@ -988,7 +1195,7 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
         this.recipientDetailsForm.get('RecipientName').setValue('');
         this.body.values.WorkflowForm_1x4x1x93 = null;
         this.body.values.WorkflowForm_1x4x1x83 = null;
-        this.body.values.WorkflowForm_1x4x1x89 = null;               
+        this.body.values.WorkflowForm_1x4x1x89 = null;
         this.ExtSenderInfo = new OrgNameAutoFillModel();
         break;
       default:
@@ -1164,4 +1371,21 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     this.editMode = true;
   }
 
+  toShowWFButtons(taskID: string): any {
+    let WFStepsUI: any;
+    if (this.CorrespondencType === 'Incoming') {
+      WFStepsUI = this.globalConstants.WFStepsUI.Incoming;
+    } else if (this.CorrespondencType === 'Outgoing') {
+      WFStepsUI = this.globalConstants.WFStepsUI.Outgoing;
+    } else if (this.CorrespondencType === 'Internal') {
+      WFStepsUI = this.globalConstants.WFStepsUI.Internal;
+    }
+    let tmpObj: any;
+    WFStepsUI.forEach(function (taskObj) {
+      if (taskID === taskObj.TaskID) {
+        tmpObj = taskObj;
+      }
+    });
+    return tmpObj;
+  }
 }

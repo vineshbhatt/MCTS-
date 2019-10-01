@@ -47,6 +47,21 @@ app-external {
       .header_search {
         margin-left: auto;
         margin-right: 0;
+       
+      }
+    }
+
+    .header_location_wrapper{
+      display: flex;
+      margin-top: 20px;
+      .header_back {
+        margin-left: auto;
+        margin-right: 0;
+        .homeimg{
+          width:20px;
+          max-width: 100%;
+          vertical-align: middle;
+        }
       }
     }
 
@@ -264,6 +279,7 @@ app-external {
       .over_head_text_001 {
         min-width: 40px;
         max-width: 40px;
+        max-height: 82px;
 
         .over_text_flp {
           writing-mode: tb-rl;
@@ -908,19 +924,23 @@ app-create-correspondence {
     }
 
     .correspondence_deatil_prview_wrappper {
-        height: 100vh;
-        overflow: auto;
-        padding-right: 40px;
-        .corsp_ext_btn {
-            right: 40px;
+      height: 100vh;
+      overflow: auto;
+      padding-right: 50px;
+
+      .corsp_ext_btn {
+        right: 40px;
+      }
+
+      &.scroll_wrp_001 {
+        padding-right: 0;
+
+        .ng-scroll-view {
+          padding-right: 40px;
         }
-        &.scroll_wrp_001  {
-            padding-right: 0;
-            .ng-scroll-view  {
-                padding-right: 40px;
-            }
-        }
+      }
     }
+
     .corp_dtl_btn_btm_wrapper .corsp_ext_btn {
       right: -3px !important;
     }
@@ -944,10 +964,25 @@ app-create-correspondence {
 .new_edt_cont_wrapper {
   display: flex;
   height: 100%;
-  width:100%;
+
+  &.correspondence_detail_wrapper {
+    height: 100vh;
+
+    .correspondence_deatil_prview_wrappper {
+      overflow: visible;
+
+      ng-scrollbar-y.ng-scrollbar-visible {
+        right: -40px !important;
+      }
+
+      .ng-scroll-view {
+        padding-top: 50px !important;
+        padding-bottom: 50px !important;
+      }
+    }
+  }
 }
 
-.comments-area-fullwidth
-{
+.comments-area-fullwidth {
   width: 100%;
 }
