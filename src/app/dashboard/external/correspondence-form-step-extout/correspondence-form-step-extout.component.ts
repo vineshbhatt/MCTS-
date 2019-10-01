@@ -680,7 +680,7 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     return ID.toString();
   }
   SendOnCollaborators() {
-    //TODO      
+   // TODO: send on Collaborators when Send ON
   }
   submitCorrespondenceAction(action: string) {
     //  set Disposition
@@ -1217,10 +1217,10 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
       this.correspondenceDetailsForm.get('Approver').setValidators([Validators.required]);
     } else {
       this.skipDepSecratory = false;
-      this.correspondenceDetailsForm.get('Approver').setValidators(null);
+      this.correspondenceDetailsForm.get('Approver').clearValidators();
     }
+    this.correspondenceDetailsForm.get('Approver').updateValueAndValidity();
   }
-
 
   confidentialChange(e: MatCheckboxChange) {
     if (e.checked) {
@@ -1230,6 +1230,7 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
       this.skipHOSSecratory = true;
       this.correspondenceDetailsForm.get('Approver').setValidators([Validators.required]);
     }
+
   }
 
   headOfSectionReviewRequiredChange(e: MatOptionSelectionChange) {
@@ -1238,8 +1239,9 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     }
     else {
       this.headOfSectionReview = false;
-      this.correspondenceDetailsForm.get('HOSApprover').setValidators(null);
+      this.correspondenceDetailsForm.get('HOSApprover').clearValidators();
     }
+    this.correspondenceDetailsForm.get('HOSApprover').updateValueAndValidity();
   }
 
   skipHOSSecratoryChange(e: MatCheckboxChange) {
@@ -1249,9 +1251,10 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     }
     else {
       this.skipHOSSecratory = false;
-      this.correspondenceDetailsForm.get('HOSApprover').setValidators(null);
+      this.correspondenceDetailsForm.get('HOSApprover').clearValidators();
 
     }
+    this.correspondenceDetailsForm.get('HOSApprover').updateValueAndValidity();
   }
 
 
