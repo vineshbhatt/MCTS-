@@ -507,6 +507,14 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
   }
   validateCorrespondenceForm(): boolean {
     let isValid = false;
+    if (this.skipDepSecratory == true && this.correspondenceDetailsForm.get('Approver').value == null) {
+      this.notificationmessage.warning('Aprrover is Mandatory', 'Kinldy choose the Approver', 3000);
+      return isValid;
+    }
+    if (this.skipHOSSecratory == true && this.correspondenceDetailsForm.get('HOSApprover').value == null) {
+      this.notificationmessage.warning('HOS Aprrover is Mandatory', 'Kinldy choose the HOS Approver', 3000);
+      return isValid;
+    }
     if (this.correspondenceDetailsForm.invalid) {
       this.notificationmessage.warning('Correspondence details missing', 'Please fill in mandatory correspondence information', 3000);
       return isValid;
@@ -519,8 +527,8 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
       this.notificationmessage.warning('Recipient Information Missing', 'Kinldy select  the recipient for this correspondence', 3000);
       return isValid;
     }
-    if (this.correspondenceDetailsForm.get('skipDepSecratory').value == true && this.correspondenceDetailsForm.get('Approver').value == null) {
-      this.notificationmessage.warning('Aprrover is Mandatory', 'Kinldy choose the Approver', 3000);
+    if (this.coverID == null || this.coverID == undefined) {
+      this.notificationmessage.warning('Cover ID Missing', 'Kinldy Upload the Cover Letter', 3000);
       return isValid;
     }
     return true;
@@ -595,7 +603,7 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
     }
     else if (action === 'StartCollaboration') {
       if (this.validateCorrespondenceForm()) {
-        this.initiateWFCorrespondence('Save', '', '');
+        this.initiateWFCorrespondence('StartCollaboration', '', '');
       }
     }
   }
@@ -681,8 +689,9 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
       this.correspondenceDetailsForm.get('Approver').setValidators([Validators.required]);
     } else {
       this.skipDepSecratory = false;
-      this.correspondenceDetailsForm.get('Approver').setValidators(null);
+      this.correspondenceDetailsForm.get('Approver').clearValidators();
     }
+    this.correspondenceDetailsForm.get('Approver').updateValueAndValidity();
   }
 
   confidentialChange(e: MatCheckboxChange) {
@@ -693,6 +702,7 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
       this.skipHOSSecratory = true;
       this.correspondenceDetailsForm.get('Approver').setValidators([Validators.required]);
     }
+
   }
 
   headOfSectionReviewRequiredChange(e: MatOptionSelectionChange) {
@@ -701,8 +711,9 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
     }
     else {
       this.headOfSectionReview = false;
-      this.correspondenceDetailsForm.get('HOSApprover').setValidators(null);
+      this.correspondenceDetailsForm.get('HOSApprover').clearValidators();
     }
+    this.correspondenceDetailsForm.get('HOSApprover').updateValueAndValidity();
   }
 
   skipHOSSecratoryChange(e: MatCheckboxChange) {
@@ -712,9 +723,10 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
     }
     else {
       this.skipHOSSecratory = false;
-      this.correspondenceDetailsForm.get('HOSApprover').setValidators(null);
+      this.correspondenceDetailsForm.get('HOSApprover').clearValidators();
 
     }
+    this.correspondenceDetailsForm.get('HOSApprover').updateValueAndValidity();
   }
   getApprovers(ApproverType: string) {
     this.correspondenceDetailsService

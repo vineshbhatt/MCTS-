@@ -4,6 +4,7 @@
         "firstName": "Sminil",
         "lastName": "Mannai",
         "userMessage": "Welcome back to CMS",
+        "userImg" : "assets/images/user_img_001.jpg",
         "externalInboundNew": "333",
         "externalInboundProgress": "554",
         "externalInboundAchieved": "453",
@@ -15,7 +16,25 @@
         "externalOutboundAchieved": "453",
         "internalOutboundNew": "333",
         "internalOutboundProgress": "554",
-        "internalOutboundAchieved": "453"
+        "internalOutboundAchieved": "453",
+        "designation": "Designation",
+        "delegation" : [
+          {
+            "firstName": "Rahul",
+            "lastName": "Raju",
+            "designation": "Designation"
+          },
+          {
+            "firstName": "Jackson",
+            "lastName": " ",
+            "designation": "Designation"
+          },
+          {
+            "firstName": "Steby",
+            "lastName": "OMR",
+            "designation": "Designation"
+          }
+        ]
       }
     ]
   }]
