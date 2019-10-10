@@ -82,6 +82,7 @@ export const FCTSDashBoard = {
   setConnection: '5447238',
   getCorrespondenceFormValues: '5447123',
   setSubfolderPerm: 'CTA_SetSubfolderPerm',
+  ProxyInfo: 'CTA_ProxyUserInfo',
   // BaseHref: '/img/fctsangular/fctsapp/',
   BaseHref: '/',
   CSUrl: 'http://mv2cdmsadp02/otcs/cs.exe'

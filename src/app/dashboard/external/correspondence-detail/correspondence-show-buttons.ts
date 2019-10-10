@@ -1,4 +1,6 @@
 import { CorrespondenenceDetailsModel } from '../../models/CorrespondenenceDetails.model';
+import { AppLoadConstService } from 'src/app/app-load-const.service';
+
 
 interface CorrButtonsList {
     corrArchive: boolean;
@@ -8,6 +10,7 @@ interface CorrButtonsList {
   }
 
   export class ShowButtons implements CorrButtonsList {
+    private _globalConstants = this._appLoadConstService.getConstants();
     private _corrArchive: boolean;
     private _corrComplete: boolean;
     private _corrTrReply: boolean;
@@ -41,7 +44,9 @@ interface CorrButtonsList {
       this._corrComplete = value;
     }
 
-    constructor() {
+    constructor(
+      private _appLoadConstService: AppLoadConstService
+    ) {
       this._setInitData();
     }
 
@@ -53,10 +58,10 @@ interface CorrButtonsList {
     }
 
     public showButton(correspondenceData: CorrespondenenceDetailsModel) {
-     console.log(correspondenceData);
+     // console.log(correspondenceData);
      this._setInitData();
      if (correspondenceData.ID.toString() !== '0' ) {
-         if (correspondenceData.holdSecretaryID.toString() === CSConfig.globaluserid.toString()) {
+         if (correspondenceData.holdSecretaryID.toString() === this._globalConstants.general.ProxyUserID.toString()) {
           // btnComplete, btnArchive, btnSave, btnReply
           correspondenceData.Status.toString() === '0' ? this.corrComplete = true : correspondenceData.Status.toString() === '1' ? this.corrArchive = true : this.corrComplete = false;
           correspondenceData.TransferType.toString() === '10' && correspondenceData.Status.toString() === '0' ? this.corrSave = true : this.corrSave = false;

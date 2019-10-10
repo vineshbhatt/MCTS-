@@ -193,7 +193,6 @@ export class TransferDialogBox implements OnInit {
     }
   }
 
-
   postTransferToRequest(myForm: any): void {
       this.fieldTouch();
       if (this.transferRequestForm.valid) {

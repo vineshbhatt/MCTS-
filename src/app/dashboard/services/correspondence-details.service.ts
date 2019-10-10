@@ -14,14 +14,21 @@ import { CorrespondenceShareService } from '../services/correspondence-share.ser
 import { map, catchError } from 'rxjs/operators'; /* added 24/06/2019 */
 import { EMPTY } from 'rxjs';
 import { CorrespondenceWFFormModel } from '../models/CorrepondenceWFFormModel';
+import { AppLoadConstService } from 'src/app/app-load-const.service';
+import { stringify } from 'querystring';
+
 @Injectable({
   providedIn: 'root'
 })
+
 export class CorrespondenceDetailsService {
+  private _globalConstants = this.appLoadConstService.getConstants();
   private CSUrl: string = CSConfig.CSUrl;
+
   constructor(
     private httpServices: HttpClient,
-    private _correspondenceShareService: CorrespondenceShareService
+    private _correspondenceShareService: CorrespondenceShareService,
+    public appLoadConstService: AppLoadConstService
   ) { }
 
   getCorrespondenceRecipientDetails(SubWorkID, CorrFlowType): Observable<CorrResponse[]> {
@@ -197,7 +204,8 @@ export class CorrespondenceDetailsService {
       }
     );
   }
-  getCorrRecord(locationid, transid, onbehalfuserid): Observable<CorrespondenenceDetailsModel[]> {
+
+  getCorrRecord(locationid, transid, onbehalfuserid): Observable<any> {
     const params = new HttpParams()
       .set('FolderID', locationid)
       .set('transID', transid)
@@ -210,7 +218,29 @@ export class CorrespondenceDetailsService {
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
       }
+    )
+    .pipe(
+      map(data => {
+        let corrFlowType: string;
+        switch (data[0].CorrespondenceFlowType) {
+          case '1':
+            corrFlowType = 'Incoming';
+            break;
+          case '5':
+            corrFlowType = 'Outgoing';
+            break;
+          case '7':
+            corrFlowType = 'Internal';
+            break;
+        }
+        data[0].CorrFlowType = corrFlowType;
+        return data;
+      }),
+      catchError(error => {
+        return error;
+      })
     );
+
   }
 
   getCorrespondenceFolderName(volumeID): Observable<any> {
@@ -284,17 +314,20 @@ export class CorrespondenceDetailsService {
       }
     );
   }
-  /* Changed PSM: 27/06/2019 */
+  /* Changed PSM: 04/10/2019 */
   createTransferRequest(transferJson, correspondenceData: CorrespondenenceDetailsModel): Observable<any> {
+    let taskID: string;
+    correspondenceData.CorrespondenceFlowType === '1' ? taskID = '32' : taskID = '3'; // for permission purpose
     const transferVal = JSON.stringify({ transferJson });
     const params = new HttpParams()
       .set('transferJson', transferVal)
       .set('volumeid', correspondenceData.VolumeID)
-      .set('taskid', '32') /* needed to change for diff. CoorFlowType */
-      .set('CorrFlowType', 'Incoming')
+      .set('taskid', taskID)
+      .set('CorrFlowType', correspondenceData.CorrFlowType)
       .set('locationid', correspondenceData.AttachCorrID)
+      .set('parentID', correspondenceData.ID)
       .set('rows_count', transferJson.length)
-      .set('onBehalfUserID', CSConfig.globaluserid);
+      .set('onBehalfUserID', this._globalConstants.general.ProxyUserID);
 
     return this.httpServices
       .get<any>(this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.createTransfer}?Format=webreport`,
@@ -334,7 +367,7 @@ export class CorrespondenceDetailsService {
     statusRow.transID = correspondenceData.ID.toString();
     statusRow.NotesComplete = NotesComplete;
     statusRow.currentStatus = correspondenceData.Status.toString();
-    statusRow.userid = CSConfig.globaluserid.toString();
+    statusRow.userid = this._globalConstants.general.ProxyUserID.toString();
     rowsArray.push(statusRow);
     setStatusRequest.SetStatusRow = rowsArray;
     this._correspondenceShareService.setTransferToStatus(setStatusRequest).subscribe();
@@ -539,6 +572,7 @@ export class CorrespondenceDetailsService {
     const params = new HttpParams()
       .set(ApproverType, 'true')
       .set('mainLanguage', 'EN')
+      // TODO: check what should be used - ProxyUserID or UserID
       .set('filterField1', CSConfig.globaluserid);
     return this.httpServices.get<any[]>(
       this.CSUrl +
@@ -573,9 +607,9 @@ export class CorrespondenceDetailsService {
       .set('template_type', templateType)
       .set('onBehalfOf', onBehalfOf)
       .set('active', '1')
-      .set('catid', '261305')
+      .set('catid', '1265854') // TODO
       .set('language', '')
-      .set('locationid', '261309');
+      .set('locationid', '1265858'); // TODO
     return this.httpServices.get<any[]>(
       this.CSUrl +
       `${FCTSDashBoard.WRApiV1}${

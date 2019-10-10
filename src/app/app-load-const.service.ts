@@ -21,7 +21,7 @@ export class AppLoadConstService {
         .subscribe(
           response => {
             this._CSConstants = response;
-            this._CSConstants.FCTS_Dashboard.UserGroupsArray = this._CSConstants.FCTS_Dashboard.UserGroups.split(',');            
+            this._CSConstants.FCTS_Dashboard.UserGroupsArray = this._CSConstants.FCTS_Dashboard.UserGroups.split(',');
             resolve();
           },
           error => {
@@ -38,4 +38,18 @@ export class AppLoadConstService {
       const params = new HttpParams();
         return this._httpServices.get<any>( url, { headers: { OTCSTICKET: CSConfig.AuthToken }, params: params } );
       }
+
+    setProxy(ProxyUserID: string) {
+      this._CSConstants.general.ProxyUserID = ProxyUserID;
+    }
+
+    setUserNameProxy(UserName: string) {
+      this._CSConstants.general.UserName = UserName;
+    }
+
+    setUserGroupArray(userGroups: string) {
+      this._CSConstants.FCTS_Dashboard.UserGroupsArray = userGroups.split(',');
+      // console.log(this._CSConstants.FCTS_Dashboard.UserGroupsArray);
+    }
+
 }

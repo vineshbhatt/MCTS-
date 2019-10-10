@@ -89,6 +89,7 @@ export class Correspondence {
   Priority_EN: string;
   totalRowCount: number;
   showButtons: DashboardShowButtons;
+  PerformerGroups: string;
 }
 
 export class RecallStepsInfo {

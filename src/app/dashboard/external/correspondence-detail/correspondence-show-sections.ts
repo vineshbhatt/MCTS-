@@ -92,15 +92,14 @@ import { CorrespondenenceDetailsModel } from '../../models/CorrespondenenceDetai
 
 
     public ShowCorrSection(correspondenceData: CorrespondenenceDetailsModel, CorrespondencType: string, taskID: string) {
-        if ( ( correspondenceData.ID.toString() !== '0' && correspondenceData.holdSecretaryID.toString() !== '0'  && ( correspondenceData.Status.toString() === '0' || correspondenceData.Status.toString() === '1' ) )
-         || ( correspondenceData.ID.toString() === '0' && correspondenceData.isCC.toString() === '1' && correspondenceData.CCstatus !== 'Archived')
-         || (correspondenceData.perform07.toString() === '1' && correspondenceData.CCstatus !== 'Archived')
-         ) {
-            this.Transfer.Modify = true;
-        } else {
-          this.Transfer.Modify = false;
-        }
-        console.log(this);
+      if ( ( correspondenceData.ID.toString() !== '0' && correspondenceData.holdSecretaryID.toString() !== '0'  && ( correspondenceData.Status.toString() === '0' || correspondenceData.Status.toString() === '1' ) )
+        || ( correspondenceData.ID.toString() === '0' && correspondenceData.isCC.toString() === '1' && correspondenceData.CCstatus !== 'Archived')
+        || (correspondenceData.perform07.toString() === '1' && correspondenceData.CCstatus !== 'Archived')
+        ) {
+          this.Transfer.Modify = true;
+      } else {
+        this.Transfer.Modify = false;
+      }
     }
 
     public ShowCorrSectionWF() {

@@ -92,6 +92,10 @@ import { CommentDialogComponent } from './comments/comment-dialog/comment-dialog
 import { CommentsTreeComponent } from './comments/comments-tree/comments-tree.component';
 import { MatRadioModule } from '@angular/material';
 import { CommentSectionComponent } from './comments/comment-section/comment-section.component';
+import { BaseDashboardArchiveComponent } from './base-classes/base-dashboard-archive/base-dashboard-archive.component';
+import { UserInfoComponent } from './side-navigation/user-info/user-info.component';
+import { ProxyInfoComponent } from './side-navigation/proxy-info/proxy-info.component';
+import { CurrentUserPhotoComponent } from './side-navigation/current-user-photo/current-user-photo.component';
 
 @NgModule({
   imports: [
@@ -161,6 +165,7 @@ import { CommentSectionComponent } from './comments/comment-section/comment-sect
     BaseDashboardFullComponent,
     BaseDashboardComponent,
     BaseDashboardActiveComponent,
+    BaseDashboardArchiveComponent,
     DocumentViewerComponent,
     MailroomsComponent,
     MailroomDasnboardComponent,
@@ -183,7 +188,10 @@ import { CommentSectionComponent } from './comments/comment-section/comment-sect
     SendBackDialogComponent,
     CommentDialogComponent,
     CommentsTreeComponent,
-    CommentSectionComponent
+    CommentSectionComponent,
+    UserInfoComponent,
+    ProxyInfoComponent,
+    CurrentUserPhotoComponent
   ],
   entryComponents: [
     MailDetailView,

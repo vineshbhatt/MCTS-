@@ -540,7 +540,7 @@
                   <li>Due Date</li>
                 </ul>
                 <div *ngFor="let transferDataDetails of transferhistorytabData">
-                  <div *ngFor="let transferDataDetail of transferDataDetails.myRows">
+                  <div *ngFor="let transferDataDetail of transferDataDetails.myRows" [class.currentTransfer] = "transferDataDetail.TransID.toString() === correspondenceData.ID.toString()">
                     <mat-accordion class="inside_accordion_001">
                       <mat-expansion-panel>
                         <mat-expansion-panel-header [collapsedHeight]="'auto'" [expandedHeight]="'auto'">

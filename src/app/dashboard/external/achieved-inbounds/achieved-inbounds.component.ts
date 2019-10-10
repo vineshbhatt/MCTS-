@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material';
 
 import { CorrespondenceService } from 'src/app/dashboard/services/correspondence.service';
 import { CorrespondenceShareService } from '../../services/correspondence-share.service';
-import { BaseDashboardComponent } from 'src/app/dashboard/base-classes/base-dashboard/base-dashboard.component';
+import { BaseDashboardArchiveComponent } from '../../base-classes/base-dashboard-archive/base-dashboard-archive.component';
 import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handler-fcts.service';
 import { AppLoadConstService } from 'src/app/app-load-const.service';
 
@@ -13,7 +13,7 @@ import { AppLoadConstService } from 'src/app/app-load-const.service';
   templateUrl: './achieved-inbounds.component.html',
   styleUrls: ['../../base-classes/base-dashboard/base-dashboard.component.scss']
 })
-export class AchievedInboundsComponent extends BaseDashboardComponent implements OnInit {
+export class AchievedInboundsComponent extends BaseDashboardArchiveComponent implements OnInit {
 
   constructor(
     public router: Router,

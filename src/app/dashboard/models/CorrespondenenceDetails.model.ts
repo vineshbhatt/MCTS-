@@ -20,12 +20,12 @@ export class CorrespondenenceDetailsModel {
   perform07: string;
   WasOpened: string;
   AttachementsDocCount: string;
-
+  CorrespondenceFlowType: string;
+  CorrFlowType: string;
+  CorrespondencePhase: string;
 }
 
 export class OrgNameAutoFillModel {
-
-
   OrgID: string;
   OrgName_En: string;
   OrgName_Ar: string;
@@ -50,8 +50,6 @@ export class OrgNameAutoFillModel {
   FaxNumber: string;
   _SOURCEROWNUM: number;
   _ORIGROWNUM: number;
-
-
 }
 
 export class CorrespondenceFolderModel {
@@ -77,7 +75,6 @@ export class CCUserSetModel {
   Name_EN: string;
   Name_AR: string;
 }
-
 
 export class ColUserSetModel {
   VolumeID: string;
@@ -132,7 +129,6 @@ export class SyncDocumentMetadataModel {
   CommitmentNumber: string;
   TenderNumber: string;
 }
-
 
 export class CorrWFTaskInfoModel {
   SubWork_WorkID: string;

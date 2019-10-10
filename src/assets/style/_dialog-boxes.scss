@@ -331,3 +331,56 @@
 .msghide{
   visibility: hidden;
 }
+/********Move to menu.scss*************/
+.userInfoHolder, .proxyInfoHolder{
+  display: flex;
+}
+
+.userInitials{
+  content:attr(data-letters);
+  display:inline-block;
+  font-size:1em;
+  width:44px;
+  height:44px;
+  line-height:44px;
+  text-align:center;
+  border-radius:50%;
+  background: #00b7c3;
+  vertical-align:middle;
+  margin-right:auto;
+  color:white;
+}
+
+.currentUserInitials{
+  content:attr(data-letters);
+  font-size:1em;
+  width:44px;
+  height:44px;
+  line-height:44px;
+  text-align:center;
+  border-radius:50%;
+  background: white;
+  vertical-align:middle;
+  margin:auto;
+  color:#00b7c3;
+}
+
+.menu_use_user_details{
+  .userInfoHolder .menu_use_user_img img:hover{
+    cursor: pointer;
+  }
+  .userInfoHolder .menu_use_user_detail .text_14{
+    cursor: pointer;
+  }
+}
+
+.proxyInfoHolder:hover{
+  cursor: pointer;
+}
+/**************************************/
+/**************move to corr details****/
+.currentTransfer{
+  background-color: #d5eff0;
+}
+/**************************************/
+

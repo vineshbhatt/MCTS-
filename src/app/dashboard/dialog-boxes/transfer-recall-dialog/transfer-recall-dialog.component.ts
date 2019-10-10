@@ -7,13 +7,17 @@ import { TransferRecallDialogData, RecallTransferInfo } from './transfer-recall-
 import { MessageDialogComponent } from 'src/app/dashboard/dialog-boxes/message-dialog/message-dialog.component';
 import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handler-fcts.service';
 import { CorrespondenceService } from 'src/app/dashboard/services/correspondence.service';
+import { TransferRecallService } from 'src/app/dashboard/services/transfer-recall.service';
+import { AppLoadConstService } from 'src/app/app-load-const.service';
 
 @Component({
   selector: 'app-transfer-recall-dialog',
   templateUrl: './transfer-recall-dialog.component.html',
   styleUrls: ['./transfer-recall-dialog.component.scss']
 })
+
 export class TransferRecallDialogComponent implements OnInit {
+  private _globalConstants = this._appLoadConstService.getConstants();
   private _inputData: RecallTransferInfo;
   public allTransferedRows: TransferRecallDialogData[];
   selection = new SelectionModel<TransferRecallDialogData >(true, []);
@@ -23,7 +27,9 @@ export class TransferRecallDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) private _data: any,
     private _dialogU: MatDialog,
     private _correspondenceService: CorrespondenceService,
-    private _errorHandlerFctsService: ErrorHandlerFctsService
+    private _errorHandlerFctsService: ErrorHandlerFctsService,
+    private _transferRecallService: TransferRecallService,
+    private _appLoadConstService: AppLoadConstService
   ) { }
 
   ngOnInit() {
@@ -68,8 +74,6 @@ export class TransferRecallDialogComponent implements OnInit {
   }
 
   recallTransfer(recallTransferInfo: RecallTransferInfo) {
-    const transferUserID = CSConfig.globaluserid;
-
     if ( recallTransferInfo.recallType !== 'ReturnToAS'  ) {
       this.getTransferRecall(recallTransferInfo);
     } else {
@@ -80,7 +84,7 @@ export class TransferRecallDialogComponent implements OnInit {
   }
 
   getTransferRecall(recallTransferInfo: RecallTransferInfo ) {
-    this._correspondenceService.getTransRecallData(recallTransferInfo).subscribe(
+    this._transferRecallService.getTransRecallData(recallTransferInfo).subscribe(
       response => {
         this.allTransferedRows = response;
         console.log(this.allTransferedRows);

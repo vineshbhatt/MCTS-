@@ -30,12 +30,19 @@ export class BaseDashboardActiveComponent extends BaseDashboardComponent impleme
   ) {
     super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService);
   }
+  userName: string;
 
   ngOnInit() {
     super.ngOnInit();
+    this.stepPerformer = this.globalConstants.general.ProxyUserID;
   }
 
   getPage(page: number): void {
+    if ( this.globalConstants.general.ProxyUserID !== this.globalConstants.general.UserID ) {
+      this.isProxy = true;
+    } else {
+      this.isProxy = false;
+    }
     const perPage = FCTSDashBoard.DefaultPageSize;
     const start = ((page - 1) * perPage) + 1;
     const end = (start + perPage) - 1;
@@ -97,8 +104,6 @@ export class BaseDashboardActiveComponent extends BaseDashboardComponent impleme
       }
     );
   }
-
-
 
   replyExternal(correspondData: Correspondence): void {
     this.router.navigate([this.routerInitateExternal],

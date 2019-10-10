@@ -114,7 +114,7 @@ export class BaseDashboardFullComponent extends BaseDashboardComponent implement
   getCorrespondence(pageType: string, start: number, end: number, page: number, SearchFilterData: any): void {
     this.progbar = true;
     this.correspondenceService
-      .getDashboardMain(pageType, start, end, SearchFilterData)
+      .getDashboardMain(pageType, start, end, SearchFilterData, this.isProxy)
       .subscribe(correspondenceData => {
         const myMap = new Map();
         for (const obj of correspondenceData) {
@@ -140,6 +140,7 @@ export class BaseDashboardFullComponent extends BaseDashboardComponent implement
           this.totalCount = 0;
         } else if (start === 1) {
           this.totalCount = correspondenceData[0].totalRowCount;
+          this.appLoadConstService.setUserGroupArray(correspondenceData[0].PerformerGroups);
         }
         this.pagenumber = page;
       });
@@ -160,13 +161,12 @@ export class BaseDashboardFullComponent extends BaseDashboardComponent implement
 
   setItemCount() {
     // overiding parent function to avoid error
-  } 
+  }
 
   selectWFStepRoute(correspondData: Correspondence) {
-    debugger;    
     switch (correspondData.CorrespondenceFlowType) {
       case '1':
-        this.routerFormStep = '/dashboard/external/correspondence-form-step-inc'; //'/dashboard/external/correspondence-form-step-inc';
+        this.routerFormStep = '/dashboard/external/correspondence-form-step-inc'; // '/dashboard/external/correspondence-form-step-inc';
         break;
       case '5':
         this.routerFormStep = '/dashboard/external/correspondence-form-step-out'; // '/dashboard/external/correspondence-form-step-out';

@@ -127,12 +127,9 @@ export class CommentSectionComponent implements OnInit {
   }
 
   checkEditable(): void {
- /*    console.log('this.corrType -' + this.corrType);
-    console.log('this.corrPhase -' + this.corrPhase);
-    console.log(typeof this.corrPhase);
-    console.log('corrTaskID - ' + this.corrTaskID);
-    console.log(this.data ); */
-     const isAssignee = this.globalConstants.FCTS_Dashboard.UserGroupsArray.includes(this.data.UserID);
+    // const isAssignee = this.globalConstants.FCTS_Dashboard.UserGroupsArray.includes(this.data.UserID); doenat work with IE
+    let isAssignee: boolean;
+    this.globalConstants.FCTS_Dashboard.UserGroupsArray.indexOf(this.data.UserID) > -1 ? isAssignee = true : isAssignee = false;
     if ( (this.corrTaskID != 0 && this.corrTaskID != undefined) && this.data.CorrespondencePhase.toString() != '3' && (this.corrType === 'Internal' || this.corrType === 'Incoming')) {
       this.commentsEditable = true;
       // console.log('Condition 1');

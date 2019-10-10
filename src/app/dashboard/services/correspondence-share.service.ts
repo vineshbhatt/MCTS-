@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { StatusRequest, SetStatusRow } from '../models/Shared.model';
-import { Observable, of, throwError } from 'rxjs';
-import { map, tap, catchError } from 'rxjs/operators';
+import { Observable, throwError, BehaviorSubject } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+import { StatusRequest, SetStatusRow } from '../models/Shared.model';
 import { FCTSDashBoard } from '../../../environments/environment';
 import { Correspondence } from './correspondence.model';
 import { CorrResponse, CommentsNode } from './correspondence-response.model';
+import { AppLoadConstService } from 'src/app/app-load-const.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,14 @@ import { CorrResponse, CommentsNode } from './correspondence-response.model';
 
 export class CorrespondenceShareService {
   private CSUrl: string = CSConfig.CSUrl;
-  constructor(private httpServices: HttpClient) { }
+  private _globalConstants = this._appLoadConstService.getConstants();
+  private sidebarStateSource = new BehaviorSubject(true);
+  currentSidebarAction = this.sidebarStateSource.asObservable();
+
+  constructor(
+      private httpServices: HttpClient
+    , private _appLoadConstService: AppLoadConstService
+    ) { }
 
   setTransferToStatus(setStatusRequest: StatusRequest): Observable<any> {
     const rowsJSON = JSON.stringify({ setStatusRequest });
@@ -158,7 +166,7 @@ export class CorrespondenceShareService {
         statusRow.transID = commonData.SetStatusRow[0].transID.toString();
         statusRow.NotesComplete = NotesComplete;
         statusRow.currentStatus = commonData.SetStatusRow[0].currentStatus.toString();
-        statusRow.userid = CSConfig.globaluserid;
+        statusRow.userid =  CSConfig.globaluserid;
         rowsArray.push(statusRow);
       setStatusRequest.SetStatusRow = rowsArray;
       this.setTransferToStatus(setStatusRequest).subscribe();
@@ -178,7 +186,7 @@ export class CorrespondenceShareService {
             mCList.dataid = element[i].DataID.toString();
             mCList.transID = element[i].transID.toString();
             mCList.isCC = element[i].transIsCC.toString();
-            mCList.userid = CSConfig.globaluserid;
+            mCList.userid = this._globalConstants.general.ProxyUserID;
             mCList.currentStatus = element[i].Status.toString();
             mCList.NotesComplete = '';
             statusRowsArray.push(mCList);
@@ -189,7 +197,7 @@ export class CorrespondenceShareService {
           CList.dataid = element.DataID.toString();
           CList.transID = element.transID.toString();
           CList.isCC = element.transIsCC.toString();
-          CList.userid = CSConfig.globaluserid;
+          CList.userid = this._globalConstants.general.ProxyUserID;
           CList.currentStatus = element.Status.toString();
           CList.NotesComplete = comment;
           statusRowsArray.push(CList);
@@ -199,7 +207,7 @@ export class CorrespondenceShareService {
           CList.dataid = element.AttachCorrID;
           CList.transID = element.ID;
           CList.isCC = element.isCC;
-          CList.userid = CSConfig.globaluserid;
+          CList.userid = this._globalConstants.general.ProxyUserID;
           CList.currentStatus = element.Status;
           CList.NotesComplete = comment;
           statusRowsArray.push(CList);
@@ -218,7 +226,7 @@ export class CorrespondenceShareService {
           CList.dataid = element.DataID.toString();
           CList.transID = element.transID.toString();
           CList.isCC = element.transIsCC.toString();
-          CList.userid = CSConfig.globaluserid;
+          CList.userid = this._globalConstants.general.ProxyUserID;
           CList.currentStatus = currStatus;
           CList.NotesComplete = comment;
           statusRowsArray.push(CList);
@@ -310,6 +318,10 @@ export class CorrespondenceShareService {
     } else {
       return '';
     }
+  }
+
+  changeSidebarAction(menuAction: boolean) {
+    this.sidebarStateSource.next(menuAction);
   }
 
 }
