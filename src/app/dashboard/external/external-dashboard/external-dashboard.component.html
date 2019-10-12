@@ -19,7 +19,7 @@
   </div>
 
   <div class="header_search">
-    <input type="text" class="search_box" placeholder="search">
+    <input type="text" class="search_box" [placeholder]="'search' | translator">
   </div>
 </div>
 <div class="cust_row_001_wrapper">
@@ -77,7 +77,7 @@
   </div>
   <div class="col_50_cust">
     <div class="over_view_wrapper">
-      <p class="text_20">Overview</p>
+      <p class="text_20">{{'Overview' |translator}}</p>
       <div class="over_view_data_wrp mt_20">
         <div class="over_head_text_001">
         </div>

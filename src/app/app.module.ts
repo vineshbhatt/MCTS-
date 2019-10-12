@@ -12,6 +12,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AppLoadConstService } from './app-load-const.service';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { multiLanguageTranslatorModule } from '../assets/translator/index';
 export function initApp(appInitService: AppLoadConstService) {
   return (): Promise<any> => {
     return appInitService.Init();
@@ -30,7 +31,11 @@ export function initApp(appInitService: AppLoadConstService) {
     MatMenuModule,
     MalihuScrollbarModule.forRoot(),
     ReactiveFormsModule, NgScrollbarModule,
-    MatTooltipModule],
+    MatTooltipModule,
+    multiLanguageTranslatorModule.forRoot({
+      defaultLang: 'en',
+      storagePrefix: 'current-language'
+    })],
   exports: [MatButtonModule, MatCheckboxModule],
   providers: [
     AppLoadConstService, {

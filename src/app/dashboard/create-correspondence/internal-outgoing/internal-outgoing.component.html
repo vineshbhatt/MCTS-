@@ -13,7 +13,7 @@
           <button class="back_btn" (click)="backNavigation()">
             <img src="{{basehref}}assets/images/icons/left_arrow.svg" alt="">
           </button>
-          <h3 class="text_23 ltg_text">Create External Outgoing Correspondence
+          <h3 class="text_23 ltg_text">Create Internal Outgoing Correspondence
           </h3>
         </div>
         <div class="user_name">
@@ -72,40 +72,29 @@
             <table class="table">
               <tr>
                 <th>Organization</th>
-                <th>Department</th>
+                <th class="department">Department</th>
+                <th class="role">Role</th>
                 <th>Name</th>
                 <th class="btn_td_wrp"></th>
               </tr>
               <tr>
+                <td>{{IntRecipientInfo?.OrgName_En}}</td>
                 <td>
                   <div class="input_item_wrp sm_input_wrapper">
                     <mat-form-field class="input_tbl_wrp">
-                      <input type="text" aria-label="Number" matInput formControlName="ExternalOrganization"
-                        [matAutocomplete]="extOrgName">
-                    </mat-form-field>
-                    <mat-autocomplete #extOrgName="matAutocomplete" class="longautocomplete" [displayWith]="displaySearchFilterValueExt">
-                      <mat-option *ngFor="let OrgName of (filteredExtOrgNames | async)" [value]="OrgName"
-                        (onSelectionChange)="optionSelectionChangeExternal(OrgName, $event)">
-                        {{OrgName?.OrgName_En}}
-                      </mat-option>
-                    </mat-autocomplete>
-                  </div>
-
-                </td>
-                <td>
-                  <div class="input_item_wrp sm_input_wrapper">
-                    <mat-form-field class="input_tbl_wrp">
-                      <input type="text" aria-label="Number" matInput formControlName="RecipientDepartment">
+                      <input type="text" aria-label="Number" matInput formControlName="RecipientDepartment"
+                        [matAutocomplete]="recpientDepName">
+                      <mat-autocomplete #recpientDepName="matAutocomplete" class="longautocomplete" [displayWith]="displaySearchFilterValueInt">
+                        <mat-option *ngFor="let DepName of (filteredIntDepNames | async)" [value]="DepName"
+                          (onSelectionChange)="optionSelectionChangeInternal(DepName, $event)">
+                          {{DepName?.DepName_En}} {{ (DepName.SecName_En != null) ? (","+DepName.SecName_En) : "" }}
+                        </mat-option>
+                      </mat-autocomplete>
                     </mat-form-field>
                   </div>
                 </td>
-                <td>
-                  <div class="input_item_wrp sm_input_wrapper">
-                    <mat-form-field class="input_tbl_wrp">
-                      <input type="text" aria-label="Number" matInput formControlName="RecipientName">
-                    </mat-form-field>
-                  </div>
-                </td>
+                <td>{{IntRecipientInfo?.RoleName_En}}</td>
+                <td>{{IntRecipientInfo?.Name_En}}</td>
                 <td class="btn_td_wrp">
                   <button (click)="clearDetails('recipientDetailsForm')" class="remove_btn_002" mat-button
                     matTooltip="Clear">
@@ -115,6 +104,10 @@
               </tr>
             </table>
           </div>
+          <button class="show_preview_btn" (click)="showRecipientData()">
+            <img src="{{basehref}}assets/images/icons/plus_green_btn.svg" alt="">
+            <span>Select Recipient</span>
+          </button>
         </div>
       </div>
     </form>
@@ -202,10 +195,7 @@
                   </mat-form-field>
                   <mat-checkbox formControlName="confidential" (change)="confidentialChange($event)">Confidential
                   </mat-checkbox>
-                </div>
-                <mat-form-field class="col_6">
-                  <input matInput autocomplete="off" placeholder="Personal Name" formControlName="personalName">
-                </mat-form-field>
+                </div>              
                 <mat-form-field class="col_6">
                   <input matInput autocomplete="off" placeholder="ID Number" formControlName="idNumber"
                     [ngClass]="{ 'is-invalid': submitted && f.IDNumber.errors }">
@@ -222,18 +212,7 @@
                       {{option.EN}}
                     </mat-option>
                   </mat-autocomplete>
-                </mat-form-field>
-
-                <mat-form-field class="col_6">
-                  <input type="text" [(ngModel)]="OBTypeVal" placeholder="OB Type" matInput [matAutocomplete]="OBType"
-                    formControlName="obType">
-                  <mat-autocomplete #OBType="matAutocomplete" [displayWith]="displayFn" autoActiveFirstOption>
-                    <mat-option *ngFor="let option of MetadataFilters | attrfilter:'OBDocumentType':OBTypeVal"
-                      [value]="option">
-                      {{option.EN}}
-                    </mat-option>
-                  </mat-autocomplete>
-                </mat-form-field>
+                </mat-form-field>             
                 <mat-form-field class="col_12">
                   <input matInput autocomplete="off" placeholder="Arabic Subject" formControlName="arabicSubject"
                     [ngClass]="{ 'is-invalid': submitted && f.arabicSubject.errors }" required>
@@ -298,30 +277,7 @@
                 </mat-form-field>
                 <mat-form-field class="col_6">
                   <input matInput autocomplete="off" placeholder="Tender Number" formControlName="tenderNumber">
-                </mat-form-field>
-
-                <mat-form-field class="col_6">
-                  <input type="text" [(ngModel)]="FillingPlanPathVal" placeholder="Filling Plan Path" matInput
-                    [matAutocomplete]="FillingPlanPath" formControlName="fillinPlanPath">
-                  <mat-autocomplete #FillingPlanPath="matAutocomplete" [displayWith]="displayFn" autoActiveFirstOption>
-                    <mat-option *ngFor="let option of MetadataFilters | attrfilter:'FillingPlanPath':FillingPlanPathVal"
-                      [value]="option">
-                      {{option.EN}}
-                    </mat-option>
-                  </mat-autocomplete>
-                </mat-form-field>
-
-                <mat-form-field class="col_6">
-                  <input type="text" [(ngModel)]="DispatchMethodVal" placeholder="Dispatch Method" matInput
-                    [matAutocomplete]="DispatchMethod" formControlName="dispatchMethod">
-                  <mat-autocomplete #DispatchMethod="matAutocomplete" [displayWith]="displayFn" autoActiveFirstOption>
-                    <mat-option *ngFor="let option of MetadataFilters | attrfilter:'DispatchMethod':DispatchMethodVal"
-                      [value]="option">
-                      {{option.EN}}
-                    </mat-option>
-                  </mat-autocomplete>
-                </mat-form-field>
-
+                </mat-form-field>         
                 <mat-form-field class="col_6">
                   <input matInput autocomplete="off" placeholder="Staff Number" formControlName="staffNumber">
                 </mat-form-field>
@@ -329,8 +285,6 @@
             </div>
           </div>
         </mat-expansion-panel>
-
-
         <mat-expansion-panel class="mat-elevation-z bg_001">
           <mat-expansion-panel-header>
             <div class="icon_wrapper">

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FCTSDashBoard } from '../../../environments/environment';
 import { HttpErrorResponse, HttpClient } from '@angular/common/http';
 import { AppLoadConstService } from 'src/app/app-load-const.service';
-
+import { multiLanguageTranslator } from 'src/assets/translator/index';
 @Component({
   selector: 'app-side-navigation',
   templateUrl: './side-navigation.component.html'
@@ -10,11 +10,11 @@ import { AppLoadConstService } from 'src/app/app-load-const.service';
 export class SideNavigationComponent implements OnInit {
   basehref: String = FCTSDashBoard.BaseHref;
   showMR = false;
-  userData : string [];
+  userData: string[];
   private _globalConstants = this.appLoadConstService.getConstants();
 
   constructor(
-    private appLoadConstService: AppLoadConstService, private httpServices: HttpClient
+    private appLoadConstService: AppLoadConstService, private httpServices: HttpClient, public translator: multiLanguageTranslator
   ) { }
 
   ngOnInit() {

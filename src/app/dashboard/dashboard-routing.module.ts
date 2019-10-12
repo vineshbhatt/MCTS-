@@ -33,7 +33,9 @@ import { MrDispatchedOutboundsComponent } from './mailroom/mr-dispatched-outboun
 import { MrAcknowledgedOutboundsComponent } from './mailroom/mr-acknowledged-outbounds/mr-acknowledged-outbounds.component';
 import { CorrespondenceFormStepComponent } from './external/correspondence-form-step/correspondence-form-step.component';
 import { ExternalOutgoing } from './create-correspondence/external-outgoing/external-outgoing.component';
+import { InternalOutgoing } from './create-correspondence/internal-outgoing/internal-outgoing.component';
 import { CorrespondenceFormStepExtOutComponent } from './external/correspondence-form-step-extout/correspondence-form-step-extout.component';
+import { CorrespondenceFormStepIntOutComponent } from './internal/correspondence-form-step-intout/correspondence-form-step-intout.component';
 
 const dashboardRoutes: Routes = [
   {
@@ -56,7 +58,7 @@ const dashboardRoutes: Routes = [
                   { path: 'inProgress-intoutbounds', component: InprogressIntOutboundComponent },
                   { path: 'archieved-intoutbounds', component: AchievedIntOutboundComponent },
                   { path: 'correspondence-detail', component: CorrespondenceDetailComponent },
-                  { path: 'correspondence-form-step-int', component: InternalDashboardComponent }, // internal WF step isnt created yet
+                  { path: 'correspondence-form-step-intout', component: CorrespondenceFormStepIntOutComponent }, // Done
                   { path: '', component: InternalDashboardComponent }
                 ]
               }
@@ -69,7 +71,9 @@ const dashboardRoutes: Routes = [
                 path: '',
                 children: [
                   { path: 'new-external-incoming', component: ExternalIncoming },
-                  { path: 'new-external-outgoing', component: ExternalOutgoing }
+                  { path: 'new-external-outgoing', component: ExternalOutgoing },
+                  { path: 'new-internal-outgoing', component: InternalOutgoing },
+
                 ]
               }
             ]
@@ -100,7 +104,7 @@ const dashboardRoutes: Routes = [
               {
                 path: '',
                 children: [
-                  { path: 'mr-new-inbounds', component: MrNewInboundsComponent},
+                  { path: 'mr-new-inbounds', component: MrNewInboundsComponent },
                   { path: 'mr-dispatched-inbounds', component: MrDispatchedInboundsComponent },
                   { path: 'mr-acknowledged-inbounds', component: MrAcknowledgedInboundsComponent },
                   { path: 'mr-archieved-inbounds', component: MrArchievedInboundsComponent },

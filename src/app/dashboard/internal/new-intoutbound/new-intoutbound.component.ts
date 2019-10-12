@@ -26,7 +26,7 @@ export class NewIntOutboundComponent extends BaseDashboardActiveComponent implem
     ) {
       super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService);
       this.reportType = 'IntOutWIP';
-      this.routerFormStep = '/dashboard/internal/correspondence-form-step-int';
+      this.routerFormStep = '/dashboard/internal/correspondence-form-step-intout';
     }
 
   ngOnInit() {

@@ -27,7 +27,7 @@ export class NewIntInboundComponent extends BaseDashboardActiveComponent impleme
   ) {
     super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService);
     this.reportType = 'IntInbNew';
-    this.routerFormStep = '/dashboard/internal/correspondence-form-step-int';
+    this.routerFormStep = '/dashboard/internal/correspondence-form-step-intout';
   }
 
   ngOnInit() {

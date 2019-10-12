@@ -432,6 +432,9 @@ export class CorrespondenceService {
       case 'Outgoing':
         endPoint = FCTSDashBoard.initiateOutgoingWF;
         break;
+      case 'Internal':
+        endPoint = FCTSDashBoard.initiateInternalWF;
+        break;
     }
 
     const params = new HttpParams()

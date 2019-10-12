@@ -1,30 +1,26 @@
-<div class="new_edt_cont_wrapper" *ngIf="spinnerDataLoaded">
+<div class="form_eic_cont_wrapper" *ngIf="spinnerDataLoaded">
   <mat-spinner></mat-spinner>
 </div>
-<div class="new_edt_cont_wrapper">
+<div class="form_eic_cont_wrapper">
   <ng-scrollbar thumbClass="scroll_001" class="correspondence_detail scroll_wrp_001" *ngIf="expandedRightAction"
     [ngClass]="expandedAction ? 'unActive' : 'ActiveLeft'" compact="true">
     <button (click)="expandeActionLeftButton()" matRipple class="corsp_ext_btn">
       <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
     </button>
     <div class="detail_header">
-      <div class="header_text" *ngFor="let user of userInfo">
+      <div class="header_text" *ngIf="correspondenceData">
         <div class="header_back_cpd_dtl">
           <button class="back_btn" (click)="backNavigation()">
             <img src="{{basehref}}assets/images/icons/left_arrow.svg" alt="">
           </button>
-          <h3 class="text_23 ltg_text">Create External Outgoing Correspondence
-          </h3>
+          <h3 class="text_23 ltg_text">{{taskTitle}}</h3>
         </div>
-        <div class="user_name">
-          <div class="user_img">
-            <img src="{{basehref}}assets/images/icons/profile.svg" alt="">
-          </div>
-          <p class="text_15" *ngFor="let uInfo of user.myRows">{{uInfo.Name_EN}}</p>
+        <div>
+          <br />
+          <h4 class="">{{correspondenceData.CorrFolderName }} - {{CorrespondencType}}</h4>
         </div>
       </div>
     </div>
-
     <form [formGroup]="senderDetailsForm">
       <div class="sender_wrapper corspnt_item">
         <div class="acdn_open_header">
@@ -42,21 +38,21 @@
                 <th>Organization</th>
                 <th>Department</th>
                 <th>Name</th>
+                <th class="btn_td_wrp"></th>
               </tr>
-              <tr *ngFor="let senderData of userInfo">
-                <ng-container *ngFor="let senderUserData of senderData.myRows">
-                  <td>{{senderUserData.OrganizationName_EN}}</td>
-                  <td>
-                    {{senderUserData.DepartmentName_EN}}{{ (senderUserData.SectionName_EN != null) ? (","+senderUserData.SectionName_EN) : "" }}
-                  </td>
-                  <td>{{senderUserData.Name_EN}} </td>
-                </ng-container>
+              <tr *ngIf=correspondenceSenderDetailsData>
+                <td>{{correspondenceSenderDetailsData.OrganizationName_EN}}</td>
+                <td>
+                  {{correspondenceSenderDetailsData.DepartmentName_EN}}{{ (correspondenceSenderDetailsData.SectionName_EN != null) ? (","+correspondenceSenderDetailsData.SectionName_EN) : "" }}
+                </td>
+                <td>{{correspondenceSenderDetailsData.Name_EN}} </td>
               </tr>
             </table>
           </div>
         </div>
       </div>
     </form>
+
     <form [formGroup]="recipientDetailsForm">
       <div class="recipient_wrapper corspnt_item">
         <div class="acdn_open_header">
@@ -76,14 +72,15 @@
                 <th>Name</th>
                 <th class="btn_td_wrp"></th>
               </tr>
-              <tr>
+              <tr *ngIf=correspondenceRecipientDetailsData>
                 <td>
                   <div class="input_item_wrp sm_input_wrapper">
                     <mat-form-field class="input_tbl_wrp">
                       <input type="text" aria-label="Number" matInput formControlName="ExternalOrganization"
                         [matAutocomplete]="extOrgName">
                     </mat-form-field>
-                    <mat-autocomplete #extOrgName="matAutocomplete" class="longautocomplete" [displayWith]="displaySearchFilterValueExt">
+                    <mat-autocomplete #extOrgName="matAutocomplete" class="longautocomplete"
+                      [displayWith]="displaySearchFilterValueExt">
                       <mat-option *ngFor="let OrgName of (filteredExtOrgNames | async)" [value]="OrgName"
                         (onSelectionChange)="optionSelectionChangeExternal(OrgName, $event)">
                         {{OrgName?.OrgName_En}}
@@ -118,11 +115,12 @@
         </div>
       </div>
     </form>
+
     <div class="corres_acdn_warapper mat_accordion_001">
       <mat-accordion multi="true">
         <form [formGroup]="ccDetailsForm">
           <mat-expansion-panel class="mat-elevation-z bg_001">
-            <mat-expansion-panel-header>
+            <mat-expansion-panel-header (click)="ccShowData();">
               <div class="icon_wrapper">
                 <div class="icon_typ icon_typ_003">
                   <img src="{{basehref}}assets/images/icons/crsp_cc_iocn_white.svg" alt="">
@@ -170,6 +168,7 @@
           </mat-expansion-panel>
         </form>
 
+
         <mat-expansion-panel class="mat-elevation-z ">
           <mat-expansion-panel-header>
             <div class="icon_wrapper">
@@ -184,7 +183,7 @@
               <mat-spinner class="spinner_sm"></mat-spinner>
             </div>
             <div *ngIf="!coverProgbar" class="corres_fld_wrapper">
-              <form class="cust_row" [formGroup]="correspondenceDetailsForm" (ngSubmit)="onSubmit()">
+              <form class="cust_row" [formGroup]="correspondenceDetailsForm">
                 <mat-form-field class="col_6">
                   <input matInput placeholder="Reg Date" formControlName="regDate">
                 </mat-form-field>
@@ -250,7 +249,7 @@
                     Department Secretary</mat-checkbox>
                 </div>
 
-                <mat-form-field *ngIf="skipDepSecratory" class="col_6">
+                <mat-form-field *ngIf="skipDepSecratory || showFields.DepApprover" class="col_6">
                   <input type="text" [(ngModel)]="ApproverVal " placeholder="Approver" matInput
                     [matAutocomplete]="Approver" formControlName="Approver">
                   <mat-autocomplete #Approver="matAutocomplete" [displayWith]="displayFn" autoActiveFirstOption>
@@ -275,7 +274,7 @@
                     Secretary</mat-checkbox>
                 </div>
 
-                <mat-form-field *ngIf="skipHOSSecratory" class="col_6">
+                <mat-form-field *ngIf="skipHOSSecratory || showFields.HOSApprover" class="col_6">
                   <input type="text" [(ngModel)]="HOSApproverVal " placeholder="HOS Approver" matInput
                     [matAutocomplete]="HOSApprover" formControlName="HOSApprover">
                   <mat-autocomplete #HOSApprover="matAutocomplete" [displayWith]="displayFn" autoActiveFirstOption>
@@ -329,8 +328,6 @@
             </div>
           </div>
         </mat-expansion-panel>
-
-
         <mat-expansion-panel class="mat-elevation-z bg_001">
           <mat-expansion-panel-header>
             <div class="icon_wrapper">
@@ -409,8 +406,9 @@
             </div>
           </div>
         </mat-expansion-panel>
+
         <mat-expansion-panel class="mat-elevation-z">
-          <mat-expansion-panel-header>
+          <mat-expansion-panel-header (click)="getAttachmentSection()">
             <div class="icon_wrapper">
               <div class="icon_typ icon_typ_006">
                 <img alt="" src="{{basehref}}assets/images/icons/attachment.svg">
@@ -428,7 +426,6 @@
               <li class="cl_btn_wrp">
 
                 <div class="image-upload">
-
                   <label for="file-inputAttachment" class="cl_btn cl_btn_002" matTooltip="Add document">
                     <img src="{{basehref}}assets/images/icons/cl_file_add_doc.svg" alt="">
                   </label>
@@ -498,9 +495,11 @@
             <!-- end -->
           </div>
         </mat-expansion-panel>
+
+
         <form [formGroup]="colDetailsForm">
           <mat-expansion-panel class="mat-elevation-z bg_001">
-            <mat-expansion-panel-header>
+            <mat-expansion-panel-header (click)="collaborationShowData()">
               <div class="icon_wrapper">
                 <div class="icon_typ icon_typ_007">
                   <img src="{{basehref}}assets/images/icons/collaboration_icon.svg" alt="">
@@ -528,15 +527,15 @@
                     <tr formArrayName="ColDetails"
                       *ngFor="let col of colDetailsForm.get('ColDetails').controls; let i = index;">
                       <ng-container [formGroupName]="i">
-                        <td class="name" formControlName="Name_EN">{{col.controls.Name_EN.value}}</td>
+                        <td class="name">{{col.controls.Name_EN.value}}</td>
                         <td class="department">{{col.controls.DepartmentName_EN.value}}</td>
                         <td class="status">
-                          <img matTooltip="col.controls.Status_EN.value"
+                          <img [matTooltip]="col.controls.Status_EN.value"
                             src="{{basehref}}assets/images/icons/complete.svg"
-                            *ngIf="('In Progress' === col.controls.Status_EN.value )">
-                          <img matTooltip="col.controls.Status_EN.value"
+                            *ngIf="('Done' === col.controls.Status_EN.value )">
+                          <img [matTooltip]="col.controls.Status_EN.value"
                             src="{{basehref}}assets/images/icons/inprogress.svg"
-                            *ngIf="('Complete' === col.controls.Status_EN.value )">
+                            *ngIf="('In Progress' === col.controls.Status_EN.value )">
                         </td>
                         <td>
                           <mat-checkbox class="chk_emply" formControlName="UserColl_FurtherAction">
@@ -547,19 +546,20 @@
                           <div class="input_item_wrp sm_input_wrapper due_date_wrp">
                             <mat-form-field (click)="picker.open()">
                               <input matInput [matDatepicker]="picker" formControlName="UserColl_DueDate">
-                              <mat-datepicker #picker></mat-datepicker>
+                              <mat-datepicker #picker format="YYYY-MM-DD HH:mm:ss"></mat-datepicker>
                             </mat-form-field>
                           </div>
                         </td>
 
                         <td class="last_note">
                           <button class="last_note_btn">
-                            <span class="note_img_wrap" (click)="viewLastNote(i)">
+                            <span class="note_img_wrap" (click)="viewLastNote(i,col.controls.UserColl_Notes.value)">
                               <img src="assets/images/icons/writing_note.svg" alt="">
                             </span>
                             {{activeRowItem}}
-                            <div class="last_not_show" [ngClass]="{'active': i === activeRowItem}">
-                              <p *ngIf='!editMode' class='cell'>{{col.controls.UserColl_Notes.value}}</p>
+                            <div *ngIf="showNotesVal" class="last_not_show" [ngClass]="{'active': i === activeRowItem}">
+
+                              <p *ngIf='!editMode' class='cell'>{{collaborationNotes}}</p>
                               <textarea rows="5" cols="100" class="note_input" *ngIf='editMode'
                                 formControlName="UserColl_Notes"
                                 [(value)]='col.controls.UserColl_Notes.value'></textarea>
@@ -568,8 +568,8 @@
                                 [ngClass]="{'active': col.controls.UserColl_Notes.value === null}">
                                 <button (click)='closeLastNote(i)' class="edit_note_btn">Close</button>
                                 <button (click)='closeLastNote(i)' *ngIf='editMode' class="edit_note_btn">Save</button>
-                                <button *ngIf='!editMode' (click)='viewLastNoteEdit(i)'
-                                  class="edit_note_btn">Edit</button>
+                                <!-- <button *ngIf='!editMode' (click)='viewLastNoteEdit(i,col.controls.UserColl_Notes.value)'
+                                  class="edit_note_btn">Edit</button> -->
                               </div>
                             </div>
                           </button>
@@ -590,22 +590,84 @@
               </button>
             </div>
           </mat-expansion-panel>
-        </form>        
+        </form>
+        <mat-expansion-panel class="mat-elevation-z bg_001">
+          <mat-expansion-panel-header (click)="commentsProgbar = false">
+            <div class="icon_wrapper">
+              <div class="icon_typ icon_typ_009">
+                <img src="{{basehref}}assets/images/icons/comment_icon.svg" alt="">
+              </div>
+            </div>
+            <p class="title_001">Comments</p>
+          </mat-expansion-panel-header>
+          <div class="corres_data_area">
+            <div *ngIf="commentsProgbar" class="spinner_sm_wrappar">
+              <mat-spinner class="spinner_sm"></mat-spinner>
+            </div>
+            <div *ngIf="!commentsProgbar && correspondenceData" class="input_item_wrp corres_comnt_area">
+              <app-comment-section [data]="correspondenceData" [corrType]="CorrespondencType" [corrTaskID]="taskID">
+              </app-comment-section>
+            </div>
+          </div>
+        </mat-expansion-panel>
       </mat-accordion>
     </div>
-    <!-- cc code end -->
     <div class="corp_dtl_btn_btm_wrapper">
-      <button class="btn_008" prevent-double-submit (click)="SendOnWF('Save')">Save As Draft</button>
-      <button class="btn_008" (click)="SendOnWF('StartCollaboration')">Start Collaboration</button>
-      <button class="btn_008" (click)="SendOnWF('SendOn')">Send For Approval</button>
-      <button class="btn_008" (click)="backNavigation()">Cancel</button>
+
+      <button class="btn_008" *ngIf="showWFButtons.btnSaveDraft" prevent-double-submit
+        (click)="submitCorrespondenceAction('Save')">Save As Draft</button>
+      <button class="btn_008" *ngIf="showWFButtons.btnPrintBarcode" printTitle="Barcode" printSectionId="print-section"
+        ngxPrint>Print Barcode</button>
+      <button class="btn_008" *ngIf="showWFButtons.btnPrintReceipt" prevent-double-submit
+        (click)="submitCorrespondenceAction('TEST')">Print Receipt</button>
+      <!-- <button class="btn_008" *ngIf="showWFButtons.btnSendFax" prevent-double-submit (click)="submitCorrespondenceInfo('TEST')">Send Fax</button> -->
+      <button class="btn_008" *ngIf="showWFButtons.btnSendOn" prevent-double-submit
+        (click)="submitCorrespondenceAction('SendOn')">Send</button>
+      <button class="btn_008" *ngIf="showWFButtons.btnSave" prevent-double-submit
+        (click)="submitCorrespondenceAction('Save')">Save</button>
+
+      <button class="btn_008" *ngIf="showWFButtons.btnWorkCompleted_Collaboration" prevent-double-submit
+        (click)="submitCorrespondenceAction('CompleteCollaboration')">Work Completed</button>
+      <button class="btn_008" *ngIf="showWFButtons.btnWaitCorrespondence" prevent-double-submit
+        (click)="submitCorrespondenceAction('Wait')">Wait Correspondence</button>
+      <button class="btn_008" *ngIf="showWFButtons.btnSendBack" prevent-double-submit
+        (click)="openSendBackDialog('SendBack')">Send Back</button>
+      <button class="btn_008" *ngIf="showWFButtons.btnStartCollaboration" prevent-double-submit
+        (click)="submitCorrespondenceAction('StartCollaboration')">Start Collaboration</button>
+      <button class="btn_008" *ngIf="showWFButtons.btnSaveAndContinueCollaboration" prevent-double-submit
+        (click)="submitCorrespondenceAction('StartCollaboration')">Save And Continue Collaboration</button>
+      <button class="btn_008" *ngIf="showWFButtons.btnSendForApproval" prevent-double-submit
+        (click)="submitCorrespondenceAction('SendOnForApproval')">Send For Approval</button>
+      <button class="btn_008" *ngIf="showWFButtons.btnApproveCorrespondence" prevent-double-submit
+        (click)="submitCorrespondenceAction('Approve')">Approve</button>
+      <button class="btn_008" *ngIf="showWFButtons.btnRejectCorrespondence" prevent-double-submit
+        (click)="openSendBackDialog('Reject')">Return</button>
+      <button class="btn_008" *ngIf="showWFButtons.btnTerminateCorrespondence" prevent-double-submit
+        (click)="openSendBackDialog('Terminate')">Delete Correspondence</button>
+      <button class="btn_008" *ngIf="showWFButtons.btnCancelCorrespondence" prevent-double-submit
+        (click)="submitCorrespondenceAction('Cancel')">Delete Correspondance</button>
+      <button class="btn_008" *ngIf="showWFButtons.btnClose" prevent-double-submit
+        (click)="backNavigation()">Close</button>
+      <button class="btn_008" *ngIf="showWFButtons.btnReturn" prevent-double-submit
+        (click)="backNavigation()">Back</button>
+
+
       <button (click)="expandeActionLeftButton()" matRipple class="corsp_ext_btn">
         <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
       </button>
+
+      <div id="print-section" style="display:none">
+        <span style="font-weight:bold;text-align :center;margin-left:15%">Public Works Authority</span><br>
+        <span style="font-weight:bold;text-align :center;margin-left:20%">{{barcodeDate}}</span>
+        <ngx-barcode [bc-value]="barcodeNumberToPrint" [bc-format]="CODE128" [bc-display-value]="true"
+          [bc-font-size]="36" [bc-font]="Arial" [bc-text-margin]="5" [bc-height]="55"></ngx-barcode>
+      </div>
+
     </div>
+
   </ng-scrollbar>
-  <ng-scrollbar class="correspondence_deatil_prview_wrappper scroll_wrp_001" thumbClass="scroll_001"
-    [ngClass]="expandedRightAction ? 'unActive' : 'ActiveRight'" *ngIf="expandedAction" compact="true">
+  <ng-scrollbar class="correspondence_deatil_prview_wrappper"
+    [ngClass]="expandedRightAction ? 'unActive' : 'ActiveRight'" *ngIf="expandedAction">
     <button (click)="expandeActionRightButton()" matRipple class="corsp_ext_btn">
       <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
     </button>
@@ -614,6 +676,8 @@
         <iframe class="iframeclass" [src]="docpreviewData.CorrespondencedocumentURL|safe"></iframe>
       </div>
     </ng-container>
+
+
     <div *ngIf="showPreviewTreeArea">
       <div class="spinner_sm_wrappar" *ngIf="dataSource.data.length == 0"
         style="display: flex;height: calc(100vh - 100px);">
@@ -634,7 +698,6 @@
         </div>
       </div>
       <div class="cover_ltr_pre" *ngIf="!dataSource.data.length == 0">
-        <!-- single check box tree strt -->
         <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="tree_container"
           [ngClass]="{'show_employees': showEmployees, 'hide_employess':!showEmployees }">
           <mat-tree-node *matTreeNodeDef="let node" class="employees_wrapper">
@@ -644,13 +707,11 @@
                   <button mat-icon-button matTreeNodeToggle class="emp_sho_btn" (click)="getEmplDetail(node)">
                     <mat-icon class="mat-icon-rtl-mirror show_employees_data_btn"
                       [ngClass]="{'activeIcon' : treeControl.isExpanded(node)}">
-                      <!--   -->
                       {{treeControl.isExpanded(node) ? 'fiber_manual_record' : 'fiber_manual_record'}}
                     </mat-icon>
                   </button>
                   <mat-checkbox *ngIf="!multiSelect" (change)="selectSinglCheckboxOrg(node,$event)"
                     [checked]="currentlyChecked == node">
-                    <!-- (change)="getOrgSelectDetail(node)"  -->
                     <div class="org_text_wrp">
                       <div class="org_icon_wrp folder">
                         <img class="org_img_001" src="{{basehref}}assets/images/icons/folder_001.svg" alt="">
@@ -670,7 +731,6 @@
               </div>
               <div *ngIf="showEmployees" class="show_empl_name_wrp">
                 <ul *ngIf="treeControl.isExpanded(node)" class="show_empl_name_ul">
-                  <!-- add the employee List here  -->
                   <ng-container *ngIf="showempDetails">
                     <li class="show_empl_name" *ngFor="let empList of employeeMap |employeemaplist:node.OUID">
                       <mat-checkbox *ngIf="!multiSelect" (change)="selectSinglCheckboxEmp(empList,$event)"
@@ -779,7 +839,6 @@
             <th class="import_wrp"></th>
           </tr>
           <tr *ngFor="let covertemplate of templatesDocList">
-
             <!-- <td class="type">
               <img class="type_img" src="assets/images/icons/word-logo.svg" alt="">
             </td> -->
@@ -809,3 +868,9 @@
     </div>
   </ng-scrollbar>
 </div>
+
+<!-- <div *ngIf="spinnerDataLoaded" class="spinner_container">
+  <div class="spinner_md_wrappar">
+    <mat-spinner strokeWidth="2px" diameter='50' class="spinner_md"></mat-spinner>
+  </div>
+</div> -->

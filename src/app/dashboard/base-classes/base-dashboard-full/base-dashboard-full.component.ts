@@ -172,7 +172,7 @@ export class BaseDashboardFullComponent extends BaseDashboardComponent implement
         this.routerFormStep = '/dashboard/external/correspondence-form-step-out'; // '/dashboard/external/correspondence-form-step-out';
         break;
       case '7':
-        this.routerFormStep = '/'; // '/dashboard/internal/correspondence-form-step-int';
+        this.routerFormStep = '/dashboard/internal/correspondence-form-step-intout';; // '/dashboard/internal/correspondence-form-step-int';
         break;
     }
   }

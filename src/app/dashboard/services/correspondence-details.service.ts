@@ -567,7 +567,7 @@ export class CorrespondenceDetailsService {
     );
   }
 
-  getTemplatesList(corrFlowType: string, templateType: string = 'Default', onBehalfOf: string = '') {
+  getTemplatesList(corrFlowType: string, templateType: string = 'Default', onBehalfOf: string = 'false') {
     const params = new HttpParams()
       .set('correspondence_type', corrFlowType)
       .set('template_type', templateType)
@@ -611,6 +611,7 @@ export class CorrespondenceDetailsService {
     formData.append('docFolderID', documentMetadataSync.docFolderID);
     formData.append('srcDocID', documentMetadataSync.srcDocID);
     formData.append('SenderOrganization', documentMetadataSync.SenderOrganization);
+    formData.append('SenderDepartment', documentMetadataSync.SenderDepartment);
     formData.append('RecipientOrganization', documentMetadataSync.RecipientOrganization);
     formData.append('RecipientDepartment', documentMetadataSync.RecipientDepartment);
     formData.append('RecipientName', documentMetadataSync.RecipientName);

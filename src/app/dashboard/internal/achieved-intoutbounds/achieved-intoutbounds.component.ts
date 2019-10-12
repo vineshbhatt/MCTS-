@@ -26,7 +26,7 @@ export class AchievedIntOutboundComponent extends BaseDashboardComponent impleme
   ) {
       super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService);
       this.reportType = 'IntOutArc';
-      this.routerFormStep = '/dashboard/internal/correspondence-form-step-int';
+      this.routerFormStep = '/dashboard/internal/correspondence-form-step-intout';
   }
 
   ngOnInit() {

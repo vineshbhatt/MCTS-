@@ -83,15 +83,17 @@ import { EmployeeMapList } from '../dashboard/pipes/employeemaplist.pipe';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { BaseCorrespondenceComponent } from './base-classes/base-correspondence-csactions/base-correspondence.component';
 import { ExternalOutgoing } from './create-correspondence/external-outgoing/external-outgoing.component';
-
-import {DatePipe} from '@angular/common';
+import { InternalOutgoing } from './create-correspondence/internal-outgoing/internal-outgoing.component';
+import { DatePipe } from '@angular/common';
 import { CorrespondenceFormStepExtOutComponent } from './external/correspondence-form-step-extout/correspondence-form-step-extout.component';
+import { CorrespondenceFormStepIntOutComponent } from './internal/correspondence-form-step-intout/correspondence-form-step-intout.component';
 import { SendBackDialogComponent } from './dialog-boxes/send-back-dialog/send-back-dialog.component';
 
 import { CommentDialogComponent } from './comments/comment-dialog/comment-dialog.component';
 import { CommentsTreeComponent } from './comments/comments-tree/comments-tree.component';
 import { MatRadioModule } from '@angular/material';
 import { CommentSectionComponent } from './comments/comment-section/comment-section.component';
+import { multiLanguageTranslatorModule } from 'src/assets/translator/index';
 
 @NgModule({
   imports: [
@@ -122,7 +124,16 @@ import { CommentSectionComponent } from './comments/comment-section/comment-sect
     OwlNativeDateTimeModule,
     MatTreeModule,
     MatIconModule,
-    NgxFileDropModule, NgxPrintModule, NgxBarcodeModule, PreventDoubleSubmitModule, NgScrollbarModule, MatRadioModule
+    NgxFileDropModule,
+    NgxPrintModule,
+    NgxBarcodeModule,
+    PreventDoubleSubmitModule,
+    NgScrollbarModule,
+    MatRadioModule,
+    multiLanguageTranslatorModule.forRoot({
+      defaultLang: 'en',
+      storagePrefix: 'current-language'
+    })
   ],
   declarations: [
     DashboardComponent,
@@ -151,7 +162,6 @@ import { CommentSectionComponent } from './comments/comment-section/comment-sect
     TransferDialogBox,
     WorkflowHistoryDialogBox,
     CreateCorrespondenceComponent,
-
     ConfirmationDialogComponent,
     MessageDialogComponent,
     CompleteDialogComponent,
@@ -183,7 +193,9 @@ import { CommentSectionComponent } from './comments/comment-section/comment-sect
     SendBackDialogComponent,
     CommentDialogComponent,
     CommentsTreeComponent,
-    CommentSectionComponent
+    CommentSectionComponent,
+    InternalOutgoing,
+    CorrespondenceFormStepIntOutComponent
   ],
   entryComponents: [
     MailDetailView,
