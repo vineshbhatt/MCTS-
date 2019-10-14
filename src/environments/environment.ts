@@ -88,6 +88,7 @@ export const FCTSDashBoard = {
   setSubfolderPerm: 'CTA_SetSubfolderPerm',
   
   initiateInternalWF:'560064',
+  ProxyInfo: 'CTA_ProxyUserInfo',
   // BaseHref: '/img/fctsangular/fctsapp/',
   BaseHref: '/',
   CSUrl: 'http://manotcst02.mannaicorp.com.qa/otcs/cs.exe'

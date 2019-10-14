@@ -4,17 +4,16 @@ import { MatDialog } from '@angular/material';
 
 import { CorrespondenceService } from 'src/app/dashboard/services/correspondence.service';
 import { CorrespondenceShareService } from '../../services/correspondence-share.service';
-import { BaseDashboardComponent } from 'src/app/dashboard/base-classes/base-dashboard/base-dashboard.component';
+import { BaseDashboardArchiveComponent } from '../../base-classes/base-dashboard-archive/base-dashboard-archive.component';
 import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handler-fcts.service';
 import { AppLoadConstService } from 'src/app/app-load-const.service';
-
 
 @Component({
   selector: 'app-achieved-intinbounds',
   templateUrl: './achieved-intinbounds.component.html',
   styleUrls: ['../../base-classes/base-dashboard/base-dashboard.component.scss']
 })
-export class AchievedIntInboundComponent extends BaseDashboardComponent implements OnInit {
+export class AchievedIntInboundComponent extends BaseDashboardArchiveComponent implements OnInit {
 
   constructor(
     public router: Router,

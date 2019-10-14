@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { FCTSDashBoard } from 'src/environments/environment';
 import { CorrespondenceService } from 'src/app/dashboard/services/correspondence.service';
+import { CorrespondenceShareService } from 'src/app/dashboard/services/correspondence-share.service';
 
 @Component({
   selector: 'app-external',
@@ -16,7 +17,8 @@ export class ExternalComponent implements OnInit, AfterViewInit {
   menuItems: any;
 
   constructor(
-    private _correspondenceService: CorrespondenceService
+    private _correspondenceService: CorrespondenceService,
+    private correspondenceShareService: CorrespondenceShareService
   ) { }
 
   ngOnInit() {
@@ -26,7 +28,8 @@ export class ExternalComponent implements OnInit, AfterViewInit {
     this._correspondenceService.getSideBarElementsHC('menu.json').subscribe(data => {
       this.menuItems = data as string[];
     });
-    console.log('external')
+    console.log('external');
+    this.correspondenceShareService.currentSidebarAction.subscribe(menuAction => this.menuAction = menuAction);
   }
 
   ngAfterViewInit() {

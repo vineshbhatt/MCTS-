@@ -67,34 +67,33 @@
           <div class="corres_table_wrapper">
             <table class="table">
               <tr>
-                <th>Organization</th>
-                <th>Department</th>
+                <th class="orgcolumn">Organization</th>
+                <th class="department">Department</th>
+                <th class="role">Role</th>
                 <th>Name</th>
                 <th class="btn_td_wrp"></th>
               </tr>
               <tr *ngIf=correspondenceRecipientDetailsData>
-                <td>
-                  <div class="input_item_wrp sm_input_wrapper">
-                    <mat-form-field class="input_tbl_wrp">
-                      <input type="text" aria-label="Number" matInput formControlName="ExternalOrganization"
-                        [matAutocomplete]="extOrgName">
-                    </mat-form-field>
-                    <mat-autocomplete #extOrgName="matAutocomplete" class="longautocomplete"
-                      [displayWith]="displaySearchFilterValueExt">
-                      <mat-option *ngFor="let OrgName of (filteredExtOrgNames | async)" [value]="OrgName"
-                        (onSelectionChange)="optionSelectionChangeExternal(OrgName, $event)">
-                        {{OrgName?.OrgName_En}}
-                      </mat-option>
-                    </mat-autocomplete>
-                  </div>
-
+                <td class="orgcolumn">
+                  {{IntRecipientInfo ? IntRecipientInfo.OrgName_En : correspondenceRecipientDetailsData.OrganizationName_EN}}
                 </td>
                 <td>
                   <div class="input_item_wrp sm_input_wrapper">
                     <mat-form-field class="input_tbl_wrp">
-                      <input type="text" aria-label="Number" matInput formControlName="RecipientDepartment">
+                      <input type="text" aria-label="Number" matInput formControlName="RecipientDepartment"
+                        [matAutocomplete]="recpientDepName">
+                      <mat-autocomplete #recpientDepName="matAutocomplete" class="longautocomplete"
+                        [displayWith]="displaySearchFilterValueInt">
+                        <mat-option *ngFor="let DepName of (filteredIntDepNames | async)" [value]="DepName"
+                          (onSelectionChange)="optionSelectionChangeInternal(DepName, $event)">
+                          <span>{{DepName?.DepName_En}}</span><span *ngIf="DepName.SecName_En">,
+                            {{DepName.SecName_En}}</span>
+                        </mat-option>
+                      </mat-autocomplete>
                     </mat-form-field>
                   </div>
+                </td>
+                <td>{{IntRecipientInfo ? IntRecipientInfo.RoleName_En : correspondenceRecipientDetailsData.Role_EN}}
                 </td>
                 <td>
                   <div class="input_item_wrp sm_input_wrapper">
@@ -104,14 +103,17 @@
                   </div>
                 </td>
                 <td class="btn_td_wrp">
-                  <button (click)="clearDetails('recipientDetailsForm')" class="remove_btn_002" mat-button
-                    matTooltip="Clear">
+                  <button (click)="clearDetails('recipientDetailsForm')" class="remove_btn_002" mat-button>
                     <img src="{{basehref}}assets/images/icons/remove_icon_001.svg" alt="">
                   </button>
                 </td>
               </tr>
             </table>
           </div>
+          <button class="show_preview_btn" (click)="showRecipientData()">
+            <img src="{{basehref}}assets/images/icons/plus_green_btn.svg" alt="">
+            <span>Select Recipient</span>
+          </button>
         </div>
       </div>
     </form>
@@ -202,9 +204,7 @@
                   <mat-checkbox formControlName="confidential" (change)="confidentialChange($event)">Confidential
                   </mat-checkbox>
                 </div>
-                <mat-form-field class="col_6">
-                  <input matInput autocomplete="off" placeholder="Personal Name" formControlName="personalName">
-                </mat-form-field>
+
                 <mat-form-field class="col_6">
                   <input matInput autocomplete="off" placeholder="ID Number" formControlName="idNumber"
                     [ngClass]="{ 'is-invalid': submitted && f.IDNumber.errors }">
@@ -223,16 +223,6 @@
                   </mat-autocomplete>
                 </mat-form-field>
 
-                <mat-form-field class="col_6">
-                  <input type="text" [(ngModel)]="OBTypeVal" placeholder="OB Type" matInput [matAutocomplete]="OBType"
-                    formControlName="obType">
-                  <mat-autocomplete #OBType="matAutocomplete" [displayWith]="displayFn" autoActiveFirstOption>
-                    <mat-option *ngFor="let option of MetadataFilters | attrfilter:'OBDocumentType':OBTypeVal"
-                      [value]="option">
-                      {{option.EN}}
-                    </mat-option>
-                  </mat-autocomplete>
-                </mat-form-field>
                 <mat-form-field class="col_12">
                   <input matInput autocomplete="off" placeholder="Arabic Subject" formControlName="arabicSubject"
                     [ngClass]="{ 'is-invalid': submitted && f.arabicSubject.errors }" required>
@@ -298,29 +288,6 @@
                 <mat-form-field class="col_6">
                   <input matInput autocomplete="off" placeholder="Tender Number" formControlName="tenderNumber">
                 </mat-form-field>
-
-                <mat-form-field class="col_6">
-                  <input type="text" [(ngModel)]="FillingPlanPathVal" placeholder="Filling Plan Path" matInput
-                    [matAutocomplete]="FillingPlanPath" formControlName="fillinPlanPath">
-                  <mat-autocomplete #FillingPlanPath="matAutocomplete" [displayWith]="displayFn" autoActiveFirstOption>
-                    <mat-option *ngFor="let option of MetadataFilters | attrfilter:'FillingPlanPath':FillingPlanPathVal"
-                      [value]="option">
-                      {{option.EN}}
-                    </mat-option>
-                  </mat-autocomplete>
-                </mat-form-field>
-
-                <mat-form-field class="col_6">
-                  <input type="text" [(ngModel)]="DispatchMethodVal" placeholder="Dispatch Method" matInput
-                    [matAutocomplete]="DispatchMethod" formControlName="dispatchMethod">
-                  <mat-autocomplete #DispatchMethod="matAutocomplete" [displayWith]="displayFn" autoActiveFirstOption>
-                    <mat-option *ngFor="let option of MetadataFilters | attrfilter:'DispatchMethod':DispatchMethodVal"
-                      [value]="option">
-                      {{option.EN}}
-                    </mat-option>
-                  </mat-autocomplete>
-                </mat-form-field>
-
                 <mat-form-field class="col_6">
                   <input matInput autocomplete="off" placeholder="Staff Number" formControlName="staffNumber">
                 </mat-form-field>
@@ -610,16 +577,73 @@
             </div>
           </div>
         </mat-expansion-panel>
+        <mat-expansion-panel class="mat-elevation-z bg_001 panal_pd_0" >
+          <mat-expansion-panel-header (click)="transferTabShowData()">
+            <div class="icon_wrapper">
+              <div class="icon_typ icon_typ_011">
+                <img src="{{basehref}}assets/images/icons/transfer_icon.svg" alt="">
+              </div>
+            </div>
+            <p class="title_001">Transfer</p>
+          </mat-expansion-panel-header>
+          <div class="corres_data_area transfer_wrapper">
+            <div *ngIf="transferProgbar" class="spinner_sm_wrappar">
+              <mat-spinner class="spinner_sm"></mat-spinner>
+            </div>
+            <div *ngIf="!transferProgbar" class="corres_table_wrapper">
+              <div class="transfer_header">
+                <button class="btn_007 mat-button" (click)="openTransferDialog()"><img src="{{basehref}}assets/images/icons/plus_btn_green.svg" alt=""> Select Transfer</button>
+                <!-- (click)="transferTabShowData() should be deleted later -->
+                <button class="btn_007 mat-button" (click)="transferTabShowData()"><img src="{{basehref}}assets/images/icons/refresh-page-button.svg" alt="">Refresh</button>
+              </div>
+              <div class="transfer_list_item_wrp">
+                <ul class="inside_acdn_header_002">
+                  <li>From</li>
+                  <li>To</li>
+                  <li>Purpose</li>
+                  <li>Transfer Date</li>
+                  <li>Due Date</li>
+                </ul>
+                <div *ngFor="let transferDataDetails of transferhistorytabData">
+                  <div *ngFor="let transferDataDetail of transferDataDetails.myRows" [class.currentTransfer] = "transferDataDetail.TransID.toString() === correspondenceData.ID.toString()">
+                    <mat-accordion class="inside_accordion_001">
+                      <mat-expansion-panel>
+                        <mat-expansion-panel-header [collapsedHeight]="'auto'" [expandedHeight]="'auto'">
+                          <ul class="inside_acdn_header_002 padd_none">
+  
+                            <li>{{transferDataDetail.SenderName}}</li>
+                            <li>{{transferDataDetail.RecipientName}}</li>
+                            <li>{{transferDataDetail.Purpose}}</li>
+                            <li>{{transferDataDetail.TransferDate}}</li>
+                            <li>{{transferDataDetail.TransferDueDate}}</li>
+                          </ul>
+                        </mat-expansion-panel-header>
+                        <div class="inside_acdn_bdy">
+                          <ul class="inside_acdn_contnt_002">
+                            <li>
+                              <span class="titl">Comments :</span>
+                              <span>{{transferDataDetail.Notes}}</span>
+                            </li>
+                            <li>
+                              <span class="titl">Completion Notes:</span>
+                              <span>{{transferDataDetail.NotesComplete}}</span>
+                            </li>
+                          </ul>
+                        </div>
+                      </mat-expansion-panel>
+                    </mat-accordion>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-expansion-panel>
       </mat-accordion>
     </div>
     <div class="corp_dtl_btn_btm_wrapper">
 
       <button class="btn_008" *ngIf="showWFButtons.btnSaveDraft" prevent-double-submit
         (click)="submitCorrespondenceAction('Save')">Save As Draft</button>
-      <button class="btn_008" *ngIf="showWFButtons.btnPrintBarcode" printTitle="Barcode" printSectionId="print-section"
-        ngxPrint>Print Barcode</button>
-      <button class="btn_008" *ngIf="showWFButtons.btnPrintReceipt" prevent-double-submit
-        (click)="submitCorrespondenceAction('TEST')">Print Receipt</button>
       <!-- <button class="btn_008" *ngIf="showWFButtons.btnSendFax" prevent-double-submit (click)="submitCorrespondenceInfo('TEST')">Send Fax</button> -->
       <button class="btn_008" *ngIf="showWFButtons.btnSendOn" prevent-double-submit
         (click)="submitCorrespondenceAction('SendOn')">Send</button>
@@ -635,7 +659,7 @@
       <button class="btn_008" *ngIf="showWFButtons.btnStartCollaboration" prevent-double-submit
         (click)="submitCorrespondenceAction('StartCollaboration')">Start Collaboration</button>
       <button class="btn_008" *ngIf="showWFButtons.btnSaveAndContinueCollaboration" prevent-double-submit
-        (click)="submitCorrespondenceAction('StartCollaboration')">Save And Continue Collaboration</button>
+        (click)="submitCorrespondenceAction('SaveAndContinueCollaboration')">Save And Continue Collaboration</button>
       <button class="btn_008" *ngIf="showWFButtons.btnSendForApproval" prevent-double-submit
         (click)="submitCorrespondenceAction('SendOnForApproval')">Send For Approval</button>
       <button class="btn_008" *ngIf="showWFButtons.btnApproveCorrespondence" prevent-double-submit
@@ -650,6 +674,8 @@
         (click)="backNavigation()">Close</button>
       <button class="btn_008" *ngIf="showWFButtons.btnReturn" prevent-double-submit
         (click)="backNavigation()">Back</button>
+      <button class="btn_008" *ngIf="showWFButtons.btnAcknowledged" prevent-double-submit
+        (click)="submitCorrespondenceAction('Complete')">Complete</button>
 
 
       <button (click)="expandeActionLeftButton()" matRipple class="corsp_ext_btn">

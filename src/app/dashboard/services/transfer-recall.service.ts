@@ -24,7 +24,7 @@ export class TransferRecallService {
     const url = this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.GetTransRecallData}?Format=webreport`;
     const params = new HttpParams()
       .set( 'VolumeID', recallTransferInfo.correspondData.VolumeID.toString() )
-      .set( 'TransferUserID', CSConfig.globaluserid )
+      .set( 'TransferUserID', this._globalConstants.general.ProxyUserID )
       .set( 'PowerGroupID', this._globalConstants.FCTS_Dashboard.PowerGroupID )
       .set( 'ASAGroupID', this._globalConstants.FCTS_Dashboard.FCTS_ASA )
       .set( 'f' + recallTransferInfo.recallType, 'true' );

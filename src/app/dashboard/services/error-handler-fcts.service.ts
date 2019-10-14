@@ -25,14 +25,14 @@ export class ErrorHandlerFctsService {
   }
 
   handleError(error: HttpErrorResponse) {
-    debugger;
-    console.log('error');
     console.log(error);
     let errMessage: string;
     if (error.error instanceof ErrorEvent) {
       errMessage = error.error.message;
-    } else {
+    } else if (error.error.error) {
       errMessage = error.error.error;
+    } else {
+      errMessage = error.message;
     }
     this.showMessage(`An error ocured. Error message - "`
       + errMessage + `"`

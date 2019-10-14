@@ -29,7 +29,7 @@ import { BaseCorrespondenceComponent } from '../../base-classes/base-corresponde
 import { NotificationService } from '../../services/notification.service';
 import { AppLoadConstService } from 'src/app/app-load-const.service';
 import { CorrespondenceShareService } from '../../services/correspondence-share.service';
-
+import { TransferDialogBox } from '../../external/correspondence-detail/correspondence-transfer-dialog/correspondence-transfer-dialog.component';
 @Component({
   selector: 'app-correspondence-form-step-intout',
   templateUrl: './correspondence-form-step-intout.component.html',
@@ -437,7 +437,6 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
         this.commentsProgbar = false;
       });
   }
-  /* */
   readCorrespondenceInfo(): void {
     this._correspondenceDetailsService.getFormStepInfo(this.VolumeID, this.VolumeID, this.taskID).subscribe(
       response => {
@@ -453,7 +452,6 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
       () => {
 
       }
-
     );
   }
   makeFormObjectToSubmit(action: string) {
@@ -462,7 +460,6 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
     this.body.values.WorkflowForm_1x4x1x88 = this.correspondenceDetailsForm.get('personalName').value;
     this.body.values.WorkflowForm_1x4x1x27 = this.correspondenceDetailsForm.get('idNumber').value;
     this.body.values.WorkflowForm_1x4x1x30 = this.setPopupCheckedValue('CorrespondenceType', this.correspondenceDetailsForm.get('correspondenceType').value.EN);
-    this.body.values.WorkflowForm_1x4x1x31 = this.setPopupCheckedValue('OBDocumentType', this.correspondenceDetailsForm.get('obType').value.EN);
     this.body.values.WorkflowForm_1x4x1x35 = this.correspondenceDetailsForm.get('arabicSubject').value;
     this.body.values.WorkflowForm_1x4x1x36 = this.correspondenceDetailsForm.get('englishSubject').value;
     this.body.values.WorkflowForm_1x4x1x129 = this.correspondenceDetailsForm.get('skipDepSecratory').value;
@@ -476,13 +473,15 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
     this.body.values.WorkflowForm_1x4x1x29 = this.setPopupCheckedValue('BaseType', this.correspondenceDetailsForm.get('baseType').value.EN);
     this.body.values.WorkflowForm_1x4x1x39 = this.correspondenceDetailsForm.get('tenderNumber').value;
     this.body.values.WorkflowForm_1x4x1x41 = this.correspondenceDetailsForm.get('staffNumber').value;
-    this.body.values.WorkflowForm_1x4x1x49 = this.setPopupCheckedValue('DispatchMethod', this.correspondenceDetailsForm.get('dispatchMethod').value.EN);
 
-    let recipientDetails: OrgNameAutoFillModel = this.recipientDetailsForm.get('ExternalOrganization').value;
-    this.body.values.WorkflowForm_1x4x1x93 = recipientDetails.OrgID;
-    this.body.values.WorkflowForm_1x4x1x83 = recipientDetails.DepID;
-    this.body.values.WorkflowForm_1x4x1x89 = this.recipientDetailsForm.get('RecipientName').value;
 
+    // this.body.values.WorkflowForm_1x4x1x14 = this.recipientDetailsForm.get('RecipientID').value;
+    // this.body.values.WorkflowForm_1x4x1x89 = this.recipientDetailsForm.get('RecipientName').value;
+    // this.body.values.WorkflowForm_1x4x1x84 = this.recipientDetailsForm.get('RecipientSection').value;
+    // this.body.values.WorkflowForm_1x4x1x79 = this.recipientDetailsForm.get('RecipientUserID').value;
+    // this.body.values.WorkflowForm_1x4x1x16 = this.recipientDetailsForm.get('RecipientVersion').value;
+    // this.body.values.WorkflowForm_1x4x1x83 = this.recipientDetailsForm.get('RecipientDepartment').value;
+    // this.body.values.WorkflowForm_1x4x1x79 = this.recipientDetailsForm.get('RecipientType').value;
 
     this.body.values.WorkflowForm_1x4x1x61 = this.coverID;
     this.body.values.WorkflowForm_1x4x1x48 = this.templateLanguage;
@@ -547,10 +546,8 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
   setCorrespondenceDetails(): void {
 
     this.senderDetailsForm.get('SenderInfo').setValue(this.correspondenceSenderDetailsData);
+    this.recipientDetailsForm.get('RecipientDepartment').setValue({ DepName_En: this.correspondenceRecipientDetailsData.DepartmentName_EN, SecName_En: this.correspondenceRecipientDetailsData.SectionName_EN });
     this.recipientDetailsForm.get('RecipientName').setValue(this.correspondenceRecipientDetailsData.Name_EN);
-    this.recipientDetailsForm.get('RecipientDepartment').setValue(this.correspondenceRecipientDetailsData.DepartmentName_EN);
-    this.recipientDetailsForm.get('ExternalOrganization').setValue({ OrgName_En: this.correspondenceRecipientDetailsData.OrganizationName_EN });
-
 
     this.correspondenceDetailsForm.get('confidential').setValue(this.body.values.WorkflowForm_1x4x1x78);
     if (this.body.values.WorkflowForm_1x4x1x78) {
@@ -575,7 +572,6 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
     this.correspondenceDetailsForm.get('Approver').setValue({ EN: '' });
     this.correspondenceDetailsForm.get('HOSApprover').setValue({ EN: '' });
     this.correspondenceDetailsForm.get('priority').setValue({ EN: this.getDefaultaValue('Priority', this.body.values.WorkflowForm_1x4x1x22) });
-    this.correspondenceDetailsForm.get('obType').setValue({ EN: this.getDefaultaValue('OBDocumentType', this.body.values.WorkflowForm_1x4x1x31) });
     this.correspondenceDetailsForm.get('regDate').setValue(this.body.values.WorkflowForm_1x4x1x2);
     this.correspondenceDetailsForm.get('docsDate').setValue(this.body.values.WorkflowForm_1x4x1x124);
     this.correspondenceDetailsForm.get('refNumber').setValue(this.body.values.WorkflowForm_1x4x1x28);
@@ -590,7 +586,6 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
     this.correspondenceDetailsForm.get('contractNumber').setValue(this.body.values.WorkflowForm_1x4x1x40);
     this.correspondenceDetailsForm.get('tenderNumber').setValue(this.body.values.WorkflowForm_1x4x1x39);
     this.correspondenceDetailsForm.get('corrNumber').setValue(this.body.values.WorkflowForm_1x4x1x9);
-    this.correspondenceDetailsForm.get('fillinPlanPath').setValue(this.body.values.WorkflowForm_1x4x1x133);
     this.correspondenceDetailsForm.get('staffNumber').setValue(this.body.values.WorkflowForm_1x4x1x41);
     this.correspondenceDetailsForm.get('dispatchMethod').setValue({ EN: this.getDefaultaValue('DispatchMethod', this.body.values.WorkflowForm_1x4x1x49) });
 
@@ -690,15 +685,16 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
     //  Submit    
 
     switch (action) {
+      case 'Save':
+        this.Disposition1 = 'Save';
+        break;
       case 'StartCollaboration':
         this.Disposition1 = 'StartCollaboration';
-        if (this.taskID === '45') {
-          this.SendOnCollaborators();
-        }
-        else if (this.taskID === '18') {
+        if (this.taskID === '38') {
           this.Disposition3 = 'A2b';
+
         }
-        else if (this.taskID === '15') {
+        else if (this.taskID == '35') {
           this.Disposition3 = 'A1b';
         }
         else {
@@ -708,28 +704,31 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
       case 'Save':
         this.Disposition1 = 'Save';
         break;
-      case 'SendOn':
-        this.Disposition1 = 'SendOn';
-        if (this.taskID === '3') {
-          this.Disposition3 = '';
+      case 'SaveAndContinueCollaboration':
+        this.Disposition1 = 'StartCollaboration';
+        if (this.taskID === '38') {
+          this.Disposition3 = 'A2b';
+        }
+        else if (this.taskID === '35') {
+          this.Disposition3 = 'A1b';
         }
         break;
       case 'CompleteCollaboration':
         //TODO
         break;
-      case 'Wait':
-        this.Disposition1 = 'Wait';
-        break;
       case 'SendOnForApproval':
         this.Disposition1 = 'SendOn';
-        if (this.taskID === '9') {
+        if (this.taskID === '29') {
           this.body.values.WorkflowForm_1x4x1x96 = '2';
         }
-        else if (this.taskID === '45') {
+        else if (this.taskID === '65') {
           this.SendOnCollaborators();
           this.Disposition3 = '1b';
           this.body.values.WorkflowForm_1x4x1x96 = '2';
         }
+        break;
+      case 'Cancel':
+        this.Disposition1 = 'Terminate';
         break;
       case 'Approve':
         this.Disposition1 = 'SendOn';
@@ -738,46 +737,47 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
       case 'Reject':
         this.Disposition1 = 'Reject';
         switch (this.taskID) {
-          case '13':
-          case '17':
-          case '21':
-          case '3':
-          case '93':
-          case '5':
-          case '95':
-          case '98':
+          case '33':
+          case '37':
+          case '41':
             this.Disposition3 = '1';
             this.body.values.WorkflowForm_1x4x1x96 = '1';
             break;
-          case '15':
+          case '35':
             this.Disposition3 = '2';
             this.body.values.WorkflowForm_1x4x1x96 = '1';
             break;
-          case '18':
+          case '38':
             this.Disposition3 = '1';
+            this.body.values.WorkflowForm_1x4x1x96 = '1';
+            break;
+          case '3':
+            this.Disposition3 = '1';
+            this.Disposition1 = 'SendBack';
             this.body.values.WorkflowForm_1x4x1x96 = '1';
             break;
         }
         break;
-      case 'Terminate':
-        this.Disposition1 = 'Terminate';
-        break;
-      case 'Cancel':
-        this.Disposition1 = 'Terminate';
-        break;
-      case 'SendBack':
-        switch (this.taskID) {
-          case '5':
-            this.Disposition3 = '7';
-            break;
-          case '95':
-            this.Disposition3 = '7';
-            break;
-          case '102':
-            this.Disposition3 = '7';
-            break;
+      case 'Complete':
+        this.Disposition1 = 'SendOn';
+        if (this.taskID === '3') {
+          const now = new Date();
+          this.body.values.WorkflowForm_1x4x1x6 = this.correspondenceShareService.DateToISOStringAbs(now); // AcknowledgementDate
         }
         break;
+      // case 'SendBack':
+      //   switch (this.taskID) {
+      //     case '5':
+      //       this.Disposition3 = '7';
+      //       break;
+      //     case '95':
+      //       this.Disposition3 = '7';
+      //       break;
+      //     case '102':
+      //       this.Disposition3 = '7';
+      //       break;
+      //   }
+      //   break;
     }
     this.makeFormObjectToSubmit(action);
     this.spinnerDataLoaded = true;
@@ -796,6 +796,21 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
         }
       );
   }
+  openTransferDialog() {
+    this.dialog.open(TransferDialogBox, {
+      data: this.correspondenceData,
+      width: '100%',
+      // margin: 'auto',
+      panelClass: 'transferDialogBoxClass',
+      maxWidth: '85vw'
+    })
+      .afterClosed().subscribe(result => {
+        if (result === 'transfered') {
+          this.submitCorrespondenceInfo('SendOn');   // SendOn
+        }
+      });
+  }
+
   openSendBackDialog(action: string) {
     this.dialog.open(SendBackDialogComponent, {
       data: this.body.values.WorkflowForm_1x4x1x96,
@@ -892,14 +907,15 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
     }
   }
   public optionSelectionChangeInternal(DepInfo: OrgNameAutoFillModel, event: MatOptionSelectionChange) {
+    debugger;
     this.IntRecipientInfo = DepInfo;
     if (event.source.selected) {
-      this.updateSenderInfo();
+      this.updateRecipientInfo();
     }
   }
 
   updateSenderInfo() {
-    this.recipientDetailsForm.get('SenderName').setValue(this.ExtSenderInfo.Name_En);
+    this.senderDetailsForm.get('SenderName').setValue(this.ExtSenderInfo.Name_En);
     this.senderDetailsForm.get('SenderDepartment').setValue(this.ExtSenderInfo.DepName_En);
     this.body.values.WorkflowForm_1x4x1x93 = this.ExtSenderInfo.OrgID;
     this.body.values.WorkflowForm_1x4x1x80 = this.ExtSenderInfo.DepID;
@@ -908,14 +924,14 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
   }
 
   updateRecipientInfo() {
-
-    this.recipientDetailsForm.get('ExternalOrganization').setValue(this.ExtSenderInfo);
-    this.recipientDetailsForm.get('RecipientDepartment').setValue(this.ExtSenderInfo.DepName_En);
-    this.recipientDetailsForm.get('RecipientName').setValue(this.ExtSenderInfo.Name_En);
-    this.body.values.WorkflowForm_1x4x1x93 = this.ExtSenderInfo.OrgID;
-    this.body.values.WorkflowForm_1x4x1x83 = this.ExtSenderInfo.DepID;
-    this.body.values.WorkflowForm_1x4x1x89 = this.ExtSenderInfo.Name_En;
-    this.correspondenceDetailsForm.get('personalName').setValue(this.ExtSenderInfo.Name_En);
+    this.recipientDetailsForm.get('RecipientName').setValue(this.IntRecipientInfo.Name_En);
+    this.body.values.WorkflowForm_1x4x1x14 = this.IntRecipientInfo.SecID ? this.IntRecipientInfo.SecID : this.IntRecipientInfo.DepID;
+    this.body.values.WorkflowForm_1x4x1x15 = this.IntRecipientInfo.RecipientUserID;
+    this.body.values.WorkflowForm_1x4x1x16 = this.IntRecipientInfo.RecipientVersion;
+    this.body.values.WorkflowForm_1x4x1x79 = this.IntRecipientInfo.Type;
+    this.body.values.WorkflowForm_1x4x1x83 = this.IntRecipientInfo.DepID;
+    this.body.values.WorkflowForm_1x4x1x84 = this.IntRecipientInfo.SecID;
+    this.body.values.WorkflowForm_1x4x1x85 = this.IntRecipientInfo.RoleID;
   }
 
   displaySearchFilterValueExt(searchList: OrgNameAutoFillModel) {
@@ -1191,13 +1207,17 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
         this.ExtSenderInfo = new OrgNameAutoFillModel();
         break;
       case 'recipientDetailsForm':
-        this.recipientDetailsForm.get('ExternalOrganization').setValue('');
-        this.recipientDetailsForm.get('RecipientDepartment').setValue('');
         this.recipientDetailsForm.get('RecipientName').setValue('');
-        this.body.values.WorkflowForm_1x4x1x93 = null;
+        this.recipientDetailsForm.get('RecipientDepartment').setValue('');
+        this.body.values.WorkflowForm_1x4x1x14 = null;
+        this.body.values.WorkflowForm_1x4x1x15 = null;
+        this.body.values.WorkflowForm_1x4x1x16 = null;
+        this.body.values.WorkflowForm_1x4x1x79 = null;
         this.body.values.WorkflowForm_1x4x1x83 = null;
-        this.body.values.WorkflowForm_1x4x1x89 = null;
-        this.ExtSenderInfo = new OrgNameAutoFillModel();
+        this.body.values.WorkflowForm_1x4x1x84 = null;
+        this.body.values.WorkflowForm_1x4x1x85 = null;
+        this.IntRecipientInfo = new OrgNameAutoFillModel();
+        break;
         break;
       default:
         break;
@@ -1281,30 +1301,24 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
     this.documentMetadataSync.docFolderID = this.correspondenceData.AttachCorrCoverID.toString();
     this.documentMetadataSync.srcDocID = this.body.values.WorkflowForm_1x4x1x61;
     if (this.body.values.WorkflowForm_1x4x1x48 === 'EN') {
-      let senderDetails: OrgNameAutoFillModel = this.senderDetailsForm.get('SenderInfo').value;
-      this.documentMetadataSync.SenderOrganization = this.convertUndefindedOrNulltoemptyString(senderDetails.OrgName_En);
-      this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(senderDetails.DepName_En + (senderDetails.SecName_En != null ? ("," + senderDetails.SecName_En) : ""))
-      this.documentMetadataSync.SenderName = this.convertUndefindedOrNulltoemptyString(senderDetails.Name_En)
-      let recipientDetails: OrgNameAutoFillModel = this.recipientDetailsForm.get('ExternalOrganization').value;
-      this.documentMetadataSync.RecipientOrganization = this.convertUndefindedOrNulltoemptyString(recipientDetails.OrgName_En)
+      let senderDetails: SenderDetailsData = this.senderDetailsForm.get('SenderInfo').value;
+      this.documentMetadataSync.SenderOrganization = this.convertUndefindedOrNulltoemptyString(senderDetails.OrganizationName_EN);
+      this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(senderDetails.DepartmentName_EN + (senderDetails.SectionName_EN != null ? ("," + senderDetails.SectionName_EN) : ""))
+      this.documentMetadataSync.SenderName = this.convertUndefindedOrNulltoemptyString(senderDetails.Name_EN);
+      let recipientDetails: OrgNameAutoFillModel = this.recipientDetailsForm.get('RecipientDepartment').value
       this.documentMetadataSync.RecipientDepartment = this.convertUndefindedOrNulltoemptyString(recipientDetails.DepName_En) + (this.convertUndefindedOrNulltoemptyString(recipientDetails.SecName_En) ? "," + this.convertUndefindedOrNulltoemptyString(recipientDetails.SecName_En) : "");
-      this.documentMetadataSync.RecipientRole = this.convertUndefindedOrNulltoemptyString(recipientDetails.RoleName_En)
-      this.documentMetadataSync.RecipientName = this.convertUndefindedOrNulltoemptyString(this.recipientDetailsForm.get('RecipientName').value)
       this.documentMetadataSync.DATE = this.convertUndefindedOrNulltoemptyString(this.correspondenceDetailsForm.get('regDate').value)
       this.documentMetadataSync.SUBJECT = this.convertUndefindedOrNulltoemptyString(this.correspondenceDetailsForm.get('englishSubject').value)
 
     }
     else if (this.body.values.WorkflowForm_1x4x1x48 === 'AR') {
 
-      let senderDetails: OrgNameAutoFillModel = this.senderDetailsForm.get('SenderInfo').value;
-      this.documentMetadataSync.SenderOrganization = this.convertUndefindedOrNulltoemptyString(senderDetails.OrgName_Ar);
-      this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(senderDetails.DepName_AR + (senderDetails.SecName_Ar != null ? ("," + senderDetails.SecName_Ar) : ""))
-      this.documentMetadataSync.SenderName = this.convertUndefindedOrNulltoemptyString(senderDetails.Name_Ar)
-      let recipientDetails: OrgNameAutoFillModel = this.recipientDetailsForm.get('ExternalOrganization').value
-      this.documentMetadataSync.RecipientOrganization = this.convertUndefindedOrNulltoemptyString(recipientDetails.OrgName_Ar)
+      let senderDetails: SenderDetailsData = this.senderDetailsForm.get('SenderInfo').value;
+      this.documentMetadataSync.SenderOrganization = this.convertUndefindedOrNulltoemptyString(senderDetails.OrganizationName_AR);
+      this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(senderDetails.DepartmentName_AR + (senderDetails.SectionName_AR != null ? ("," + senderDetails.SectionName_AR) : ""))
+      this.documentMetadataSync.SenderName = this.convertUndefindedOrNulltoemptyString(senderDetails.Name_AR);
+      let recipientDetails: OrgNameAutoFillModel = this.recipientDetailsForm.get('RecipientDepartment').value
       this.documentMetadataSync.RecipientDepartment = this.convertUndefindedOrNulltoemptyString(recipientDetails.DepName_AR) + (this.convertUndefindedOrNulltoemptyString(recipientDetails.SecName_Ar) ? "," + this.convertUndefindedOrNulltoemptyString(recipientDetails.SecName_Ar) : "");
-      this.documentMetadataSync.RecipientRole = this.convertUndefindedOrNulltoemptyString(recipientDetails.RoleName_Ar)
-      this.documentMetadataSync.RecipientName = this.convertUndefindedOrNulltoemptyString(this.recipientDetailsForm.get('RecipientName').value)
       this.documentMetadataSync.DATE = this.convertUndefindedOrNulltoemptyString(this.correspondenceDetailsForm.get('regDate').value)
       this.documentMetadataSync.SUBJECT = this.convertUndefindedOrNulltoemptyString(this.correspondenceDetailsForm.get('arabicsubject').value)
     }
@@ -1391,5 +1405,22 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
       }
     });
     return tmpObj;
+  }
+
+  transferTabShowData() {
+    this.getTransferHistoryData(this.VolumeID);
+  }
+
+  getTransferHistoryData(VolumeID: String): void {
+    this.transferProgbar = true;
+    this._correspondenceDetailsService.getTransferHistoryTab(VolumeID).subscribe(
+      transferhistorytabData => {
+        this.transferhistorytabData = transferhistorytabData;
+        this.transferProgbar = false;
+      },
+      responseError => {
+        this._errorHandlerFctsService.handleError(responseError).subscribe();
+      }
+    );
   }
 }

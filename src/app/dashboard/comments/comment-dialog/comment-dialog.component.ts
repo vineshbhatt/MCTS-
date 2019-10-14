@@ -127,7 +127,9 @@ export class CommentDialogComponent implements OnInit {
   checkEditable(): void {
     if (this.corrData.reportType !== 'ExtFullSearch' && this.corrData.reportType !== 'IntFullSearch') {
 
-      const isAssignee = this.globalConstants.FCTS_Dashboard.UserGroupsArray.includes(this.corrData.data.SubWorkTask_PerformerID);
+      // const isAssignee = this.globalConstants.FCTS_Dashboard.UserGroupsArray.includes(this.corrData.data.SubWorkTask_PerformerID);
+      let isAssignee: boolean;
+      this.globalConstants.FCTS_Dashboard.UserGroupsArray.indexOf(this.corrData.data.SubWorkTask_PerformerID) > -1 ? isAssignee = true : isAssignee = false;
       if ( this.corrData.data.SubWorkTask_TaskID !== '0' && this.corrData.data.CorrespondencePhase !== '3' && (this.corrData.data.CorrespondenceFlowType === '1' || this.corrData.data.CorrespondenceFlowType === '7')) {
         this.commentsEditable = true;
 

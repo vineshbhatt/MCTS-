@@ -11,6 +11,7 @@ import { AppLoadConstService } from '../../app-load-const.service';
 import { BehaviorSubject } from 'rxjs';
 import { CorrespondenceWFFormModel } from '../models/CorrepondenceWFFormModel';
 import { RecallTransferInfo, TransferRecallDialogData } from '../dialog-boxes/transfer-recall-dialog/transfer-recall-dialog.model';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -78,8 +79,8 @@ export class CorrespondenceService {
   //   Staffnumber: ''
   // }
 
-  getDashboardMain(reportType, startRow, endRow, queryFilters): Observable<Correspondence[]> {
-    const params = new HttpParams()
+  getDashboardMain(reportType, startRow, endRow, queryFilters, isProxy: boolean): Observable<Correspondence[]> {
+    let params = new HttpParams()
       .set('reportType', reportType)
       .set('startRow', startRow)
       .set('endRow', endRow)
@@ -96,6 +97,11 @@ export class CorrespondenceService {
       .set('MyAssignments', queryFilters.MyAssignments ? queryFilters.MyAssignments : '')
       .set('DocumentNumber', queryFilters.DocumentNumber ? queryFilters.DocumentNumber : '')
       .set('enableTotalCount', startRow === 1 ? 'true' : 'false');
+    if (isProxy) {
+      params = params.append('ProxyUserID', this._globalConstants.general.ProxyUserID);
+      params = params.append('fProxy', isProxy.toString());
+      params = params.append('Proxy', isProxy.toString());
+    }
     return this.httpServices.get<Correspondence[]>(
       this._CSUrl +
       `${FCTSDashBoard.WRApiV1}${
@@ -408,19 +414,31 @@ export class CorrespondenceService {
         })
       );
   }
+
   getSideBarElements(reportName: string): Observable<any> {
-    // tslint:disable-next-line: max-line-length
-    const url = this._CSUrl + `${FCTSDashBoard.WRApiV1}${reportName}?Format=webreport&ProxyUserID=${CSConfig.globaluserid}`;
-    return this.httpServices.get<any>(url, { headers: { OTCSTICKET: CSConfig.AuthToken } })
-      .pipe(
-        map(response => {
-          return response;
-        }),
-        catchError(error => {
-          console.log(error);
-          return throwError(error);
-        })
-      );
+    const url = this._CSUrl + `${FCTSDashBoard.WRApiV1}${reportName}?Format=webreport`;
+    const fProxy = this._globalConstants.general.UserID !== this._globalConstants.general.ProxyUserID && reportName !== 'CTA_SidebarMRCount';
+    let userID: string;
+    reportName === 'CTA_SidebarMRCount' ? userID = this._globalConstants.general.UserID : userID = this._globalConstants.general.ProxyUserID;
+
+    const params = new HttpParams()
+    .set('ProxyUserID', userID)
+    .set('fProxy', fProxy.toString());
+
+    return this.httpServices.get<any>(
+      url, {
+        headers: { OTCSTICKET: CSConfig.AuthToken },
+        params: params
+      }
+    )
+    .pipe(
+      map(response => {
+        return response;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
   }
 
   initiateWF(initateFormDate: CorrespondenceWFFormModel, corrType: string): Observable<any> {
@@ -449,31 +467,9 @@ export class CorrespondenceService {
       params, options);
 
   }
-
-  getTransRecallData(recallTransferInfo: RecallTransferInfo): Observable<TransferRecallDialogData[]> {
-    const url = this._CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.GetTransRecallData}?Format=webreport`;
-    const params = new HttpParams()
-      .set('VolumeID', recallTransferInfo.correspondData.VolumeID.toString())
-      .set('TransferUserID', CSConfig.globaluserid)
-      .set('PowerGroupID', this._globalConstants.FCTS_Dashboard.PowerGroupID)
-      .set('ASAGroupID', this._globalConstants.FCTS_Dashboard.FCTS_ASA)
-      .set('f' + recallTransferInfo.recallType, 'true');
-
-    const headers = new HttpHeaders()
-      .set('OTCSTICKET', CSConfig.AuthToken);
-
-    return this.httpServices
-      .get<TransferRecallDialogData[]>(url, { headers: headers, params: params })
-      .pipe(
-        map(response => {
-          return this._transformRecallList(response);
-        }),
-        catchError(error => {
-          return throwError(error);
-        })
-      );
-  }
-
+/* duplicated function should be deleted from this service
+  getTransRecallData(recallTransferInfo: RecallTransferInfo): Observable<TransferRecallDialogData[]>
+*/
   runRecallTransfer(recallTransferInfo: RecallTransferInfo): Observable<any> {
     const url = this._CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.RunTransferRecall}?Format=webreport`;
     const params = new HttpParams()

@@ -390,22 +390,6 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
   addRecipient() {
   }
   searchTreeValue(organizationalChartSearch: string) {
-    // alert(organizationalChartSearch);
-    // let filteredTreeData;
-
-    // if (organizationalChartSearch) {
-    //   filteredTreeData = this.dataSource.data.filter()
-    //   //There is filter function in the sample);
-    // } else {
-    //   filteredTreeData = this.dataSource.data;
-    // }
-
-    // // file node as children.
-    // const data =  this.organizationalChartData 
-    // // Notify the change. !!!IMPORTANT
-    // //this.dataChange.next(data);    
-
-
   }
 
   getSearchValue(value: string) {

@@ -12,6 +12,7 @@ import { CorrespondenenceDetailsModel } from '../../models/CorrespondenenceDetai
 import { StatusRequest } from '../../models/Shared.model';
 import { CorrResponse } from '../../services/correspondence-response.model';
 import { DocumentPreview } from '../../services/documentpreview.model';
+import { AppLoadConstService } from 'src/app/app-load-const.service';
 
 import { ShowButtons } from './correspondence-show-buttons';
 import { ShowSections } from './correspondence-show-sections';
@@ -26,13 +27,16 @@ import { TransferReplyDialogComponent } from '../../dialog-boxes/transfer-reply-
   styleUrls: ['./correspondence-detail.component.scss']
 })
 export class CorrespondenceDetailComponent implements OnInit {
+  private _globalConstants = this._appLoadConstService.getConstants();
+
   constructor(
     private _correspondenceDetailsService: CorrespondenceDetailsService
     , private _correspondenceShareService: CorrespondenceShareService
     , private _errorHandlerFctsService: ErrorHandlerFctsService
     , private route: ActivatedRoute
     , public dialog: MatDialog
-    , private _location: Location) {
+    , private _location: Location
+    , private _appLoadConstService: AppLoadConstService ) {
   }
 
   basehref: String = FCTSDashBoard.BaseHref;
@@ -78,8 +82,8 @@ export class CorrespondenceDetailComponent implements OnInit {
   openedSubReplies = false;
   corrConnectionsProgbar = false;
   sectionDisplay = new ShowSections();
-  buttonsDisplay = new ShowButtons();
-  correspondenceTabLoaded: boolean = false;
+  buttonsDisplay = new ShowButtons(this._appLoadConstService);
+  correspondenceTabLoaded = false;
 
   ngOnInit() {
     this.VolumeID = this.route.snapshot.queryParamMap.get('VolumeID');
@@ -106,7 +110,7 @@ export class CorrespondenceDetailComponent implements OnInit {
 
   ReadRecord(locationid: string, transid: string) {
     this._correspondenceDetailsService
-      .getCorrRecord(locationid, transid, CSConfig.globaluserid)
+      .getCorrRecord(locationid, transid, this._globalConstants.general.ProxyUserID)
       .subscribe(correspondenceData => {
         this.correspondenceData = correspondenceData[0];
         this.buttonsDisplay.showButton(this.correspondenceData);
@@ -152,7 +156,6 @@ export class CorrespondenceDetailComponent implements OnInit {
   }
 
   getCorrespondenceCoverDetail(VolumeID: String): void {
-    debugger;
     this.coverProgbar = true;
     this._correspondenceDetailsService.getCorrespondenceCoverDetail(VolumeID)
       .subscribe(correspondenceCovertData => {
@@ -235,7 +238,7 @@ export class CorrespondenceDetailComponent implements OnInit {
         .afterClosed().subscribe(result => {
           if (result === 'Reload') {
             this.backNavigation();
-            //this.RefreshRecord(); 
+            // this.RefreshRecord();
           }
         });
     } else {
@@ -287,7 +290,7 @@ export class CorrespondenceDetailComponent implements OnInit {
   /*  showCommentsData() {
       this.getCommentsData();
     }
-  
+
     getCommentsData(): void {
       this.commentsProgbar = true;
       this._correspondenceDetailsService.getCommentsData(this.VolumeID)
@@ -353,7 +356,7 @@ export class CorrespondenceDetailComponent implements OnInit {
       result => {
         if (result === 'Reload') {
           this.backNavigation();
-          //this.RefreshRecord(); 
+          // this.RefreshRecord();
         }
       });
   }

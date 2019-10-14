@@ -1,11 +1,11 @@
 export class CorrResponse {
-    actualRows: string;
-    filteredRows: string;
-    myRows: any;
-    sourceID: string;
-    totalRows: string;
-    totalSourceRows: string;
-  }
+  actualRows: string;
+  filteredRows: string;
+  myRows: any;
+  sourceID: string;
+  totalRows: string;
+  totalSourceRows: string;
+}
 
 
 export class CorrespondenceFormData {
@@ -32,6 +32,8 @@ export class SenderDetailsData {
   SenderSection: string;
   SenderUserID: number;
   SenderVersion: string;
+  SectionName_EN: string;
+  SectionName_AR: string;
 }
 
 export class RecipientDetailsData {

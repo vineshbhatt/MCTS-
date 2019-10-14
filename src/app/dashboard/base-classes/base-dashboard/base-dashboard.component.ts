@@ -27,6 +27,8 @@ import { CompleteDialogComponent } from '../../dialog-boxes/complete-dialog/comp
 })
 
 export class BaseDashboardComponent implements OnInit {
+  public globalConstants = this.appLoadConstService.getConstants();
+  stepPerformer =  this.globalConstants.general.UserID;
   // SearchFilterData: SearchFilters;
   SearchFilterData = {
     ReferenceCode: '',
@@ -56,6 +58,7 @@ export class BaseDashboardComponent implements OnInit {
   reportType = '';
   routerCorrDetail = '/dashboard/external/correspondence-detail';
   routerInitateExternal = '/dashboard/create/new-external-outgoing';
+  isProxy = false;
   routerFormStep = '/';
   basehref: String = FCTSDashBoard.BaseHref;
   CorrAttach: CorrAttachDocuments;
@@ -82,6 +85,7 @@ export class BaseDashboardComponent implements OnInit {
   searchRecipientDeptFieldShow: boolean;
   // Items Count Variables
   fullPageNumber: string;
+  menuAction: boolean;
 
   constructor(
     public router: Router,
@@ -92,10 +96,13 @@ export class BaseDashboardComponent implements OnInit {
     public appLoadConstService: AppLoadConstService
   ) { }
 
-  public globalConstants = this.appLoadConstService.getConstants();
-
   ngOnInit() {
     this.getPage(this.pagenumber);
+    this.correspondenceShareService.currentSidebarAction.subscribe(menuAction => this.menuAction = menuAction);
+  }
+
+  closeSidebar() {
+    this.correspondenceShareService.changeSidebarAction(true);
   }
 
   AdvancedSearchButton() {
@@ -126,7 +133,7 @@ export class BaseDashboardComponent implements OnInit {
   getCorrespondence(pageType: string, startrow: number, endrow: number, page: number, SearchFilterData: any): void {
     this.progbar = true;
     this.correspondenceService
-      .getDashboardMain(pageType, startrow, endrow, SearchFilterData)
+      .getDashboardMain(pageType, startrow, endrow, SearchFilterData, this.isProxy)
       .subscribe(
         correspondenceData => {
           this.correspondenceData = correspondenceData;
@@ -135,6 +142,7 @@ export class BaseDashboardComponent implements OnInit {
             this.totalCount = 0;
           } else if (startrow === 1) {
             this.totalCount = correspondenceData[0].totalRowCount;
+            this.appLoadConstService.setUserGroupArray(correspondenceData[0].PerformerGroups);
           }
           this.pagenumber = page;
 
@@ -155,15 +163,17 @@ export class BaseDashboardComponent implements OnInit {
   }
 
   routeToDetailsPage(correspondData: Correspondence) {
-    debugger;
     this.selectWFStepRoute(correspondData);
     this.setPerformerPermission(correspondData);
-    const isAssignee = this.globalConstants.FCTS_Dashboard.UserGroupsArray.includes(correspondData.SubWorkTask_PerformerID);
-    if (Number(correspondData.SubWorkTask_TaskID) > 0 && correspondData.SubWorkTask_PerformerID.toString() === CSConfig.globaluserid ) {
+    // const isAssignee = this.globalConstants.FCTS_Dashboard.UserGroupsArray.includes(correspondData.SubWorkTask_PerformerID);
+    let isAssignee: boolean;
+    this.globalConstants.FCTS_Dashboard.UserGroupsArray.indexOf(correspondData.SubWorkTask_PerformerID) > -1 ? isAssignee = true : isAssignee = false;
+
+    if (Number(correspondData.SubWorkTask_TaskID) > 0 && correspondData.SubWorkTask_PerformerID.toString() === this.stepPerformer ) {
       this.routeToFormStepPage(correspondData);
     } else if (correspondData.SubWorkTask_TaskID > 0 && isAssignee && correspondData.SubWorkTask_PerformerID_Type.toString() !== '0') {
       this.userConfirmation('assignWF', correspondData);
-    } else if (correspondData.transID > 0 && correspondData.transHoldSecretaryID !== CSConfig.globaluserid) {
+    } else if (correspondData.transID > 0 && correspondData.transHoldSecretaryID !== this.stepPerformer) {
       this.userConfirmation('assignTransfer', correspondData);
       /*} else if (correspondenceData.transID > 0 && correspondenceData.transHoldSecretaryID != CSConfig.globaluserid ) {
         console.log("transfer assigned to USER"); */
@@ -183,6 +193,7 @@ export class BaseDashboardComponent implements OnInit {
         }
       );
     }
+    this.closeSidebar();
   }
 
   routeToFormStepPage(correspondData: Correspondence) {
@@ -263,8 +274,8 @@ export class BaseDashboardComponent implements OnInit {
       response => {
         if (mess === 'assignTransfer' && response === true) {
           this.correspondenceShareService.ToggleTransStatus(correspondenceData.transID, 'holdTask').subscribe(
-            response => {
-              if (response.transfer_status_changes[0].ID.toString() === correspondenceData.transID.toString()) {
+            response2 => {
+              if (response2.transfer_status_changes.length > 0 && response2.transfer_status_changes[0].ID.toString() === correspondenceData.transID.toString()) {
 
                 // open CorrView
                 this.router.navigate([this.routerCorrDetail],
@@ -282,7 +293,7 @@ export class BaseDashboardComponent implements OnInit {
                   }
                 );
               } else {
-                console.log('DEV: ERROR with assigning trarnsfer');
+                this.showMessage('DEV: ERROR with assigning trarnsfer');
               }
             },
             responseError => {
@@ -307,11 +318,8 @@ export class BaseDashboardComponent implements OnInit {
         } else if (mess === 'assignWF' && response === true) {
           this.correspondenceService.assignWFStep(correspondenceData)
             .subscribe(
-              response => {
-
-                /* !!!!!! there should be opened WF step, temporary: withing development CorrespView is opened */
+              response2 => {
                 this.routeToFormStepPage(correspondenceData);
-                /* *************************************************** */
               },
               responseError => {
                 this.errorHandlerFctsService.handleError(responseError).subscribe();
@@ -507,7 +515,6 @@ export class BaseDashboardComponent implements OnInit {
   /********************************************************* */
 
   correspondenceIconsFunction(correspondData: Correspondence, icon: string): void {
-    
     if (icon === 'openComments') {
       this.commentsDialogBox(correspondData);
     }
