@@ -683,7 +683,7 @@ export class CorrespondenceFormStepComponent implements OnInit {
       this.setAttachMiscItemsPermiss(this.correspondenceData.AttachCorrAttachmentsID);
       this.correspondenceDetailsService.getAttachmentFolderDetails(Number(this.correspondenceData.AttachCorrAttachmentsID)).subscribe(
         attachmentFolderdetails => {
-        this.externalAttachmentFolderData = attachmentFolderdetails;
+          this.externalAttachmentFolderData = attachmentFolderdetails;
         },
         responseError => {
           this._errorHandlerFctsService.handleError(responseError).subscribe();
@@ -714,6 +714,13 @@ export class CorrespondenceFormStepComponent implements OnInit {
         this._errorHandlerFctsService.handleError(responseError).subscribe();
       }
     );
+  }
+
+  tranlsateDocument(dataID: string): void {
+    this.showPreviewTreeArea = false;
+    this.showPreviewCoverLetter = true;
+    this.correspondenceDetailsService.getDocumentTranslateURL(dataID)
+      .subscribe(correspondenceCovertData => this.documentPreviewURL = correspondenceCovertData);
   }
 
   showSenderData() {

@@ -98,7 +98,7 @@ import { BaseDashboardArchiveComponent } from './base-classes/base-dashboard-arc
 import { UserInfoComponent } from './side-navigation/user-info/user-info.component';
 import { ProxyInfoComponent } from './side-navigation/proxy-info/proxy-info.component';
 import { CurrentUserPhotoComponent } from './side-navigation/current-user-photo/current-user-photo.component';
-
+import { ProfileComponent } from './side-navigation/profile/profile.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -203,7 +203,7 @@ import { CurrentUserPhotoComponent } from './side-navigation/current-user-photo/
     CorrespondenceFormStepIntOutComponent,
     UserInfoComponent,
     ProxyInfoComponent,
-    CurrentUserPhotoComponent
+    CurrentUserPhotoComponent, ProfileComponent
   ],
   entryComponents: [
     MailDetailView,
@@ -216,7 +216,7 @@ import { CurrentUserPhotoComponent } from './side-navigation/current-user-photo/
     TransferReplyDialogComponent,
     TransferReturntoasDialogComponent,
     SendBackDialogComponent,
-    CommentDialogComponent
+    CommentDialogComponent,ProfileComponent
   ],
   providers: [ErrorHandlerFctsService, NotificationService, DatePipe]
 })

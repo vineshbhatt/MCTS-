@@ -28,7 +28,11 @@ export class CurrentUserPhotoComponent extends UserInfoComponent implements OnIn
         if (response.results.data.properties.photo_id) {
           this.getUserImg(this.getProxyUser());
         } else {
-          this.initials = response.results.data.properties.initials;
+          if (response.results.data.properties.initials) {
+            this.initials = response.results.data.properties.initials;
+          } else {
+            this.initials = response.results.data.properties.first_name.slice(0, 1).toUpperCase() + response.results.data.properties.last_name.slice(0, 1).toUpperCase();
+          }
         }
       },
       responseError => {
@@ -36,4 +40,5 @@ export class CurrentUserPhotoComponent extends UserInfoComponent implements OnIn
       }
     );
   }
+
 }

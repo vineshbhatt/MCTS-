@@ -267,6 +267,9 @@
                           <a matTooltip="Properties" class="btn btn_006" (click)=showActionProperties(coverData.Dataid)>
                             <img src="{{basehref}}assets/images/icons/info-round-button.svg" alt="">
                           </a>
+                          <a matTooltip="Translate" class="btn btn_006" (click)=tranlsateDocument(coverData.Dataid)>
+                            <img src="{{basehref}}assets/images/icons/history.svg" alt="">
+                          </a>
                         </div>
                       </td>
                       <td> {{coverData.CoverSize}} </td>
@@ -325,6 +328,10 @@
                           <a matTooltip="Properties" class="btn btn_006"
                             (click)=showActionProperties(attachmentData.Dataid)>
                             <img src="{{basehref}}assets/images/icons/info-round-button.svg" alt="">
+                          </a>
+                          <a matTooltip="Translate" class="btn btn_006"
+                            (click)=tranlsateDocument(attachmentData.Dataid)>
+                            <img src="{{basehref}}assets/images/icons/history.svg" alt="">
                           </a>
                         </div>
                       </td>
@@ -540,7 +547,8 @@
                   <li>Due Date</li>
                 </ul>
                 <div *ngFor="let transferDataDetails of transferhistorytabData">
-                  <div *ngFor="let transferDataDetail of transferDataDetails.myRows" [class.currentTransfer] = "transferDataDetail.TransID.toString() === correspondenceData.ID.toString()">
+                  <div *ngFor="let transferDataDetail of transferDataDetails.myRows"
+                    [class.currentTransfer]="transferDataDetail.TransID.toString() === correspondenceData.ID.toString()">
                     <mat-accordion class="inside_accordion_001">
                       <mat-expansion-panel>
                         <mat-expansion-panel-header [collapsedHeight]="'auto'" [expandedHeight]="'auto'">
@@ -580,7 +588,7 @@
       <button class="btn_008" *ngIf="buttonsDisplay.corrComplete" (click)="OpenCompleteDialog('1')">Complete</button>
       <button class="btn_008" *ngIf="buttonsDisplay.corrArchive" (click)="OpenCompleteDialog('2')">Archive</button>
       <button class="btn_008" *ngIf="buttonsDisplay.corrSave" (click)="saveTransferTo()">Save</button>
-      <button class="btn_008"  (click)="backNavigation()">Back</button>
+      <button class="btn_008" (click)="backNavigation()">Back</button>
 
       <button (click)="expandeActionLeftButton()" matRipple class="corsp_ext_btn">
         <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">

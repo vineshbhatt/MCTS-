@@ -43,5 +43,19 @@
           }
         ]
       }
+    ],
+    "groupListNumber" : "22",
+    "groupList": [
+      {"groupName": "[Content Server Administration]"},
+      {"groupName": "Business Administration"},
+      {"groupName": "FCTS FollowUp Team"},
+      {"groupName": "FCTS Incoming Archiving"},
+      {"groupName": "FCTS Incoming Archiving All"},
+      {"groupName": "FCTS Incoming Originators"},
+      {"groupName": "FCTS Incoming Originators All"},
+      {"groupName": "FCTS Internal Originators"},
+      {"groupName": "FCTS Incoming Archiving All"},
+      {"groupName": "FCTS Incoming Originators"},
+      {"groupName": "FCTS Incoming Originators"}
     ]
   }]

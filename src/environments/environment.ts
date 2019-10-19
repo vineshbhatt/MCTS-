@@ -81,13 +81,12 @@ export const FCTSDashBoard = {
   SelectAttributes: '531053',
   InsertNewComment: '532040',
   DeleteComment: '543890',
-  
-
   setConnection: '544339',
   getCorrespondenceFormValues: '543928',
   setSubfolderPerm: 'CTA_SetSubfolderPerm',
+  documentTranlsation: '572180',
   
-  initiateInternalWF:'560064',
+  initiateInternalWF: '560064',
   ProxyInfo: 'CTA_ProxyUserInfo',
   // BaseHref: '/img/fctsangular/fctsapp/',
   BaseHref: '/',

@@ -36,7 +36,7 @@ export class CorrespondenceDetailComponent implements OnInit {
     , private route: ActivatedRoute
     , public dialog: MatDialog
     , private _location: Location
-    , private _appLoadConstService: AppLoadConstService ) {
+    , private _appLoadConstService: AppLoadConstService) {
   }
 
   basehref: String = FCTSDashBoard.BaseHref;
@@ -315,6 +315,11 @@ export class CorrespondenceDetailComponent implements OnInit {
 
   showActionProperties(dataID: string): void {
     this._correspondenceDetailsService.getDocumentPropertiesURL(dataID)
+      .subscribe(correspondenceCovertData => this.documentPreviewURL = correspondenceCovertData);
+  }
+  tranlsateDocument(dataID: string): void {
+   
+    this._correspondenceDetailsService.getDocumentTranslateURL(dataID)
       .subscribe(correspondenceCovertData => this.documentPreviewURL = correspondenceCovertData);
   }
   // change transfer statuses - HoldSecretary, ReleaseTask, TransferOpened

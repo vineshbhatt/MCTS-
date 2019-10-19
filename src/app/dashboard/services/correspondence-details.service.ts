@@ -219,27 +219,27 @@ export class CorrespondenceDetailsService {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
       }
     )
-    .pipe(
-      map(data => {
-        let corrFlowType: string;
-        switch (data[0].CorrespondenceFlowType) {
-          case '1':
-            corrFlowType = 'Incoming';
-            break;
-          case '5':
-            corrFlowType = 'Outgoing';
-            break;
-          case '7':
-            corrFlowType = 'Internal';
-            break;
-        }
-        data[0].CorrFlowType = corrFlowType;
-        return data;
-      }),
-      catchError(error => {
-        return error;
-      })
-    );
+      .pipe(
+        map(data => {
+          let corrFlowType: string;
+          switch (data[0].CorrespondenceFlowType) {
+            case '1':
+              corrFlowType = 'Incoming';
+              break;
+            case '5':
+              corrFlowType = 'Outgoing';
+              break;
+            case '7':
+              corrFlowType = 'Internal';
+              break;
+          }
+          data[0].CorrFlowType = corrFlowType;
+          return data;
+        }),
+        catchError(error => {
+          return error;
+        })
+      );
 
   }
 
@@ -314,6 +314,7 @@ export class CorrespondenceDetailsService {
       }
     );
   }
+
   /* Changed PSM: 04/10/2019 */
   createTransferRequest(transferJson, correspondenceData: CorrespondenenceDetailsModel): Observable<any> {
     let taskID: string;
@@ -603,13 +604,13 @@ export class CorrespondenceDetailsService {
 
   getTemplatesList(corrFlowType: string, templateType: string = 'Default', onBehalfOf: string = 'false') {
     const params = new HttpParams()
-    .set('correspondence_type', corrFlowType)
-    .set('template_type', templateType)
-    .set('onBehalfOf', onBehalfOf)
-    .set('active', '1')
-    .set('catid', '261305') //TODO
-    .set('language', '')
-    .set('locationid', '261309');//TODO
+      .set('correspondence_type', corrFlowType)
+      .set('template_type', templateType)
+      .set('onBehalfOf', onBehalfOf)
+      .set('active', '1')
+      .set('catid', '261305') //TODO
+      .set('language', '')
+      .set('locationid', '261309');//TODO
     return this.httpServices.get<any[]>(
       this.CSUrl +
       `${FCTSDashBoard.WRApiV1}${
@@ -793,7 +794,7 @@ export class CorrespondenceDetailsService {
       .set('TaskID', corrDataDetail.TaskID)
       .set('UserID', CSConfig.globaluserid);
 
-      return this.httpServices
+    return this.httpServices
       .get(
         this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.setSubfolderPerm}?Format=webreport`,
         {
@@ -811,6 +812,18 @@ export class CorrespondenceDetailsService {
           return error;
         })
       );
+  }
+  //For Demo
+  getDocumentTranslateURL(docid): Observable<DocumentPreview[]> {
+    const params = new HttpParams().set('coverdocumentid', docid);
+    return this.httpServices.get<DocumentPreview[]>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.documentTranlsation}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken },
+        params: params
+      }
+    );
   }
 
 }
