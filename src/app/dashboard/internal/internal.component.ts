@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { FCTSDashBoard } from 'src/environments/environment';
 import { CorrespondenceService } from 'src/app/dashboard/services/correspondence.service';
 import { CorrespondenceShareService } from 'src/app/dashboard/services/correspondence-share.service';
@@ -8,13 +8,14 @@ import { CorrespondenceShareService } from 'src/app/dashboard/services/correspon
   templateUrl: './internal.component.html'
 })
 
-export class InternalComponent implements OnInit, AfterViewInit {
+export class InternalComponent implements OnInit, AfterViewInit, OnDestroy {
   CSUrl = CSConfig.CSUrl;
   basehref: String = FCTSDashBoard.BaseHref;
   menuAction = true;
   scrollbarOptions = { axis: 'yx', theme: 'minimal-dark' };
   itemsCount: number;
   menuItems: any;
+  userChangeSubscription;
 
   constructor(
     private _correspondenceService: CorrespondenceService,
@@ -32,6 +33,18 @@ export class InternalComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    this.userChangeSubscription = this.correspondenceShareService.recoutForProxyChange.subscribe(response => {
+      this.getSideBarElements();
+     });
+  }
+
+  ngOnDestroy() {
+    if (this.userChangeSubscription) {
+      this.userChangeSubscription.unsubscribe();
+    }
+  }
+
+  getSideBarElements() {
     this._correspondenceService.getSideBarElements(FCTSDashBoard.getMenuCountInt).subscribe(data => {
       this.menuItems = data as string[];
     });

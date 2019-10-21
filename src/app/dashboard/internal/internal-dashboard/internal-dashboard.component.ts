@@ -27,6 +27,7 @@ export class InternalDashboardComponent extends BaseDashboardFullComponent  impl
       super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService);
       this.reportType = 'IntFullSearch';
       this.routerFormStep = '/dashboard/internal/correspondence-form-step-intout';
+      this.routerProxyRedirect = '/dashboard/internal/new-intoutbounds';
   }
 
 }

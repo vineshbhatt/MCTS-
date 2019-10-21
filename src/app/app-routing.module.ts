@@ -7,14 +7,17 @@ const appRoutes: Routes = [
   {
     path: 'dashboard',
     loadChildren: './dashboard/dashboard.module#DashboardModule',
+    runGuardsAndResolvers: 'always'
   },
-  { path: '',   redirectTo: '/dashboard', pathMatch: 'full' },
+  { path: '',
+    redirectTo: '/dashboard',
+    pathMatch: 'full' },
 ];
 
 @NgModule({
   imports: [
     RouterModule.forRoot(
-      appRoutes
+      appRoutes , {onSameUrlNavigation: 'reload'}
     )
   ],
   exports: [

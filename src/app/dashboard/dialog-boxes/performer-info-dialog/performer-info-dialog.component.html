@@ -1,0 +1,84 @@
+<div class = "performer-info-holder">
+  <div class="action_header">
+    <p class="text_16 blt_text"></p>
+    <p class="text_16">Assignee Info:</p>
+    <mat-icon class=close-button (click)="closeDialog()">close</mat-icon>
+  </div>
+  <div *ngIf="performerProgbar" class="spinner_sm_wrappar">
+     <mat-spinner class="spinner_sm"></mat-spinner>
+  </div>
+  <ng-scrollbar thumbClass="scroll_001" compact="true">
+    <div *ngIf="!performerProgbar">
+      <div class="employee-performer-info" *ngIf = "performerInfo.Employee_Info">
+        <h4 class="employe-header">Employee Info for: {{performerInfo.PrfInfo_General.Name_EN}}</h4>
+        <div>
+          <div class="performer-info-item">
+            <h4>Login</h4>
+            <p>{{performerInfo.PrfInfo_General.Name_EN}}</p>
+          </div>
+          <div class="performer-info-item">
+            <h4>English Name</h4>
+            <p>{{performerInfo.PrfInfo_General.FirstName_EN}} {{performerInfo.PrfInfo_General.LastName_EN}}</p>
+          </div>
+          <div class="performer-info-item">
+            <h4>Arabic Name</h4>
+            <p>{{performerInfo.PrfInfo_General.FirstName_AR}} {{performerInfo.PrfInfo_General.LastName_AR}}</p>
+          </div>
+          <div class="performer-info-item">
+            <h4>Roles({{performerInfo.PrfInfo_Roles.length}})</h4>
+            <div class = "performer-info-item-group">
+              <p *ngFor="let role of performerInfo.PrfInfo_Roles">{{role.RoleName_EN}}</p>
+            </div>
+          </div>
+          <div class="performer-info-item" *ngIf="performerInfo.PrfInfo_Nodes.OUV1_OUID">
+            <h4>Section</h4>
+            <p>{{performerInfo.PrfInfo_Nodes.OUV1_Name_EN}}</p>
+          </div>
+          <div class="performer-info-item" *ngIf="performerInfo.PrfInfo_Nodes.OUV2_OUID">
+            <h4>Department</h4>
+            <p>{{performerInfo.PrfInfo_Nodes.OUV2_Name_EN}}</p>
+          </div>
+          <div class="performer-info-item" *ngIf="performerInfo.PrfInfo_Nodes.OUV3_OUID">
+            <h4>Affair</h4>
+            <p>{{performerInfo.PrfInfo_Nodes.OUV3_Name_EN}}</p>
+          </div>
+          <div class="performer-info-item" *ngIf="performerInfo.PrfInfo_Nodes.OUV4_OUID">
+            <h4>Organization</h4>
+            <p>{{performerInfo.PrfInfo_Nodes.OUV4_Name_EN}}</p>
+          </div>
+          <div class="performer-info-item">
+            <h4>Groups({{performerInfo.PrfInfo_Groups.length}})</h4>
+            <div class = "performer-info-item-group">
+              <p class="employee-links" *ngFor="let role of performerInfo.PrfInfo_Groups" (click)="getPerformerUserInfo(role.GroupID)">{{role.GroupName}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="group-performer-info" *ngIf = "performerInfo.Group_Info">
+        <h4 class="employe-header">Group Info for: {{performerInfo.PrfInfo_General.Name}}</h4>
+        <div class="performer-info-item">
+          <h4>Name</h4>
+          <p>{{performerInfo.PrfInfo_General.Name}}</p>
+        </div>
+        <div class="performer-info-item">
+          <h4>Role Code</h4>
+          <p>{{performerInfo.PrfInfo_General.RoleCode}}</p>
+        </div>
+        <div class="performer-info-item">
+          <h4>Role Name</h4>
+          <p>{{performerInfo.PrfInfo_General.RoleName}}</p>
+        </div>
+        <div class="performer-info-item" *ngIf="performerInfo.PrfInfo_General.RoleType === 'Specific' ">
+          <h4>Node</h4>
+          <p>{{performerInfo.PrfInfo_General.Node_EN}}</p>
+        </div>
+        <div class="performer-info-item">
+          <h4>Employees ({{performerInfo.PrfInfo_Members.length}})</h4>
+          <div class = "performer-info-item-group">
+            <p class="employee-links" *ngFor="let employee of performerInfo.PrfInfo_Members" (click)="getPerformerUserInfo(employee.ID)">{{employee.Employee_EN}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-scrollbar>
+</div>

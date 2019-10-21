@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
 
@@ -20,13 +20,15 @@ import { TransferRecallDialogComponent } from '../../dialog-boxes/transfer-recal
 import { MessageDialogComponent } from '../../dialog-boxes/message-dialog/message-dialog.component';
 import { CommentDialogComponent } from '../../comments/comment-dialog/comment-dialog.component';
 import { CompleteDialogComponent } from '../../dialog-boxes/complete-dialog/complete-dialog.component';
+import { PerformerInfoDialogComponent } from '../../dialog-boxes/performer-info-dialog/performer-info-dialog.component';
+
 
 @Component({
   selector: 'app-base-dashboard',
   templateUrl: './base-dashboard.component.html'
 })
 
-export class BaseDashboardComponent implements OnInit {
+export class BaseDashboardComponent implements OnInit, OnDestroy {
   public globalConstants = this.appLoadConstService.getConstants();
   stepPerformer =  this.globalConstants.general.UserID;
   // SearchFilterData: SearchFilters;
@@ -54,10 +56,11 @@ export class BaseDashboardComponent implements OnInit {
     Project: '',
     Staffnumber: ''
   };
-
+ 
   reportType = '';
   routerCorrDetail = '/dashboard/external/correspondence-detail';
   routerInitateExternal = '/dashboard/create/new-external-outgoing';
+  routerProxyRedirect = '/';
   isProxy = false;
   routerFormStep = '/';
   basehref: String = FCTSDashBoard.BaseHref;
@@ -86,6 +89,7 @@ export class BaseDashboardComponent implements OnInit {
   // Items Count Variables
   fullPageNumber: string;
   menuAction: boolean;
+  navigationSubscription;
 
   constructor(
     public router: Router,
@@ -94,11 +98,29 @@ export class BaseDashboardComponent implements OnInit {
     public correspondenceShareService: CorrespondenceShareService,
     public errorHandlerFctsService: ErrorHandlerFctsService,
     public appLoadConstService: AppLoadConstService
-  ) { }
+  ) {
+      this.navigationSubscription = this.router.events.subscribe((e: any) => {
+        if (e instanceof NavigationEnd) {
+          this.initialiseInvites();
+        }
+      });
+    }
 
   ngOnInit() {
     this.getPage(this.pagenumber);
     this.correspondenceShareService.currentSidebarAction.subscribe(menuAction => this.menuAction = menuAction);
+  }
+
+  ngOnDestroy() {
+    if (this.navigationSubscription) {
+      this.navigationSubscription.unsubscribe();
+    }
+  }
+
+  initialiseInvites() {
+    if (this.globalConstants.general.ProxyUserID !== this.globalConstants.general.UserID && this.router.url === this.globalConstants.general.routerRoot ) {
+      this.ngOnInit();
+    }
   }
 
   closeSidebar() {
@@ -512,11 +534,26 @@ export class BaseDashboardComponent implements OnInit {
       }
     });
   }
+  /***********************comment*************************** */
+  performerInfoDialogBox(PerformerID: number): void {
+    const dialogRef = this.dialogU.open(PerformerInfoDialogComponent, {
+      width: '100%',
+      panelClass: 'performerInfoDialogBox',
+      maxWidth: '40vw',
+      data: {
+        kuafID: PerformerID,
+       /*  reportType: this.reportType */
+      }
+    });
+  }
   /********************************************************* */
 
   correspondenceIconsFunction(correspondData: Correspondence, icon: string): void {
     if (icon === 'openComments') {
       this.commentsDialogBox(correspondData);
+    } else if (icon === 'openProxyInfo') {
+     this.performerInfoDialogBox(correspondData.SubWorkTask_PerformerID);
+     /* console.log(correspondData.SubWorkTask_PerformerID); */
     }
   }
 

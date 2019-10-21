@@ -7,6 +7,7 @@ import { SidebarInfoService } from './sidebar-info.service';
 import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handler-fcts.service';
 import { SidebarUsersInfo } from './sidebar-info.model';
 import { CurrentUserPhotoComponent } from './current-user-photo/current-user-photo.component';
+import { CorrespondenceShareService } from 'src/app/dashboard/services/correspondence-share.service';
 
 @Component({
   selector: 'app-side-navigation',
@@ -24,7 +25,8 @@ export class SideNavigationComponent implements OnInit {
     private appLoadConstService: AppLoadConstService,
     private sidebarInfoService: SidebarInfoService,
     private _errorHandlerFctsService: ErrorHandlerFctsService,
-    public router: Router, public translator: multiLanguageTranslator
+    public router: Router, public translator: multiLanguageTranslator,
+    public correspondenceShareService: CorrespondenceShareService
   ) { }
   @ViewChild('currentUserPhoto') private currentUserPhoto: CurrentUserPhotoComponent;
 
@@ -44,7 +46,14 @@ export class SideNavigationComponent implements OnInit {
 
   changePhoto() {
     this.currentUserPhoto.ngOnInit();
-    this.router.navigate([this.routerRoot]);
+    this.onProxyChange()
   }
+
+
+  onProxyChange(){
+    this.router.navigate([this._globalConstants.general.routerRoot]);
+    this.correspondenceShareService.onProxyChange();
+  }
+
 
 }

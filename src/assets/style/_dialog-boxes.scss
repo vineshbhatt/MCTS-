@@ -1,4 +1,4 @@
-.sendBackDialogBoxClass
+.sendBackDialogBoxClass, .performerInfoDialogBox
  {
   margin: auto !important;
 
@@ -384,3 +384,53 @@
 }
 /**************************************/
 
+.performerInfoDialogBox{
+  .employee-performer-info, .group-performer-info, .spinner_sm_wrappar{
+    height:20vw;
+    padding: 10px 20px 10px 10px;
+    font-family: "Roboto", sans-serif;
+    font-size: 14px;
+    line-height: 2em;
+  }
+  
+
+  .performer-info-item:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+
+  .spinner_sm_wrappar{
+    display: flex;
+    align-content: center;
+    align-items: center;
+  }
+
+  .employe-header{
+    padding-left:30px;
+    margin-bottom: 10px;
+    text-decoration: underline;
+  }
+
+  .close-button{
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: 0px;
+  }
+
+  .performer-info-item{
+    display: flex;
+    width: 100%;
+    h4{
+      width:200px;
+      padding-left:20px;
+    } 
+  }
+
+  .performer-info-item-group{
+    display: flex;
+    flex-direction: column;
+  }
+
+  .employee-links{
+    cursor: pointer;
+  }
+}

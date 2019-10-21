@@ -18,10 +18,17 @@ export class CorrespondenceShareService {
   private sidebarStateSource = new BehaviorSubject(true);
   currentSidebarAction = this.sidebarStateSource.asObservable();
 
+  private proxyChangeEvent = new BehaviorSubject('');
+  recoutForProxyChange = this.proxyChangeEvent.asObservable();
+
   constructor(
       private httpServices: HttpClient
     , private _appLoadConstService: AppLoadConstService
     ) { }
+
+  onProxyChange() {
+    this.proxyChangeEvent.next('response');
+  }
 
   setTransferToStatus(setStatusRequest: StatusRequest): Observable<any> {
     const rowsJSON = JSON.stringify({ setStatusRequest });
@@ -322,6 +329,47 @@ export class CorrespondenceShareService {
 
   changeSidebarAction(menuAction: boolean) {
     this.sidebarStateSource.next(menuAction);
+  }
+
+/*   getCommentsData(volumeID: string): Observable<CorrResponse[]> {
+    const params = new HttpParams()
+      .set('ReferenceID', volumeID);
+    return this.httpServices.get<CorrResponse[]>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${
+      FCTSDashBoard.WorkflowCommentsList
+      }?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    )
+    .pipe (
+      map (data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  } */
+
+  getPerformerUserInfo(kuafID): Observable<any>{
+    const params = new HttpParams()
+      .set('KuafID', kuafID);
+    return this.httpServices.get<any>(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${
+        FCTSDashBoard.PerformerInfo}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe (
+      map (data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
   }
 
 }

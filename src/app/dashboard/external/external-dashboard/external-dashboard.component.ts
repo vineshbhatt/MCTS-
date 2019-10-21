@@ -26,6 +26,7 @@ export class ExternalDashboardComponent extends BaseDashboardFullComponent  impl
     ) {
       super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService);
       this.reportType = 'ExtFullSearch';
+      this.routerProxyRedirect = '/dashboard/external/new-outbounds';
   }
 
 }

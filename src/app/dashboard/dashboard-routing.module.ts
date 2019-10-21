@@ -135,6 +135,7 @@ const dashboardRoutes: Routes = [
 @NgModule({
   imports: [
     RouterModule.forChild(dashboardRoutes)
+    // , RouterModule.forRoot(dashboardRoutes, {onSameUrlNavigation: 'reload'})
   ],
   exports: [
     RouterModule

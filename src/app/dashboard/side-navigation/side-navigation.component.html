@@ -18,8 +18,8 @@
       <button routerLink="./create/new-internal-outgoing" routerLinkActive="active" mat-menu-item>Internal
         Outbound</button>
     </mat-menu>
-    <li class="nav_item" *ngIf="showMR" matTooltip="Mailroom" matTooltipClass="matTooltip_001"
-      matTooltipPosition="right">
+    <li class="nav_item" *ngIf="showMR && _globalConstants.general.ProxyUserID===_globalConstants.general.UserID" 
+    matTooltip="Mailroom" matTooltipClass="matTooltip_001"  matTooltipPosition="right">
       <a class="" routerLink="./mailroom" routerLinkActive="active">
         <img class="nav_item_img_001" src="{{basehref}}assets/images/icons/group_message_icon.svg" alt="">
       </a>

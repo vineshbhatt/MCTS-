@@ -41,6 +41,7 @@ export class AppLoadConstService {
 
     setProxy(ProxyUserID: string) {
       this._CSConstants.general.ProxyUserID = ProxyUserID;
+      this._CSConstants.general.ProxyUserID === this._CSConstants.general.UserID ? this._CSConstants.general.showMR = true : this._CSConstants.general.showMR = false;
     }
 
     setUserNameProxy(UserName: string) {
