@@ -82,6 +82,7 @@ export const FCTSDashBoard = {
   setConnection: '5447238',
   getCorrespondenceFormValues: '5447123',
   setSubfolderPerm: 'CTA_SetSubfolderPerm',
+  documentTranlsation: '572180',
 
   initiateInternalWF: '560064',
   ProxyInfo: 'CTA_ProxyUserInfo',

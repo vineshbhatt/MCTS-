@@ -9,6 +9,7 @@ import { SidebarUsersInfo } from './sidebar-info.model';
 import { CurrentUserPhotoComponent } from './current-user-photo/current-user-photo.component';
 import { CorrespondenceShareService } from 'src/app/dashboard/services/correspondence-share.service';
 
+
 @Component({
   selector: 'app-side-navigation',
   templateUrl: './side-navigation.component.html'
@@ -43,7 +44,7 @@ export class SideNavigationComponent implements OnInit {
       }
     );
   }
-
+ 
   changePhoto() {
     this.currentUserPhoto.ngOnInit();
     this.onProxyChange()

@@ -100,6 +100,7 @@ import { ProxyInfoComponent } from './side-navigation/proxy-info/proxy-info.comp
 import { CurrentUserPhotoComponent } from './side-navigation/current-user-photo/current-user-photo.component';
 import { PerformerInfoDialogComponent } from './dialog-boxes/performer-info-dialog/performer-info-dialog.component';
 
+import { ProfileComponent } from './side-navigation/profile/profile.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -205,7 +206,9 @@ import { PerformerInfoDialogComponent } from './dialog-boxes/performer-info-dial
     UserInfoComponent,
     ProxyInfoComponent,
     CurrentUserPhotoComponent,
-    PerformerInfoDialogComponent
+    PerformerInfoDialogComponent,
+    CurrentUserPhotoComponent,
+    ProfileComponent
   ],
   entryComponents: [
     MailDetailView,
@@ -219,7 +222,9 @@ import { PerformerInfoDialogComponent } from './dialog-boxes/performer-info-dial
     TransferReturntoasDialogComponent,
     SendBackDialogComponent,
     CommentDialogComponent,
-    PerformerInfoDialogComponent
+    PerformerInfoDialogComponent,
+    CommentDialogComponent,
+    ProfileComponent
   ],
   providers: [ErrorHandlerFctsService, NotificationService, DatePipe]
 })

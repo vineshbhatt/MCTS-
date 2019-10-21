@@ -51,7 +51,8 @@
                       <input type="text" aria-label="Number" matInput formControlName="ExternalOrganization"
                         [matAutocomplete]="extOrgName">
                     </mat-form-field>
-                    <mat-autocomplete #extOrgName="matAutocomplete" class="longautocomplete" [displayWith]="displaySearchFilterValueExt">
+                    <mat-autocomplete #extOrgName="matAutocomplete" class="longautocomplete"
+                      [displayWith]="displaySearchFilterValueExt">
                       <mat-option *ngFor="let OrgName of (filteredExtOrgNames | async)" [value]="OrgName"
                         (onSelectionChange)="optionSelectionChangeExternal(OrgName, $event)">
                         {{OrgName?.OrgName_En}}
@@ -117,7 +118,8 @@
                     <mat-form-field class="input_tbl_wrp">
                       <input type="text" aria-label="Number" matInput formControlName="RecipientDepartment"
                         [matAutocomplete]="recpientDepName">
-                      <mat-autocomplete #recpientDepName="matAutocomplete" class="longautocomplete" [displayWith]="displaySearchFilterValueInt">
+                      <mat-autocomplete #recpientDepName="matAutocomplete" class="longautocomplete"
+                        [displayWith]="displaySearchFilterValueInt">
                         <mat-option *ngFor="let DepName of (filteredIntDepNames | async)" [value]="DepName"
                           (onSelectionChange)="optionSelectionChangeInternal(DepName, $event)">
                           {{DepName?.DepName_En}} {{ (DepName.SecName_En != null) ? (","+DepName.SecName_En) : "" }}
@@ -439,6 +441,10 @@
                           (click)=showActionProperties(coverLetterData.Dataid)>
                           <img src="{{basehref}}assets/images/icons/info-round-button.svg" alt="">
                         </a>
+                        <a matTooltip="Translate" class="btn btn_006"
+                          (click)=tranlsateDocument(coverLetterData.Dataid)>
+                          <img src="{{basehref}}assets/images/icons/history.svg" alt="">
+                        </a>
                         <a *ngIf="coverLetterData.deleteperm=='TRUE'" matTooltip="Delete" class="btn btn_006"
                           (click)="deleteDocument(coverLetterData.Dataid,'COVER')">
                           <img src="{{basehref}}assets/images/icons/remove_icon_001.svg" alt="">
@@ -539,6 +545,10 @@
                           (click)=showActionProperties(attachmentData.Dataid)>
                           <img src="{{basehref}}assets/images/icons/info-round-button.svg" alt="">
                         </a>
+                        <a matTooltip="Translate" class="btn btn_006"
+                          (click)=tranlsateDocument(attachmentData.Dataid)>
+                          <img src="{{basehref}}assets/images/icons/history.svg" alt="">
+                        </a>
                         <a *ngIf="attachmentData.deleteperm=='TRUE'" matTooltip="Delete" class="btn btn_006"
                           (click)="deleteDocument(attachmentData.Dataid,'ATTACHMENT')">
                           <img src="{{basehref}}assets/images/icons/remove_icon_001.svg" alt="">
@@ -570,7 +580,7 @@
     <!-- cc code end -->
     <div class="corp_dtl_btn_btm_wrapper">
       <button *ngIf="showGeneratebarcodeButton" class="btn_008" (click)="GenerateBarcode()"
-        prevent-double-submit>Generate Barcode</button>      
+        prevent-double-submit>Generate Barcode</button>
       <button *ngIf="showSendOnButton" class="btn_008" printTitle="Barcode" printSectionId="print-section"
         ngxPrint>Print Barcode</button>
       <button *ngIf="showSendOnButton" class="btn_008" printTitle="Reciept" printSectionId="print-reciept"
@@ -633,9 +643,9 @@
   </ng-scrollbar>
   <ng-scrollbar class="correspondence_deatil_prview_wrappper scroll_wrp_001" thumbClass="scroll_001"
     [ngClass]="expandedRightAction ? 'unActive' : 'ActiveRight'" *ngIf="expandedAction" compact="true">
-     <button (click)="expandeActionRightButton()" matRipple class="corsp_ext_btn">
-              <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
-            </button>
+    <button (click)="expandeActionRightButton()" matRipple class="corsp_ext_btn">
+      <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
+    </button>
     <ng-container *ngIf="showPreviewCoverLetter">
       <div class="documentViewerDiv" *ngFor="let docpreviewData of documentPreviewURL">
         <iframe class="iframeclass" [src]="docpreviewData.CorrespondencedocumentURL|safe"></iframe>
@@ -765,7 +775,7 @@
               </div>
 
               <div *ngIf="showEmployees" class="show_empl_name_wrp">
-                <ul *ngIf="treeControl.isExpanded(node)" class="show_empl_name_ul">              
+                <ul *ngIf="treeControl.isExpanded(node)" class="show_empl_name_ul">
                   <ng-container *ngIf="showempDetails">
                     <li class="show_empl_name" *ngFor="let empList of employeeMap |employeemaplist:node.OUID">
                       <mat-checkbox *ngIf="!multiSelect" (change)="selectSinglCheckboxEmp(empList,$event)"

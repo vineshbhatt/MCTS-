@@ -50,7 +50,7 @@
     <li class="nav_item">
       <!--  matTooltip="settings" matTooltipClass="matTooltip_001" -->
       <a class="nav_icon_002" [matMenuTriggerFor]="profailSettings">
-        <img class="nav_item_img_002" src="assets/images/icons/settings.svg" alt="">
+        <img class="nav_item_img_002" src="{{basehref}}assets/images/icons/settings.svg" alt="">
       </a>
       <mat-menu #profailSettings="matMenu" yPosition="above" class="main_side_menu translator_btn_wrapper">
         <button matRipple (click)="translator.setLanguage(x)" class="translator_btn"

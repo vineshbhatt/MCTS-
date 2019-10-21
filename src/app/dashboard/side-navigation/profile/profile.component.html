@@ -1,0 +1,44 @@
+<div class="profile_wrapper">
+  <div class="profile_header">
+    <p class="profile_header_text">My Profile</p>
+    <button class="profile_btn">
+      <img src="../../assets/images/icons/close_btn_white.svg" alt="">
+    </button>
+  </div>
+  <div class="profile_contant_wrapper"  *ngFor = "let usersData of userData">
+    <div class="profile_general_wrp">
+      <div  *ngFor = "let userDetail of usersData.userDetails">
+        <div class="user_profile_details">
+          <div class="user_profile_img_wrp">
+            <img class="user_profile_img" [src]="userDetail.userImg" alt="">
+            <label class="profile_dp_edit" for="profileImageSelect">Update</label>
+            <input class="profile_dp_input" type="file" id="profileImageSelect">
+          </div>
+          <div class="profile_user_detail">
+            <p class="title_001">{{userDetail.firstName}}&nbsp;{{userDetail.lastName}}</p>
+            <p class="text_14 color_001">Arabic Name : {{userDetail.arabicName}}</p>
+            <p class="text_14 color_001">Login : {{userDetail.login}}</p>
+            <p class="text_14 color_001">Role : {{userDetail.role }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="profile_group_wrp">
+        <div class="profile_group_header">
+          <span class="title_001">Group</span>
+          <span class="group_number">{{usersData.groupListNumber}}</span>
+        </div>
+        <div class="search_wrppaer">
+          <input class="search_box" type="text" placeholder="Search">
+        </div>
+        <ul class="group_list_item_wrapper">
+          <li *ngFor = "let groupDetail of usersData.groupList" class="group_list_item">
+                <span class="group_list_icom">
+                  <img alt="" class="org_img_001" src="../../assets/images/icons/folder_001.svg">
+                </span>
+                <span>{{groupDetail.groupName}}</span>
+          </li>
+        </ul>
+    </div>
+  </div>
+</div>
