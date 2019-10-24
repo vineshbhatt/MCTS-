@@ -100,9 +100,9 @@ export class BaseDashboardFullComponent extends BaseDashboardComponent implement
     this.externalOutboundRequestsWidth = Math.floor(this.externalOutboundRequests / this.totalExternalOutboundRequests * 100);
     // this.dataSource.paginator = this.overviewitem;
 
-    this.correspondenceService
+/*     this.correspondenceService
       .getUserData()
-      .subscribe(response => (this.userData = response));
+      .subscribe(response => (this.userData = response)); */
   }
 
   getPage(page: number): void {

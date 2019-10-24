@@ -21,6 +21,10 @@ export class CorrespondenceShareService {
   private proxyChangeEvent = new BehaviorSubject('');
   recoutForProxyChange = this.proxyChangeEvent.asObservable();
 
+  private countDataFromSidebar = new BehaviorSubject([]);
+  mrCountReady = this.countDataFromSidebar.asObservable();
+
+
   constructor(
       private httpServices: HttpClient
     , private _appLoadConstService: AppLoadConstService
@@ -331,6 +335,10 @@ export class CorrespondenceShareService {
     this.sidebarStateSource.next(menuAction);
   }
 
+  sendCountToDashboard(mailroomCount: any) {
+    this.countDataFromSidebar.next(mailroomCount);
+  }
+
 /*   getCommentsData(volumeID: string): Observable<CorrResponse[]> {
     const params = new HttpParams()
       .set('ReferenceID', volumeID);
@@ -371,5 +379,25 @@ export class CorrespondenceShareService {
       })
     );
   }
+
+/*   getUserImg(id: number): Observable<any> {
+    const params = new HttpParams();
+    return this.httpServices
+      .get(
+        this.CSUrl + `${FCTSDashBoard.WFApiV1}members/${id}/photo`,
+        { headers:
+          { OTCSTICKET: CSConfig.AuthToken },
+          params: params,
+          responseType: 'blob'
+        },
+      ).pipe (
+        map (data => {
+          return data;
+        }),
+        catchError(error => {
+          return throwError(error);
+        })
+      );
+  } */
 
 }

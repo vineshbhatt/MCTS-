@@ -71,11 +71,14 @@ export class UserInfoComponent implements OnInit {
   setUserInitials() {
     this.initials = this.userData.FirstName_En.slice(0, 1).toUpperCase() + this.userData.LastName_En.slice(0, 1).toUpperCase();
   }
-  openProfile(userId:string): void {
+  openProfile(userdata: any): void {
     const dialogRef = this.dialogU.open(ProfileComponent, {
       width: '100%',
-      panelClass: 'transferDialogBoxClass',
+      panelClass: 'profileDialogBox',
       maxWidth: '85vw',
+      data: {
+        UserData: userdata
+      }
     });
   }
 

@@ -87,6 +87,7 @@ export const FCTSDashBoard = {
   initiateInternalWF: '560064',
   ProxyInfo: 'CTA_ProxyUserInfo',
   PerformerInfo: '5469407',
+  UserGroups: '5471192',
   // BaseHref: '/img/fctsangular/fctsapp/',
   BaseHref: '/',
   CSUrl: 'http://mv2cdmsadp02/otcs/cs.exe'

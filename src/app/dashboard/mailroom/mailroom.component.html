@@ -11,7 +11,7 @@
           <a class="color_001 text_14" [routerLink]="[inbound.router]" routerLinkActive="sideNavActive">
             <img class="menu_img_001" [src]="basehref+inbound.icon" alt="" />
             <span class="menu_text_001">{{ inbound.Title }}</span>
-            <span class="menu_nubr">{{ inbound.Count }}</span>
+            <span class="menu_nubr">({{ inbound.Count }})</span>
           </a>
         </li>
       </ul>
@@ -21,7 +21,7 @@
           <a class="color_001 text_14" [routerLink]="[outbound.router]" routerLinkActive="sideNavActive">
             <img class="menu_img_001" [src]="basehref+outbound.icon" alt="" />
             <span class="menu_text_001">{{ outbound.Title }}</span>
-            <span class="menu_nubr">{{ outbound.Count }}</span>
+            <span class="menu_nubr">({{ outbound.Count }})</span>
           </a>
         </li>
       </ul>

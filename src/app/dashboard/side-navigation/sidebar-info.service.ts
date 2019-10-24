@@ -53,6 +53,28 @@ export class SidebarInfoService {
       );
   }
 
+  getUserGroups(ID: number, SpecGroupType: string): Observable<any> {
+    const params = new HttpParams()
+    .set('KuafID', ID.toString())
+    .set('SpecGroupType', SpecGroupType);
+    return this.httpServices
+      .get(
+        this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.UserGroups}?Format=webreport`,
+        { headers:
+          { OTCSTICKET: CSConfig.AuthToken },
+          params: params
+        }
+      )
+      .pipe (
+        map (data => {
+          return data;
+        }),
+        catchError(error => {
+          return throwError(error);
+        })
+      );
+  }
+
   getUserImg(id: number): Observable<any> {
     const params = new HttpParams();
     return this.httpServices

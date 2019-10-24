@@ -539,7 +539,7 @@ export class BaseDashboardComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialogU.open(PerformerInfoDialogComponent, {
       width: '100%',
       panelClass: 'performerInfoDialogBox',
-      maxWidth: '40vw',
+      maxWidth: '85vw',
       data: {
         kuafID: PerformerID,
        /*  reportType: this.reportType */
