@@ -99,6 +99,8 @@ import { UserInfoComponent } from './side-navigation/user-info/user-info.compone
 import { ProxyInfoComponent } from './side-navigation/proxy-info/proxy-info.component';
 import { CurrentUserPhotoComponent } from './side-navigation/current-user-photo/current-user-photo.component';
 import { ProfileComponent } from './side-navigation/profile/profile.component';
+
+
 @NgModule({
   imports: [
     CommonModule,
@@ -216,7 +218,7 @@ import { ProfileComponent } from './side-navigation/profile/profile.component';
     TransferReplyDialogComponent,
     TransferReturntoasDialogComponent,
     SendBackDialogComponent,
-    CommentDialogComponent,ProfileComponent
+    CommentDialogComponent, ProfileComponent
   ],
   providers: [ErrorHandlerFctsService, NotificationService, DatePipe]
 })

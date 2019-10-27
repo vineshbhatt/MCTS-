@@ -433,6 +433,18 @@
                     (change)="uploadCSDocument($event.target.files,corrFolderData.AttachCorrAttachmentsID,'ATTACHMENT')" />
                 </div>
               </li>
+              <li class="cl_btn_wrp">
+                <button class="cl_btn cl_btn_003" (click)="showCSCopy(corrFolderData.AttachCorrAttachmentsID)"
+                  matTooltip="Copy From Content Server">
+                  <img src="{{basehref}}assets/images/icons/search_icon_004.svg" alt="">
+                </button>
+              </li>
+              <li class="cl_btn_wrp">
+                <button class="cl_btn cl_btn_003" matTooltip="Scan"
+                  (click)="loadFolderPageForScan(corrFolderData.AttachCorrAttachmentsID)">
+                  <img src="{{basehref}}assets/images/icons/scanner_white.svg" alt="">
+                </button>
+              </li>
             </ul>
             <div *ngIf="ccProgbar" class="spinner_sm_wrappar">
               <mat-spinner class="spinner_sm"></mat-spinner>
@@ -673,7 +685,7 @@
     </button>
     <ng-container *ngIf="showPreviewCoverLetter">
       <div class="documentViewerDiv" *ngFor="let docpreviewData of documentPreviewURL">
-        <iframe class="iframeclass" [src]="docpreviewData.CorrespondencedocumentURL|safe"></iframe>
+        <iframe class="iframeclass" scrolling="no" frameborder="0" [src]="docpreviewData.CorrespondencedocumentURL|safe"></iframe>
       </div>
     </ng-container>
 

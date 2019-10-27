@@ -16,7 +16,8 @@ export class UserInfoComponent implements OnInit {
     public sidebarInfoService: SidebarInfoService,
     public sanitizer: DomSanitizer,
     public appLoadConstService: AppLoadConstService,
-    public errorHandlerFctsService: ErrorHandlerFctsService, public dialogU: MatDialog
+    public errorHandlerFctsService: ErrorHandlerFctsService,
+    public dialogU: MatDialog
   ) { }
   @Output() userChanged = new EventEmitter<string>();
   @Input() userData: UserInfo;
@@ -70,7 +71,7 @@ export class UserInfoComponent implements OnInit {
   setUserInitials() {
     this.initials = this.userData.FirstName_En.slice(0, 1).toUpperCase() + this.userData.LastName_En.slice(0, 1).toUpperCase();
   }
-  openProfile(userId:string): void {
+  openProfile(userId: number): void {
     const dialogRef = this.dialogU.open(ProfileComponent, {
       width: '100%',
       panelClass: 'transferDialogBoxClass',

@@ -1423,4 +1423,16 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
       }
     );
   }
+  showCSCopy(folderID: string) {
+    this.showPreviewTreeArea = false;
+    this.showPreviewCoverLetter = true;
+    this.correspondenceDetailsService.getCopyFromContentServerURL(folderID)
+      .subscribe(correspondenceCovertData => this.documentPreviewURL = correspondenceCovertData);
+  }
+  loadFolderPageForScan(folderID: string) {
+    this.showPreviewTreeArea = false;
+    this.showPreviewCoverLetter = true;
+    this.correspondenceDetailsService.getFolderBrowse(folderID)
+      .subscribe(correspondenceCovertData => this.documentPreviewURL = correspondenceCovertData);
+  }
 }

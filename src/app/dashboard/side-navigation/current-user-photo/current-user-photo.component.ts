@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { SidebarInfoService } from '../sidebar-info.service';
-import { SidebarUsersInfo , UserInfo } from '../sidebar-info.model';
-import {DomSanitizer} from '@angular/platform-browser';
+import { SidebarUsersInfo, UserInfo } from '../sidebar-info.model';
+import { DomSanitizer } from '@angular/platform-browser';
 import { AppLoadConstService } from 'src/app/app-load-const.service';
 import { UserInfoComponent } from '../user-info/user-info.component';
 import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handler-fcts.service';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-current-user-photo',
@@ -16,10 +17,10 @@ export class CurrentUserPhotoComponent extends UserInfoComponent implements OnIn
     public sidebarInfoService: SidebarInfoService,
     public sanitizer: DomSanitizer,
     public appLoadConstService: AppLoadConstService,
-    public errorHandlerFctsService: ErrorHandlerFctsService,
+    public errorHandlerFctsService: ErrorHandlerFctsService, public dialogU: MatDialog
   ) {
-    super( sidebarInfoService, sanitizer, appLoadConstService, errorHandlerFctsService);
-   }
+    super(sidebarInfoService, sanitizer, appLoadConstService, errorHandlerFctsService, dialogU);
+  }
 
   ngOnInit() {
     this.userPhoto = undefined;

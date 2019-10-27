@@ -1,41 +1,38 @@
-
-
 .iframeclass {
-    height: 100%;
-    width: 100%;
-  }
-  
-  .documentViewerDiv {
-    height: 100%;
-  }
-  
-  .buttonHide{
-    display:none;
-  }
-  .iframeclass {
-    height: 100%;
-    width: 100%;
-  }
-  
-  .documentViewerDiv {
-    height: 100%;
-    padding-top:30px;
-  }
-  
-  .image-upload>input {
-    display: none;
-  }
-  
+  height: 100%;
+  width: 100%;
+  border: none;
+}
+
+.documentViewerDiv {
+  height: 100%;
+}
+
+.buttonHide {
+  display: none;
+}
+
+.documentViewerDiv {
+  height: 100%;
+  padding-top: 30px;
+}
+
+.image-upload>input {
+  display: none;
+}
+
 
 .form_eic_cont_wrapper {
   display: flex;
   height: 100%;
-  .detail_header{
+
+  .detail_header {
     margin-right: 30px;
   }
-  .corsp_ext_btn{
+
+  .corsp_ext_btn {
     top: 0px !important;
-    right:30px !important;
+    right: 30px !important;
   }
 
   .corres_table_wrapper .table {
@@ -78,8 +75,9 @@
       min-width: 40px;
       box-sizing: border-box;
     }
-    .CCtable{
-      width:32%;
+
+    .CCtable {
+      width: 32%;
     }
   }
 

@@ -84,7 +84,8 @@
                     <mat-form-field class="input_tbl_wrp">
                       <input type="text" aria-label="Number" matInput formControlName="RecipientDepartment"
                         [matAutocomplete]="recpientDepName">
-                      <mat-autocomplete #recpientDepName="matAutocomplete" class="longautocomplete" [displayWith]="displaySearchFilterValueInt">
+                      <mat-autocomplete #recpientDepName="matAutocomplete" class="longautocomplete"
+                        [displayWith]="displaySearchFilterValueInt">
                         <mat-option *ngFor="let DepName of (filteredIntDepNames | async)" [value]="DepName"
                           (onSelectionChange)="optionSelectionChangeInternal(DepName, $event)">
                           {{DepName?.DepName_En}} {{ (DepName.SecName_En != null) ? (","+DepName.SecName_En) : "" }}
@@ -195,7 +196,7 @@
                   </mat-form-field>
                   <mat-checkbox formControlName="confidential" (change)="confidentialChange($event)">Confidential
                   </mat-checkbox>
-                </div>              
+                </div>
                 <mat-form-field class="col_6">
                   <input matInput autocomplete="off" placeholder="ID Number" formControlName="idNumber"
                     [ngClass]="{ 'is-invalid': submitted && f.IDNumber.errors }">
@@ -212,7 +213,7 @@
                       {{option.EN}}
                     </mat-option>
                   </mat-autocomplete>
-                </mat-form-field>             
+                </mat-form-field>
                 <mat-form-field class="col_12">
                   <input matInput autocomplete="off" placeholder="Arabic Subject" formControlName="arabicSubject"
                     [ngClass]="{ 'is-invalid': submitted && f.arabicSubject.errors }" required>
@@ -277,7 +278,7 @@
                 </mat-form-field>
                 <mat-form-field class="col_6">
                   <input matInput autocomplete="off" placeholder="Tender Number" formControlName="tenderNumber">
-                </mat-form-field>         
+                </mat-form-field>
                 <mat-form-field class="col_6">
                   <input matInput autocomplete="off" placeholder="Staff Number" formControlName="staffNumber">
                 </mat-form-field>
@@ -389,6 +390,18 @@
                   <input id="file-inputAttachment" type="file"
                     (change)="uploadCSDocument($event.target.files,corrFolderData.AttachCorrAttachmentsID,'ATTACHMENT')" />
                 </div>
+              </li>
+              <li class="cl_btn_wrp">
+                <button class="cl_btn cl_btn_003" (click)="showCSCopy(corrFolderData.AttachCorrAttachmentsID)"
+                  matTooltip="Copy From Content Server">
+                  <img src="{{basehref}}assets/images/icons/search_icon_004.svg" alt="">
+                </button>
+              </li>
+              <li class="cl_btn_wrp">
+                <button class="cl_btn cl_btn_003" matTooltip="Scan"
+                  (click)="loadFolderPageForScan(corrFolderData.AttachCorrAttachmentsID)">
+                  <img src="{{basehref}}assets/images/icons/scanner_white.svg" alt="">
+                </button>
               </li>
             </ul>
             <div *ngIf="ccProgbar" class="spinner_sm_wrappar">
@@ -544,7 +557,7 @@
               </button>
             </div>
           </mat-expansion-panel>
-        </form>        
+        </form>
       </mat-accordion>
     </div>
     <!-- cc code end -->
@@ -565,7 +578,7 @@
     </button>
     <ng-container *ngIf="showPreviewCoverLetter">
       <div class="documentViewerDiv" *ngFor="let docpreviewData of documentPreviewURL">
-        <iframe class="iframeclass" [src]="docpreviewData.CorrespondencedocumentURL|safe"></iframe>
+        <iframe class="iframeclass" scrolling="no" frameborder="0" [src]="docpreviewData.CorrespondencedocumentURL|safe"></iframe>
       </div>
     </ng-container>
     <div *ngIf="showPreviewTreeArea">
@@ -578,7 +591,7 @@
       </h3>
       <div class="org_cht_header" *ngIf="!dataSource.data.length == 0">
         <div class="search_wrapper">
-          <input class="org_search" type="text" placeholder="ASHGAL Public Work authority" #organizationalChartSearch
+          <input class="org_search" type="text" placeholder="Work authority" #organizationalChartSearch
             (keyup.enter)="searchTreeValue(organizationalChartSearch.value)">
           <button (click)="searchTreeValue(organizationalChartSearch.value)" class="search_btn"></button>
         </div>

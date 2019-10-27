@@ -825,5 +825,35 @@ export class CorrespondenceDetailsService {
       }
     );
   }
+  getCopyFromContentServerURL(folderID): Observable<DocumentPreview[]> {
+    const params =
+      new HttpParams()
+        .set('DestinationFolderID', folderID)
+        .set('startFolderID', folderID);
+
+    return this.httpServices.get<DocumentPreview[]>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.copyfromcsurl}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken },
+        params: params
+      }
+    );
+  }
+
+  getFolderBrowse(folderID): Observable<any> {
+    const params =
+      new HttpParams()
+        .set('folderID', folderID)
+
+    return this.httpServices.get<DocumentPreview[]>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.folderbrowserurl}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken },
+        params: params
+      }
+    );
+  }
 
 }

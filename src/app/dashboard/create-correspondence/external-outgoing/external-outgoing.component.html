@@ -83,7 +83,8 @@
                       <input type="text" aria-label="Number" matInput formControlName="ExternalOrganization"
                         [matAutocomplete]="extOrgName">
                     </mat-form-field>
-                    <mat-autocomplete #extOrgName="matAutocomplete" class="longautocomplete" [displayWith]="displaySearchFilterValueExt">
+                    <mat-autocomplete #extOrgName="matAutocomplete" class="longautocomplete"
+                      [displayWith]="displaySearchFilterValueExt">
                       <mat-option *ngFor="let OrgName of (filteredExtOrgNames | async)" [value]="OrgName"
                         (onSelectionChange)="optionSelectionChangeExternal(OrgName, $event)">
                         {{OrgName?.OrgName_En}}
@@ -436,6 +437,18 @@
                     (change)="uploadCSDocument($event.target.files,corrFolderData.AttachCorrAttachmentsID,'ATTACHMENT')" />
                 </div>
               </li>
+              <li class="cl_btn_wrp">
+                <button class="cl_btn cl_btn_003" (click)="showCSCopy(corrFolderData.AttachCorrAttachmentsID)"
+                  matTooltip="Copy From Content Server">
+                  <img src="{{basehref}}assets/images/icons/search_icon_004.svg" alt="">
+                </button>
+              </li>
+              <li class="cl_btn_wrp">
+                <button class="cl_btn cl_btn_003" matTooltip="Scan"
+                  (click)="loadFolderPageForScan(corrFolderData.AttachCorrAttachmentsID)">
+                  <img src="{{basehref}}assets/images/icons/scanner_white.svg" alt="">
+                </button>
+              </li>
             </ul>
             <div *ngIf="ccProgbar" class="spinner_sm_wrappar">
               <mat-spinner class="spinner_sm"></mat-spinner>
@@ -590,7 +603,7 @@
               </button>
             </div>
           </mat-expansion-panel>
-        </form>        
+        </form>
       </mat-accordion>
     </div>
     <!-- cc code end -->
@@ -611,7 +624,7 @@
     </button>
     <ng-container *ngIf="showPreviewCoverLetter">
       <div class="documentViewerDiv" *ngFor="let docpreviewData of documentPreviewURL">
-        <iframe class="iframeclass" [src]="docpreviewData.CorrespondencedocumentURL|safe"></iframe>
+        <iframe class="iframeclass"scrolling="no" frameborder="0" [src]="docpreviewData.CorrespondencedocumentURL|safe"></iframe>
       </div>
     </ng-container>
     <div *ngIf="showPreviewTreeArea">
@@ -624,7 +637,7 @@
       </h3>
       <div class="org_cht_header" *ngIf="!dataSource.data.length == 0">
         <div class="search_wrapper">
-          <input class="org_search" type="text" placeholder="ASHGAL Public Work authority" #organizationalChartSearch
+          <input class="org_search" type="text" placeholder="Work authority" #organizationalChartSearch
             (keyup.enter)="searchTreeValue(organizationalChartSearch.value)">
           <button (click)="searchTreeValue(organizationalChartSearch.value)" class="search_btn"></button>
         </div>

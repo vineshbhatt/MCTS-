@@ -85,7 +85,8 @@ export const FCTSDashBoard = {
   getCorrespondenceFormValues: '543928',
   setSubfolderPerm: 'CTA_SetSubfolderPerm',
   documentTranlsation: '572180',
-  
+  copyfromcsurl: '591864',
+  folderbrowserurl:'592560',
   initiateInternalWF: '560064',
   ProxyInfo: 'CTA_ProxyUserInfo',
   // BaseHref: '/img/fctsangular/fctsapp/',

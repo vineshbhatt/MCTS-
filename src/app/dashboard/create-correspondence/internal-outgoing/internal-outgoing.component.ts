@@ -534,12 +534,12 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
 
     this.initiateInternalCorrespondenceDetails.ArabicSubject = this.correspondenceDetailsForm.get('arabicSubject').value;
     this.initiateInternalCorrespondenceDetails.EnglishSubject = this.correspondenceDetailsForm.get('englishSubject').value;
-    
+
     this.initiateInternalCorrespondenceDetails.ProjectCode = this.correspondenceDetailsForm.get('projectCode').value;
     this.initiateInternalCorrespondenceDetails.BudgetNumber = this.correspondenceDetailsForm.get('budgetNumber').value;
     this.initiateInternalCorrespondenceDetails.TenderNumber = this.correspondenceDetailsForm.get('tenderNumber').value;
     this.initiateInternalCorrespondenceDetails.ContractNumber = this.correspondenceDetailsForm.get('contractNumber').value;
-  
+
     this.initiateInternalCorrespondenceDetails.StaffNumber = this.correspondenceDetailsForm.get('staffNumber').value;
     this.initiateInternalCorrespondenceDetails.Confidential = this.correspondenceDetailsForm.get('confidential').value;
 
@@ -778,12 +778,12 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
     this.documentMetadataSync.docFolderID = this.corrFolderData.AttachCorrCoverID.toString();
     this.documentMetadataSync.srcDocID = this.coverID;
     if (this.templateLanguage === 'EN') {
-    debugger;
+      debugger;
       this.documentMetadataSync.SenderOrganization = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].OrganizationName_EN)
       this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].DepartmentName_EN + (this.userInfo[0].myRows[0].SectionName_EN != null ? ("," + this.userInfo[0].myRows[0].SectionName_EN) : ""))
-      this.documentMetadataSync.SenderName = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].Name_EN);      
+      this.documentMetadataSync.SenderName = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].Name_EN);
       this.documentMetadataSync.RecipientOrganization = this.convertUndefindedOrNulltoemptyString(this.IntRecipientInfo.OrgName_En)
-      this.documentMetadataSync.RecipientDepartment = this.convertUndefindedOrNulltoemptyString(this.IntRecipientInfo.DepName_En) 
+      this.documentMetadataSync.RecipientDepartment = this.convertUndefindedOrNulltoemptyString(this.IntRecipientInfo.DepName_En)
       this.documentMetadataSync.RecipientRole = this.convertUndefindedOrNulltoemptyString(this.IntRecipientInfo.RoleName_En)
       this.documentMetadataSync.RecipientName = this.convertUndefindedOrNulltoemptyString(this.IntRecipientInfo.Name_En)
       this.documentMetadataSync.DATE = this.convertUndefindedOrNulltoemptyString(this.correspondenceDetailsForm.get('regDate').value)
@@ -795,9 +795,9 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
       this.documentMetadataSync.SenderOrganization = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].OrganizationName_AR)
       this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].DepartmentName_AR + (this.userInfo[0].myRows[0].SectionName_AR != null ? ("," + this.userInfo[0].myRows[0].SectionName_AR) : ""))
       this.documentMetadataSync.SenderName = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].Name_AR)
-     
+
       this.documentMetadataSync.RecipientOrganization = this.convertUndefindedOrNulltoemptyString(this.IntRecipientInfo.OrgName_Ar)
-      this.documentMetadataSync.RecipientDepartment = this.convertUndefindedOrNulltoemptyString(this.IntRecipientInfo.DepName_AR) 
+      this.documentMetadataSync.RecipientDepartment = this.convertUndefindedOrNulltoemptyString(this.IntRecipientInfo.DepName_AR)
       this.documentMetadataSync.RecipientRole = this.convertUndefindedOrNulltoemptyString(this.IntRecipientInfo.RoleName_Ar)
       this.documentMetadataSync.RecipientName = this.convertUndefindedOrNulltoemptyString(this.IntRecipientInfo.Name_Ar)
       this.documentMetadataSync.DATE = this.convertUndefindedOrNulltoemptyString(this.correspondenceDetailsForm.get('regDate').value)
@@ -928,5 +928,16 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
       return obj;
     }
   }
-
+  showCSCopy(folderID: string) {
+    this.showPreviewTreeArea = false;
+    this.showPreviewCoverLetter = true;
+    this.correspondenceDetailsService.getCopyFromContentServerURL(folderID)
+      .subscribe(correspondenceCovertData => this.documentPreviewURL = correspondenceCovertData);
+  }
+  loadFolderPageForScan(folderID: string) {
+    this.showPreviewTreeArea = false;
+    this.showPreviewCoverLetter = true;
+    this.correspondenceDetailsService.getFolderBrowse(folderID)
+      .subscribe(correspondenceCovertData => this.documentPreviewURL = correspondenceCovertData);
+  }
 }

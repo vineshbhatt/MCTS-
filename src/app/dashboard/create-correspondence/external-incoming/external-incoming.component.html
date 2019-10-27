@@ -390,24 +390,21 @@
 
                   <label for="file-input" class="cl_btn cl_btn_002" matTooltip="Add document">
                     <img src="{{basehref}}assets/images/icons/cl_file_add_doc.svg" alt="">
-                  </label>
-                  <!-- <button class="cl_btn cl_btn_002" for="file-input" matTooltip="Add document">                 
-                    <img src="{{basehref}}assets/images/icons/cl_file_add_doc.svg" alt="">
-                </button> -->
+                  </label>               
                   <input id="file-input" type="file"
                     (change)="uploadCSDocument($event.target.files,corrFolderData.AttachCorrCoverID,'COVER')" />
                 </div>
               </li>
-              <li class="cl_btn_wrp">
+              <!-- <li class="cl_btn_wrp">
                 <button class="cl_btn cl_btn_003" matTooltip="Enterprise Connect">
                   <img src="{{basehref}}assets/images/icons/scanner_white.svg" alt="">
                 </button>
-              </li>
-              <li class="cl_btn_wrp">
+              </li> -->
+              <!-- <li class="cl_btn_wrp">
                 <button class="cl_btn cl_btn_004" matTooltip="Scan">
                   <img src="{{basehref}}assets/images/icons/search_icon_004.svg" alt="">
                 </button>
-              </li>
+              </li> -->
             </ul>
             <div *ngIf="coverProgBar" class="spinner_sm_wrappar">
               <mat-spinner class="spinner_sm"></mat-spinner>
@@ -441,8 +438,7 @@
                           (click)=showActionProperties(coverLetterData.Dataid)>
                           <img src="{{basehref}}assets/images/icons/info-round-button.svg" alt="">
                         </a>
-                        <a matTooltip="Translate" class="btn btn_006"
-                          (click)=tranlsateDocument(coverLetterData.Dataid)>
+                        <a matTooltip="Translate" class="btn btn_006" (click)=tranlsateDocument(coverLetterData.Dataid)>
                           <img src="{{basehref}}assets/images/icons/history.svg" alt="">
                         </a>
                         <a *ngIf="coverLetterData.deleteperm=='TRUE'" matTooltip="Delete" class="btn btn_006"
@@ -482,15 +478,24 @@
                 </button>
               </li>
               <li class="cl_btn_wrp">
-
                 <div class="image-upload">
-
                   <label for="file-inputAttachment" class="cl_btn cl_btn_002" matTooltip="Add document">
                     <img src="{{basehref}}assets/images/icons/cl_file_add_doc.svg" alt="">
                   </label>
                   <input id="file-inputAttachment" type="file"
                     (change)="uploadCSDocument($event.target.files,corrFolderData.AttachCorrAttachmentsID,'ATTACHMENT')" />
                 </div>
+              </li>
+              <li class="cl_btn_wrp">
+                <button class="cl_btn cl_btn_003" (click)="showCSCopy(corrFolderData.AttachCorrAttachmentsID)"
+                  matTooltip="Copy From Content Server">
+                  <img src="{{basehref}}assets/images/icons/search_icon_004.svg" alt="">
+                </button>
+              </li>
+              <li class="cl_btn_wrp">
+                <button class="cl_btn cl_btn_003" matTooltip="Scan" (click)="loadFolderPageForScan(corrFolderData.AttachCorrAttachmentsID)">
+                  <img src="{{basehref}}assets/images/icons/scanner_white.svg" alt="">
+                </button>
               </li>
               <!-- <li class="cl_btn_wrp">
                 <button class="cl_btn cl_btn_005" matTooltip="Add folder">
@@ -545,8 +550,7 @@
                           (click)=showActionProperties(attachmentData.Dataid)>
                           <img src="{{basehref}}assets/images/icons/info-round-button.svg" alt="">
                         </a>
-                        <a matTooltip="Translate" class="btn btn_006"
-                          (click)=tranlsateDocument(attachmentData.Dataid)>
+                        <a matTooltip="Translate" class="btn btn_006" (click)=tranlsateDocument(attachmentData.Dataid)>
                           <img src="{{basehref}}assets/images/icons/history.svg" alt="">
                         </a>
                         <a *ngIf="attachmentData.deleteperm=='TRUE'" matTooltip="Delete" class="btn btn_006"
@@ -597,7 +601,7 @@
     </div>
 
     <div id="print-section" style="display:none">
-      <span style="font-weight:bold;text-align :center;margin-left:15%">Public Works Authority</span><br>
+      <span style="font-weight:bold;text-align :center;margin-left:15%"></span><br>
       <span style="font-weight:bold;text-align :center;margin-left:20%">{{barcodeDate}}</span>
       <ngx-barcode [bc-value]="barcodeNumberToPrint" [bc-format]="CODE128" [bc-display-value]="true" [bc-font-size]="36"
         [bc-font]="Arial" [bc-text-margin]="5" [bc-height]="55"></ngx-barcode>
@@ -648,7 +652,8 @@
     </button>
     <ng-container *ngIf="showPreviewCoverLetter">
       <div class="documentViewerDiv" *ngFor="let docpreviewData of documentPreviewURL">
-        <iframe class="iframeclass" [src]="docpreviewData.CorrespondencedocumentURL|safe"></iframe>
+        <iframe class="iframeclass" scrolling="no" frameborder="0"
+          [src]="docpreviewData.CorrespondencedocumentURL|safe"></iframe>
       </div>
     </ng-container>
 
@@ -663,7 +668,7 @@
       </h3>
       <div class="org_cht_header" *ngIf="!dataSource.data.length == 0">
         <div class="search_wrapper">
-          <input class="org_search" type="text" placeholder="ASHGAL Public Work authority" #organizationalChartSearch
+          <input class="org_search" type="text" placeholder="Search Organization" #organizationalChartSearch
             (keyup.enter)="searchTreeValue(organizationalChartSearch.value)">
           <button (click)="searchTreeValue(organizationalChartSearch.value)" class="search_btn"></button>
         </div>
