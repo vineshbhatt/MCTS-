@@ -34,6 +34,7 @@ export class MailroomsComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this._correspondenceService.getSideBarElements(FCTSDashBoard.getMenuCountMR).subscribe(data => {
       this.menuItems = data as string[];
+      this.sendCountToDashboard();
     });
   }
 
@@ -43,15 +44,20 @@ export class MailroomsComponent implements OnInit, AfterViewInit {
   }
 
   changeItem(itemsCount: number) {
+    debugger;
     if (Array.isArray(this.menuItems) && this.menuItems.length) {
       const locationName = window.location.pathname.split('/').pop();
       this.menuItems[0].inbounds.forEach((element) => {
-        if (element.router === locationName) { element.Count = '(' + itemsCount + ')'; }
+        if (element.router === locationName) { element.Count =  itemsCount;  }
       });
       this.menuItems[0].outbounds.forEach((element) => {
-        if (element.router === locationName) { element.Count = '(' + itemsCount + ')'; }
+        if (element.router === locationName) { element.Count =  itemsCount;  }
       });
     }
+  }
+
+  sendCountToDashboard() {
+    this.correspondenceShareService.sendCountToDashboard(this.menuItems);
   }
 
 }

@@ -17,10 +17,11 @@ export class ProxyInfoComponent extends UserInfoComponent implements OnInit {
     public sidebarInfoService: SidebarInfoService,
     public sanitizer: DomSanitizer,
     public appLoadConstService: AppLoadConstService,
-    public errorHandlerFctsService: ErrorHandlerFctsService, public dialogU: MatDialog
-  ) {
-    super(sidebarInfoService, sanitizer, appLoadConstService, errorHandlerFctsService, dialogU);
-  }
+    public errorHandlerFctsService: ErrorHandlerFctsService,
+    public dialogU: MatDialog
+    ) {
+      super( sidebarInfoService, sanitizer, appLoadConstService, errorHandlerFctsService, dialogU);
+    }
 
   ngOnInit() {
     if (this.userData.PhotoID) {

@@ -680,7 +680,7 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     return ID.toString();
   }
   SendOnCollaborators() {
-   // TODO: send on Collaborators when Send ON
+    // TODO: send on Collaborators when Send ON
   }
   submitCorrespondenceAction(action: string) {
     //  set Disposition
@@ -1374,8 +1374,7 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     this.editMode = true;
   }
 
-  toShowWFButtons(taskID: string): any {
-    debugger;
+  toShowWFButtons(taskID: string): any {    
     let WFStepsUI: any;
     if (this.CorrespondencType === 'Incoming') {
       WFStepsUI = this.globalConstants.WFStepsUI.Incoming;
@@ -1385,8 +1384,9 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
       WFStepsUI = this.globalConstants.WFStepsUI.Internal;
     }
     let tmpObj: any;
-    WFStepsUI.forEach(function (taskObj) {
-      if (taskID === taskObj.TaskID) {
+    WFStepsUI.forEach(function (taskObj) {      
+      let tempTaskList = taskObj.TaskID.split(",");
+      if (tempTaskList.includes(taskID)) {
         tmpObj = taskObj;
       }
     });

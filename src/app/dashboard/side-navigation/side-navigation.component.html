@@ -18,8 +18,8 @@
       <button routerLink="./create/new-internal-outgoing" routerLinkActive="active" mat-menu-item>Internal
         Outbound</button>
     </mat-menu>
-    <li class="nav_item" *ngIf="showMR" matTooltip="Mailroom" matTooltipClass="matTooltip_001"
-      matTooltipPosition="right">
+    <li class="nav_item" *ngIf="showMR && _globalConstants.general.ProxyUserID===_globalConstants.general.UserID"
+      matTooltip="Mailroom" matTooltipClass="matTooltip_001" matTooltipPosition="right">
       <a class="" routerLink="./mailroom" routerLinkActive="active">
         <img class="nav_item_img_001" src="{{basehref}}assets/images/icons/group_message_icon.svg" alt="">
       </a>
@@ -48,18 +48,53 @@
       </a>
     </li>
     <li class="nav_item">
-      <!--  matTooltip="settings" matTooltipClass="matTooltip_001" -->
       <a class="nav_icon_002" [matMenuTriggerFor]="profailSettings">
         <img class="nav_item_img_002" src="{{basehref}}assets/images/icons/settings.svg" alt="">
       </a>
-      <mat-menu #profailSettings="matMenu" yPosition="above" class="main_side_menu translator_btn_wrapper">
-        <button matRipple (click)="translator.setLanguage(x)" class="translator_btn"
-          *ngFor="let x of ['ar','en']">{{x | translator}}</button>
+      <mat-menu class="main_side_menu translator_btn_wrapper" #profailSettings="matMenu" yPosition="above">
+        <div class="my_setg_wrapper" (click)="$event.stopPropagation(); false;">
+          <p class="text_12">MY SETTINGS</p>
+          <mat-accordion class="sub_side_menu_accordion mat-elevation-z">
+            <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false"
+              [hideToggle]="hideToggle">
+              <mat-expansion-panel-header [collapsedHeight]="'auto'" [expandedHeight]="'auto'"
+                [ngClass]="{'accordion_active' : panelOpenState}">
+                <mat-panel-title>My Preferences</mat-panel-title>
+              </mat-expansion-panel-header>
+              <div class="sub_sidebar_sub_item_wrapper">
+                <ul class="my_setg_list_items">
+                  <li><span class="sub_list_btn">Pagination Prefernces</span></li>
+                </ul>
+              </div>
+            </mat-expansion-panel>
+            <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false"
+              [hideToggle]="hideToggle">
+              <mat-expansion-panel-header [collapsedHeight]="'auto'" [expandedHeight]="'auto'"
+                [ngClass]="{'accordion_active' : panelOpenState}">
+                <mat-panel-title>My Delegations</mat-panel-title>
+              </mat-expansion-panel-header>
+              <div class="sub_sidebar_sub_item_wrapper">
+                <ul class="my_setg_list_items">
+                  <li><span class="sub_list_btn">Current Delegations</span></li>
+                  <li><button class="sub_list_btn" (click)="openDialogNewDelegation()">New Delegations</button></li>
+                  <li><span class="sub_list_btn">Participated Delegations</span></li>
+                  <li><span class="sub_list_btn">Delegation Reports</span></li>
+                </ul>
+              </div>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </div>
+        <div class="lang_setg_wrapper">
+          <p class="text_12">LANGUAGE SETTINGS</p>
+          <button matRipple (click)="translator.setLanguage(x)" class="translator_btn"
+            *ngFor="let x of ['ar','en']">{{x | translator}}</button>
+        </div>
       </mat-menu>
     </li>
     <li class="nav_item">
-      <a class="nav_icon_002" [matMenuTriggerFor]="profailMenu" matTooltip="Profile" matTooltipClass="matTooltip_001" matTooltipPosition="after">
-      <app-current-user-photo #currentUserPhoto></app-current-user-photo>
+      <a class="nav_icon_002" [matMenuTriggerFor]="profailMenu" matTooltip="Profile" matTooltipClass="matTooltip_001"
+        matTooltipPosition="after">
+        <app-current-user-photo #currentUserPhoto></app-current-user-photo>
       </a>
     </li>
     <mat-menu #profailMenu="matMenu" yPosition="above" class="main_side_menu">

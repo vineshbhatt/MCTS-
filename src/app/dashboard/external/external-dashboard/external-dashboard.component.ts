@@ -15,6 +15,7 @@ import { AppLoadConstService } from 'src/app/app-load-const.service';
 })
 
 export class ExternalDashboardComponent extends BaseDashboardFullComponent  implements OnInit {
+  public globalConstants = this.appLoadConstService.getConstants();
 
   constructor(
     public router: Router,
@@ -26,6 +27,15 @@ export class ExternalDashboardComponent extends BaseDashboardFullComponent  impl
     ) {
       super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService);
       this.reportType = 'ExtFullSearch';
+      this.routerProxyRedirect = '/dashboard/external/new-outbounds';
   }
 
+  ngOnInit() {
+    super.ngOnInit();
+    if (this.globalConstants.general.ProxyUserID === this.globalConstants.general.UserID) {
+      this.correspondenceService
+        .getUserData()
+        .subscribe(response => (this.userData = response));
+    }
+  }
 }

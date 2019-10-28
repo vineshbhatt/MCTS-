@@ -608,9 +608,9 @@ export class CorrespondenceDetailsService {
       .set('template_type', templateType)
       .set('onBehalfOf', onBehalfOf)
       .set('active', '1')
-      .set('catid', '261305') //TODO
+      .set('catid', '261305') // TODO
       .set('language', '')
-      .set('locationid', '261309');//TODO
+      .set('locationid', '261309'); // TODO
     return this.httpServices.get<any[]>(
       this.CSUrl +
       `${FCTSDashBoard.WRApiV1}${
@@ -813,7 +813,7 @@ export class CorrespondenceDetailsService {
         })
       );
   }
-  //For Demo
+  // For Demo
   getDocumentTranslateURL(docid): Observable<DocumentPreview[]> {
     const params = new HttpParams().set('coverdocumentid', docid);
     return this.httpServices.get<DocumentPreview[]>(

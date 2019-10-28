@@ -15,6 +15,15 @@ export class UserInfo {
     LastName_Ar: string;
     PhotoID: number;
     RoleName_En: string;
+    RoleName_Ar: string;
 }
+
+export class UserGroups {
+    GroupID: string;
+    GroupLevel: string;
+    GroupName: string;
+    GroupType: string;
+}
+
 
 

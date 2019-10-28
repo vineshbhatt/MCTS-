@@ -15,6 +15,7 @@ import { AppLoadConstService } from 'src/app/app-load-const.service';
 })
 
 export class InternalDashboardComponent extends BaseDashboardFullComponent  implements OnInit {
+  public globalConstants = this.appLoadConstService.getConstants();
 
   constructor(
     public router: Router,
@@ -27,6 +28,16 @@ export class InternalDashboardComponent extends BaseDashboardFullComponent  impl
       super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService);
       this.reportType = 'IntFullSearch';
       this.routerFormStep = '/dashboard/internal/correspondence-form-step-intout';
+      this.routerProxyRedirect = '/dashboard/internal/new-intoutbounds';
+  }
+
+  ngOnInit() {
+    super.ngOnInit();
+      if (this.globalConstants.general.ProxyUserID === this.globalConstants.general.UserID) {
+      this.correspondenceService
+        .getUserData()
+        .subscribe(response => (this.userData = response));
+    }
   }
 
 }

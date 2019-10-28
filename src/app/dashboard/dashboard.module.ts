@@ -98,7 +98,10 @@ import { BaseDashboardArchiveComponent } from './base-classes/base-dashboard-arc
 import { UserInfoComponent } from './side-navigation/user-info/user-info.component';
 import { ProxyInfoComponent } from './side-navigation/proxy-info/proxy-info.component';
 import { CurrentUserPhotoComponent } from './side-navigation/current-user-photo/current-user-photo.component';
+import { PerformerInfoDialogComponent } from './dialog-boxes/performer-info-dialog/performer-info-dialog.component';
+
 import { ProfileComponent } from './side-navigation/profile/profile.component';
+import { NewDelegationComponent } from './side-navigation/new-delegation/new-delegation.component'
 
 
 @NgModule({
@@ -205,7 +208,11 @@ import { ProfileComponent } from './side-navigation/profile/profile.component';
     CorrespondenceFormStepIntOutComponent,
     UserInfoComponent,
     ProxyInfoComponent,
-    CurrentUserPhotoComponent, ProfileComponent
+    CurrentUserPhotoComponent,
+    PerformerInfoDialogComponent,
+    CurrentUserPhotoComponent,
+    ProfileComponent,
+    NewDelegationComponent
   ],
   entryComponents: [
     MailDetailView,
@@ -218,7 +225,11 @@ import { ProfileComponent } from './side-navigation/profile/profile.component';
     TransferReplyDialogComponent,
     TransferReturntoasDialogComponent,
     SendBackDialogComponent,
-    CommentDialogComponent, ProfileComponent
+    CommentDialogComponent,
+    PerformerInfoDialogComponent,
+    CommentDialogComponent,
+    ProfileComponent,
+    NewDelegationComponent
   ],
   providers: [ErrorHandlerFctsService, NotificationService, DatePipe]
 })

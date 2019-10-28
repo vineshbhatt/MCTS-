@@ -89,8 +89,8 @@ export class BaseDashboardFullComponent extends BaseDashboardComponent implement
   public doughnutChartOptions: any = {
     responsive: true,
   };
-  
-  public doughnutChartColor: Array<any> = [{ backgroundColor: ['#36c2cf','#1d8acf', '#5df542'] }];
+
+  public doughnutChartColor: Array<any> = [{ backgroundColor: ['#36c2cf', '#1d8acf', '#5df542'] }];
 
   ngOnInit() {
     super.ngOnInit();
@@ -100,16 +100,20 @@ export class BaseDashboardFullComponent extends BaseDashboardComponent implement
     this.externalOutboundRequestsWidth = Math.floor(this.externalOutboundRequests / this.totalExternalOutboundRequests * 100);
     // this.dataSource.paginator = this.overviewitem;
 
-    this.correspondenceService
+/*     this.correspondenceService
       .getUserData()
-      .subscribe(response => (this.userData = response));
+      .subscribe(response => (this.userData = response)); */
   }
 
   getPage(page: number): void {
-    const perPage = FCTSDashBoard.DefaultPageSize;
+    if (this.globalConstants.general.UserID !== this.globalConstants.general.ProxyUserID) {
+      this.router.navigate([this.routerProxyRedirect]);
+    } else {
+      const perPage = FCTSDashBoard.DefaultPageSize;
     const start = ((page - 1) * perPage) + 1;
     const end = (start + perPage) - 1;
     this.getCorrespondence(this.reportType, start, end, page, this.SearchFilterData);
+    }
   }
 
   getCorrespondence(pageType: string, start: number, end: number, page: number, SearchFilterData: any): void {
@@ -173,7 +177,7 @@ export class BaseDashboardFullComponent extends BaseDashboardComponent implement
         this.routerFormStep = '/dashboard/external/correspondence-form-step-out'; // '/dashboard/external/correspondence-form-step-out';
         break;
       case '7':
-        this.routerFormStep = '/dashboard/internal/correspondence-form-step-intout';; // '/dashboard/internal/correspondence-form-step-int';
+        this.routerFormStep = '/dashboard/internal/correspondence-form-step-intout'; // '/dashboard/internal/correspondence-form-step-int';
         break;
     }
   }

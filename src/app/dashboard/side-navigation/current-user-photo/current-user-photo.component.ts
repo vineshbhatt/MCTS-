@@ -17,10 +17,11 @@ export class CurrentUserPhotoComponent extends UserInfoComponent implements OnIn
     public sidebarInfoService: SidebarInfoService,
     public sanitizer: DomSanitizer,
     public appLoadConstService: AppLoadConstService,
-    public errorHandlerFctsService: ErrorHandlerFctsService, public dialogU: MatDialog
+    public errorHandlerFctsService: ErrorHandlerFctsService,
+    public dialogU: MatDialog
   ) {
-    super(sidebarInfoService, sanitizer, appLoadConstService, errorHandlerFctsService, dialogU);
-  }
+    super( sidebarInfoService, sanitizer, appLoadConstService, errorHandlerFctsService, dialogU);
+   }
 
   ngOnInit() {
     this.userPhoto = undefined;

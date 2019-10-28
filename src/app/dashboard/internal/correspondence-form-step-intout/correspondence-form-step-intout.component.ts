@@ -1400,7 +1400,8 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
     }
     let tmpObj: any;
     WFStepsUI.forEach(function (taskObj) {
-      if (taskID === taskObj.TaskID) {
+      let tempTaskList = taskObj.TaskID.split(",");
+      if (tempTaskList.includes(taskID)) {
         tmpObj = taskObj;
       }
     });
