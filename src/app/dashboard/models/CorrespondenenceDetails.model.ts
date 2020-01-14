@@ -140,3 +140,17 @@ export class CorrWFTaskInfoModel {
   SubWorkTask_Title: string;
   SubWorkTask_Status: string;
 }
+
+export class OrgNameAutoFillModelSimpleUser {
+  Val_En: string;
+  Val_Ar: string;
+  NameID: number;
+  NameLogin: string;
+  Name_En: string;
+  Name_Ar: string;
+  Type: number;
+  RecipientUserID: number;
+  RecipientVersion: number;
+  _SOURCEROWNUM: number;
+  _ORIGROWNUM: number;
+}

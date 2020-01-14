@@ -25,5 +25,22 @@ export class UserGroups {
     GroupType: string;
 }
 
+export class DelegationRequest {
+    delegation_start_date: string;
+    delegation_end_date: string;
+    active_delegatee: string;
+    delegatees: string;
+    creatorID: string;
+    userID: string;
+    activate: string;
+  }
+
+export class DelegationReportRequest {
+    recUserID: string;
+    proxyUser: string;
+    startDate: string;
+    endDate: string;
+}
+
 
 

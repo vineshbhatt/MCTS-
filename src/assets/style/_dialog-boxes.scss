@@ -456,7 +456,7 @@
     }
   }
   /***********************************/
-.performerInfoDialogBox, .profileDialogBox{
+.performerInfoDialogBox, .profileDialogBox,{
   margin: auto !important;
   .profile_wrapper {
     width: 100%;
@@ -637,4 +637,148 @@
   }
 }
 
+/********************************************/
 
+.delegationDialogBoxClass{
+  .btn_del_008 {
+    border-style: solid;
+    border-width: 1px;
+    border-color: #9b9b9b;
+    border-radius: 22px;
+    background-color: rgba(35, 195, 205, 0);
+    font-size: 14px;
+    color: #9b9b9b;
+    font-weight: bold;
+    text-align: center;
+    padding: 9px 15px;
+    margin-right: 10px;
+    margin-top: 20px;
+    outline: none;
+  }
+
+  .btn_del_009 {
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(35, 195, 205);
+    border-radius: 22px;
+    background-color: rgba(35, 195, 205, 0);
+    font-size: 14px;
+    color: rgb(35, 195, 205);
+    font-weight: bold;
+    text-align: center;
+    padding: 9px 15px;
+    margin-right: 10px;
+    margin-top: 20px;
+    outline: none;
+  }
+
+  .active_container {
+    display: inline-block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 15px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
+  .active_container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+  
+  
+  .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 16px;
+    width: 16px;
+    background-color: #eee;
+    border-radius: 50%;
+  }
+  
+  .active_container:hover input ~ .checkmark {
+    background-color: #ccc;
+  }
+  
+  .active_container input:checked ~ .checkmark {
+    background-color: #ff4081;
+  }
+  
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+  
+  .active_container input:checked ~ .checkmark:after {
+    display: block;
+  }
+  
+  .active_container .checkmark:after {
+    top: 5px;
+    left: 5px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: white;
+  }
+}
+
+.currentDelegationDialogBoxClass{
+  height: 20vw;
+  table{
+    width: 100%;
+  }
+  .single-proxy{
+    padding-left: 24px
+  }
+  .spinner_sm_wrappar{
+    height: 15vw;
+    display: flex;
+    align-content: center;
+    align-items: center;
+  }
+}
+
+.delegationReportDialogBoxClass{
+  height: 25vw;
+  form{
+    display: flex;
+    .mat-form-field, button{
+      margin: 0px 20px 0px 20px;
+    }
+  }
+  table{
+    width:100%;
+    th, td{
+      padding-right: 5px;
+    }
+  }
+  .mat-expansion-panel{
+    box-shadow: none;
+    background: white !important;
+  }
+
+  .spinner_sm_wrappar{
+    height: 10vw;
+    display: flex;
+    align-content: center;
+    align-items: center;
+  }
+  .delegation-form-holder{
+    .mat-form-field-flex{
+      border-bottom: 1px solid #5b5959;
+      box-shadow: 0px 1px grey;
+    }
+  }
+}
+
+.owl-dt-timer-input:disabled{
+  background-color: white !important;
+}

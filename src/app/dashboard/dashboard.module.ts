@@ -101,7 +101,9 @@ import { CurrentUserPhotoComponent } from './side-navigation/current-user-photo/
 import { PerformerInfoDialogComponent } from './dialog-boxes/performer-info-dialog/performer-info-dialog.component';
 
 import { ProfileComponent } from './side-navigation/profile/profile.component';
-import { NewDelegationComponent } from './side-navigation/new-delegation/new-delegation.component'
+import { NewDelegationComponent } from './side-navigation/new-delegation/new-delegation.component';
+import { CurrentDelegationsComponent } from './side-navigation/current-delegations/current-delegations.component';
+import { DelegationReportComponent } from './side-navigation/delegation-report/delegation-report.component'
 
 
 @NgModule({
@@ -212,7 +214,9 @@ import { NewDelegationComponent } from './side-navigation/new-delegation/new-del
     PerformerInfoDialogComponent,
     CurrentUserPhotoComponent,
     ProfileComponent,
-    NewDelegationComponent
+    NewDelegationComponent,
+    CurrentDelegationsComponent,
+    DelegationReportComponent
   ],
   entryComponents: [
     MailDetailView,
@@ -229,7 +233,9 @@ import { NewDelegationComponent } from './side-navigation/new-delegation/new-del
     PerformerInfoDialogComponent,
     CommentDialogComponent,
     ProfileComponent,
-    NewDelegationComponent
+    NewDelegationComponent,
+    CurrentDelegationsComponent,
+    DelegationReportComponent
   ],
   providers: [ErrorHandlerFctsService, NotificationService, DatePipe]
 })

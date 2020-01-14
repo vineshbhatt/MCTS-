@@ -22,7 +22,7 @@ export class ConfirmationDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) { }
 
-  private _chooseMessage(): void {    
+  private _chooseMessage(): void {
     // choose confirmation message
     switch (this.data.message) {
       case 'assignTransfer': {
@@ -31,6 +31,14 @@ export class ConfirmationDialogComponent implements OnInit {
       }
       case 'assignWF': {
         this._message = 'This Step Assignment has been offered to more than one person, it must be Accepted before work can be done';
+        break;
+      }
+      case 'activateDelegation': {
+        this._message = 'Do you want to activate this delegation now?';
+        break;
+      }
+      case 'deleteDelegation': {
+        this._message = 'Are you sure you want to delete this delegation?';
         break;
       }
       default : {
