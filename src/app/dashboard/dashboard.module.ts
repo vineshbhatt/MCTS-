@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MalihuScrollbarModule } from 'ngx-malihu-scrollbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonModule, MatCheckboxModule, MatNativeDateModule, MatIconModule, MatTreeModule } from '@angular/material';
+import { MatButtonModule, MatCheckboxModule, MatNativeDateModule, MatIconModule, MatTreeModule, MatTabsModule } from '@angular/material';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -103,7 +103,9 @@ import { PerformerInfoDialogComponent } from './dialog-boxes/performer-info-dial
 import { ProfileComponent } from './side-navigation/profile/profile.component';
 import { NewDelegationComponent } from './side-navigation/new-delegation/new-delegation.component';
 import { CurrentDelegationsComponent } from './side-navigation/current-delegations/current-delegations.component';
-import { DelegationReportComponent } from './side-navigation/delegation-report/delegation-report.component'
+import { DelegationReportComponent } from './side-navigation/delegation-report/delegation-report.component';
+import { LinkedCorrDialogComponent } from './dialog-boxes/linked-corr-dialog/linked-corr-dialog.component';
+import { FilesSelectComponent } from './shared-components/files-select/files-select.component'
 
 
 @NgModule({
@@ -134,6 +136,7 @@ import { DelegationReportComponent } from './side-navigation/delegation-report/d
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
     MatTreeModule,
+    MatTabsModule,
     MatIconModule,
     NgxFileDropModule,
     NgxPrintModule,
@@ -216,7 +219,9 @@ import { DelegationReportComponent } from './side-navigation/delegation-report/d
     ProfileComponent,
     NewDelegationComponent,
     CurrentDelegationsComponent,
-    DelegationReportComponent
+    DelegationReportComponent,
+    LinkedCorrDialogComponent,
+    FilesSelectComponent
   ],
   entryComponents: [
     MailDetailView,
@@ -235,7 +240,8 @@ import { DelegationReportComponent } from './side-navigation/delegation-report/d
     ProfileComponent,
     NewDelegationComponent,
     CurrentDelegationsComponent,
-    DelegationReportComponent
+    DelegationReportComponent,
+    LinkedCorrDialogComponent
   ],
   providers: [ErrorHandlerFctsService, NotificationService, DatePipe]
 })

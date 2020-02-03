@@ -21,6 +21,7 @@ import { MessageDialogComponent } from '../../dialog-boxes/message-dialog/messag
 import { CommentDialogComponent } from '../../comments/comment-dialog/comment-dialog.component';
 import { CompleteDialogComponent } from '../../dialog-boxes/complete-dialog/complete-dialog.component';
 import { PerformerInfoDialogComponent } from '../../dialog-boxes/performer-info-dialog/performer-info-dialog.component';
+import { LinkedCorrDialogComponent } from '../../dialog-boxes/linked-corr-dialog/linked-corr-dialog.component';
 
 
 @Component({
@@ -30,7 +31,7 @@ import { PerformerInfoDialogComponent } from '../../dialog-boxes/performer-info-
 
 export class BaseDashboardComponent implements OnInit, OnDestroy {
   public globalConstants = this.appLoadConstService.getConstants();
-  stepPerformer =  this.globalConstants.general.UserID;
+  stepPerformer = this.globalConstants.general.UserID;
   // SearchFilterData: SearchFilters;
   SearchFilterData = {
     ReferenceCode: '',
@@ -56,7 +57,7 @@ export class BaseDashboardComponent implements OnInit, OnDestroy {
     Project: '',
     Staffnumber: ''
   };
- 
+
   reportType = '';
   routerCorrDetail = '/dashboard/external/correspondence-detail';
   routerInitateExternal = '/dashboard/create/new-external-outgoing';
@@ -99,12 +100,12 @@ export class BaseDashboardComponent implements OnInit, OnDestroy {
     public errorHandlerFctsService: ErrorHandlerFctsService,
     public appLoadConstService: AppLoadConstService
   ) {
-      this.navigationSubscription = this.router.events.subscribe((e: any) => {
-        if (e instanceof NavigationEnd) {
-          this.initialiseInvites();
-        }
-      });
-    }
+    this.navigationSubscription = this.router.events.subscribe((e: any) => {
+      if (e instanceof NavigationEnd) {
+        this.initialiseInvites();
+      }
+    });
+  }
 
   ngOnInit() {
     this.getPage(this.pagenumber);
@@ -118,7 +119,7 @@ export class BaseDashboardComponent implements OnInit, OnDestroy {
   }
 
   initialiseInvites() {
-    if (this.globalConstants.general.ProxyUserID !== this.globalConstants.general.UserID && this.router.url === this.globalConstants.general.routerRoot ) {
+    if (this.globalConstants.general.ProxyUserID !== this.globalConstants.general.UserID && this.router.url === this.globalConstants.general.routerRoot) {
       this.ngOnInit();
     }
   }
@@ -191,7 +192,7 @@ export class BaseDashboardComponent implements OnInit, OnDestroy {
     let isAssignee: boolean;
     this.globalConstants.FCTS_Dashboard.UserGroupsArray.indexOf(correspondData.SubWorkTask_PerformerID) > -1 ? isAssignee = true : isAssignee = false;
 
-    if (Number(correspondData.SubWorkTask_TaskID) > 0 && correspondData.SubWorkTask_PerformerID.toString() === this.stepPerformer ) {
+    if (Number(correspondData.SubWorkTask_TaskID) > 0 && correspondData.SubWorkTask_PerformerID.toString() === this.stepPerformer) {
       this.routeToFormStepPage(correspondData);
     } else if (correspondData.SubWorkTask_TaskID > 0 && isAssignee && correspondData.SubWorkTask_PerformerID_Type.toString() !== '0') {
       this.userConfirmation('assignWF', correspondData);
@@ -356,7 +357,7 @@ export class BaseDashboardComponent implements OnInit, OnDestroy {
   }
 
   OpenDashCompleteDialog(correspondData: Correspondence, status: string): void {
-    if (status === '1' && correspondData.transID.toString() !== '0' && correspondData.transStatus.toString() === '0' ) {
+    if (status === '1' && correspondData.transID.toString() !== '0' && correspondData.transStatus.toString() === '0') {
       this.dialogU.open(CompleteDialogComponent, {
         width: '100%',
         panelClass: 'complete-dialog',
@@ -390,8 +391,8 @@ export class BaseDashboardComponent implements OnInit, OnDestroy {
 
   /* ******************  START RECALL  ****************** */
   startRecall(correspondData: Correspondence, recallType: string): void {
-    if ( recallType !== 'ReturnToAS' ) {
-      if ( correspondData.SubWorkTask_TaskID > 0 ) {
+    if (recallType !== 'ReturnToAS') {
+      if (correspondData.SubWorkTask_TaskID > 0) {
         this.recallWF(correspondData, recallType);
       } else {
         this.openRecallDialog(correspondData, recallType);
@@ -522,7 +523,7 @@ export class BaseDashboardComponent implements OnInit, OnDestroy {
   itemsCountShare() {
     this.correspondenceService.changeItemsCount(this.totalCount);
   }
-  /***********************comment*************************** */
+  // comment dialog
   commentsDialogBox(correspondData: Correspondence): void {
     const dialogRef = this.dialogU.open(CommentDialogComponent, {
       width: '100%',
@@ -534,7 +535,7 @@ export class BaseDashboardComponent implements OnInit, OnDestroy {
       }
     });
   }
-  /***********************comment*************************** */
+
   performerInfoDialogBox(PerformerID: number): void {
     const dialogRef = this.dialogU.open(PerformerInfoDialogComponent, {
       width: '100%',
@@ -542,18 +543,32 @@ export class BaseDashboardComponent implements OnInit, OnDestroy {
       maxWidth: '85vw',
       data: {
         kuafID: PerformerID,
-       /*  reportType: this.reportType */
+        /*  reportType: this.reportType */
       }
     });
   }
-  /********************************************************* */
 
+  LinkedCorrespondenceDialogBox(correspondData: Correspondence): void {
+    const dialogRef = this.dialogU.open(LinkedCorrDialogComponent, {
+      width: '100%',
+      panelClass: 'linkedCorrespondenceDialogBox',
+      maxWidth: '85vw',
+      //maxHeight: '60vh',
+      data: {
+        correspondData: correspondData
+      }
+    });
+  }
+
+  // dashboard icons click checker
   correspondenceIconsFunction(correspondData: Correspondence, icon: string): void {
     if (icon === 'openComments') {
       this.commentsDialogBox(correspondData);
     } else if (icon === 'openProxyInfo') {
-     this.performerInfoDialogBox(correspondData.SubWorkTask_PerformerID);
-     /* console.log(correspondData.SubWorkTask_PerformerID); */
+      this.performerInfoDialogBox(correspondData.SubWorkTask_PerformerID);
+      /* console.log(correspondData.SubWorkTask_PerformerID); */
+    } else if (icon === 'openLinkedCorrInfo') {
+      this.LinkedCorrespondenceDialogBox(correspondData);
     }
   }
 

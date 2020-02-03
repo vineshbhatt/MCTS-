@@ -93,6 +93,16 @@ export const FCTSDashBoard = {
   DelegationsInactivator: '5480583',
   DelegationsReport: '5480157',
 
+  CorrespondenceRelated: 'CTA_CorrespondenceRelated',
+  DeleteConnection: 'CTA_DeleteConnection',
+  DocumentsRelated: 'CTA_DocumentsRelated',
+  ConnectionsParentChild: 'CTA_ConnectionsParentChild',
+  FilesSerch: 'CTA_FilesSerch',
+  InsertConnection: '		CTA_InsertConnection',
+  ConnectionsSearch: 'CTA_ConnectionsSearch',
+  InsertMultipleConnections: 'CTA_InsertMultipleConnections',
+  GetParentData: 'CTA_GetParentData',
+
   BaseHref: '/img/fctsangular/fctsapp/',
   //BaseHref: '/',
   CSUrl: 'http://mv2cdmsadp02/otcs/cs.exe'

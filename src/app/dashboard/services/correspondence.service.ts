@@ -173,6 +173,7 @@ export class CorrespondenceService {
     // );
   }
   setPerformerPermission(correspondData): Observable<any> {
+    console.log('correspondData-test', correspondData)
     const params = new HttpParams()
       .set('locationid', correspondData.DataID)
       .set('UserID', CSConfig.globaluserid)
@@ -422,23 +423,23 @@ export class CorrespondenceService {
     reportName === 'CTA_SidebarMRCount' ? userID = this._globalConstants.general.UserID : userID = this._globalConstants.general.ProxyUserID;
 
     const params = new HttpParams()
-    .set('ProxyUserID', userID)
-    .set('fProxy', fProxy.toString());
+      .set('ProxyUserID', userID)
+      .set('fProxy', fProxy.toString());
 
     return this.httpServices.get<any>(
       url, {
-        headers: { OTCSTICKET: CSConfig.AuthToken },
-        params: params
-      }
+      headers: { OTCSTICKET: CSConfig.AuthToken },
+      params: params
+    }
     )
-    .pipe(
-      map(response => {
-        return response;
-      }),
-      catchError(error => {
-        return throwError(error);
-      })
-    );
+      .pipe(
+        map(response => {
+          return response;
+        }),
+        catchError(error => {
+          return throwError(error);
+        })
+      );
   }
 
   initiateWF(initateFormDate: CorrespondenceWFFormModel, corrType: string): Observable<any> {
@@ -467,9 +468,9 @@ export class CorrespondenceService {
       params, options);
 
   }
-/* duplicated function should be deleted from this service
-  getTransRecallData(recallTransferInfo: RecallTransferInfo): Observable<TransferRecallDialogData[]>
-*/
+  /* duplicated function should be deleted from this service
+    getTransRecallData(recallTransferInfo: RecallTransferInfo): Observable<TransferRecallDialogData[]>
+  */
   runRecallTransfer(recallTransferInfo: RecallTransferInfo): Observable<any> {
     const url = this._CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.RunTransferRecall}?Format=webreport`;
     const params = new HttpParams()

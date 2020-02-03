@@ -608,9 +608,9 @@ export class CorrespondenceDetailsService {
       .set('template_type', templateType)
       .set('onBehalfOf', onBehalfOf)
       .set('active', '1')
-      .set('catid', '261305') // TODO
+      .set('catid', this._globalConstants.FCTS_StepConsole.TemplateCategory.toString())
       .set('language', '')
-      .set('locationid', '261309'); // TODO
+      .set('locationid', this._globalConstants.FCTS_StepConsole.TemplateFolder.toString());
     return this.httpServices.get<any[]>(
       this.CSUrl +
       `${FCTSDashBoard.WRApiV1}${

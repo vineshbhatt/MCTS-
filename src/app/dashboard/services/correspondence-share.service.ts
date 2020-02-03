@@ -7,6 +7,7 @@ import { FCTSDashBoard } from '../../../environments/environment';
 import { Correspondence } from './correspondence.model';
 import { CorrResponse, CommentsNode } from './correspondence-response.model';
 import { AppLoadConstService } from 'src/app/app-load-const.service';
+import { FolderFiles } from 'src/app/dashboard/shared-components/files-select/files-select.component';
 
 @Injectable({
   providedIn: 'root'
@@ -26,9 +27,9 @@ export class CorrespondenceShareService {
 
 
   constructor(
-      private httpServices: HttpClient
+    private httpServices: HttpClient
     , private _appLoadConstService: AppLoadConstService
-    ) { }
+  ) { }
 
   onProxyChange() {
     this.proxyChangeEvent.next('response');
@@ -50,33 +51,34 @@ export class CorrespondenceShareService {
           headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
         }
       )
-      .pipe (
-          map (responseData => {
-            return responseData;
-          }),
-          catchError(error => {
-            console.log('set Status ERROR => ' + error.message || 'some error with transfer');
-            return error;
-          })
+      .pipe(
+        map(responseData => {
+          return responseData;
+        }),
+        catchError(error => {
+          console.log('set Status ERROR => ' + error.message || 'some error with transfer');
+          return error;
+        })
       );
   }
 
   ToggleTransStatus(transID, status): Observable<any> {
     const params = new HttpParams()
-      .set( 'transID', transID.toString() )
-      .set( status, 'true' )
-      .set( 'prompting', 'done' );
+      .set('transID', transID.toString())
+      .set(status, 'true')
+      .set('prompting', 'done');
 
     return this.httpServices
       .get(
         this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.SetTransStatus}?Format=webreport`,
-        { headers:
-          { OTCSTICKET: CSConfig.AuthToken },
+        {
+          headers:
+            { OTCSTICKET: CSConfig.AuthToken },
           params: params
         }
       )
-      .pipe (
-        map (data => {
+      .pipe(
+        map(data => {
           return data;
         }),
         catchError(error => {
@@ -88,60 +90,61 @@ export class CorrespondenceShareService {
 
   getTransferUser(user_id: string): Observable<any> {
     const params = new HttpParams()
-      .set( 'EIDs', '')
-      .set( 'OUIDs', '')
-      .set( 'UserIDs', user_id)
-      .set( 'prompting', 'done' );
+      .set('EIDs', '')
+      .set('OUIDs', '')
+      .set('UserIDs', user_id)
+      .set('prompting', 'done');
     return this.httpServices
-    .get<CorrResponse >(
-      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.GetTransferUsers}?Format=webreport`,
-      { headers:
-        { OTCSTICKET: CSConfig.AuthToken },
-        params: params
-      }
-    )
-    .pipe (
-      map (data => {
-        return data;
-      }),
-      catchError(error => {
-        return throwError(error);
-      })
-    );
+      .get<CorrResponse>(
+        this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.GetTransferUsers}?Format=webreport`,
+        {
+          headers:
+            { OTCSTICKET: CSConfig.AuthToken },
+          params: params
+        }
+      )
+      .pipe(
+        map(data => {
+          return data;
+        }),
+        catchError(error => {
+          return throwError(error);
+        })
+      );
   }
 
-   createTransferReply(transferJson,  commonData: StatusRequest ): Observable<any> {
+  createTransferReply(transferJson, commonData: StatusRequest): Observable<any> {
     const transferVal = JSON.stringify({ transferJson });
-     const params = new HttpParams()
-    .set('transferJson', transferVal)
-    .set('volumeid', commonData.SetStatusRow[0].subworkid.toString())
-    .set('taskid', '32')
-    .set('isReplay', '1')
-    .set('CorrFlowType', 'Incoming')
-    .set('locationid', commonData.SetStatusRow[0].dataid.toString())
-    .set('rows_count', transferJson.length)
-    .set('parentID', commonData.SetStatusRow[0].transID.toString())
-    .set('onBehalfUserID', CSConfig.globaluserid);
+    const params = new HttpParams()
+      .set('transferJson', transferVal)
+      .set('volumeid', commonData.SetStatusRow[0].subworkid.toString())
+      .set('taskid', '32')
+      .set('isReplay', '1')
+      .set('CorrFlowType', 'Incoming')
+      .set('locationid', commonData.SetStatusRow[0].dataid.toString())
+      .set('rows_count', transferJson.length)
+      .set('parentID', commonData.SetStatusRow[0].transID.toString())
+      .set('onBehalfUserID', CSConfig.globaluserid);
 
-  return this.httpServices
-  .get<any>(
-    this.CSUrl +
-    `${FCTSDashBoard.WRApiV1}${
-    FCTSDashBoard.createTransfer
-    }?Format=webreport`,
-    {
-      headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
-    }
-  )
-  .pipe (
-      map (data => {
-        this.prepSetTransferStatus(data, commonData, 1, '');
-        return data;
-      }),
-      catchError(error => {
-        return throwError(error);
-      })
-  );
+    return this.httpServices
+      .get<any>(
+        this.CSUrl +
+        `${FCTSDashBoard.WRApiV1}${
+        FCTSDashBoard.createTransfer
+        }?Format=webreport`,
+        {
+          headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+        }
+      )
+      .pipe(
+        map(data => {
+          this.prepSetTransferStatus(data, commonData, 1, '');
+          return data;
+        }),
+        catchError(error => {
+          return throwError(error);
+        })
+      );
   }
 
   createTransferRequestDash(transferJson, correspondData: Correspondence, callplace: string): Observable<any> {
@@ -155,105 +158,105 @@ export class CorrespondenceShareService {
       .set('locationid', correspondData.DataID.toString())
       .set('rows_count', transferJson.length);
 
-    return this.httpServices.get<any>( url, { headers: { OTCSTICKET: CSConfig.AuthToken }, params: params } )
-    .pipe (
-      map (data => {
-        return data;
-      }),
-      catchError(error => {
-        return error;
-      })
-    );
+    return this.httpServices.get<any>(url, { headers: { OTCSTICKET: CSConfig.AuthToken }, params: params })
+      .pipe(
+        map(data => {
+          return data;
+        }),
+        catchError(error => {
+          return error;
+        })
+      );
   }
 
   prepSetTransferStatus(transfered: any, commonData: StatusRequest, status: Number, NotesComplete: string): void {
     const rowsArray: SetStatusRow[] = [];
     const statusRow: SetStatusRow = new SetStatusRow;
     const setStatusRequest: StatusRequest = new StatusRequest;
-      setStatusRequest.status = status.toString();
-        statusRow.subworkid = commonData.SetStatusRow[0].subworkid.toString();
-        statusRow.dataid = commonData.SetStatusRow[0].dataid.toString();
-        statusRow.isCC = commonData.SetStatusRow[0].isCC.toString();
-        statusRow.transID = commonData.SetStatusRow[0].transID.toString();
-        statusRow.NotesComplete = NotesComplete;
-        statusRow.currentStatus = commonData.SetStatusRow[0].currentStatus.toString();
-        statusRow.userid =  CSConfig.globaluserid;
-        rowsArray.push(statusRow);
-      setStatusRequest.SetStatusRow = rowsArray;
-      this.setTransferToStatus(setStatusRequest).subscribe();
+    setStatusRequest.status = status.toString();
+    statusRow.subworkid = commonData.SetStatusRow[0].subworkid.toString();
+    statusRow.dataid = commonData.SetStatusRow[0].dataid.toString();
+    statusRow.isCC = commonData.SetStatusRow[0].isCC.toString();
+    statusRow.transID = commonData.SetStatusRow[0].transID.toString();
+    statusRow.NotesComplete = NotesComplete;
+    statusRow.currentStatus = commonData.SetStatusRow[0].currentStatus.toString();
+    statusRow.userid = CSConfig.globaluserid;
+    rowsArray.push(statusRow);
+    setStatusRequest.SetStatusRow = rowsArray;
+    this.setTransferToStatus(setStatusRequest).subscribe();
   }
 
   // set status i.e. Archived/Complete etc.
-  buildObject(element: any, status: string, callplace: string, comment?: string ): StatusRequest {
-      const setStatusObj: StatusRequest = new StatusRequest;
-      const statusRowsArray: SetStatusRow[] = [];
-      setStatusObj.status = status;
-      const CList: SetStatusRow = new SetStatusRow;
-      switch (callplace) {
-        case 'Multiselect':
-          for (let i = 0; i < element.length; i++) {
-            const mCList: SetStatusRow = new SetStatusRow;
-            mCList.subworkid = element[i].SubWork_SubWorkID.toString();
-            mCList.dataid = element[i].DataID.toString();
-            mCList.transID = element[i].transID.toString();
-            mCList.isCC = element[i].transIsCC.toString();
-            mCList.userid = this._globalConstants.general.ProxyUserID;
-            mCList.currentStatus = element[i].Status.toString();
-            mCList.NotesComplete = '';
-            statusRowsArray.push(mCList);
-          }
-          break;
-        case 'SingleDashboard':
-          CList.subworkid = element.SubWork_SubWorkID.toString();
-          CList.dataid = element.DataID.toString();
-          CList.transID = element.transID.toString();
-          CList.isCC = element.transIsCC.toString();
-          CList.userid = this._globalConstants.general.ProxyUserID;
-          CList.currentStatus = element.Status.toString();
-          CList.NotesComplete = comment;
-          statusRowsArray.push(CList);
-          break;
-        case 'CorrDetails':
-          CList.subworkid = element.SubWorkID;
-          CList.dataid = element.AttachCorrID;
-          CList.transID = element.ID;
-          CList.isCC = element.isCC;
-          CList.userid = this._globalConstants.general.ProxyUserID;
-          CList.currentStatus = element.Status;
-          CList.NotesComplete = comment;
-          statusRowsArray.push(CList);
-          break;
-        case 'ReturnToAS':
-          let currStatus = '0';
-          switch (element.Status.toString()) {
-            case 'Acknowledged':
-              currStatus = '1';
-              break;
-            case 'Archived':
-              currStatus = '2';
-              break;
-          }
-          CList.subworkid = element.VolumeID.toString();
-          CList.dataid = element.DataID.toString();
-          CList.transID = element.transID.toString();
-          CList.isCC = element.transIsCC.toString();
-          CList.userid = this._globalConstants.general.ProxyUserID;
-          CList.currentStatus = currStatus;
-          CList.NotesComplete = comment;
-          statusRowsArray.push(CList);
-      }
-      setStatusObj.SetStatusRow = statusRowsArray;
-      return setStatusObj;
+  buildObject(element: any, status: string, callplace: string, comment?: string): StatusRequest {
+    const setStatusObj: StatusRequest = new StatusRequest;
+    const statusRowsArray: SetStatusRow[] = [];
+    setStatusObj.status = status;
+    const CList: SetStatusRow = new SetStatusRow;
+    switch (callplace) {
+      case 'Multiselect':
+        for (let i = 0; i < element.length; i++) {
+          const mCList: SetStatusRow = new SetStatusRow;
+          mCList.subworkid = element[i].SubWork_SubWorkID.toString();
+          mCList.dataid = element[i].DataID.toString();
+          mCList.transID = element[i].transID.toString();
+          mCList.isCC = element[i].transIsCC.toString();
+          mCList.userid = this._globalConstants.general.ProxyUserID;
+          mCList.currentStatus = element[i].Status.toString();
+          mCList.NotesComplete = '';
+          statusRowsArray.push(mCList);
+        }
+        break;
+      case 'SingleDashboard':
+        CList.subworkid = element.SubWork_SubWorkID.toString();
+        CList.dataid = element.DataID.toString();
+        CList.transID = element.transID.toString();
+        CList.isCC = element.transIsCC.toString();
+        CList.userid = this._globalConstants.general.ProxyUserID;
+        CList.currentStatus = element.Status.toString();
+        CList.NotesComplete = comment;
+        statusRowsArray.push(CList);
+        break;
+      case 'CorrDetails':
+        CList.subworkid = element.SubWorkID;
+        CList.dataid = element.AttachCorrID;
+        CList.transID = element.ID;
+        CList.isCC = element.isCC;
+        CList.userid = this._globalConstants.general.ProxyUserID;
+        CList.currentStatus = element.Status;
+        CList.NotesComplete = comment;
+        statusRowsArray.push(CList);
+        break;
+      case 'ReturnToAS':
+        let currStatus = '0';
+        switch (element.Status.toString()) {
+          case 'Acknowledged':
+            currStatus = '1';
+            break;
+          case 'Archived':
+            currStatus = '2';
+            break;
+        }
+        CList.subworkid = element.VolumeID.toString();
+        CList.dataid = element.DataID.toString();
+        CList.transID = element.transID.toString();
+        CList.isCC = element.transIsCC.toString();
+        CList.userid = this._globalConstants.general.ProxyUserID;
+        CList.currentStatus = currStatus;
+        CList.NotesComplete = comment;
+        statusRowsArray.push(CList);
+    }
+    setStatusObj.SetStatusRow = statusRowsArray;
+    return setStatusObj;
   }
 
   setComment(commentParams: CommentsNode, task_id: string): Observable<any> {
     const params = new HttpParams()
-    .set('ReplyTo', commentParams.ReplyTo )
-    .set('CommentText', commentParams.CommentText )
-    .set('ReferenceID', commentParams.ReferenceID )
-    .set('ReferenceType', commentParams.ReferenceType)
-    .set('Private', commentParams.Private)
-    .set('TaskID', task_id);
+      .set('ReplyTo', commentParams.ReplyTo)
+      .set('CommentText', commentParams.CommentText)
+      .set('ReferenceID', commentParams.ReferenceID)
+      .set('ReferenceType', commentParams.ReferenceType)
+      .set('Private', commentParams.Private)
+      .set('TaskID', task_id);
     const options = {
       headers: new HttpHeaders()
         // .set('Content-Type', 'application/json; charset=UTF-8')
@@ -261,17 +264,17 @@ export class CorrespondenceShareService {
     };
     return this.httpServices.post(this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.InsertNewComment}`,
       params, options)
-    .pipe (
-      map (data => {
-        return data;
-      }),
-      catchError(error => {
-        return throwError(error);
-      })
-    );
+      .pipe(
+        map(data => {
+          return data;
+        }),
+        catchError(error => {
+          return throwError(error);
+        })
+      );
   }
 
-   getCommentsData(volumeID: string): Observable<CorrResponse[]> {
+  getCommentsData(volumeID: string): Observable<CorrResponse[]> {
     const params = new HttpParams()
       .set('ReferenceID', volumeID);
     return this.httpServices.get<CorrResponse[]>(
@@ -283,21 +286,21 @@ export class CorrespondenceShareService {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
       }
     )
-    .pipe (
-      map (data => {
-        return data;
-      }),
-      catchError(error => {
-        return throwError(error);
-      })
-    );
+      .pipe(
+        map(data => {
+          return data;
+        }),
+        catchError(error => {
+          return throwError(error);
+        })
+      );
   }
 
   deleteComment(commentParams: CommentsNode): Observable<any> {
     const params = new HttpParams()
-    .set('CommentID', commentParams.ID )
-    .set('ReferenceID', commentParams.ReferenceID )
-    .set('ReferenceType', commentParams.ReferenceType);
+      .set('CommentID', commentParams.ID)
+      .set('ReferenceID', commentParams.ReferenceID)
+      .set('ReferenceType', commentParams.ReferenceType);
     return this.httpServices.get<any>(
       this.CSUrl +
       `${FCTSDashBoard.WRApiV1}${
@@ -307,17 +310,17 @@ export class CorrespondenceShareService {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
       }
     )
-    .pipe (
-      map (data => {
-        return data;
-      }),
-      catchError(error => {
-        return throwError(error);
-      })
-    );
-   }
+      .pipe(
+        map(data => {
+          return data;
+        }),
+        catchError(error => {
+          return throwError(error);
+        })
+      );
+  }
 
-   DateToISOStringAbs(mDate): string {
+  DateToISOStringAbs(mDate): string {
     function pad(n) { return n < 10 ? '0' + n : n; }
     if (mDate instanceof Date) {
       return mDate.getFullYear() + '-'
@@ -331,6 +334,21 @@ export class CorrespondenceShareService {
     }
   }
 
+  DateToLRString(mDate): string {
+    function pad(n) { return n < 10 ? '0' + n : n; }
+    if (mDate instanceof Date) {
+      return 'D' + '/'
+        + mDate.getFullYear() + '/'
+        + pad(mDate.getMonth() + 1) + '/'
+        + pad(mDate.getDate()) + ':'
+        + pad(mDate.getHours()) + ':'
+        + pad(mDate.getMinutes()) + ':'
+        + pad(mDate.getSeconds());
+    } else {
+      return '';
+    }
+  }
+
   changeSidebarAction(menuAction: boolean) {
     this.sidebarStateSource.next(menuAction);
   }
@@ -339,39 +357,39 @@ export class CorrespondenceShareService {
     this.countDataFromSidebar.next(mailroomCount);
   }
 
-/*   getCommentsData(volumeID: string): Observable<CorrResponse[]> {
-    const params = new HttpParams()
-      .set('ReferenceID', volumeID);
-    return this.httpServices.get<CorrResponse[]>(
-      this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.WorkflowCommentsList
-      }?Format=webreport`,
-      {
-        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
-      }
-    )
-    .pipe (
-      map (data => {
-        return data;
-      }),
-      catchError(error => {
-        return throwError(error);
-      })
-    );
-  } */
+  /*   getCommentsData(volumeID: string): Observable<CorrResponse[]> {
+      const params = new HttpParams()
+        .set('ReferenceID', volumeID);
+      return this.httpServices.get<CorrResponse[]>(
+        this.CSUrl +
+        `${FCTSDashBoard.WRApiV1}${
+        FCTSDashBoard.WorkflowCommentsList
+        }?Format=webreport`,
+        {
+          headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+        }
+      )
+      .pipe (
+        map (data => {
+          return data;
+        }),
+        catchError(error => {
+          return throwError(error);
+        })
+      );
+    } */
 
-  getPerformerUserInfo(kuafID): Observable<any>{
+  getPerformerUserInfo(kuafID): Observable<any> {
     const params = new HttpParams()
       .set('KuafID', kuafID);
     return this.httpServices.get<any>(
       this.CSUrl + `${FCTSDashBoard.WRApiV1}${
-        FCTSDashBoard.PerformerInfo}?Format=webreport`,
+      FCTSDashBoard.PerformerInfo}?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
       }
-    ).pipe (
-      map (data => {
+    ).pipe(
+      map(data => {
         return data;
       }),
       catchError(error => {
@@ -380,24 +398,221 @@ export class CorrespondenceShareService {
     );
   }
 
-/*   getUserImg(id: number): Observable<any> {
-    const params = new HttpParams();
-    return this.httpServices
-      .get(
-        this.CSUrl + `${FCTSDashBoard.WFApiV1}members/${id}/photo`,
-        { headers:
-          { OTCSTICKET: CSConfig.AuthToken },
-          params: params,
-          responseType: 'blob'
-        },
-      ).pipe (
-        map (data => {
+  getCorrConnected(ReferenceID: string): Observable<any> {
+    const params = new HttpParams()
+      .set('ReferenceID', ReferenceID);
+    return this.httpServices.get<any>(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${
+      FCTSDashBoard.CorrespondenceRelated}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
+  deleteConnectedCorr(ConnectionID: string) {
+    const params = new HttpParams()
+      .set('ConnectionID', ConnectionID);
+    return this.httpServices.get<any>(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${
+      FCTSDashBoard.DeleteConnection}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
+  getDocumentsRelated(ReferenceID: string): Observable<any> {
+    const params = new HttpParams()
+      .set('ReferenceID', ReferenceID);
+    return this.httpServices.get<any>(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${
+      FCTSDashBoard.DocumentsRelated}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
+  getThreadedView(ReferenceID: string): Observable<any> {
+    const params = new HttpParams()
+      .set('ReferenceID', ReferenceID);
+    return this.httpServices.get<any>(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${
+      FCTSDashBoard.ConnectionsParentChild}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
+  getFolderProperties(folder_id: string): Observable<any> {
+    const params = new HttpParams()
+      .set('folderID', folder_id);
+    return this.httpServices.get<any>(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${
+      FCTSDashBoard.FilesSerch}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
+  getParentFolderProperties(folder_id: string): Observable<any> {
+    const params = new HttpParams()
+      .set('childID', folder_id);
+    return this.httpServices.get<any>(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${
+      FCTSDashBoard.GetParentData}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
+  insertDocConnection(ReferenceID: string, Selected, constants) {
+    const params = new HttpParams()
+      .set('ReferenceID', ReferenceID)
+      .set('Selected', Selected)
+      .set('ConnectedType', constants.ConnectedType)
+      .set('ReferenceType', constants.ReferenceType)
+      .set('ConnectionType', constants.ConnectionType)
+      .set('Deleted', constants.Deleted);
+    return this.httpServices.get<any>(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${
+      FCTSDashBoard.InsertMultipleConnections}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
+  /*   insertDocConnection(ReferenceID: string, DocumentID: number, constants) {
+      const params = new HttpParams()
+        .set('ReferenceID', ReferenceID)
+        .set('ConnectedID', DocumentID.toString())
+        .set('ConnectedType', constants.ConnectedType)
+        .set('ReferenceType', constants.ReferenceType)
+        .set('ConnectionType', constants.ConnectionType)
+        .set('Deleted', constants.Deleted);
+      return this.httpServices.get<any>(
+        this.CSUrl + `${FCTSDashBoard.WRApiV1}${
+        FCTSDashBoard.InsertConnection}?Format=webreport`,
+        {
+          headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+        }
+      ).pipe(
+        map(data => {
           return data;
         }),
         catchError(error => {
           return throwError(error);
         })
       );
-  } */
+    } */
+
+  /*   SearchConnectedCorrespondence(SearchFilterData) {
+      const params = new HttpParams()
+        .set('Subject', SearchFilterData.Subject)
+        .set('PerformerID', SearchFilterData.MyAssignments)
+        .set('ExternalOrganization', SearchFilterData.ExternalOrganization)
+  
+      return this.httpServices.get<any>(
+        this.CSUrl + `${FCTSDashBoard.WRApiV1}${
+        FCTSDashBoard.InsertConnection}?Format=webreport`,
+        {
+          headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+        }
+      ).pipe(
+        map(data => {
+          return data;
+        }),
+        catchError(error => {
+          return throwError(error);
+        })
+      );
+    } */
+
+  getLinkedSearchCorr(ReferenceID, startRow, endRow, queryFilters) {
+    const params = new HttpParams()
+      .set('relatedCorr', ReferenceID)
+      .set('startRow', startRow)
+      .set('endRow', endRow)
+      .set('CorrespondenceCode', queryFilters.ReferenceCode ? queryFilters.ReferenceCode : '')
+      .set('ExternalOrganization', queryFilters.ExternalOrganization ? queryFilters.ExternalOrganization : '')
+      .set('Priority', queryFilters.Priority.ID ? queryFilters.Priority.ID : '')
+      .set('ReceivedDateFrom', queryFilters.DispatchDateFrom ? this.DateToLRString(queryFilters.DispatchDateFrom) : '')
+      .set('ReceivedDateTo', queryFilters.DispatchDateTo ? this.DateToLRString(queryFilters.DispatchDateTo) : '')
+      .set('FromDep', queryFilters.SenderDepartment.ID ? queryFilters.SenderDepartment.ID : '')
+      .set('ToDep', queryFilters.RecipientDepartment.ID ? queryFilters.RecipientDepartment.ID : '')
+      .set('BaseType', queryFilters.BaseType.ID ? queryFilters.BaseType.ID : '')
+      .set('Subject', queryFilters.Subject ? queryFilters.Subject : '')
+      .set('MyAssignments', queryFilters.MyAssignments ? queryFilters.MyAssignments : '')
+      .set('DocumentNumber', queryFilters.DocumentNumber ? queryFilters.DocumentNumber : '')
+      .set('fRelatedCorr', 'true');
+    return this.httpServices.get<any>(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${
+      FCTSDashBoard.ConnectionsSearch}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
 
 }

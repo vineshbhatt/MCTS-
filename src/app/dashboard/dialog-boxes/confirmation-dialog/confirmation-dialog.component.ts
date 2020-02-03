@@ -41,7 +41,11 @@ export class ConfirmationDialogComponent implements OnInit {
         this._message = 'Are you sure you want to delete this delegation?';
         break;
       }
-      default : {
+      case 'deleteConnection': {
+        this.message = 'Are you sure to remove this connection?';
+        break;
+      }
+      default: {
         this._message = 'An unknown case, please inform Administrator';
         break;
       }
