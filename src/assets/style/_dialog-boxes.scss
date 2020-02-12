@@ -816,6 +816,89 @@
     justify-content: center;
     padding: 10px;
   }
+  .correspondence-name{
+    display:flex;
+    align-items: center;
+    flex-wrap: nowrap;
+  }
+
+  .correspondence-action{
+    display:flex;
+    flex-wrap: nowrap;
+  }
+  .icon_btn {
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    max-width: 32px;
+    min-width: 32px;
+
+    &:hover {
+      background: #f8f6f6;
+    }
+
+    img {
+      min-width: 20px;
+      max-width: 20px;
+      display: block;
+      margin: auto;
+    }
+  }
+
+  .button-holder{
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: 10px;
+    .btn_004_cancel {
+      background: white;
+      font-size: 13px;
+      border: 1px solid #00b7c3;
+      outline: none;
+      color: #00b7c3;
+      font-weight: 500;
+      padding: 4px 35px 4px 35px;
+      margin-right: 10px !important;
+      border-radius: 7px;
+    }
+  }
+  /***/
+  tr.detail-row {
+    height: 0;
+  }
+  
+  .element-row td {
+    border-bottom-width: 0;
+  }
+  
+  .element-detail {
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .detail-parameter{
+    display: flex;
+    flex-direction: row;
+    width: 50%;
+    font-size: 13px;  
+    .detail-definition{
+      font-weight: 600;
+      margin-left: 30px;
+    }
+  }
+  
+  td.mat-cell {
+    border-top: 1px solid rgba(0,0,0,0.12);
+    border-bottom-width: 0;
+  }
+  
+  .mat-table {
+    border-collapse: inherit;
+  }
+  /***/
+  
   .connected-correspondences{
     .connected-correspondences-view{
       .mat-tab-body-content{
@@ -842,6 +925,7 @@
       color: #0d0def;
     }
   }
+
   .action_header {
     padding: 15px 24px 11px;
     background: #00b7c3;
@@ -862,11 +946,6 @@
     display: flex;
     justify-content: flex-end;
   }
-/*   .connectedCorrTable{
-    a{
-      color: #0d0def;
-    }
-  } */
   .threadedCorrTable{
     .threaded-corr-name{
       display: flex;
@@ -888,18 +967,51 @@
   }
 
   .fileSearch{
-    .hierarchy{
-      color: #05447E;
-      margin-left: 25px;
-      display:flex;
+    .fileSearch-header{
+      display: flex;
       flex-direction: row;
-      align-items: center;
-    }
-    .hierarchy-item:hover{
-      text-decoration:underline;
-    }
-    .hierarchy-divider{
-      text-decoration:none;
+      width: 100%;
+      flex-wrap: wrap;
+      .hierarchy{
+        color: #05447E;
+        margin-left: 25px;
+        display:flex;
+        flex-direction: row;
+        align-items: center;
+        width: 35%;
+      }
+      .file_search{
+        margin-left: 20px;
+        display: flex;
+        align-items: center;
+        input{
+          height: 30px;
+        }
+        .search_input {
+          color: #d9d9d9;
+          border: 1px solid #cdcaca;
+          font-size: 13px;
+          color: #7a7c87;
+         /*  padding: 14px 20px; */
+          outline: none;
+          border-radius: 12px;
+          padding-left: 10px;
+          width: 270px;
+         /*  box-sizing: border-box; */
+        }
+      }
+      .search-button{
+        background: #00b7c3;
+        font-size: 13px;
+        border: none;
+        outline: none;
+        color: #fff;
+        font-weight: 500;
+        padding: 4px 35px 4px 35px;
+        margin-right: 10px !important;
+        border-radius: 12px;
+        margin: 10px;
+      }
     }
     .fileSearchTable{
       .folderName:hover{
@@ -908,23 +1020,6 @@
       }
     }
 
-    .button-holder{
-      display: flex;
-      width: 100%;
-      justify-content: flex-end;
-      margin-top: 10px;
-      .btn_004_cancel {
-        background: white;
-        font-size: 13px;
-        border: 1px solid #00b7c3;
-        outline: none;
-        color: #00b7c3;
-        font-weight: 500;
-        padding: 4px 35px 4px 35px;
-        margin-right: 10px !important;
-        border-radius: 7px;
-      }
-    }
     .goParentIcon{
       height: 25px;
       width: 25px;
@@ -938,7 +1033,6 @@
 
   /* Search wrapper */
   .search_wrapper {
-    // margin-top: 30px;
     border-top: 1px solid #e4e5e7;
     border-bottom: 1px solid #e4e5e7;
     padding: 27px 0;
@@ -999,5 +1093,4 @@
       }
     }
   }
-   
 }

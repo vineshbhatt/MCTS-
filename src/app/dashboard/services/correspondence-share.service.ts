@@ -474,12 +474,13 @@ export class CorrespondenceShareService {
     );
   }
 
-  getFolderProperties(folder_id: string): Observable<any> {
+  getFolderProperties(folder_id: string, StartRow: number, EndRow: number, IsParent: boolean): Observable<any> {
     const params = new HttpParams()
-      .set('folderID', folder_id);
+      .set(IsParent ? 'childID' : 'folderID', folder_id)
+      .set('StartRow', StartRow.toString())
+      .set('EndRow', EndRow.toString());
     return this.httpServices.get<any>(
-      this.CSUrl + `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.FilesSerch}?Format=webreport`,
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${IsParent ? FCTSDashBoard.GetParentData : FCTSDashBoard.FilesSerch}?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
       }
@@ -493,12 +494,16 @@ export class CorrespondenceShareService {
     );
   }
 
-  getParentFolderProperties(folder_id: string): Observable<any> {
+  getOnlyFolderContent(folder_id: string, StartRow: number, EndRow: number, searchStr?: string): Observable<any> {
     const params = new HttpParams()
-      .set('childID', folder_id);
+      .set('folderID', folder_id)
+      .set('StartRow', StartRow.toString())
+      .set('EndRow', EndRow.toString())
+      .set('searchStr', searchStr)
+      .set('fSearch', searchStr ? 'true' : 'false');
     return this.httpServices.get<any>(
       this.CSUrl + `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.GetParentData}?Format=webreport`,
+      FCTSDashBoard.FolderFiles}?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
       }
@@ -536,51 +541,6 @@ export class CorrespondenceShareService {
     );
   }
 
-  /*   insertDocConnection(ReferenceID: string, DocumentID: number, constants) {
-      const params = new HttpParams()
-        .set('ReferenceID', ReferenceID)
-        .set('ConnectedID', DocumentID.toString())
-        .set('ConnectedType', constants.ConnectedType)
-        .set('ReferenceType', constants.ReferenceType)
-        .set('ConnectionType', constants.ConnectionType)
-        .set('Deleted', constants.Deleted);
-      return this.httpServices.get<any>(
-        this.CSUrl + `${FCTSDashBoard.WRApiV1}${
-        FCTSDashBoard.InsertConnection}?Format=webreport`,
-        {
-          headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
-        }
-      ).pipe(
-        map(data => {
-          return data;
-        }),
-        catchError(error => {
-          return throwError(error);
-        })
-      );
-    } */
-
-  /*   SearchConnectedCorrespondence(SearchFilterData) {
-      const params = new HttpParams()
-        .set('Subject', SearchFilterData.Subject)
-        .set('PerformerID', SearchFilterData.MyAssignments)
-        .set('ExternalOrganization', SearchFilterData.ExternalOrganization)
-  
-      return this.httpServices.get<any>(
-        this.CSUrl + `${FCTSDashBoard.WRApiV1}${
-        FCTSDashBoard.InsertConnection}?Format=webreport`,
-        {
-          headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
-        }
-      ).pipe(
-        map(data => {
-          return data;
-        }),
-        catchError(error => {
-          return throwError(error);
-        })
-      );
-    } */
 
   getLinkedSearchCorr(ReferenceID, startRow, endRow, queryFilters) {
     const params = new HttpParams()

@@ -1,16 +1,17 @@
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialog, MatAccordion, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
 import { CorrespondenceShareService } from 'src/app/dashboard/services/correspondence-share.service';
 import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handler-fcts.service';
 import { FCTSDashBoard } from '../../../../environments/environment';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router } from '@angular/router';
 import { CorrespondenceService } from 'src/app/dashboard/services/correspondence.service';
-import { stringify } from 'querystring';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { forkJoin } from 'rxjs';
-import { FilesSelectComponent } from 'src/app/dashboard/shared-components/files-select/files-select.component'
+import { FilesSelectComponent } from 'src/app/dashboard/shared-components/files-select/files-select.component';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+
 
 export interface ConnectedCorrespondencesData {
   CorrespondenceIcon: IconType[];
@@ -24,7 +25,6 @@ export interface ConnectedCorrespondencesData {
   CorrespondenceDate: string;
   ArabicSubject: string;
   EnglishSubject: string;
-  CorrespondenceFlowType: string;
   CorrFlowType: string;
   Confidential: string;
   CoverID: string;
@@ -37,7 +37,17 @@ export interface ConnectedCorrespondencesData {
   ExternalOrganization: string;
   ExternalOrganizationNameEN: string;
   ExternalOrganizationNameAR: string;
-  SubWorkTask_TaskID: string;
+  DispatchDate: string;
+  BaseType_EN: string;
+  BaseType_AR: string;
+  CorrespondenceType_EN: string;
+  CorrespondenceType_AR: string;
+  DocumentNumber: string;
+  ProjectCode: string;
+  BudgetNumber: string;
+  TenderNumber: string;
+  ContractNumber: string;
+  StaffNumber: string;
 }
 
 export interface ConnectedDocumentsData {
@@ -65,8 +75,7 @@ export interface ThreadedViewData {
   CorrespondenceDate: string;
   ArabicSubject: string;
   EnglishSubject: string;
-  CorrespondenceFlowType: string;
-  CorrFlowTypeName: string;
+  CorrFlowType: string;
   RecipientDepartment: string;
   RecipientDepartment_EN: string;
   RecipientDepartment_AR: string;
@@ -81,15 +90,29 @@ export interface ThreadedViewData {
   SortNumber?: number;
   Type: string;
   CoverID: string;
+  DispatchDate: string;
+  BaseType_EN: string;
+  BaseType_AR: string;
+  CorrespondenceType_EN: string;
+  CorrespondenceType_AR: string;
+  Confidential: string;
+  DocumentNumber: string;
+  ProjectCode: string;
+  BudgetNumber: string;
+  TenderNumber: string;
+  ContractNumber: string;
+  StaffNumber: string;
 }
 
 export interface SearchData {
   CorrespondenceIcon: IconType[];
+  SeeContents: string;
   VolumeID: string;
   DataID: string;
   CorrFlowType: string;
   CoverID: string;
   Name: string;
+  CorrespondenceCode: string;
   Subject_EN: string;
   Subject_AR: string;
   ExternalOrganization: string;
@@ -102,6 +125,18 @@ export interface SearchData {
   RecipientDepartment_EN: string;
   RecipientDepartment_AR: string;
   CorrespondenceDate: string;
+  DispatchDate: string;
+  BaseType_EN: string;
+  BaseType_AR: string;
+  CorrespondenceType_EN: string;
+  CorrespondenceType_AR: string;
+  Confidential: string;
+  DocumentNumber: string;
+  ProjectCode: string;
+  BudgetNumber: string;
+  TenderNumber: string;
+  ContractNumber: string;
+  StaffNumber: string;
 }
 
 export interface IconType {
@@ -112,7 +147,14 @@ export interface IconType {
 @Component({
   selector: 'app-linked-corr-dialog',
   templateUrl: './linked-corr-dialog.component.html',
-  styleUrls: ['./linked-corr-dialog.component.scss']
+  styleUrls: ['./linked-corr-dialog.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class LinkedCorrDialogComponent implements OnInit {
   // variables for table data
@@ -137,11 +179,13 @@ export class LinkedCorrDialogComponent implements OnInit {
   // correspondence search number
   public startPage = 1;
   public endPage = 20;
+  // test
+  testToggle = true;
 
   // tables fields
-  CorrDisplayedColumns: string[] = ['DocType', 'name', 'EnglishSubject', 'ExternalOrganizationNameEN', 'SenderDepartmentNameEN', 'RecipientDepartmentNameEN', 'CorrespondenceDate', 'Remove'];
-  SearchTableDisplayedColumns: string[] = ['DocType', 'CorrespondenceCode', 'Subject_EN', 'ExternalOrganization_EN', 'SenderDepartment_EN', 'RecipientDepartment_EN', 'CorrespondenceDate', 'Link'];
-  ThreadedDisplayedColumns: string[] = ['EnglishSubject', 'Type', 'ExternalOrganizationNameEN', 'SenderDepartment_EN', 'RecipientDepartment_EN', 'name', 'CorrespondenceDate'];
+  CorrDisplayedColumns: string[] = ['DocType', 'name', 'EnglishSubject', 'ExternalOrganization_EN', 'SenderDepartment_EN', 'RecipientDepartment_EN', 'CorrespondenceDate', 'Remove'];
+  SearchTableDisplayedColumns: string[] = ['DocType', 'Name', 'Subject_EN', 'ExternalOrganization_EN', 'SenderDepartment_EN', 'RecipientDepartment_EN', 'CorrespondenceDate', 'Link'];
+  ThreadedDisplayedColumns: string[] = ['EnglishSubject', 'Type', 'ExternalOrganization_EN', 'SenderDepartment_EN', 'RecipientDepartment_EN', 'name', 'CorrespondenceDate', 'Open'];
   DocDisplayedColumns: string[] = ['DocType', 'Name', 'CreatorName_EN', 'CreationDate', 'Remove'];
   // routing variables
   basehref: String = FCTSDashBoard.BaseHref;
@@ -153,9 +197,9 @@ export class LinkedCorrDialogComponent implements OnInit {
     { 'columnDef': 'DocType', 'columnName': '' },
     { 'columnDef': 'name', 'columnName': '	PWA Reference' },
     { 'columnDef': 'EnglishSubject', 'columnName': 'Subject' },
-    { 'columnDef': 'ExternalOrganizationNameEN', 'columnName': 'External Org.' },
-    { 'columnDef': 'SenderDepartmentNameEN', 'columnName': 'From Dep.' },
-    { 'columnDef': 'RecipientDepartmentNameEN', 'columnName': 'To Dep.' },
+    { 'columnDef': 'ExternalOrganization_EN', 'columnName': 'External Org.' },
+    { 'columnDef': 'SenderDepartment_EN', 'columnName': 'From Dep.' },
+    { 'columnDef': 'RecipientDepartment_EN', 'columnName': 'To Dep.' },
     { 'columnDef': 'CorrespondenceDate', 'columnName': 'Recived Date' },
     { 'columnDef': 'Remove', 'columnName': '' }
   ];
@@ -169,15 +213,16 @@ export class LinkedCorrDialogComponent implements OnInit {
   ThreadedViewTableStructure = [
     { 'columnDef': 'EnglishSubject', 'columnName': 'Subject' },
     { 'columnDef': 'Type', 'columnName': 'Type' },
-    { 'columnDef': 'ExternalOrganizationNameEN', 'columnName': 'External Org.' },
+    { 'columnDef': 'ExternalOrganization_EN', 'columnName': 'External Org.' },
     { 'columnDef': 'SenderDepartment_EN', 'columnName': 'From Dep.' },
     { 'columnDef': 'RecipientDepartment_EN', 'columnName': 'To Dep.' },
     { 'columnDef': 'name', 'columnName': 'Correspondence Code' },
-    { 'columnDef': 'CorrespondenceDate', 'columnName': 'Date' }
+    { 'columnDef': 'CorrespondenceDate', 'columnName': 'Date' },
+    { 'columnDef': 'Open', 'columnName': '' }
   ];
   SearchTableStructure = [
     { 'columnDef': 'DocType', 'columnName': '' },
-    { 'columnDef': 'CorrespondenceCode', 'columnName': 'PWA Reference' },
+    { 'columnDef': 'Name', 'columnName': 'PWA Reference' },
     { 'columnDef': 'Subject_EN', 'columnName': 'Subject' },
     { 'columnDef': 'ExternalOrganization_EN', 'columnName': 'External Org.' },
     { 'columnDef': 'SenderDepartment_EN', 'columnName': 'From Dep.' },
@@ -185,6 +230,19 @@ export class LinkedCorrDialogComponent implements OnInit {
     { 'columnDef': 'CorrespondenceDate', 'columnName': 'Recived Date' },
     { 'columnDef': 'Link', 'columnName': '' }
   ];
+
+  CorrespondenceDetailsStructure = [
+    { 'Definition': 'Created Date', 'ParameterName': 'CorrespondenceDate' },
+    { 'Definition': 'Project', 'ParameterName': 'ProjectCode' },
+    { 'Definition': 'Dispatch Date', 'ParameterName': 'DispatchDate' },
+    { 'Definition': 'Contract', 'ParameterName': 'ContractNumber' },
+    { 'Definition': 'Correspondence Type', 'ParameterName': 'CorrespondenceType_EN' },
+    { 'Definition': 'Tender', 'ParameterName': 'TenderNumber' },
+    { 'Definition': 'Base Type', 'ParameterName': 'BaseType_EN' },
+    { 'Definition': 'Document Number', 'ParameterName': 'DocumentNumber' },
+    { 'Definition': 'Confidential', 'ParameterName': 'Confidential' },
+    { 'Definition': 'Budget', 'ParameterName': 'BudgetNumber' },
+  ]
   // search filter object
   SearchFilterData = {
     ReferenceCode: '',
@@ -296,6 +354,7 @@ export class LinkedCorrDialogComponent implements OnInit {
 
   changeCorrTab(tab) {
     this.CorrTabIndex = tab;
+    this.testToggle = !this.testToggle;
   }
 
   changeDocumentTab(tab) {
@@ -313,7 +372,7 @@ export class LinkedCorrDialogComponent implements OnInit {
   getCorrespondence(startrow: number, endrow: number, SearchFilterData: any): void {
     this.activeSearchSpinner = true;
     this.correspondenceShareService
-      .getLinkedSearchCorr(this.currentReference, startrow, endrow, SearchFilterData/* , this.isProxy */)
+      .getLinkedSearchCorr(this.currentReference, startrow, endrow, SearchFilterData)
       .subscribe(
         response => {
           this.connectedSearchDataObj = response;
@@ -368,8 +427,13 @@ export class LinkedCorrDialogComponent implements OnInit {
     );
   }
 
-  setPerformerPermission(correspondData: ConnectedCorrespondencesData): void {
-    this.correspondenceService.setPerformerPermission(correspondData).subscribe(
+  setPerformerPermission(correspondData: any): void {
+    let permissionsParameters = {
+      DataID: correspondData.DataID,
+      CorrFlowType: correspondData.CorrFlowType,
+      SubWorkTask_TaskID: '0'
+    }
+    this.correspondenceService.setPerformerPermission(permissionsParameters).subscribe(
       response => { },
       responseError => {
         this.errorHandlerFctsService.handleError(responseError).subscribe();
@@ -387,6 +451,25 @@ export class LinkedCorrDialogComponent implements OnInit {
 
   closeDialog(): void {
     this.dialogRef.close();
+  }
+
+  correspondenceReroute(correspondence) {
+    this.setPerformerPermission(correspondence);
+    this.closeDialog();
+    this.router.navigate([this.routerCorrDetail],
+      {
+        queryParams:
+        {
+          VolumeID: correspondence.VolumeID,
+          CorrType: correspondence.CorrFlowType,
+          CoverID: correspondence.CoverID,
+          locationid: correspondence.DataID,
+          TaskID: '0',
+          TransID: '0',
+          TransIsCC: '0'
+        }
+      }
+    );
   }
 
 }
