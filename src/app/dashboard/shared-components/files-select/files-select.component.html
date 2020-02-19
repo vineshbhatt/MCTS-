@@ -5,7 +5,7 @@
         <mat-select [formControl]="hierarchy" (selectionChange)="getFolderProperties(hierarchy.value, false)">
           <mat-option *ngFor="let folder of folderHierarchy; let i = index" [value]="folder.DataID"
             style="padding-top:5px !important;padding-bottom:5px !important"><span
-              [style.marginLeft]="i*10 + 'px'"></span>
+              [style.marginLeft]="folder.ParentID == '-1' ? '0' : i*10 + 'px'"></span>
             {{folder.Name}}</mat-option>
         </mat-select>
       </mat-form-field>

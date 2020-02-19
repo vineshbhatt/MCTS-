@@ -105,7 +105,8 @@ import { NewDelegationComponent } from './side-navigation/new-delegation/new-del
 import { CurrentDelegationsComponent } from './side-navigation/current-delegations/current-delegations.component';
 import { DelegationReportComponent } from './side-navigation/delegation-report/delegation-report.component';
 import { LinkedCorrDialogComponent } from './dialog-boxes/linked-corr-dialog/linked-corr-dialog.component';
-import { FilesSelectComponent } from './shared-components/files-select/files-select.component'
+import { FilesSelectComponent } from './shared-components/files-select/files-select.component';
+import { LinkedCorrespondencesComponent } from './shared-components/linked-correspondences/linked-correspondences.component'
 
 
 @NgModule({
@@ -221,7 +222,8 @@ import { FilesSelectComponent } from './shared-components/files-select/files-sel
     CurrentDelegationsComponent,
     DelegationReportComponent,
     LinkedCorrDialogComponent,
-    FilesSelectComponent
+    FilesSelectComponent,
+    LinkedCorrespondencesComponent
   ],
   entryComponents: [
     MailDetailView,

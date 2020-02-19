@@ -1374,7 +1374,7 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     this.editMode = true;
   }
 
-  toShowWFButtons(taskID: string): any {    
+  toShowWFButtons(taskID: string): any {
     let WFStepsUI: any;
     if (this.CorrespondencType === 'Incoming') {
       WFStepsUI = this.globalConstants.WFStepsUI.Incoming;
@@ -1384,7 +1384,7 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
       WFStepsUI = this.globalConstants.WFStepsUI.Internal;
     }
     let tmpObj: any;
-    WFStepsUI.forEach(function (taskObj) {      
+    WFStepsUI.forEach(function (taskObj) {
       let tempTaskList = taskObj.TaskID.split(",");
       if (tempTaskList.includes(taskID)) {
         tmpObj = taskObj;
@@ -1404,5 +1404,17 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     this.showPreviewCoverLetter = true;
     this.correspondenceDetailsService.getFolderBrowse(folderID)
       .subscribe(correspondenceCovertData => this.documentPreviewURL = correspondenceCovertData);
+  }
+
+  LinkedCorrAction(obj) {
+    if (obj.hasOwnProperty('action') || obj.hasOwnProperty('dataID')) {
+      if (obj.action === 'showActionProperties') {
+        this.showActionProperties(obj.dataID);
+      } else if (obj.action === 'tranlsateDocument') {
+        // this.tranlsateDocument(obj.dataID);
+      } else if (obj.action === 'getCoverDocumentURL') {
+        this.getCoverDocumentURL(obj.dataID);
+      }
+    }
   }
 }

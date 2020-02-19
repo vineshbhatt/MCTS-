@@ -42,8 +42,11 @@
                       (click)="deleteConnectionConfirmDialog(element.ID, 'corr')">
                       <img src="{{basehref}}assets/images/icons/remove_icon_001.svg" alt="">
                     </button>
-                    <button *ngIf="element.SeeContents" mat-button matTooltip="Open" color="primary" class="icon_btn"
+                    <!-- <button *ngIf="element.SeeContents" mat-button matTooltip="Open" color="primary" class="icon_btn"
                       (click)="correspondenceReroute(element)"><img
+                        src="{{basehref}}assets/images/icons/external-link_green.svg" alt=""></button> -->
+                    <button *ngIf="element.SeeContents && element.CoverID" mat-button matTooltip="Open" color="primary"
+                      class="icon_btn" (click)="CoverLetterPreview(element.CoverIDLink)"><img
                         src="{{basehref}}assets/images/icons/external-link_green.svg" alt=""></button>
                   </div>
                   <p *ngSwitchCase="'CorrespondenceDate'">{{element[col.columnDef] | date: 'dd/MM/yyyy HH:mm'}}</p>
@@ -113,8 +116,8 @@
                       <button mat-button matTooltip="Link" class="icon_btn" (click)="addCorrConnection(element.DataID)">
                         <img src="{{basehref}}assets/images/icons/link_01.svg" alt="">
                       </button>
-                      <button *ngIf="element.SeeContents" mat-button matTooltip="Open" class="icon_btn"
-                        (click)="correspondenceReroute(element)"><img
+                      <button *ngIf="element.SeeContents && element.CoverID" mat-button matTooltip="Open"
+                        class="icon_btn" (click)="CoverLetterPreview(element.CoverIDLink)"><img
                           src="{{basehref}}assets/images/icons/external-link_green.svg" alt=""></button>
                     </div>
                     <p *ngSwitchCase="'CorrespondenceDate'">{{element[col.columnDef] | date: 'dd/MM/yyyy HH:mm'}}</p>
@@ -233,8 +236,8 @@
                   {{expandedElement === element ? "keyboard_arrow_up" : "keyboard_arrow_down"}}</i>
               </div>
               <div *ngSwitchCase="'Open'" class="correspondence-action">
-                <button *ngIf="element.SeeContents" mat-button matTooltip="Open" class="icon_btn"
-                  (click)="correspondenceReroute(element)"><img
+                <button *ngIf="element.SeeContents && element.CoverID" mat-button matTooltip="Open" class="icon_btn"
+                  (click)="CoverLetterPreview(element.CoverIDLink)"><img
                     src="{{basehref}}assets/images/icons/external-link_green.svg" alt=""></button>
               </div>
               <p *ngSwitchCase="'CorrespondenceDate'">{{element[col.columnDef] | date: 'dd/MM/yyyy HH:mm'}}</p>

@@ -54,6 +54,7 @@ export class OrgNameAutoFillModel {
 
 export class CorrespondenceFolderModel {
   AttachCorrID: number;
+  AttachCorrIDName: string;
   AttachCorrCoverID: number;
   AttachCorrAttachmentsID: number;
   AttachCorrMiscID: number;

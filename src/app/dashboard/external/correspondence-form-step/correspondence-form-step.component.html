@@ -564,6 +564,9 @@
             </div>
           </div>
         </mat-expansion-panel>
+        <app-linked-correspondences [DataID]="locationid" [Name]="correspondenceData?.CorrFolderName"
+          [Modify]="sectionDisplay.LinkedCorrespondence.Modify" (CoverAction)="LinkedCorrAction($event)">
+        </app-linked-correspondences>
         <mat-expansion-panel class="mat-elevation-z bg_001" *ngIf="sectionDisplay.Comments.Show">
           <mat-expansion-panel-header (click)="commentsProgbar = false">
             <div class="icon_wrapper">

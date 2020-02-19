@@ -48,6 +48,7 @@ export interface ConnectedCorrespondencesData {
   TenderNumber: string;
   ContractNumber: string;
   StaffNumber: string;
+  CoverIDLink: string;
 }
 
 export interface ConnectedDocumentsData {
@@ -102,6 +103,7 @@ export interface ThreadedViewData {
   TenderNumber: string;
   ContractNumber: string;
   StaffNumber: string;
+  CoverIDLink: string;
 }
 
 export interface SearchData {
@@ -137,6 +139,7 @@ export interface SearchData {
   TenderNumber: string;
   ContractNumber: string;
   StaffNumber: string;
+  CoverIDLink: string;
 }
 
 export interface IconType {
@@ -181,6 +184,7 @@ export class LinkedCorrDialogComponent implements OnInit {
   public endPage = 20;
   // test
   testToggle = true;
+  newwindow;
 
   // tables fields
   CorrDisplayedColumns: string[] = ['DocType', 'name', 'EnglishSubject', 'ExternalOrganization_EN', 'SenderDepartment_EN', 'RecipientDepartment_EN', 'CorrespondenceDate', 'Remove'];
@@ -453,6 +457,7 @@ export class LinkedCorrDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  // not used because of changed requirements
   correspondenceReroute(correspondence) {
     this.setPerformerPermission(correspondence);
     this.closeDialog();
@@ -472,6 +477,13 @@ export class LinkedCorrDialogComponent implements OnInit {
     );
   }
 
+  CoverLetterPreview(url) {
+    let width = screen.width / 2 - screen.width / 10;
+    let height = screen.height - screen.height / 4;
+    var params = 'width=' + width + ', height=' + height + ',top=100,left=100,resizable';
+    this.newwindow = window.open(this.CSUrl + url, 'name', params);
+    if (window.focus) { this.newwindow.focus() }
+  }
 }
 
 export class SortObjectClass {

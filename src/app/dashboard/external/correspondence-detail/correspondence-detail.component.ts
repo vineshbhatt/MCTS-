@@ -21,6 +21,7 @@ import { MessageDialogComponent } from '../../dialog-boxes/message-dialog/messag
 import { CompleteDialogComponent } from '../../dialog-boxes/complete-dialog/complete-dialog.component';
 import { TransferReplyDialogComponent } from '../../dialog-boxes/transfer-reply-dialog/transfer-reply-dialog.component';
 
+
 @Component({
   selector: 'app-correspondence-detail',
   templateUrl: './correspondence-detail.component.html',
@@ -318,7 +319,7 @@ export class CorrespondenceDetailComponent implements OnInit {
       .subscribe(correspondenceCovertData => this.documentPreviewURL = correspondenceCovertData);
   }
   tranlsateDocument(dataID: string): void {
-   
+
     this._correspondenceDetailsService.getDocumentTranslateURL(dataID)
       .subscribe(correspondenceCovertData => this.documentPreviewURL = correspondenceCovertData);
   }
@@ -378,4 +379,15 @@ export class CorrespondenceDetailComponent implements OnInit {
     );
   }
 
+  LinkedCorrAction(obj): void {
+    if (obj.hasOwnProperty('action') || obj.hasOwnProperty('dataID')) {
+      if (obj.action === 'showActionProperties') {
+        this.showActionProperties(obj.dataID);
+      } else if (obj.action === 'tranlsateDocument') {
+        this.tranlsateDocument(obj.dataID);
+      } else if (obj.action === 'getCoverDocumentURL') {
+        this.getCoverDocumentURL(obj.dataID);
+      }
+    }
+  }
 }

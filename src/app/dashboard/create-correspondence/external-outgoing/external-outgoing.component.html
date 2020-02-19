@@ -604,6 +604,9 @@
             </div>
           </mat-expansion-panel>
         </form>
+        <app-linked-correspondences [DataID]="corrFolderData?.AttachCorrID" [Name]="corrFolderData?.AttachCorrIDName"
+          [Modify]="true" (CoverAction)="LinkedCorrAction($event)">
+        </app-linked-correspondences>
       </mat-accordion>
     </div>
     <!-- cc code end -->
@@ -624,7 +627,8 @@
     </button>
     <ng-container *ngIf="showPreviewCoverLetter">
       <div class="documentViewerDiv" *ngFor="let docpreviewData of documentPreviewURL">
-        <iframe class="iframeclass"scrolling="no" frameborder="0" [src]="docpreviewData.CorrespondencedocumentURL|safe"></iframe>
+        <iframe class="iframeclass" scrolling="no" frameborder="0"
+          [src]="docpreviewData.CorrespondencedocumentURL|safe"></iframe>
       </div>
     </ng-container>
     <div *ngIf="showPreviewTreeArea">

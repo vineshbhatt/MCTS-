@@ -417,6 +417,25 @@ export class CorrespondenceShareService {
     );
   }
 
+  getCorrConnectedDet(ReferenceID: string): Observable<any> {
+    const params = new HttpParams()
+      .set('ReferenceID', ReferenceID);
+    return this.httpServices.get<any>(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${
+      FCTSDashBoard.CorrespondenceRelatedShort}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
   deleteConnectedCorr(ConnectionID: string) {
     const params = new HttpParams()
       .set('ConnectionID', ConnectionID);

@@ -381,124 +381,10 @@
             </div>
           </div>
         </mat-expansion-panel>
-        <mat-expansion-panel class="mat-elevation-z linked_crsp_exp_view"
-          *ngIf="sectionDisplay.LinkedCorrespondence.Show">
-          <mat-expansion-panel-header (click)="corrconnectionsData();">
-            <div class="icon_wrapper">
-              <div class="icon_typ icon_typ_008">
-                <img src="{{basehref}}assets/images/icons/linked_correspondence.svg" alt="">
-              </div>
-            </div>
-            <p class="title_001">Linked Correspondence</p>
-          </mat-expansion-panel-header>
-          <div class="corres_data_area">
-            <div *ngIf="corrConnectionsProgbar" class="spinner_sm_wrappar">
-              <mat-spinner class="spinner_sm"></mat-spinner>
-            </div>
-            <div *ngIf="!corrConnectionsProgbar" class="corres_data_area">
-              <div class="linked_corp_wrp">
-                <div class="link_btn_wrp">
-                  <button class="ref_btn_sm" matTooltip="Refresh" (click)="corrconnectionsData();"><img alt=""
-                      src="assets/images/icons/refresh-arrow.svg"></button>
-                </div>
-                <div class="link_corsp_cnt">
-                  <mat-accordion *ngFor="let correspondenceLinkedCorrespondenceDetails of corrConnectionsData">
-                    <mat-expansion-panel class="mat-elevation-z"
-                      *ngFor="let correspondenceLinkedCorrespondenceDetailsCnt of correspondenceLinkedCorrespondenceDetails.myRows">
-                      <mat-expansion-panel-header class="corspnd_main_head" [collapsedHeight]="'35px'"
-                        [expandedHeight]="'35px'">
-                        <span class="link_main_sub">
-                          {{correspondenceLinkedCorrespondenceDetailsCnt.EnglishSubject}}</span>
-                        <span class="link_main_code">
-                          {{correspondenceLinkedCorrespondenceDetailsCnt.CorrespondenceName}}</span>
-                        <!-- <button matTooltip="Remove" (click)="toggle(d.expanded)" class="remove_btn"><img src="assets/images/icons/rubbish-bin.svg" alt=""></button> -->
-                      </mat-expansion-panel-header>
-                      <div class="link_sub_cont">
-                        <mat-accordion multi="true">
-                          <mat-expansion-panel [expanded]="true" class="mat-elevation-z">
-                            <mat-expansion-panel-header [collapsedHeight]="'35px'" [expandedHeight]="'35px'"
-                              class="link_cmd_sub_head" hideToggle>Cover letter</mat-expansion-panel-header>
-                            <div class="link_sub_cont">
-                              <table class="link_corspd">
-                                <tr>
-                                  <th class="Type">Type</th>
-                                  <th class="Name">Name</th>
-                                  <th></th>
-                                  <th class="Size">Size</th>
-                                  <th class="Modified">Modified</th>
-                                </tr>
-                                <tr>
-                                  <td><img class="max_15"
-                                      [src]="correspondenceLinkedCorrespondenceDetailsCnt.CoverType">
-                                  </td>
-
-                                  <!-- <td>{{correspondenceLinkedCorrespondenceDetailsCnt.CoverName}}</td> -->
-                                  <td><a class="coverLink"
-                                      (click)="getCoverDocumentURL(correspondenceLinkedCorrespondenceDetailsCnt.CoverID)">{{correspondenceLinkedCorrespondenceDetailsCnt.CoverName}}
-                                    </a></td>
-                                  <td>
-                                    <div class="group_btn">
-                                      <button matTooltip="Print" class="btn btn_006">
-                                        <img src="assets/images/icons/printer-tool.svg" alt="">
-                                      </button>
-                                      <button matTooltip="Download" class="btn btn_006">
-                                        <img src="assets/images/icons/download-to-storage-drive.svg" alt="">
-                                      </button>
-                                      <a matTooltip="Properties" class="btn btn_006">
-                                        <img src="assets/images/icons/info-round-button.svg" alt="">
-                                      </a>
-                                    </div>
-                                  </td>
-                                  <td>{{correspondenceLinkedCorrespondenceDetailsCnt.Size}}</td>
-                                  <td>{{correspondenceLinkedCorrespondenceDetailsCnt.Modified}}</td>
-                                </tr>
-                              </table>
-                            </div>
-                          </mat-expansion-panel>
-                          <!-- <mat-expansion-panel class="mat-elevation-z">
-                          <mat-expansion-panel-header [collapsedHeight]="'35px'" [expandedHeight]="'35px'" class="link_cmd_sub_head">Attachment</mat-expansion-panel-header>
-                          <div class="link_sub_cont">
-                            <div class="link_sub_cont">
-                              <table class="link_corspd">
-                                <tr>
-                                  <th class="Type">Type</th>
-                                  <th class="Name">Name</th>
-                                  <th></th>
-                                  <th class="Size">Size</th>
-                                  <th class="Modified">Modified</th>
-                                </tr>
-                                <tr>
-                                  <td><img class="max_15" [src]="correspondenceLinkedCorrespondenceDetailsCnt.Type" alt=""></td>
-                                  <td>{{correspondenceLinkedCorrespondenceDetailsCnt.Name}}</td>
-                                  <td>
-                                    <div class="group_btn">
-                                      <button matTooltip="Print" class="btn btn_006">
-                                        <img src="assets/images/icons/printer-tool.svg" alt="">
-                                      </button>
-                                      <button matTooltip="Download" class="btn btn_006">
-                                        <img src="assets/images/icons/download-to-storage-drive.svg" alt="">
-                                      </button>
-                                      <a matTooltip="Properties" class="btn btn_006">
-                                        <img src="assets/images/icons/info-round-button.svg" alt="">
-                                      </a>
-                                    </div>
-                                  </td>
-                                  <td>{{correspondenceLinkedCorrespondenceDetailsCnt.Size}}</td>
-                                  <td>{{correspondenceLinkedCorrespondenceDetailsCnt.Modified}}</td>
-                                </tr>
-                              </table>
-                            </div>
-                          </div>
-                        </mat-expansion-panel> -->
-                        </mat-accordion>
-                      </div>
-                    </mat-expansion-panel>
-                  </mat-accordion>
-                </div>
-              </div>
-            </div>
-          </div>
-        </mat-expansion-panel>
+        <app-linked-correspondences *ngIf="sectionDisplay.LinkedCorrespondence.Show" [DataID]="locationid"
+          [Name]="correspondenceData?.CorrFolderName" [Modify]="sectionDisplay.LinkedCorrespondence.Modify"
+          (CoverAction)="LinkedCorrAction($event)">
+        </app-linked-correspondences>
         <mat-expansion-panel class="mat-elevation-z bg_001" *ngIf="sectionDisplay.Comments.Show">
           <mat-expansion-panel-header (click)="commentsProgbar = false">
             <div class="icon_wrapper">
@@ -532,7 +418,7 @@
               <mat-spinner class="spinner_sm"></mat-spinner>
             </div>
             <div *ngIf="!transferProgbar" class="corres_table_wrapper">
-              <div class="transfer_header" >
+              <div class="transfer_header">
                 <button class="btn_007 mat-button" (click)="openDialog()"><img
                     src="{{basehref}}assets/images/icons/plus_btn_green.svg" alt=""> Select Transfer</button>
                 <button class="btn_007 mat-button" (click)="transferTabShowData()"><img

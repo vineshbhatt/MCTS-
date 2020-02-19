@@ -603,6 +603,9 @@
             </div>
           </mat-expansion-panel>
         </form>
+        <app-linked-correspondences [DataID]="locationid" [Name]="correspondenceData?.CorrFolderName"
+          [Modify]="sectionDisplay.LinkedCorrespondence.Modify" (CoverAction)="LinkedCorrAction($event)">
+        </app-linked-correspondences>
         <mat-expansion-panel class="mat-elevation-z bg_001">
           <mat-expansion-panel-header (click)="commentsProgbar = false">
             <div class="icon_wrapper">
@@ -685,7 +688,8 @@
     </button>
     <ng-container *ngIf="showPreviewCoverLetter">
       <div class="documentViewerDiv" *ngFor="let docpreviewData of documentPreviewURL">
-        <iframe class="iframeclass" scrolling="no" frameborder="0" [src]="docpreviewData.CorrespondencedocumentURL|safe"></iframe>
+        <iframe class="iframeclass" scrolling="no" frameborder="0"
+          [src]="docpreviewData.CorrespondencedocumentURL|safe"></iframe>
       </div>
     </ng-container>
 

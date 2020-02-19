@@ -390,7 +390,7 @@
 
                   <label for="file-input" class="cl_btn cl_btn_002" matTooltip="Add document">
                     <img src="{{basehref}}assets/images/icons/cl_file_add_doc.svg" alt="">
-                  </label>               
+                  </label>
                   <input id="file-input" type="file"
                     (change)="uploadCSDocument($event.target.files,corrFolderData.AttachCorrCoverID,'COVER')" />
                 </div>
@@ -493,7 +493,8 @@
                 </button>
               </li>
               <li class="cl_btn_wrp">
-                <button class="cl_btn cl_btn_003" matTooltip="Scan" (click)="loadFolderPageForScan(corrFolderData.AttachCorrAttachmentsID)">
+                <button class="cl_btn cl_btn_003" matTooltip="Scan"
+                  (click)="loadFolderPageForScan(corrFolderData.AttachCorrAttachmentsID)">
                   <img src="{{basehref}}assets/images/icons/scanner_white.svg" alt="">
                 </button>
               </li>
@@ -579,6 +580,9 @@
             <!-- end -->
           </div>
         </mat-expansion-panel>
+        <app-linked-correspondences [DataID]="corrFolderData?.AttachCorrID" [Name]="corrFolderData?.AttachCorrIDName"
+          [Modify]="true" (CoverAction)="LinkedCorrAction($event)">
+        </app-linked-correspondences>
       </mat-accordion>
     </div>
     <!-- cc code end -->

@@ -940,4 +940,16 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
     this.correspondenceDetailsService.getFolderBrowse(folderID)
       .subscribe(correspondenceCovertData => this.documentPreviewURL = correspondenceCovertData);
   }
+
+  LinkedCorrAction(obj) {
+    if (obj.hasOwnProperty('action') || obj.hasOwnProperty('dataID')) {
+      if (obj.action === 'showActionProperties') {
+        this.showActionProperties(obj.dataID);
+      } else if (obj.action === 'tranlsateDocument') {
+        //this.tranlsateDocument(obj.dataID);
+      } else if (obj.action === 'getCoverDocumentURL') {
+        this.getCoverDocumentURL(obj.dataID);
+      }
+    }
+  }
 }

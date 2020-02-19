@@ -103,6 +103,7 @@ export const FCTSDashBoard = {
   InsertMultipleConnections: 'CTA_InsertMultipleConnections',
   GetParentData: 'CTA_GetParentData',
   FolderFiles: 'CTA_FolderFiles',
+  CorrespondenceRelatedShort: 'CTA_CorrespondenceRelatedShort',
 
   BaseHref: '/img/fctsangular/fctsapp/',
   //BaseHref: '/',
