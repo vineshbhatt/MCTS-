@@ -24,6 +24,10 @@ export class SearchfilterComponent implements OnInit {
   set searchRecipientDeptFieldShow(searchRecipientDeptFieldShow: boolean) {
     this._showRecipientDeptFld = searchRecipientDeptFieldShow;
   }
+  @Input()
+  set isFullSearch(isFullSearch: boolean) {
+    this._isFullSearch = isFullSearch;
+  }
 
 
   // SearchFilterData: SearchFilters;
@@ -60,6 +64,7 @@ export class SearchfilterComponent implements OnInit {
   _showExtFld: boolean;
   _showRecipientDeptFld: boolean;
   _showSenderDeptFld: boolean;
+  _isFullSearch: boolean;
 
 
   @Output()
@@ -73,16 +78,19 @@ export class SearchfilterComponent implements OnInit {
     this.getDashboardFilters();
     this.filteredExtOrgNames = this.ExteranlOrgnizationControl.valueChanges
       .pipe(
-      debounceTime(300),
-      switchMap(value => this.correspondenceService.searchExtOrgName(value))
+        debounceTime(300),
+        switchMap(value => this.correspondenceService.searchExtOrgName(value))
       );
+    if (this._isFullSearch) {
+      this.AdvancedSearchButton();
+    }
   }
 
   getDashboardFilters(): void {
     this.correspondenceService
       .getDashboardFilters()
       .subscribe(
-      DashboardFilters => (this.DashboardFilters = DashboardFilters)
+        DashboardFilters => (this.DashboardFilters = DashboardFilters)
       );
   }
 

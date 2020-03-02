@@ -12,6 +12,7 @@ import { BaseDashboardComponent } from 'src/app/dashboard/base-classes/base-dash
 import { CorrespondenceShareService } from '../../services/correspondence-share.service';
 import { ErrorHandlerFctsService } from '../../services/error-handler-fcts.service';
 import { AppLoadConstService } from 'src/app/app-load-const.service';
+//import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-base-dashboard-full',
@@ -46,6 +47,10 @@ export class BaseDashboardFullComponent extends BaseDashboardComponent implement
   animal: string;
   name: string;
   openedSubCorrespond: Correspondence;
+  // charts-search toggle variables
+  public chartsOpen = 'in';
+  public searchopen = 'out';
+
 
   // selectedHero: PeriodicElement;
   // displayedColumns: string[] = [
@@ -100,9 +105,14 @@ export class BaseDashboardFullComponent extends BaseDashboardComponent implement
     this.externalOutboundRequestsWidth = Math.floor(this.externalOutboundRequests / this.totalExternalOutboundRequests * 100);
     // this.dataSource.paginator = this.overviewitem;
 
-/*     this.correspondenceService
-      .getUserData()
-      .subscribe(response => (this.userData = response)); */
+    /*     this.correspondenceService
+          .getUserData()
+          .subscribe(response => (this.userData = response)); */
+    this.searchExtOrgFieldShow = true;
+    this.searchRecipientDeptFieldShow = false;
+    this.searchSenderDeptFieldShow = true;
+    /*     this.chartsOpen = 'in';
+        this.searchopen = 'out'; */
   }
 
   getPage(page: number): void {
@@ -110,9 +120,9 @@ export class BaseDashboardFullComponent extends BaseDashboardComponent implement
       this.router.navigate([this.routerProxyRedirect]);
     } else {
       const perPage = FCTSDashBoard.DefaultPageSize;
-    const start = ((page - 1) * perPage) + 1;
-    const end = (start + perPage) - 1;
-    this.getCorrespondence(this.reportType, start, end, page, this.SearchFilterData);
+      const start = ((page - 1) * perPage) + 1;
+      const end = (start + perPage) - 1;
+      this.getCorrespondence(this.reportType, start, end, page, this.SearchFilterData);
     }
   }
 
@@ -180,6 +190,18 @@ export class BaseDashboardFullComponent extends BaseDashboardComponent implement
         this.routerFormStep = '/dashboard/internal/correspondence-form-step-intout'; // '/dashboard/internal/correspondence-form-step-int';
         break;
     }
+  }
+
+  fullSearchParametersSet(event) {
+    this.chartsOpen = 'out';
+    this.SearchFilterData = event;
+    this.pagenumber = 1;
+    this.getPage(this.pagenumber);
+  }
+
+  toggleSearchCharts(condition): void {
+    this.chartsOpen = !condition ? 'in' : 'out';
+    this.searchopen = !condition ? 'out' : 'in';
   }
 
 }

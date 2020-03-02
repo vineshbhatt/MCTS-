@@ -587,6 +587,24 @@
       margin-right: 20px;
     }
   }
+
+  .priority-urgent{
+    td{
+      color:blue;
+    }
+  }
+  
+  .priority-top-urgent{
+    td{
+      color:red;
+    }
+  }
+  
+  .base-type-fax{
+    td{
+      background: #e9e4e4;
+    }
+  }
 }
 
 th.mat-header-cell:first-of-type {

@@ -572,4 +572,17 @@ export class BaseDashboardComponent implements OnInit, OnDestroy {
     }
   }
 
+  CorrBacklight(correspondData: Correspondence, faxSign: boolean): string {
+    let classes = '';
+    if (correspondData.Priority.toString() === '2') {
+      classes += 'priority-urgent';
+    } else if (correspondData.Priority.toString() === '3') {
+      classes += 'priority-top-urgent';
+    }
+    if (faxSign && correspondData.CorrespondenceFlowType.toString() === '1' && correspondData.BaseType.toString() === '2') {
+      classes += ' base-type-fax';
+    }
+    return classes;
+  }
+
 }
