@@ -123,7 +123,8 @@
                       *ngIf=(correspondData.showButtons.ReplyTrans)>Reply (Transfer)</button>
                     <button mat-menu-item *ngIf=(correspondData.showButtons.SaveCorr)>Save Correspondence</button>
                     <button mat-menu-item *ngIf=(correspondData.showButtons.Delete)>Delete</button>
-                    <button mat-menu-item *ngIf=(correspondData.showButtons.DownloadAttach)>Download
+                    <button mat-menu-item *ngIf=(correspondData.showButtons.DownloadAttach)
+                      (click)="downloadAttachmentsDialogBox(correspondData)">Download
                       Attachments</button>
                     <button mat-menu-item *ngIf=(correspondData.showButtons.PrintBarcode)>Print Barcode</button>
                   </mat-menu>

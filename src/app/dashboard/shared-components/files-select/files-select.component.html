@@ -1,6 +1,12 @@
 <div class="fileSearch">
   <div *ngIf="folderHierarchy" class="fileSearch-header">
     <div class="hierarchy">
+      <div *ngIf="outputActionIdent==='copyToFolder'" class="select-current-folder">
+        <p (click)="currentFolderSelect()">
+          Select
+        </p>
+        <mat-icon class="material-icons" [class.hidden]="!this.currentFolderSelected">done</mat-icon>
+      </div>
       <mat-form-field style="width:100%">
         <mat-select [formControl]="hierarchy" (selectionChange)="getFolderProperties(hierarchy.value, false)">
           <mat-option *ngFor="let folder of folderHierarchy; let i = index" [value]="folder.DataID"
@@ -13,8 +19,14 @@
         alt="" (click)="getFolderProperties(currentReferenceID, true)">
     </div>
     <div class="file_search">
-      <input type="text" class="search_input" placeholder="search in folder" [(ngModel)]="searchValue">
-      <button class="search-button" [disabled]="activeSearchSpinner" (click)="fileSearch(searchValue)">Search</button>
+      <div class="search-input-holder">
+        <input type="text" class="search_input" placeholder="search in folder" [(ngModel)]="searchValue"
+          (keydown.enter)="searchFunction()">
+      </div>
+      <img src="{{basehref}}assets/images/icons/search.svg" class="search-glass-img" (click)="fileSearch(searchValue)">
+    </div>
+    <div *ngIf="outputActionIdent==='copyToFolder'" class="selectable-checkbox">
+      <mat-checkbox (change)="onlySelectable($event)">Show selectable items only</mat-checkbox>
     </div>
   </div>
   <ng-scrollbar #scrollbarRef thumbClass="scroll_001" compact="true">
@@ -23,26 +35,19 @@
     </div>
     <div *ngIf="!activeSearchSpinner" class="table-holder">
       <table mat-table [dataSource]="dataSource" class="fileSearchTable" style="width:100%; max-height: 500px;">
-        <ng-container matColumnDef="Select">
-          <th mat-header-cell *matHeaderCellDef>
-            <!--             <mat-checkbox *ngIf="multiple" (change)="$event ? masterToggle() : null"
-              [checked]="selection.hasValue() && isAllSelected()"
-              [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
-            </mat-checkbox> -->
-          </th>
-          <td mat-cell *matCellDef="let row">
-            <mat-checkbox (click)="$event.stopPropagation()" (change)="changeCheckbox($event, row)"
-              [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
-            </mat-checkbox>
-          </td>
-        </ng-container>
         <ng-container *ngFor="let col of FilesTableStructure" [matColumnDef]="col.columnDef">
           <th mat-header-cell *matHeaderCellDef>{{col.columnName}}</th>
           <td mat-cell *matCellDef="let element" [ngSwitch]="col.columnDef" [style.width]="col.width + '%'">
+            <mat-checkbox *ngSwitchCase="'Select'" (click)="$event.stopPropagation()"
+              (change)="changeCheckbox($event, element)" [checked]="selection.isSelected(element)"
+              [aria-label]="checkboxLabel(element)"
+              [disabled]="outputActionIdent==='copyToFolder' && !(folderTypes.indexOf(element.SubType)>-1)"
+              [class.disabledInput]="outputActionIdent==='copyToFolder' && !(folderTypes.indexOf(element.SubType)>-1)">
+            </mat-checkbox>
             <p *ngSwitchCase="'Type'" [innerHTML]="element.Type"></p>
             <div *ngSwitchCase="'Name'">
-              <p *ngIf="element.SubType==='0' else onlyName" (click)="getFolderProperties(element.DataID, false)"
-                class="folderName">{{element[col.columnDef]}}</p>
+              <p *ngIf="folderTypes.indexOf(element.SubType)>-1 else onlyName"
+                (click)="getFolderProperties(element.DataID, false)" class="folderName">{{element[col.columnDef]}}</p>
               <ng-template #onlyName>
                 <p>{{element[col.columnDef]}}</p>
               </ng-template>
@@ -51,14 +56,17 @@
           </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="FilesDisplayedColumns; sticky: true"></tr>
-        <tr mat-row *matRowDef="let row; columns: FilesDisplayedColumns;" style="height:30px"></tr>
+        <tr mat-row *matRowDef="let row; columns: FilesDisplayedColumns;" [class.checked]="isCheckedrow(row)"></tr>
       </table>
-      <div class="empty-table-message" *ngIf="dataSource?.data.length === 0">No
+      <div class="empty-table-message" *ngIf="!dataSource?.data.length">No
         records found</div>
     </div>
   </ng-scrollbar>
   <div class="button-holder">
-    <button class="btn_004" [disabled]="selection.selected.length === 0" (click)="addFileConnection()">Add</button>
+    <button *ngIf="outputActionIdent==='addFiles'" class="btn_004_action" [disabled]="selection.selected.length === 0"
+      (click)="outputActionTrigger()">Add</button>
+    <button *ngIf="outputActionIdent==='copyToFolder'" class="btn_004" (click)="outputActionTrigger()"
+      [disabled]="selection.selected.length === 0 && !currentFolderSelected">Copy</button>
     <button class="btn_004_cancel" (click)="BackToDocList()">Cancel</button>
   </div>
 </div>

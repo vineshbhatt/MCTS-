@@ -22,7 +22,7 @@ import { CommentDialogComponent } from '../../comments/comment-dialog/comment-di
 import { CompleteDialogComponent } from '../../dialog-boxes/complete-dialog/complete-dialog.component';
 import { PerformerInfoDialogComponent } from '../../dialog-boxes/performer-info-dialog/performer-info-dialog.component';
 import { LinkedCorrDialogComponent } from '../../dialog-boxes/linked-corr-dialog/linked-corr-dialog.component';
-
+import { DownloadAttachtmentsDialogComponent } from 'src/app/dashboard/dialog-boxes/download-attachtments-dialog/download-attachtments-dialog.component'
 
 @Component({
   selector: 'app-base-dashboard',
@@ -583,6 +583,18 @@ export class BaseDashboardComponent implements OnInit, OnDestroy {
       classes += ' base-type-fax';
     }
     return classes;
+  }
+
+  downloadAttachmentsDialogBox(correspondData: Correspondence): void {
+    const dialogRef = this.dialogU.open(DownloadAttachtmentsDialogComponent, {
+      width: '100%',
+      panelClass: 'download-attachments-dialog',
+      maxWidth: '75vw',
+      //maxHeight: '60vh',
+      data: {
+        correspondData: correspondData
+      }
+    });
   }
 
 }

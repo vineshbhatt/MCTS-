@@ -17,6 +17,11 @@
       <p class="text_15 color_002">{{userDetail.userMessage}}</p>
     </div>
   </div>
+  <!--   <button (click)="zipFunction()">Zip test</button>
+  <a *ngIf="zipTestDownload" matTooltip="Download" class="btn btn_006"
+    href="http://mv2cdmsadp02/otcs/cs.exe{{zipTestDownload}}">
+    <img src="{{basehref}}assets/images/icons/download-to-storage-drive.svg" alt="">
+  </a> -->
   <div class="header_search">
     <app-full-search (runFullSearch)="fullSearchParametersSet($event)"
       (showSearchComponent)="toggleSearchCharts($event)">
@@ -299,10 +304,12 @@
                     *ngIf=(correspondData.showButtons.SaveCorr)>{{'actbtn_savecorr'|translator}}</button>
                   <button mat-menu-item
                     *ngIf=(correspondData.showButtons.Delete)>{{'actbtn_delete'|translator}}</button>
-                  <button mat-menu-item
-                    *ngIf=(correspondData.showButtons.DownloadAttach)>{{'actbtn_downattachments'|translator}}</button>
+                  <button mat-menu-item *ngIf=(correspondData.showButtons.DownloadAttach)
+                    (click)="downloadAttachmentsDialogBox(correspondData)">{{'actbtn_downattachments'|translator}}</button>
                   <button mat-menu-item
                     *ngIf=(correspondData.showButtons.PrintBarcode)>{{'actbtn_printbcode'|translator}}</button>
+                  <!--                   <button (click)="downloadAttachmentsDialogBox(correspondData)" mat-menu-item>Download
+                    Attachments</button> -->
                 </mat-menu>
               </li>
             </ul>

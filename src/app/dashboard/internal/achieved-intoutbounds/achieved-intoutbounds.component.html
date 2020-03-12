@@ -132,7 +132,8 @@
                     <button mat-menu-item (click)='testFunction(correspondData.showButtons)'
                       *ngIf=(correspondData.showButtons.Delete)>Delete</button>
                     <button mat-menu-item (click)='testFunction(correspondData.showButtons)'
-                      *ngIf=(correspondData.showButtons.DownloadAttach)>Download Attachments</button>
+                      *ngIf=(correspondData.showButtons.DownloadAttach)
+                      (click)="downloadAttachmentsDialogBox(correspondData)">Download Attachments</button>
                     <button mat-menu-item (click)='testFunction(correspondData.showButtons)'
                       *ngIf=(correspondData.showButtons.PrintBarcode)>Print Barcode</button>
                   </mat-menu>
