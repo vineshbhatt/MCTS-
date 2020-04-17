@@ -7,6 +7,7 @@ import { BaseDashboardActiveComponent } from 'src/app/dashboard/base-classes/bas
 import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handler-fcts.service';
 import { CorrespondenceShareService } from 'src/app/dashboard/services/correspondence-share.service';
 import { AppLoadConstService } from 'src/app/app-load-const.service';
+import { multiLanguageTranslator } from 'src/assets/translator/index';
 
 @Component({
   selector: 'app-new-inbound',
@@ -22,9 +23,10 @@ export class NewInboundComponent extends BaseDashboardActiveComponent implements
     public correspondenceService: CorrespondenceService,
     public correspondenceShareService: CorrespondenceShareService,
     public errorHandlerFctsService: ErrorHandlerFctsService,
-    public appLoadConstService: AppLoadConstService
+    public appLoadConstService: AppLoadConstService,
+    public translator: multiLanguageTranslator
   ) {
-    super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService);
+    super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService, translator);
     this.reportType = 'ExtInbNew';
     this.routerFormStep = '/dashboard/external/correspondence-form-step-inc';
   }
@@ -39,8 +41,9 @@ export class NewInboundComponent extends BaseDashboardActiveComponent implements
   selectionNewInboxAll() {
     const numSelectedNewInboxlCorrespondence = this.selection.selected.length;
     const numRowsNewInboxlCorrespondence = this.correspondenceData.filter(element => {
-            return element.transIsCC == 1 && element.transID == 0; } ).length;
-    return ( numSelectedNewInboxlCorrespondence === numRowsNewInboxlCorrespondence );
+      return element.transIsCC == 1 && element.transID == 0;
+    }).length;
+    return (numSelectedNewInboxlCorrespondence === numRowsNewInboxlCorrespondence);
   }
 
   selectionNewInboxAllCorrespondence() {

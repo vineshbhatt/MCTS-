@@ -8,6 +8,7 @@ import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handle
 import { CorrespondenceShareService } from 'src/app/dashboard/services/correspondence-share.service';
 import { AppLoadConstService } from 'src/app/app-load-const.service';
 import { animate, style, transition, trigger, state } from '@angular/animations';
+import { multiLanguageTranslator } from 'src/assets/translator/index';
 
 @Component({
   selector: 'app-internal-dashboard',
@@ -31,9 +32,10 @@ export class InternalDashboardComponent extends BaseDashboardFullComponent imple
     public correspondenceService: CorrespondenceService,
     public correspondenceShareService: CorrespondenceShareService,
     public errorHandlerFctsService: ErrorHandlerFctsService,
-    public appLoadConstService: AppLoadConstService
+    public appLoadConstService: AppLoadConstService,
+    public translator: multiLanguageTranslator
   ) {
-    super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService);
+    super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService, translator);
     this.reportType = 'IntFullSearch';
     this.routerFormStep = '/dashboard/internal/correspondence-form-step-intout';
     this.routerProxyRedirect = '/dashboard/internal/new-intoutbounds';

@@ -109,7 +109,7 @@ import { FilesSelectComponent } from './shared-components/files-select/files-sel
 import { LinkedCorrespondencesComponent } from './shared-components/linked-correspondences/linked-correspondences.component';
 import { FullSearchComponent } from './shared-components/full-search/full-search.component';
 import { DownloadAttachtmentsDialogComponent } from './dialog-boxes/download-attachtments-dialog/download-attachtments-dialog.component'
-
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @NgModule({
   imports: [
@@ -147,6 +147,7 @@ import { DownloadAttachtmentsDialogComponent } from './dialog-boxes/download-att
     PreventDoubleSubmitModule,
     NgScrollbarModule,
     MatRadioModule,
+    MatProgressBarModule,
     multiLanguageTranslatorModule.forRoot({
       defaultLang: 'en',
       storagePrefix: 'current-language'

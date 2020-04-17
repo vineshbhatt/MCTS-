@@ -10,7 +10,7 @@ import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { NgxFileDropEntry } from 'ngx-file-drop';
 import { DatePipe } from '@angular/common';
 import { FCTSDashBoard } from '../../../../environments/environment';
-import { OrgNameAutoFillModel, CorrespondenceFolderModel, CCUserSetModel, CorrespondenenceDetailsModel, CorrWFTaskInfoModel, SyncDocumentMetadataModel, ColUserSetModel } from 'src/app/dashboard/models/CorrespondenenceDetails.model';
+import { OrgNameAutoFillModel, CorrespondenceFolderModel, CCUserSetModel, CorrespondenenceDetailsModel, CorrWFTaskInfoModel, SyncDocumentMetadataModel, ColUserSetModel, TemplateModel } from 'src/app/dashboard/models/CorrespondenenceDetails.model';
 import { CorrResponse, CorrespondenceFormData, SenderDetailsData, RecipientDetailsData, CommentsNode } from '../../services/correspondence-response.model';
 import { organizationalChartModel, organizationalChartEmployeeModel } from 'src/app/dashboard/models/organizational-Chart.model';
 import { DocumentPreview } from '../../services/documentpreview.model';
@@ -184,6 +184,9 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
   barcodeDate = new Date().toLocaleDateString();
   returnReason: string;
   returnComment: string;
+  // temlete types
+  templateTypes: TemplateModel[];
+
 
   ngOnInit() {
 
@@ -1037,6 +1040,7 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
     this.showPreviewCoverLetter = false;
     this.showTemplateArea = true;
     this.getTemplatesSectionData(this.corrFlowType, 'Default', '');
+    this.LoadTemplateFilter('Template_Type');
   }
   getOrganizationalChartDetail(): void {
     this.organizationalChartService.getOrgChartInternal()
@@ -1435,5 +1439,24 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
     this.showPreviewCoverLetter = true;
     this.correspondenceDetailsService.getFolderBrowse(folderID)
       .subscribe(correspondenceCovertData => this.documentPreviewURL = correspondenceCovertData);
+  }
+
+  // template types
+  LoadTemplateFilter(type: string): void {
+    if (!this.templateTypes && this.corrFlowType === 'Outgoing') {
+      this.correspondenceDetailsService.LoadTemplateFilter(type)
+        .subscribe(
+          response => {
+            this.templateTypes = response;
+          },
+          responseError => {
+            this._errorHandlerFctsService.handleError(responseError).subscribe();
+          }
+        );
+    }
+  }
+
+  CorrTypesSelectChange(type): void {
+    this.getTemplatesSectionData(this.corrFlowType, type.value, '');
   }
 }

@@ -13,6 +13,7 @@ import { BaseDashboardComponent } from 'src/app/dashboard/base-classes/base-dash
 import { CorrResponse } from '../../services/correspondence-response.model';
 import { TransferReplyDialogComponent } from '../../dialog-boxes/transfer-reply-dialog/transfer-reply-dialog.component';
 import { AppLoadConstService } from 'src/app/app-load-const.service';
+import { multiLanguageTranslator } from 'src/assets/translator/index';
 
 @Component({
   selector: 'app-base-dashboard-active',
@@ -27,8 +28,9 @@ export class BaseDashboardActiveComponent extends BaseDashboardComponent impleme
     public correspondenceShareService: CorrespondenceShareService,
     public errorHandlerFctsService: ErrorHandlerFctsService,
     public appLoadConstService: AppLoadConstService,
+    public translator: multiLanguageTranslator
   ) {
-    super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService);
+    super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService, translator);
   }
   userName: string;
 
@@ -38,7 +40,7 @@ export class BaseDashboardActiveComponent extends BaseDashboardComponent impleme
   }
 
   getPage(page: number): void {
-    if ( this.globalConstants.general.ProxyUserID !== this.globalConstants.general.UserID ) {
+    if (this.globalConstants.general.ProxyUserID !== this.globalConstants.general.UserID) {
       this.isProxy = true;
     } else {
       this.isProxy = false;

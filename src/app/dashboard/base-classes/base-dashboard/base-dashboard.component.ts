@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -23,6 +23,7 @@ import { CompleteDialogComponent } from '../../dialog-boxes/complete-dialog/comp
 import { PerformerInfoDialogComponent } from '../../dialog-boxes/performer-info-dialog/performer-info-dialog.component';
 import { LinkedCorrDialogComponent } from '../../dialog-boxes/linked-corr-dialog/linked-corr-dialog.component';
 import { DownloadAttachtmentsDialogComponent } from 'src/app/dashboard/dialog-boxes/download-attachtments-dialog/download-attachtments-dialog.component'
+import { multiLanguageTranslator } from 'src/assets/translator/index';
 
 @Component({
   selector: 'app-base-dashboard',
@@ -91,6 +92,9 @@ export class BaseDashboardComponent implements OnInit, OnDestroy {
   fullPageNumber: string;
   menuAction: boolean;
   navigationSubscription;
+  expButton = false;
+
+  @ViewChild('corrHeader') el: ElementRef;
 
   constructor(
     public router: Router,
@@ -98,7 +102,8 @@ export class BaseDashboardComponent implements OnInit, OnDestroy {
     public correspondenceService: CorrespondenceService,
     public correspondenceShareService: CorrespondenceShareService,
     public errorHandlerFctsService: ErrorHandlerFctsService,
-    public appLoadConstService: AppLoadConstService
+    public appLoadConstService: AppLoadConstService,
+    public translator: multiLanguageTranslator
   ) {
     this.navigationSubscription = this.router.events.subscribe((e: any) => {
       if (e instanceof NavigationEnd) {
@@ -249,6 +254,7 @@ export class BaseDashboardComponent implements OnInit, OnDestroy {
   onSearchDashboardButtonClick(selecetedValues: any): void {
     this.SearchFilterData = selecetedValues;
     this.SearchDashboard();
+    console.log('SearchFilterData', this.SearchFilterData);
   }
   /* ************************************* Correspondence History window *************************************** */
   openDialog(correspondData: Correspondence): void {
@@ -596,5 +602,46 @@ export class BaseDashboardComponent implements OnInit, OnDestroy {
       }
     });
   }
+  /* export to excel */
+  ExportDashboard(): void {
+    this.expButton = true;
+    const lang = this.translator.lang;
+    this.correspondenceService.getExcelFile(this.reportType, this.SearchFilterData, this.isProxy, this.getExcelHeader(), lang)
+      .subscribe(
+        response => {
+          this.downLoadFile(response, 'application/vnd.ms-excel');
+          console.log('response', response);
+          this.expButton = false;
+        },
+        responseError => {
+          this.errorHandlerFctsService.handleError(responseError).subscribe();
+          this.expButton = false;
+        }
+      );
+  }
 
+  downLoadFile(data: any, type: string) {
+    const blob = new Blob([data], { type });
+    const url = window.URL.createObjectURL(blob);
+    const fileName = `Correspondence_List.xls`;
+
+    if (navigator.msSaveBlob) {
+      return navigator.msSaveBlob(blob, fileName);
+    } else {
+      const anchor = document.createElement('a');
+      anchor.download = fileName;
+      anchor.href = url;
+      anchor.click();
+    }
+  }
+
+  getExcelHeader(): string {
+    let str = '';
+    let list = this.el.nativeElement.children;
+    for (let i = 0; i < list.length; i++) {
+      str += list[i].textContent;
+      if (i < list.length - 1) { str += ' - ' };
+    }
+    return str;
+  }
 }

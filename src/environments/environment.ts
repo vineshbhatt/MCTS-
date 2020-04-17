@@ -110,6 +110,13 @@ export const FCTSDashBoard = {
   DownloadAttachmentsBox: 'CTA_DownloadAttachments',
   CopySelectedFiles: 'ExtractAllAttachments',
   SetAttDownloadPermissions: 'CTA_SetAttDownloadPermissions',
+  ECMDChart: 'CTA_ECMDChart',
+  ECMDSearch: 'CTA_ECDM_Search',
+  ExportCorrespondence: 'CTA_ExportCorrespondence',
+  FilterValuesSearch: 'CTA_FilterValuesSearch',
+
+  //ECMDepartmentsSearch: 'CTA_ECDMDepartments_Search',
+
 
   //BaseHref: '/img/fctsangular/fctsapp/',
   BaseHref: '/',

@@ -7,6 +7,7 @@ import { BaseDashboardActiveComponent } from 'src/app/dashboard/base-classes/bas
 import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handler-fcts.service';
 import { CorrespondenceShareService } from 'src/app/dashboard/services/correspondence-share.service';
 import { AppLoadConstService } from 'src/app/app-load-const.service';
+import { multiLanguageTranslator } from 'src/assets/translator/index';
 
 @Component({
   selector: 'app-new-intinbound',
@@ -23,9 +24,10 @@ export class NewIntInboundComponent extends BaseDashboardActiveComponent impleme
     public correspondenceService: CorrespondenceService,
     public correspondenceShareService: CorrespondenceShareService,
     public errorHandlerFctsService: ErrorHandlerFctsService,
-    public appLoadConstService: AppLoadConstService
+    public appLoadConstService: AppLoadConstService,
+    public translator: multiLanguageTranslator
   ) {
-    super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService);
+    super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService, translator);
     this.reportType = 'IntInbNew';
     this.routerFormStep = '/dashboard/internal/correspondence-form-step-intout';
   }
@@ -36,25 +38,26 @@ export class NewIntInboundComponent extends BaseDashboardActiveComponent impleme
     this.searchRecipientDeptFieldShow = true;
     this.searchSenderDeptFieldShow = true;
   }
-/*
-  setItemCount() {
-    debugger;
-    this.dataSharingService.currentItemsCount.subscribe(itemsCount => {
-      this.itemsCount = itemsCount;
-      if (typeof this.itemsCount !== 'undefined') {
-        if (Array.isArray(this.itemsCount.inbounds)) {
-          this.itemsCount.inbounds.forEach((element) => {
-            if (element.Title === 'New') { this.fullPageNumber = element.Count; }
-          });
+  /*
+    setItemCount() {
+      debugger;
+      this.dataSharingService.currentItemsCount.subscribe(itemsCount => {
+        this.itemsCount = itemsCount;
+        if (typeof this.itemsCount !== 'undefined') {
+          if (Array.isArray(this.itemsCount.inbounds)) {
+            this.itemsCount.inbounds.forEach((element) => {
+              if (element.Title === 'New') { this.fullPageNumber = element.Count; }
+            });
+          }
         }
-      }
-    });
-  }
-*/
- selectionNewInboxAll() {
+      });
+    }
+  */
+  selectionNewInboxAll() {
     const numSelectedNewInboxlCorrespondence = this.selection.selected.length;
     const numRowsNewInboxlCorrespondence = this.correspondenceData.filter(element => {
-      return element.transIsCC == 1 && element.transID == 0; } ).length;
+      return element.transIsCC == 1 && element.transID == 0;
+    }).length;
     return (
       numSelectedNewInboxlCorrespondence === numRowsNewInboxlCorrespondence
     );
@@ -65,7 +68,7 @@ export class NewIntInboundComponent extends BaseDashboardActiveComponent impleme
       ? this.selection.clear()
       : this.correspondenceData
         .filter(element => element.transIsCC == 1 && element.transID == 0)
-          .forEach(element => { this.selection.select(element); });
+        .forEach(element => { this.selection.select(element); });
   }
 
 }

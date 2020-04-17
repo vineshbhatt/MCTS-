@@ -359,6 +359,24 @@ app-correspondence-detail {
   }
 
   .corres_data_area {
+    attachments-container{
+      position: relative;
+      .progress-container{
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+        z-index: 999;
+        background-color: rgba(176, 238, 238, 0.3);
+        p{
+          font-size: 15px;
+          font-weight: 600;
+        }
+      }
+    }
     .corres_table_wrapper {
       margin-top: 0px;
     }

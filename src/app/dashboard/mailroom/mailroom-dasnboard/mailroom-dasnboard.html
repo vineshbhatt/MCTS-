@@ -77,7 +77,6 @@
   </div>
   <div class="col_50_cust">
     <div class="over_view_wrapper">
-      <p>test</p>
       <p class="text_20">{{'Overview' |translator}}</p>
       <div class="over_view_data_wrp mt_20" *ngFor="let userDatas of userData">
         <div class="over_head_text_001">
@@ -220,16 +219,23 @@
                     *ngIf=(correspondData.showButtons.Archive)>{{'actbtn_archive'|translator}}</button>
                   <button mat-menu-item (click)="startRecall(correspondData, 'SimpleRecall')"
                     *ngIf=(correspondData.showButtons.Recall)>{{'actbtn_recall'|translator}}</button>
-                  <button mat-menu-item *ngIf=(correspondData.showButtons.MRRecall)>{{'actbtn_mrrecall'|translator}}MR Recall</button>
-                  <button mat-menu-item *ngIf=(correspondData.showButtons.ReturnToAS)>{{'actbtn_returntoas'|translator}}</button>
+                  <button mat-menu-item *ngIf=(correspondData.showButtons.MRRecall)>{{'actbtn_mrrecall'|translator}}MR
+                    Recall</button>
+                  <button mat-menu-item
+                    *ngIf=(correspondData.showButtons.ReturnToAS)>{{'actbtn_returntoas'|translator}}</button>
                   <button mat-menu-item *ngIf=(correspondData.showButtons.Copy)>{{'actbtn_copy'|translator}}</button>
-                  <button mat-menu-item *ngIf=(correspondData.showButtons.ReplyIntern)>{{'actbtn_replyinternal'|translator}}</button>
+                  <button mat-menu-item
+                    *ngIf=(correspondData.showButtons.ReplyIntern)>{{'actbtn_replyinternal'|translator}}</button>
                   <button mat-menu-item (click)='transferReply(correspondData)'
                     *ngIf=(correspondData.showButtons.ReplyTrans)>{{'actbtn_replytransfer'|translator}}</button>
-                  <button mat-menu-item *ngIf=(correspondData.showButtons.SaveCorr)>{{'actbtn_savecorr'|translator}}</button>
-                  <button mat-menu-item *ngIf=(correspondData.showButtons.Delete)>{{'actbtn_delete'|translator}}</button>
-                  <button mat-menu-item *ngIf=(correspondData.showButtons.DownloadAttach)>{{'actbtn_downattachments'|translator}}</button>
-                  <button mat-menu-item *ngIf=(correspondData.showButtons.PrintBarcode)>{{'actbtn_printbcode'|translator}}</button>
+                  <button mat-menu-item
+                    *ngIf=(correspondData.showButtons.SaveCorr)>{{'actbtn_savecorr'|translator}}</button>
+                  <button mat-menu-item
+                    *ngIf=(correspondData.showButtons.Delete)>{{'actbtn_delete'|translator}}</button>
+                  <button mat-menu-item
+                    *ngIf=(correspondData.showButtons.DownloadAttach)>{{'actbtn_downattachments'|translator}}</button>
+                  <button mat-menu-item
+                    *ngIf=(correspondData.showButtons.PrintBarcode)>{{'actbtn_printbcode'|translator}}</button>
                 </mat-menu>
               </li>
             </ul>

@@ -384,94 +384,103 @@
             <p class="title_001">Attachments</p>
           </mat-expansion-panel-header>
           <div class="corres_data_area">
-            <ul class="cl_btn_group">
-              <li class="cl_btn_wrp">
-                <button class="cl_btn cl_btn_001" (click)="refreshAttachmentSection()">
-                  <img src="{{basehref}}assets/images/icons/refresh_arrow_white.svg" alt="">
-                </button>
-              </li>
-              <li class="cl_btn_wrp">
+            <div class="attachments-container">
+              <div *ngIf="progress" class="progress-container">
+                <p>{{progress}}%</p>
+                <mat-progress-bar style="width: 75%" [mode]="determinate" [value]="progress">
+                </mat-progress-bar>
+              </div>
+              <ul class="cl_btn_group">
+                <li class="cl_btn_wrp">
+                  <button class="cl_btn cl_btn_001" (click)="refreshAttachmentSection()">
+                    <img src="{{basehref}}assets/images/icons/refresh_arrow_white.svg" alt="">
+                  </button>
+                </li>
+                <li class="cl_btn_wrp">
 
-                <div class="image-upload">
-                  <label for="file-inputAttachment" class="cl_btn cl_btn_002" matTooltip="Add document">
-                    <img src="{{basehref}}assets/images/icons/cl_file_add_doc.svg" alt="">
-                  </label>
-                  <input id="file-inputAttachment" type="file"
-                    (change)="uploadCSDocument($event.target.files,corrFolderData.AttachCorrAttachmentsID,'ATTACHMENT')" />
-                </div>
-              </li>
-              <li class="cl_btn_wrp">
-                <button class="cl_btn cl_btn_003" (click)="showCSCopy(corrFolderData.AttachCorrAttachmentsID)"
-                  matTooltip="Copy From Content Server">
-                  <img src="{{basehref}}assets/images/icons/search_icon_004.svg" alt="">
-                </button>
-              </li>
-              <li class="cl_btn_wrp">
-                <button class="cl_btn cl_btn_003" matTooltip="Scan"
-                  (click)="loadFolderPageForScan(corrFolderData.AttachCorrAttachmentsID)">
-                  <img src="{{basehref}}assets/images/icons/scanner_white.svg" alt="">
-                </button>
-              </li>
-            </ul>
-            <div *ngIf="ccProgbar" class="spinner_sm_wrappar">
-              <mat-spinner class="spinner_sm"></mat-spinner>
-            </div>
-            <div *ngIf="!ccProgbar" class="corres_table_wrapper">
-              <table class="table table_cover_letter">
-                <tr>
-                  <th class="type">Type</th>
-                  <th class="name">Name</th>
-                  <th></th>
-                  <!-- <th class="size">Size</th> -->
-                  <!-- <th class="modified">Modified</th> -->
-                </tr>
-                <tbody *ngFor="let corrAttachmentDetails of AttachmentFolderData">
-                  <tr *ngFor="let attachmentData of corrAttachmentDetails.myRows">
-                    <td class="size_45" [innerHtml]="attachmentData.attachmentType">
-                    </td>
-                    <td>
-                      <a class="coverLink" (click)="getCoverDocumentURL(attachmentData.Dataid)">{{attachmentData.Name}}
-                      </a>
-                    </td>
-                    <td>
-                      <div class="group_btn">
-                        <a *ngIf="attachmentData.addversionperm=='TRUE'" matTooltip="Add Version" class="btn btn_006"
-                          (click)="openBrowseDocument($event,'file-inputAddversionAttachment')">
-                          <img src="{{basehref}}assets/images/icons/add-version.svg" alt="">
-                        </a>
-                        <input id="file-inputAddversionAttachment" class="hidden-button" type="file"
-                          (change)="addDocumentVersion($event.target.files,attachmentData.Dataid,'ATTACHMENT')" />
-                        <a matTooltip="Download" class="btn btn_006" href="{{CSUrl}}{{attachmentData.DownloadURL}}">
-                          <img src="{{basehref}}assets/images/icons/download-to-storage-drive.svg" alt="">
-                        </a>
-                        <a matTooltip="Properties" class="btn btn_006"
-                          (click)=showActionProperties(attachmentData.Dataid)>
-                          <img src="{{basehref}}assets/images/icons/info-round-button.svg" alt="">
-                        </a>
-                        <a *ngIf="attachmentData.deleteperm=='TRUE'" matTooltip="Delete" class="btn btn_006"
-                          (click)="deleteDocument(attachmentData.Dataid,'ATTACHMENT')">
-                          <img src="{{basehref}}assets/images/icons/remove_icon_001.svg" alt="">
-                        </a>
-                      </div>
-                    </td>
-                    <!-- <td> {{attachmentData.AttachmentSize}} </td> -->
-                    <!-- <td> {{attachmentData.ModifyDate}} </td> -->
+                  <div class="image-upload">
+                    <label for="file-inputAttachment" class="cl_btn cl_btn_002" matTooltip="Add document">
+                      <img src="{{basehref}}assets/images/icons/cl_file_add_doc.svg" alt="">
+                    </label>
+                    <input id="file-inputAttachment" type="file"
+                      (change)="uploadCSDocument($event.target.files,corrFolderData.AttachCorrAttachmentsID,'ATTACHMENT')" />
+                  </div>
+                </li>
+                <li class="cl_btn_wrp">
+                  <button class="cl_btn cl_btn_003" (click)="showCSCopy(corrFolderData.AttachCorrAttachmentsID)"
+                    matTooltip="Copy From Content Server">
+                    <img src="{{basehref}}assets/images/icons/search_icon_004.svg" alt="">
+                  </button>
+                </li>
+                <li class="cl_btn_wrp">
+                  <button class="cl_btn cl_btn_003" matTooltip="Scan"
+                    (click)="loadFolderPageForScan(corrFolderData.AttachCorrAttachmentsID)">
+                    <img src="{{basehref}}assets/images/icons/scanner_white.svg" alt="">
+                  </button>
+                </li>
+              </ul>
+              <div *ngIf="ccProgbar" class="spinner_sm_wrappar">
+                <mat-spinner class="spinner_sm"></mat-spinner>
+              </div>
+              <div *ngIf="!ccProgbar" class="corres_table_wrapper">
+                <table class="table table_cover_letter">
+                  <tr>
+                    <th class="type">Type</th>
+                    <th class="name">Name</th>
+                    <th></th>
+                    <!-- <th class="size">Size</th> -->
+                    <!-- <th class="modified">Modified</th> -->
                   </tr>
-                </tbody>
-              </table>
+                  <tbody *ngFor="let corrAttachmentDetails of AttachmentFolderData">
+                    <tr *ngFor="let attachmentData of corrAttachmentDetails.myRows">
+                      <td class="size_45" [innerHtml]="attachmentData.attachmentType">
+                      </td>
+                      <td>
+                        <a class="coverLink"
+                          (click)="getCoverDocumentURL(attachmentData.Dataid)">{{attachmentData.Name}}
+                        </a>
+                      </td>
+                      <td>
+                        <div class="group_btn">
+                          <a *ngIf="attachmentData.addversionperm=='TRUE'" matTooltip="Add Version" class="btn btn_006"
+                            (click)="openBrowseDocument($event,'file-inputAddversionAttachment')">
+                            <img src="{{basehref}}assets/images/icons/add-version.svg" alt="">
+                          </a>
+                          <input id="file-inputAddversionAttachment" class="hidden-button" type="file"
+                            (change)="addDocumentVersion($event.target.files,attachmentData.Dataid,'ATTACHMENT')" />
+                          <a matTooltip="Download" class="btn btn_006" href="{{CSUrl}}{{attachmentData.DownloadURL}}">
+                            <img src="{{basehref}}assets/images/icons/download-to-storage-drive.svg" alt="">
+                          </a>
+                          <a matTooltip="Properties" class="btn btn_006"
+                            (click)=showActionProperties(attachmentData.Dataid)>
+                            <img src="{{basehref}}assets/images/icons/info-round-button.svg" alt="">
+                          </a>
+                          <a *ngIf="attachmentData.deleteperm=='TRUE'" matTooltip="Delete" class="btn btn_006"
+                            (click)="deleteDocument(attachmentData.Dataid,'ATTACHMENT')">
+                            <img src="{{basehref}}assets/images/icons/remove_icon_001.svg" alt="">
+                          </a>
+                        </div>
+                      </td>
+                      <!-- <td> {{attachmentData.AttachmentSize}} </td> -->
+                      <!-- <td> {{attachmentData.ModifyDate}} </td> -->
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- start -->
+              <div class="drop_file_wrp">
+                <ngx-file-drop dropZoneLabel="Drop files here"
+                  (onFileDrop)="dropped($event,corrFolderData.AttachCorrAttachmentsID,'ATTACHMENT')"
+                  (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)"
+                  contentClassName="attachementdraganddrop">
+                  <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+                    You can drag & drop files here
+                  </ng-template>
+                </ngx-file-drop>
+              </div>
+              <!-- end -->
+
             </div>
-            <!-- start -->
-            <div class="drop_file_wrp">
-              <ngx-file-drop dropZoneLabel="Drop files here"
-                (onFileDrop)="dropped($event,corrFolderData.AttachCorrAttachmentsID,'ATTACHMENT')"
-                (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)"
-                contentClassName="attachementdraganddrop">
-                <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
-                  You can drag & drop files here
-                </ng-template>
-              </ngx-file-drop>
-            </div>
-            <!-- end -->
           </div>
         </mat-expansion-panel>
 
@@ -870,6 +879,12 @@
     <div *ngIf="showTemplateArea">
       <h3 class="org_chrt_head">Outgoing Templates</h3>
       <div class="cover_letter_preview_wrapper">
+        <mat-form-field *ngIf="templateTypes && corrFlowType === 'Outgoing'">
+          <mat-label>Template Type</mat-label>
+          <mat-select (selectionChange)="CorrTypesSelectChange($event)">
+            <mat-option *ngFor="let type of templateTypes" value="{{type.AttrValue}}">{{type.AttrValue}}</mat-option>
+          </mat-select>
+        </mat-form-field>
         <table class="cover_letter_preview_table">
           <tr>
 

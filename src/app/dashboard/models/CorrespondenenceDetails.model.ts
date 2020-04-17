@@ -155,3 +155,7 @@ export class OrgNameAutoFillModelSimpleUser {
   _SOURCEROWNUM: number;
   _ORIGROWNUM: number;
 }
+
+export class TemplateModel {
+  AttrValue: string;
+}

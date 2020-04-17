@@ -525,8 +525,19 @@
   background-image: url(assets/images/tree_bg.jpg);
   border-radius: 5px;
   overflow: hidden;
+  .selected-item{
+    background-color: #d2eeed;
+  }
   .tree_container {
       position: relative;
+      .ecmd-tree-spinner{
+        width: 20px !important;
+        height:20px !important;
+        svg {
+          width: 20px !important;
+          height:20px !important;
+        }
+      }
       .node_wrapper_invisible {
           display: none;
         }
@@ -675,6 +686,7 @@
           display: flex;
           position: relative;
           min-height: 44px;
+          width: 100%;
           .mat-checkbox {
               margin: auto 0;
               margin-left: 14px;
@@ -737,58 +749,114 @@
           }
       }
   }
+  .selectedItem :hover{
+    background-color: rgb(108, 226, 181);
+  }
+
   .org_text_wrp {
+    display: flex;
+    padding-left: 15px;
+    box-sizing: border-box;
+    width: 100%;
+    .org_icon_wrp {
+        border-radius: 50%;
+        width: 27px;
+        height: 27px;
+        display: flex;
+        align-items: center;
+        position: relative;
+        z-index: 150;
+        margin-top: auto;
+        margin-bottom: auto;
+        min-width: 27px;
+        min-height: 27px;
+        .org_img_001 {
+            margin: auto;
+            vertical-align: middle;
+        }
+        &.folder {
+            background-color: rgb(35, 195, 205);
+            .org_img_001 {
+                max-width: 20px;
+                width: 20px;
+            }
+        }
+        &.user {
+            background-color: #6fabe9;
+            .org_img_001 {
+                max-width: 14px;
+                width: 14px;
+            }
+        }
+    }
+    &.ecmd_text_wrp{
+      padding-left: 9px;
+    }
+    .ecmd_icon_wrp {
+      border-radius: 50%;
+      width: 27px;
+      height: 27px;
       display: flex;
-      padding-left: 15px;
-      box-sizing: border-box;
       
-      .org_icon_wrp {
-          border-radius: 50%;
-          width: 27px;
-          height: 27px;
-          display: flex;
-          align-items: center;
-          position: relative;
-          z-index: 150;
-          margin-top: auto;
-          margin-bottom: auto;
-          min-width: 27px;
-          min-height: 27px;
-          .org_img_001 {
-              margin: auto;
-              vertical-align: middle;
-          }
-          &.folder {
-              background-color: rgb(35, 195, 205);
-              .org_img_001 {
-                  max-width: 20px;
-                  width: 20px;
-              }
-          }
-          &.user {
-              background-color: #6fabe9;
-              .org_img_001 {
-                  max-width: 14px;
-                  width: 14px;
-              }
+      align-items: center;
+      position: relative;
+      z-index: 150;
+      margin-top: auto;
+      margin-bottom: auto;
+      min-width: 27px;
+      min-height: 27px;
+      .ecmd_img_001 {
+          margin: auto;
+          vertical-align: middle;
+      }
+      .ecmd_initial_001{
+        margin: auto;
+        color: white;
+      }
+      &.folder {
+          background-color: rgb(35, 195, 205);
+          .ecmd_img_001 {
+              max-width: 20px;
+              width: 20px;
           }
       }
-      .org_chart_text {
-          margin: auto 0;
-          padding-left: 15px;
-          font-size: 13px;
-          color: #3a3a3a;
-          overflow-wrap: break-word;
-          word-break: break-word;
-          white-space: normal;
-          line-height: 19px;
-          max-height: 39px;
-          overflow: hidden;
-          text-overflow: ellipsis;
+      &.counterpart {
+          background-color: #6fabe9;
+          .ecmd_img_001 {
+              max-width: 14px;
+              width: 14px;
+          }
       }
+      &.department {
+        background-color: #bf73f1;
+        .ecmd_img_001 {
+            max-width: 14px;
+            width: 14px;
+        }
+      }
+      .ecmd_char_text{
+        cursor: default;
+      }
+    }
+    .org_chart_text {
+        margin: auto 0;
+        padding-left: 15px;
+        font-size: 13px;
+        color: #3a3a3a;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        white-space: normal;
+        line-height: 19px;
+        max-height: 39px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .search-result {
+      color: #884112;
+    }
   }
   .showEmplyName {
-      display: none;
+    display: none;
   }
 }
 .org_chrt_head {
@@ -881,6 +949,19 @@
       }
       .mat-checkbox-frame {
           background-color: #FFF;
+      }
+      .ecmd_search{
+        background: #f3f3f3;
+        border-radius: 4px;
+        border: 1px solid transparent;
+        font-size: 11px;
+        color: #838383;
+        padding: 5px 10px;
+        margin-right: 20px;
+        width: auto;
+        min-width:180px;
+        outline: none;
+        box-sizing: border-box;
       }
   }
 }

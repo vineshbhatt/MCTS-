@@ -7,6 +7,7 @@ import { CorrespondenceShareService } from '../../services/correspondence-share.
 import { BaseDashboardArchiveComponent } from '../../base-classes/base-dashboard-archive/base-dashboard-archive.component';
 import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handler-fcts.service';
 import { AppLoadConstService } from 'src/app/app-load-const.service';
+import { multiLanguageTranslator } from 'src/assets/translator/index';
 
 @Component({
   selector: 'app-achieved-intinbounds',
@@ -21,11 +22,12 @@ export class AchievedIntInboundComponent extends BaseDashboardArchiveComponent i
     public correspondenceService: CorrespondenceService,
     public correspondenceShareService: CorrespondenceShareService,
     public errorHandlerFctsService: ErrorHandlerFctsService,
-    public appLoadConstService: AppLoadConstService
+    public appLoadConstService: AppLoadConstService,
+    public translator: multiLanguageTranslator
   ) {
-      super(router, dialogU, correspondenceService, correspondenceShareService , errorHandlerFctsService, appLoadConstService) ;
-      this.reportType = 'IntInbArc';
-      this.routerFormStep = '/dashboard/internal/correspondence-form-step-intout';
+    super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService, translator);
+    this.reportType = 'IntInbArc';
+    this.routerFormStep = '/dashboard/internal/correspondence-form-step-intout';
   }
 
   ngOnInit() {

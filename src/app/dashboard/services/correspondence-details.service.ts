@@ -7,7 +7,7 @@ import { DocumentPreview } from '../services/documentpreview.model';
 import { DashboardFilterResponse, TransferAttributes } from '../models/DashboardFilter';
 import {
   CorrespondenenceDetailsModel, OrgNameAutoFillModel, CorrespondenceFolderModel, CCUserSetModel,
-  ColUserSetModel, SyncDocumentMetadataModel
+  ColUserSetModel, SyncDocumentMetadataModel, TemplateModel
 } from '../models/CorrespondenenceDetails.model';
 import { StatusRequest, SetStatusRow } from '../models/Shared.model';
 import { CorrespondenceShareService } from '../services/correspondence-share.service';
@@ -417,6 +417,7 @@ export class CorrespondenceDetailsService {
       }
     );
   }
+
 
   getCoverFolderDetails(FolderID: number): Observable<CorrResponse[]> {
     const params = new HttpParams()
@@ -849,6 +850,21 @@ export class CorrespondenceDetailsService {
     return this.httpServices.get<DocumentPreview[]>(
       this.CSUrl +
       `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.folderbrowserurl}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken },
+        params: params
+      }
+    );
+  }
+  // TODO set model to get
+  LoadTemplateFilter(type: string): Observable<any> {
+    const params = new HttpParams()
+      .set('locationid', this._globalConstants.FCTS_StepConsole.TemplateFolder)
+      .set('catid', this._globalConstants.FCTS_StepConsole.TemplateCategory)
+      .set('attrname', type);
+    return this.httpServices.get<TemplateModel[]>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.FilterValuesSearch}?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken },
         params: params

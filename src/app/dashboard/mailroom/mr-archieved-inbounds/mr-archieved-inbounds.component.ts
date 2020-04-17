@@ -7,6 +7,7 @@ import { CorrespondenceShareService } from '../../services/correspondence-share.
 import { BaseDashboardComponent } from 'src/app/dashboard/base-classes/base-dashboard/base-dashboard.component';
 import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handler-fcts.service';
 import { AppLoadConstService } from 'src/app/app-load-const.service';
+import { multiLanguageTranslator } from 'src/assets/translator/index';
 
 @Component({
   selector: 'app-mr-archieved-inbounds',
@@ -23,10 +24,11 @@ export class MrArchievedInboundsComponent extends BaseDashboardComponent impleme
     public сorrespondenceShareService: CorrespondenceShareService,
     public errorHandlerFctsService: ErrorHandlerFctsService,
     public appLoadConstService: AppLoadConstService,
+    public translator: multiLanguageTranslator
   ) {
-      super(router, dialogU, correspondenceService, сorrespondenceShareService, errorHandlerFctsService, appLoadConstService);
-      this.reportType = 'MRExtInbArc';
-      this.routerFormStep = '/dashboard/mailroom/correspondence-form-step-inc';
+    super(router, dialogU, correspondenceService, сorrespondenceShareService, errorHandlerFctsService, appLoadConstService, translator);
+    this.reportType = 'MRExtInbArc';
+    this.routerFormStep = '/dashboard/mailroom/correspondence-form-step-inc';
   }
 
   ngOnInit() {

@@ -1,11 +1,11 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { OrgNameAutoFillModel, CCUserSetModel } from 'src/app/dashboard/models/CorrespondenenceDetails.model';
 import { OrganizationalChartService } from 'src/app/dashboard/services/organizationalChart.service';
-import { organizationalChartModel, organizationalChartEmployeeModel } from 'src/app/dashboard/models/organizational-Chart.model';
+import { organizationalChartModel, organizationalChartEmployeeModel, ECMDChartModel, ECMDChartDepartmentModel } from 'src/app/dashboard/models/organizational-Chart.model';
 import { Location } from '@angular/common';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { FCTSDashBoard } from '../../../../environments/environment';
 import { FormArray, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { switchMap, debounceTime } from 'rxjs/operators';
@@ -17,7 +17,7 @@ import { NotificationService } from '../../services/notification.service';
 import { BaseCorrespondenceComponent } from '../../base-classes/base-correspondence-csactions/base-correspondence.component';
 import { CorrespondenceDetailsService } from 'src/app/dashboard/services/correspondence-details.service';
 import { CSDocumentUploadService } from '../../services/CSDocumentUpload.service';
-
+import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handler-fcts.service';
 
 
 
@@ -98,13 +98,23 @@ export class ExternalIncoming extends BaseCorrespondenceComponent implements OnI
   employeeMap = new Map<number, organizationalChartEmployeeModel[]>();
   employeeForOUID: organizationalChartEmployeeModel[] = [];
   spinnerDataLoaded: boolean = false;
+  // ECMD VAR
+  dataSourceECMD = new MatTreeNestedDataSource<any>();
+  treeControlECMD = new NestedTreeControl<any>(node => node.children);
+  isSearchResult = false;
+  isLoading = false;
+  showPreviewECMDTreeArea = false;
+  ECMDMap = new Map();
+  //
 
 
   constructor(private _location: Location,
     private organizationalChartService: OrganizationalChartService, private formBuilder: FormBuilder,
     private correspondencservice: CorrespondenceService,
     private notificationmessage: NotificationService,
-    public csdocumentupload: CSDocumentUploadService, public correspondenceDetailsService: CorrespondenceDetailsService) {
+    public csdocumentupload: CSDocumentUploadService,
+    public correspondenceDetailsService: CorrespondenceDetailsService,
+    private _errorHandlerFctsService: ErrorHandlerFctsService) {
     super(csdocumentupload, correspondenceDetailsService);
   }
   ngOnInit() {
@@ -112,6 +122,7 @@ export class ExternalIncoming extends BaseCorrespondenceComponent implements OnI
     this.getUserInfo();
     this.getOrganizationalChartDetail();
     this.getMetadataFilters();
+    this.getECMDRoot(0);
 
     this.senderDetailsForm = this.formBuilder.group({
       ExternalOrganization: ['', Validators.required],
@@ -269,17 +280,18 @@ export class ExternalIncoming extends BaseCorrespondenceComponent implements OnI
 
 
   showSenderData() {
-    this.showPreviewTreeArea = true;
+    this.showPreviewTreeArea = false;
+    this.showPreviewCoverLetter = false;
+    this.showPreviewECMDTreeArea = true;
     this.selectedCaption = 'Sender';
     this.currentlyChecked = false;
-    this.showPreviewCoverLetter = false;
     this.multiSelect = false;
-    this.dataSource.data = this.organizationalChartData;
-    this.CCOUID = [];
-    this.CCEID = [];
+
   }
 
   showRecipientData() {
+    this.showPreviewCoverLetter = false;
+    this.showPreviewECMDTreeArea = false;
     this.showPreviewTreeArea = true;
     this.selectedCaption = 'Recipient';
     this.currentlyChecked = false;
@@ -290,6 +302,8 @@ export class ExternalIncoming extends BaseCorrespondenceComponent implements OnI
   }
 
   showCCData() {
+    this.showPreviewCoverLetter = false;
+    this.showPreviewECMDTreeArea = false;
     this.showPreviewTreeArea = true;
     this.selectedCaption = 'CC';
     this.currentlyChecked = false;
@@ -639,5 +653,262 @@ export class ExternalIncoming extends BaseCorrespondenceComponent implements OnI
       }
     }
   }
+
+  // external organization chart functionaliyy
+  // get root element
+  getECMDRoot(NODEID: number): void {
+    this.ECMDMap = new Map();
+    this.isSearchResult = false;
+    this.isLoading = true;
+    this.organizationalChartService.getECMDChart(NODEID).subscribe(
+      response => {
+        if (response.length > 0) {
+          for (const obj of response) {
+            let ECMDData: ECMDChartModel;
+            ECMDData = obj;
+            ECMDData.children = [];
+            this.ECMDMap[ECMDData.isCPID ? ECMDData.CPID : ECMDData.NODEID] = ECMDData;
+            const parent = ECMDData.isCPID ? ECMDData.pNODEID : ECMDData.ParentID || '-1';
+            if (!this.ECMDMap[parent]) {
+              this.ECMDMap[parent] = {
+                children: []
+              };
+            }
+            this.ECMDMap[parent].children.push(ECMDData);
+          }
+          this.dataSourceECMD.data = null;
+          this.dataSourceECMD.data = this.ECMDMap['-1'].children;
+        } else {
+          delete this.ECMDMap[NODEID].children;
+          this.dataSourceECMD.data = null;
+          this.dataSourceECMD.data = this.ECMDMap['-1'].children;
+        }
+      },
+      responseError => {
+        this._errorHandlerFctsService.handleError(responseError).subscribe();
+      },
+      () => { this.isLoading = false; }
+    );
+  }
+  // build ECPM node elements
+  getECMDChart(node: ECMDChartModel): void {
+    node.isLoading = true;
+    this.organizationalChartService.getECMDChart(node.NODEID).subscribe(
+      response => {
+        if (response.length > 0) {
+          for (const obj of response) {
+            let ECMDData: ECMDChartModel;
+            ECMDData = obj;
+            ECMDData.children = [];
+            this.ECMDMap[ECMDData.isCPID ? ECMDData.CPID : ECMDData.NODEID] = ECMDData;
+            const parent = ECMDData.isCPID ? ECMDData.pNODEID : ECMDData.ParentID || '-1';
+            if (!this.ECMDMap[parent]) {
+              this.ECMDMap[parent] = {
+                children: []
+              };
+            }
+            this.ECMDMap[parent].children.push(ECMDData);
+          }
+          this.dataSourceECMD.data = null;
+          this.dataSourceECMD.data = this.ECMDMap['-1'].children;
+        } else {
+          delete this.ECMDMap[node.NODEID].children;
+          /*           this.dataSourceECMD.data = null;
+                    this.dataSourceECMD.data = this.ECMDMap['-1'].children; */
+        }
+
+      },
+      responseError => {
+        this._errorHandlerFctsService.handleError(responseError).subscribe();
+      },
+      () => { node.isLoading = false; }
+    );
+  }
+
+  // define action depending on folder/organisation/department
+  ECMDTreeOpenAction(node: ECMDChartModel): void {
+    if (!this.isSearchResult) {
+      if (node.hasOwnProperty('NODEID')) {
+        node.isCPID ? this.getECMDChartDepartments(node) : this.getECMDChart(node);
+      }
+    }
+  }
+
+  // build ECPM department elements
+  getECMDChartDepartments(node: ECMDChartModel): void {
+    node.isLoading = true;
+    this.organizationalChartService.getECMDChartDepartments(node.CPID).subscribe(
+      response => {
+        if (response.length > 0) {
+          const myMap = new Map();
+          for (const obj of response) {
+            let orgChartData: ECMDChartDepartmentModel;
+            orgChartData = obj;
+            myMap[orgChartData.DEPID] = orgChartData;
+            const parent = orgChartData.ParentID || '-1';
+            if (!myMap[parent]) {
+              myMap[parent] = {
+                children: []
+              };
+            }
+            !myMap[parent].hasOwnProperty('children') ? myMap[parent].children = [] : null;
+            myMap[parent].children.push(orgChartData);
+          }
+          this.ECMDMap[node.CPID].children = myMap['-1'].children;
+          this.dataSourceECMD.data = null;
+          this.dataSourceECMD.data = this.ECMDMap['-1'].children;
+        } else {
+          delete this.ECMDMap[node.CPID].children;
+          /*          this.dataSourceECMD.data = null;
+                   this.dataSourceECMD.data = this.ECMDMap['-1'].children; */
+        }
+      },
+      responseError => {
+        this._errorHandlerFctsService.handleError(responseError).subscribe();
+      },
+      () => { node.isLoading = false; }
+    );
+  }
+
+  ECMDhasChild = (_number: number, node: ECMDChartModel) => !!node.children && node.children.length > 0;
+
+  searchCounterParts(value: string) {
+    if (value.length > 0) {
+      this.isSearchResult = true;
+      this.isLoading = true;
+      forkJoin(
+        this.organizationalChartService.ECMDSearch('searchParentNODES', value),
+        this.organizationalChartService.ECMDSearch('searchCounterpart', value),
+        this.organizationalChartService.ECMDSearch('searchDepartment', value)
+      )
+        .subscribe(
+          ([res1, res2, res3]) => {
+            this.buildECMDChart(res1.concat(res2, res3));
+          },
+          responseError => {
+            this._errorHandlerFctsService.handleError(responseError).subscribe();
+          });
+    } else {
+      this.getECMDRoot(0);
+    }
+  }
+  // build ECMD chart for search
+  buildECMDChart(nodes) {
+    if (nodes.length > 0) {
+      const myMap = new Map();
+      for (const obj of nodes) {
+        let ECMDData: any;
+        ECMDData = obj;
+        if (ECMDData.hasOwnProperty('NODEID')) {
+          if (ECMDData.isCPID) {
+            myMap[ECMDData.CPID] = ECMDData;
+          } else {
+            myMap[ECMDData.NODEID] = ECMDData;
+          }
+        } else {
+          myMap[ECMDData.DEPID] = ECMDData;
+        }
+        myMap[ECMDData.isCPID ? ECMDData.CPID : ECMDData.NODEID] = ECMDData;
+        let parentVariable;
+        if (ECMDData.hasOwnProperty('NODEID')) {
+          if (ECMDData.isCPID) {
+            parentVariable = ECMDData.pNODEID;
+          } else {
+            parentVariable = ECMDData.ParentID;
+          }
+        } else {
+          parentVariable = ECMDData.ParentID ? ECMDData.ParentID : ECMDData.CPID;
+        }
+        const parent = parentVariable || '-1';
+        if (!myMap[parent]) {
+          myMap[parent] = {
+            children: []
+          };
+        }
+        !myMap[parent].hasOwnProperty('children') ? myMap[parent].children = [] : null;
+        myMap[parent].children.push(ECMDData);
+      }
+      this.dataSourceECMD.data = null;
+      this.dataSourceECMD.data = myMap['-1'].children;
+    }
+    this.isLoading = false;
+    this.expandFolders(this.dataSourceECMD.data);
+  }
+  // expand all elements after search
+  expandFolders(data: any): void {
+    if (data.length > 0) {
+      data.forEach(element => {
+        if (element.hasOwnProperty('children')) {
+          this.expandFolders(element.children);
+        }
+        element.NODEID > 0 ? this.treeControlECMD.expand(element) : null;
+      });
+    }
+  }
+  // define node type
+  ecmdTreeType(node: any): string {
+    if (node.hasOwnProperty('NODEID')) {
+      if (node.isCPID) {
+        return 'counterpart';
+      } else {
+        return 'folder';
+      }
+    } else {
+      return 'department';
+    }
+  }
+  // on node click function
+  selectECMD(node: any): void {
+    if (['counterpart', 'department'].indexOf(this.ecmdTreeType(node)) > -1) {
+      this.currentlyChecked = node;
+    } else {
+      this.currentlyChecked = false;
+    }
+  }
+
+
+  getSelectedECMD(name: string) {
+    if (this.currentlyChecked.hasOwnProperty('NODEID')) {
+      this.correspondenceDetailsService.searchFieldForAutoFillOUID(this.currentlyChecked.CPID, 'ExtOrganizationID', '').subscribe(
+        response => {
+          console.log('1', this.senderDetailsForm.get('ExternalOrganization').value)
+          this.ExtSenderInfo = response[0];
+          this.ExtSenderInfo.Name_En = name;
+          if (this.selectedCaption === 'Sender') {
+            this.senderDetailsForm.get('ExternalOrganization').setValue(response[0]);
+            this.senderDetailsForm.get('SenderDepartment').setValue(this.ExtSenderInfo.DepName_En);
+            this.senderDetailsForm.get('SenderName').setValue(this.ExtSenderInfo.Name_En);
+          } else if (this.selectedCaption === 'Recipient') {
+            this.recipientDetailsForm.get('ExternalOrganization').setValue(response[0]);
+          }
+        },
+        responseError => {
+          this._errorHandlerFctsService.handleError(responseError).subscribe();
+        }
+      );
+    } else if (this.currentlyChecked.hasOwnProperty('DEPID')) {
+      this.correspondenceDetailsService.searchFieldForAutoFillOUID(this.currentlyChecked.DEPID, 'ExtDepartmentID', '').subscribe(
+        response => {
+          this.ExtSenderInfo = response[0];
+          this.ExtSenderInfo.Name_En = name;
+          if (this.selectedCaption === 'Sender') {
+            this.senderDetailsForm.get('ExternalOrganization').setValue(response[0]);
+            this.senderDetailsForm.get('SenderDepartment').setValue(this.ExtSenderInfo.DepName_En);
+            this.senderDetailsForm.get('SenderName').setValue(this.ExtSenderInfo.Name_En);
+          } else if (this.selectedCaption === 'Recipient') {
+            this.recipientDetailsForm.get('ExternalOrganization').setValue(response[0]);
+          }
+        },
+        responseError => {
+          this._errorHandlerFctsService.handleError(responseError).subscribe();
+        }
+      );
+    }
+  }
+
+  getInitials(nodename: string) {
+    return nodename.slice(0, 1).length > 0 ? nodename.slice(0, 1).toUpperCase() : 'A';
+  }
+  // ECMD functionality finish
 
 }
