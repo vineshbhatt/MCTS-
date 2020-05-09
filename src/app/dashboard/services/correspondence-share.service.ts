@@ -569,7 +569,7 @@ export class CorrespondenceShareService {
       .set('startRow', startRow)
       .set('endRow', endRow)
       .set('CorrespondenceCode', queryFilters.ReferenceCode ? queryFilters.ReferenceCode : '')
-      .set('ExternalOrganization', queryFilters.ExternalOrganization ? queryFilters.ExternalOrganization : '')
+      .set('ExternalOrganization', queryFilters.ExternalOrganization.ID ? queryFilters.ExternalOrganization.ID : '')
       .set('Priority', queryFilters.Priority.ID ? queryFilters.Priority.ID : '')
       .set('ReceivedDateFrom', queryFilters.DispatchDateFrom ? this.DateToLRString(queryFilters.DispatchDateFrom) : '')
       .set('ReceivedDateTo', queryFilters.DispatchDateTo ? this.DateToLRString(queryFilters.DispatchDateTo) : '')

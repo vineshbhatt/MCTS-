@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChild } from '@angular/core';
 import { OrgNameAutoFillModel, CCUserSetModel, ColUserSetModel, SyncDocumentMetadataModel, TemplateModel } from 'src/app/dashboard/models/CorrespondenenceDetails.model';
 import { OrganizationalChartService } from 'src/app/dashboard/services/organizationalChart.service';
 import { organizationalChartModel, organizationalChartEmployeeModel, ECMDChartModel, ECMDChartDepartmentModel } from 'src/app/dashboard/models/organizational-Chart.model';
@@ -16,10 +16,14 @@ import { CorrespondenceWFFormModel } from '../../models/CorrepondenceWFFormModel
 import { NotificationService } from '../../services/notification.service';
 import { BaseCorrespondenceComponent } from '../../base-classes/base-correspondence-csactions/base-correspondence.component';
 import { CorrespondenceDetailsService } from 'src/app/dashboard/services/correspondence-details.service';
-import { CSDocumentUploadService } from '../../services/CSDocumentUpload.service'
+import { CSDocumentUploadService } from '../../services/CSDocumentUpload.service';
 import { ActivatedRoute } from '@angular/router';
 import { RecipientDetailsData, SenderDetailsData } from '../../services/correspondence-response.model';
 import { ErrorHandlerFctsService } from '../../services/error-handler-fcts.service';
+import { AppLoadConstService } from 'src/app/app-load-const.service';
+import { multiLanguageTranslator } from 'src/assets/translator/index';
+import { MultipleApproveComponent, MultipleApproveInputData, CurrentApprovers } from 'src/app/dashboard/shared-components/multiple-approve/multiple-approve.component';
+
 
 
 
@@ -75,6 +79,7 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
   showEmplChartData: organizationalChartModel;
   showOrgChartData: organizationalChartModel;
   showPreviewTreeArea = false;
+  orgSearch: string;
 
   percentDone: number;
   uploadSuccess: boolean;
@@ -100,13 +105,7 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
   employeeForOUID: organizationalChartEmployeeModel[] = [];
 
   //
-  skipDepSecratory: boolean = false;
-  headOfSectionReview: boolean = false;
-  skipHOSSecratory: boolean = false;
 
-  HOSReviewOptions: string[] = ['Yes', 'No']
-  DepApproverList: any[];
-  HOSApproverList: any[];
   showTemplateArea: boolean = false;
 
   templateLanguage: string;
@@ -137,13 +136,22 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
   // temlete types
   templateTypes: TemplateModel[];
 
+  // multi approve parameters
+  approve: MultipleApproveInputData;
+  @ViewChild(MultipleApproveComponent) multiApprove;
+  confidential = false;
+
   constructor(private _location: Location,
     private organizationalChartService: OrganizationalChartService, private formBuilder: FormBuilder,
     private correspondencservice: CorrespondenceService,
     private notificationmessage: NotificationService,
-    public csdocumentupload: CSDocumentUploadService, public correspondenceDetailsService: CorrespondenceDetailsService,
-    private route: ActivatedRoute, private _errorHandlerFctsService: ErrorHandlerFctsService) {
-    super(csdocumentupload, correspondenceDetailsService)
+    public csdocumentupload: CSDocumentUploadService,
+    public correspondenceDetailsService: CorrespondenceDetailsService,
+    private route: ActivatedRoute,
+    private _errorHandlerFctsService: ErrorHandlerFctsService,
+    private appLoadConstService: AppLoadConstService,
+    public translator: multiLanguageTranslator) {
+    super(csdocumentupload, correspondenceDetailsService);
   }
   ngOnInit() {
 
@@ -188,11 +196,6 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
       obType: [],
       arabicSubject: ['', Validators.required],
       englishSubject: ['', Validators.required],
-      skipDepSecratory: [],
-      Approver: [],
-      HOSReviewRequired: [],
-      skipHOSecratory: [],
-      HOSApprover: [],
       projectCode: [],
       budgetNumber: [],
       contractNumber: [],
@@ -201,7 +204,6 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
       dispatchMethod: [],
       staffNumber: []
     });
-    this.correspondenceDetailsForm.get('HOSReviewRequired').setValue("No");
 
     this.filteredExtOrgNames = this.recipientDetailsForm.get('ExternalOrganization').valueChanges
       .pipe(
@@ -215,8 +217,6 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
   }
   ngAfterViewInit() {
     this.getTempFolderAttachments(this.corrFlowType);
-    this.getApprovers('iApprover_2_37');
-    this.getApprovers('iApprover_2_33');
 
     if (this.VolumeID != '' && this.VolumeID != undefined) {
       switch (this.action) {
@@ -312,6 +312,7 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
     this.CCOUID = [];
     this.CCEID = [];
     this.showTemplateArea = false;
+    this.isSearchResult = false;
   }
   showRecipientData() {
     this.showPreviewECMDTreeArea = true;
@@ -323,6 +324,7 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
     this.dataSource.data = this.organizationalChartData;
     this.CCEID = [];
     this.showTemplateArea = false;
+    this.isSearchResult = false;
   }
   showCCData() {
     this.showPreviewECMDTreeArea = false;
@@ -333,9 +335,11 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
     this.multiSelect = true;
     this.dataSource.data = this.organizationalChartData;
     this.showTemplateArea = false;
+    this.isSearchResult = false;
   }
 
   showCollaboartorData() {
+    this.showPreviewECMDTreeArea = false;
     this.showPreviewTreeArea = true;
     this.selectedCaption = 'Collaboration'
     this.currentlyChecked = false;
@@ -343,7 +347,19 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
     this.multiSelect = true;
     this.dataSource.data = this.organizationalChartData;
     this.showTemplateArea = false;
+    this.isSearchResult = false;
+  }
 
+  showMultiAppData() {
+    this.showPreviewECMDTreeArea = false;
+    this.showPreviewTreeArea = true;
+    this.selectedCaption = 'Approver';
+    this.currentlyChecked = false;
+    this.showPreviewCoverLetter = false;
+    this.multiSelect = false;
+    this.dataSource.data = this.organizationalChartData;
+    this.showTemplateArea = false;
+    this.isSearchResult = false;
   }
 
   showTemplateSection() {
@@ -400,24 +416,108 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
   }
   addRecipient() {
   }
+
   searchTreeValue(organizationalChartSearch: string) {
-    // alert(organizationalChartSearch);
-    // let filteredTreeData;
+    if (organizationalChartSearch !== '') {
+      this.isSearchResult = true;
+      if (!this.showEmployees) {
+        let filteredData = this.filterData(this.organizationalChartData, function (item) {
+          return (item.Name.toLowerCase().indexOf(organizationalChartSearch.toLowerCase()) > -1 || item.Name_AR.toLowerCase().indexOf(organizationalChartSearch.toLowerCase()) > -1);
+        });
+        filteredData.length ? this.dataSource.data = filteredData : this.cancelSearch();
+        this.expandOrgFolders(this.dataSource.data, []);
+      } else {
+        this.organizationalChartService.fullSearchOUID(organizationalChartSearch).subscribe(
+          employees => {
+            this.employeeMap = new Map<number, organizationalChartEmployeeModel[]>();
+            let OUIDArr = [];
 
-    // if (organizationalChartSearch) {
-    //   filteredTreeData = this.dataSource.data.filter()
-    //   //There is filter function in the sample);
-    // } else {
-    //   filteredTreeData = this.dataSource.data;
-    // }
+            employees.forEach(element => {
+              element.wanted = true;
+              if (OUIDArr.indexOf(element.OUID) === -1) {
+                OUIDArr.push(element.OUID);
+              }
+            });
 
-    // // file node as children.
-    // const data =  this.organizationalChartData 
-    // // Notify the change. !!!IMPORTANT
-    // //this.dataChange.next(data);    
-
-
+            let filteredData = this.filterData(this.organizationalChartData, function (item) {
+              return (item.Name.toLowerCase().indexOf(organizationalChartSearch.toLowerCase()) > -1
+                || item.Name_AR.toLowerCase().indexOf(organizationalChartSearch.toLowerCase()) > -1
+                || OUIDArr.indexOf(item.OUID) > -1);
+            });
+            filteredData.length ? this.dataSource.data = filteredData : this.cancelSearch();
+            OUIDArr.forEach(OUID => {
+              this.employeeMap.set(OUID, employees.filter(empl => {
+                return empl.OUID === OUID;
+              })
+              );
+            });
+            this.expandOrgFolders(this.dataSource.data, OUIDArr);
+          },
+          responseError => {
+            this._errorHandlerFctsService.handleError(responseError).subscribe();
+          },
+          () => {
+            this.showempDetails = true;
+          }
+        );
+      }
+    } else {
+      this.cancelSearch();
+    }
   }
+
+  filterData(data: organizationalChartModel[], predicate) {
+    return !!!data ? null : data.reduce((list, entry) => {
+      let clone = null;
+      if (predicate(entry)) {
+        clone = Object.assign({}, entry);
+        clone.wanted = true;
+      } else if (entry.children != null) {
+        let children = this.filterData(entry.children, predicate);
+        if (children.length > 0) {
+          clone = Object.assign({}, entry, { children: children });
+        }
+      }
+      clone ? clone.expand = true : null
+      clone && list.push(clone);
+      return list;
+    }, []);
+  }
+
+  searchResult(node: organizationalChartModel) {
+    if (this.orgSearch !== '') {
+      if (node.Name.toLowerCase().indexOf(this.orgSearch.toLowerCase()) > -1
+        || node.Name_AR.toLowerCase().indexOf(this.orgSearch.toLowerCase()) > -1) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  expandOrgFolders(data: organizationalChartModel[], Arr): void {
+    if (data.length > 0) {
+      data.forEach(element => {
+        let expandParent;
+        element.children.forEach(child => {
+          if (child.expand) {
+            expandParent = true;
+          }
+        });
+        if (expandParent || Arr.indexOf(element.OUID) > -1) {
+          this.treeControl.expand(element);
+          this.getEmplDetail(element);
+        }
+        this.expandOrgFolders(element.children, Arr);
+      });
+    }
+  }
+
+  cancelSearch() {
+    this.dataSource.data = this.organizationalChartData;
+    this.isSearchResult = false;
+  }
+
+  /***************************************** */
 
   getSearchValue(value: string) {
     this.searchVal = value;
@@ -517,19 +617,14 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
           }
           this.colProgBar = false;
         }
-      )
+      );
+    } else if (this.selectedCaption === 'Approver') {
+      this.multiApprove.setPMData(this.currentlyChecked);
     }
   }
+
   validateCorrespondenceForm(): boolean {
     let isValid = false;
-    if (this.skipDepSecratory == true && this.correspondenceDetailsForm.get('Approver').value == null) {
-      this.notificationmessage.warning('Aprrover is Mandatory', 'Kinldy choose the Approver', 3000);
-      return isValid;
-    }
-    if (this.skipHOSSecratory == true && this.correspondenceDetailsForm.get('HOSApprover').value == null) {
-      this.notificationmessage.warning('HOS Aprrover is Mandatory', 'Kinldy choose the HOS Approver', 3000);
-      return isValid;
-    }
     if (this.correspondenceDetailsForm.invalid) {
       this.notificationmessage.warning('Correspondence details missing', 'Please fill in mandatory correspondence information', 3000);
       return isValid;
@@ -573,19 +668,14 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
     this.initiateOutgoingCorrespondenceDetails.Confidential = this.correspondenceDetailsForm.get('confidential').value;
 
     this.initiateOutgoingCorrespondenceDetails.Disposition1 = Disposition1;
-    this.initiateOutgoingCorrespondenceDetails.Disposition2 = Disposition2;
+    //this.initiateOutgoingCorrespondenceDetails.Disposition2 = Disposition2;
     this.initiateOutgoingCorrespondenceDetails.Disposition3 = Dispostion3;
 
     this.initiateOutgoingCorrespondenceDetails.CorrespondenceType2 = this.getIDVal(this.correspondenceDetailsForm.get('correspondenceType').value);
     this.initiateOutgoingCorrespondenceDetails.CoverID = this.coverID;
     this.initiateOutgoingCorrespondenceDetails.TemplateLanguage = this.templateLanguage;
 
-    this.initiateOutgoingCorrespondenceDetails.SkipDeptSecratory = this.correspondenceDetailsForm.get('skipDepSecratory').value;
-    this.initiateOutgoingCorrespondenceDetails.SkipHOSSecratory = this.correspondenceDetailsForm.get('skipHOSecratory').value;
-    this.initiateOutgoingCorrespondenceDetails.HeadOfSectionRequired = this.correspondenceDetailsForm.get('HOSReviewRequired').value;
-
-    this.initiateOutgoingCorrespondenceDetails.SigningAuthority = this.getIDVal(this.correspondenceDetailsForm.get('Approver').value);
-    this.initiateOutgoingCorrespondenceDetails.HeadOfSection = this.getIDVal(this.correspondenceDetailsForm.get('HOSApprover').value);
+    this.multiApproversDataSave();
 
     this.correspondencservice.initiateWF(this.initiateOutgoingCorrespondenceDetails, this.corrFlowType).subscribe(
       () => {
@@ -607,16 +697,16 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
   }
   SendOnWF(action: string) {
     if (action === 'SendOn') {
-      if (this.validateCorrespondenceForm()) {
+      if (this.validateCorrespondenceForm() && this.multiApprove.approversValidation()) {
         this.initiateWFCorrespondence('SendOn', '', '');
       }
     }
     else if (action === 'Save') {
-      if (this.validateCorrespondenceForm()) {
+      if (this.validateCorrespondenceForm() && this.multiApprove.approversValidation()) {
         this.initiateWFCorrespondence('Save', '', '');
       }
     }
-    else if (action === 'StartCollaboration') {
+    else if (action === 'StartCollaboration' && this.multiApprove.approversValidation()) {
       if (this.validateCorrespondenceForm()) {
         this.initiateWFCorrespondence('StartCollaboration', '', '');
       }
@@ -698,66 +788,9 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
     this.ColDetails.removeAt(index);
   }
 
-  skipDepSecrtoryChange(e: MatCheckboxChange) {
-    if (e.checked) {
-      this.skipDepSecratory = true;
-      this.correspondenceDetailsForm.get('Approver').setValidators([Validators.required]);
-    } else {
-      this.skipDepSecratory = false;
-      this.correspondenceDetailsForm.get('Approver').clearValidators();
-    }
-    this.correspondenceDetailsForm.get('Approver').updateValueAndValidity();
-  }
-
   confidentialChange(e: MatCheckboxChange) {
-    if (e.checked) {
-      this.correspondenceDetailsForm.get('skipDepSecratory').setValue(true);
-      this.correspondenceDetailsForm.get('skipHOSecratory').setValue(true);
-      this.skipDepSecratory = true;
-      this.skipHOSSecratory = true;
-      this.correspondenceDetailsForm.get('Approver').setValidators([Validators.required]);
-    }
-
+    this.confidential = e.checked;
   }
-
-  headOfSectionReviewRequiredChange(e: MatOptionSelectionChange) {
-    if (e.source.value === 'Yes') {
-      this.headOfSectionReview = true;
-    }
-    else {
-      this.headOfSectionReview = false;
-      this.correspondenceDetailsForm.get('HOSApprover').clearValidators();
-    }
-    this.correspondenceDetailsForm.get('HOSApprover').updateValueAndValidity();
-  }
-
-  skipHOSSecratoryChange(e: MatCheckboxChange) {
-    if (e.checked) {
-      this.skipHOSSecratory = true;
-      this.correspondenceDetailsForm.get('HOSApprover').setValidators([Validators.required]);
-    }
-    else {
-      this.skipHOSSecratory = false;
-      this.correspondenceDetailsForm.get('HOSApprover').clearValidators();
-
-    }
-    this.correspondenceDetailsForm.get('HOSApprover').updateValueAndValidity();
-  }
-  getApprovers(ApproverType: string) {
-    this.correspondenceDetailsService
-      .getApproverList(ApproverType)
-      .subscribe(
-        ApproverList => {
-          if (ApproverType === 'iApprover_2_37') {
-            this.DepApproverList = ApproverList;
-          }
-          else if (ApproverType === 'iApprover_2_33') {
-            this.HOSApproverList = ApproverList;
-          }
-        }
-      );
-  }
-
 
   importLettertoCoverFolder(templateDataID: string, language: string) {
     //Check Child Count    
@@ -1258,5 +1291,60 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
 
   CorrTypesSelectChange(type): void {
     this.getTemplatesSectionData(this.corrFlowType, type.value, '');
+  }
+
+  getTempFolderAttachments(corrflowType: string): void {
+    this.correspondenceDetailsService.createTempAttachments(corrflowType).subscribe(
+      tempAttachment => {
+        this.corrFolderData = tempAttachment;
+        this.setMultiApproveParameters();
+      }
+    );
+  }
+
+  setMultiApproveParameters() {
+    this.approve = {
+      UserID: this.appLoadConstService.getConstants().general.UserID,
+      CorrID: this.corrFolderData.AttachCorrID.toString(),
+      mainLanguage: this.translator.lang,
+      TeamID: null,
+      fGetStructure: true,
+      fGetTeamStructure: false,
+      fInitStep: true,
+      fChangeTeam: false
+    };
+  }
+
+  multiApproversDataSave() {
+    this.multiApproversFormFill(this.multiApprove.getCurrentApprovers(false));
+    this.multiApprove.setMultiApprovers();
+  }
+
+  multiApproversFormFill(approversObj: CurrentApprovers) {
+    if (approversObj.minLevel) {
+      this.initiateOutgoingCorrespondenceDetails.Disposition2 = 'MultiApprove';
+      this.initiateOutgoingCorrespondenceDetails.SkipHOSSecratory = approversObj.minLevel.ApproveLevel === 1 ?
+        'true' : approversObj.minLevel.SkipSecretary.toString();
+      if (this.initiateOutgoingCorrespondenceDetails.SkipHOSSecratory) {
+        this.initiateOutgoingCorrespondenceDetails.HeadOfSection = approversObj.minLevel.ApproveLevel === 1 ?
+          approversObj.minLevel.ApproverID.ID : approversObj.minLevel.ApproverID;;
+      } else {
+        this.initiateOutgoingCorrespondenceDetails.HeadOfSection = null;
+      }
+      this.initiateOutgoingCorrespondenceDetails.HeadOfSectionSecretary = approversObj.minLevel.SecretaryGroupID.toString();
+      this.initiateOutgoingCorrespondenceDetails.HeadOfSectionRequired = 'Yes';
+    } else {
+      this.initiateOutgoingCorrespondenceDetails.Disposition2 = ' ';
+      this.initiateOutgoingCorrespondenceDetails.HeadOfSectionRequired = 'No';
+    }
+    this.initiateOutgoingCorrespondenceDetails.SkipDeptSecratory = approversObj.maxLevel.ApproveLevel === 1 ?
+      'true' : approversObj.maxLevel.SkipSecretary.toString();
+    if (this.initiateOutgoingCorrespondenceDetails.SkipDeptSecratory) {
+      this.initiateOutgoingCorrespondenceDetails.SigningAuthority = approversObj.maxLevel.ApproveLevel === 1 ?
+        approversObj.maxLevel.ApproverID.ID : approversObj.maxLevel.ApproverID;
+    } else {
+      this.initiateOutgoingCorrespondenceDetails.SigningAuthority = null;
+    }
+    this.initiateOutgoingCorrespondenceDetails.SigningAuthoritySecretary = approversObj.maxLevel.SecretaryGroupID.toString();
   }
 }

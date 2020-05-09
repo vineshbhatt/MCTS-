@@ -706,7 +706,7 @@ app-external {
   top: 0;
   margin-top: 1px;
   right: 0px;
-  min-width: 150px;
+  min-width: 200px;
 
   &::before {
     content: "f";
@@ -1099,4 +1099,14 @@ app-create-correspondence {
 
 .full-search-form.full-search-without-details{
   border-radius: 12px;
+}
+//IE fix. Hide bottom scroll
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  .main_cnt_area{
+    .ng-scrollbar-x-layout{
+      .ng-scrollbar-y-layout{
+        width:99% !important;
+      }
+    }
+  }
 }

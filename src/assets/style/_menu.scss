@@ -1,3 +1,4 @@
+
 .navigation_wrapper {
     background: #00b7c3;
     max-width: 65px;
@@ -27,6 +28,9 @@
             display: flex;
             height: 100%;
             flex-direction: column;
+            .sidebar-view-scroll{
+                overflow-y:auto !important;
+            }
             .nav_logo {
                 cursor: pointer;
                 outline: none;

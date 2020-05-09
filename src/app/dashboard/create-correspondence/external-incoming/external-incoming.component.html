@@ -3,7 +3,7 @@
 </div>
 <div class="new_edt_cont_wrapper">
   <ng-scrollbar thumbClass="scroll_001" class="correspondence_detail scroll_wrp_001" *ngIf="expandedRightAction"
-    [ngClass]="expandedAction ? 'unActive' : 'ActiveLeft'" compact="true">
+    [ngClass]="expandedAction ? 'unActive' : 'ActiveLeft'">
     <button (click)="expandeActionLeftButton()" matRipple class="corsp_ext_btn">
       <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
     </button>
@@ -682,7 +682,7 @@
       <div class="org_cht_header" *ngIf="!dataSource.data.length == 0">
         <div class="search_wrapper">
           <input class="org_search" type="text" placeholder="Search Organization" #organizationalChartSearch
-            (keyup.enter)="searchTreeValue(organizationalChartSearch.value)">
+            (keyup.enter)="searchTreeValue(organizationalChartSearch.value)" [(ngModel)]="orgSearch">
           <button (click)="searchTreeValue(organizationalChartSearch.value)" class="search_btn"></button>
         </div>
         <div class="right_org_head">

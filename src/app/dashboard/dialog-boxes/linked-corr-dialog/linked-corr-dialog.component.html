@@ -201,7 +201,7 @@
       </mat-tab>
       <mat-tab label="Second">
         <!-- Connected documents search  -->
-        <app-files-select *ngIf="DocTabIndex===1" [DataID]="data.correspondData.DataID" [multiple]="true"
+        <app-files-select *ngIf="DocTabIndex===1" [DataID]="currentReference" [multiple]="true"
           [getParentStructure]="true" [outputActionIdent]="this.filesAction" (backtodoc)="changeDocumentTab($event)"
           (outputAction)="addFileConnection($event)">
         </app-files-select>

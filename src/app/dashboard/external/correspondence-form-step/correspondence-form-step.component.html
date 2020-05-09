@@ -3,7 +3,7 @@
 </div>
 <div class="form_eic_cont_wrapper" *ngIf="!progbar">
   <ng-scrollbar thumbClass="scroll_001" class="correspondence_detail scroll_wrp_001" *ngIf="expandedRightAction"
-    [ngClass]="expandedAction ? 'unActive' : 'ActiveLeft'" compact="true">
+    [ngClass]="expandedAction ? 'unActive' : 'ActiveLeft'">
     <button (click)="expandeActionLeftButton()" matRipple class="corsp_ext_btn">
       <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
     </button>

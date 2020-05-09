@@ -97,6 +97,8 @@
           display: none;
       }
       .mat-form-field-infix {
+          width: 30%;
+          box-sizing: border-box;
           border: 1px solid #d8dadf;
           padding: 13px 15px 6px 14px;
           border-radius: 4px;
@@ -274,6 +276,9 @@
       &_011 {
           background-color: #7ae43a;
       }
+      &_012 {
+        background-color: #e40d9c;
+    }
       img {
           width: 17px;
           height: 17px;
@@ -952,14 +957,14 @@
       }
       .ecmd_search{
         background: #f3f3f3;
-        border-radius: 4px;
+        border-radius: 2px;
         border: 1px solid transparent;
         font-size: 11px;
         color: #838383;
         padding: 5px 10px;
         margin-right: 20px;
         width: auto;
-        min-width:180px;
+        max-width:100px;
         outline: none;
         box-sizing: border-box;
       }

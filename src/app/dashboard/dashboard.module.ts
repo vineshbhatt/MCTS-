@@ -110,6 +110,8 @@ import { LinkedCorrespondencesComponent } from './shared-components/linked-corre
 import { FullSearchComponent } from './shared-components/full-search/full-search.component';
 import { DownloadAttachtmentsDialogComponent } from './dialog-boxes/download-attachtments-dialog/download-attachtments-dialog.component'
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MultipleApproveComponent } from './shared-components/multiple-approve/multiple-approve.component';
+import { AddApproverDialogComponent } from './dialog-boxes/add-approver-dialog/add-approver-dialog.component';
 
 @NgModule({
   imports: [
@@ -228,7 +230,9 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     FilesSelectComponent,
     LinkedCorrespondencesComponent,
     FullSearchComponent,
-    DownloadAttachtmentsDialogComponent
+    DownloadAttachtmentsDialogComponent,
+    MultipleApproveComponent,
+    AddApproverDialogComponent
   ],
   entryComponents: [
     MailDetailView,
@@ -249,7 +253,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     CurrentDelegationsComponent,
     DelegationReportComponent,
     LinkedCorrDialogComponent,
-    DownloadAttachtmentsDialogComponent
+    DownloadAttachtmentsDialogComponent,
+    AddApproverDialogComponent
   ],
   providers: [ErrorHandlerFctsService, NotificationService, DatePipe]
 })

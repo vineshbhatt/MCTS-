@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, Inject, OnInit, Pipe, PipeTransform } from '@angular/core';
+import { Component, Inject, OnInit, Pipe, PipeTransform, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -20,6 +20,8 @@ import { TransferDialogBox } from './correspondence-transfer-dialog/corresponden
 import { MessageDialogComponent } from '../../dialog-boxes/message-dialog/message-dialog.component';
 import { CompleteDialogComponent } from '../../dialog-boxes/complete-dialog/complete-dialog.component';
 import { TransferReplyDialogComponent } from '../../dialog-boxes/transfer-reply-dialog/transfer-reply-dialog.component';
+import { multiLanguageTranslator } from 'src/assets/translator/index';
+import { MultipleApproveComponent, MultipleApproveInputData } from 'src/app/dashboard/shared-components/multiple-approve/multiple-approve.component';
 
 
 @Component({
@@ -37,7 +39,8 @@ export class CorrespondenceDetailComponent implements OnInit {
     , private route: ActivatedRoute
     , public dialog: MatDialog
     , private _location: Location
-    , private _appLoadConstService: AppLoadConstService) {
+    , private _appLoadConstService: AppLoadConstService
+    , public translator: multiLanguageTranslator) {
   }
 
   basehref: String = FCTSDashBoard.BaseHref;
@@ -85,6 +88,9 @@ export class CorrespondenceDetailComponent implements OnInit {
   sectionDisplay = new ShowSections();
   buttonsDisplay = new ShowButtons(this._appLoadConstService);
   correspondenceTabLoaded = false;
+  // multi approve parameters
+  approve: MultipleApproveInputData;
+  @ViewChild(MultipleApproveComponent) multiApprove;
 
   ngOnInit() {
     this.VolumeID = this.route.snapshot.queryParamMap.get('VolumeID');
@@ -138,7 +144,11 @@ export class CorrespondenceDetailComponent implements OnInit {
 
   getCorrespondenceSenderDetails(VolumeID: string, CorrespondencType: String): void {
     this._correspondenceDetailsService.getCorrespondenceSenderDetails(VolumeID, CorrespondencType, false, '')
-      .subscribe(correspondenceSenderDetailsData => this.correspondenceSenderDetailsData = correspondenceSenderDetailsData);
+      .subscribe(correspondenceSenderDetailsData => {
+        this.correspondenceSenderDetailsData = correspondenceSenderDetailsData;
+        this.setMultiApproveParameters();
+      });
+
   }
 
   getCorrespondenceCCDetail(VolumeID: String, CorrFlowType: String): void {
@@ -389,5 +399,19 @@ export class CorrespondenceDetailComponent implements OnInit {
         this.getCoverDocumentURL(obj.dataID);
       }
     }
+  }
+
+  // parameters passed to MultipleApproveComponent
+  setMultiApproveParameters() {
+    this.approve = {
+      UserID: this.correspondenceSenderDetailsData[0].myRows[0].SenderUserID,
+      CorrID: this.locationid,
+      mainLanguage: this.translator.lang,
+      TeamID: null,
+      fGetStructure: true,
+      fGetTeamStructure: false,
+      fInitStep: false,
+      fChangeTeam: false
+    };
   }
 }

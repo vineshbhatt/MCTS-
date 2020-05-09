@@ -82,7 +82,7 @@ export const FCTSDashBoard = {
   copyfromcsurl: '5475815',
   folderbrowserurl: '5475817',
 
-  initiateInternalWF: '560064',
+  initiateInternalWF: '5475167',
   ProxyInfo: 'CTA_ProxyUserInfo',
   PerformerInfo: '5469407',
   UserGroups: '5471192',
@@ -111,6 +111,9 @@ export const FCTSDashBoard = {
   ECMDSearch: 'CTA_ECDM_Search',
   ExportCorrespondence: 'CTA_ExportCorrespondence',
   FilterValuesSearch: 'CTA_FilterValuesSearch',
+  ApproveData: 'CTA_ApproveData',
+  MultiAppAutoFill: 'CTA_MultiAppAutoFill',
+  SetMultiApprovers: 'CTA_SetMultiApprovers',
 
   BaseHref: '/img/fctsangular/fctsapp/',
   //BaseHref: '/',

@@ -142,7 +142,7 @@ export class ShowCorrItems implements CorrItemsList {
   private _setCorrItems() {
     this.regDate = { Show: true, Modify: false, Required: false };
     this.docsDate = { Show: true, Modify: true, Required: false };
-    this.confidential = { Show: true, Modify: false, Required: false };
+    this.confidential = { Show: true, Modify: true, Required: false };
     this.priority = { Show: true, Modify: true, Required: false };
     this.refNumber = { Show: true, Modify: true, Required: true };
     this.personalName = { Show: true, Modify: true, Required: false };

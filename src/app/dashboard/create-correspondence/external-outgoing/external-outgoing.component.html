@@ -3,7 +3,7 @@
 </div>
 <div class="new_edt_cont_wrapper">
   <ng-scrollbar thumbClass="scroll_001" class="correspondence_detail scroll_wrp_001" *ngIf="expandedRightAction"
-    [ngClass]="expandedAction ? 'unActive' : 'ActiveLeft'" compact="true">
+    [ngClass]="expandedAction ? 'unActive' : 'ActiveLeft'">
     <button (click)="expandeActionLeftButton()" matRipple class="corsp_ext_btn">
       <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
     </button>
@@ -174,8 +174,10 @@
             </div>
           </mat-expansion-panel>
         </form>
-
-        <mat-expansion-panel class="mat-elevation-z ">
+        <app-multiple-approve *ngIf="approve" [approve]="approve" [sectionDisabled]="false"
+          [confidential]="confidential" (orgChart)="showMultiAppData($event)">
+        </app-multiple-approve>
+        <mat-expansion-panel class="mat-elevation-z bg_001">
           <mat-expansion-panel-header>
             <div class="icon_wrapper">
               <div class="icon_typ icon_typ_004">
@@ -250,48 +252,6 @@
                   <mat-error *ngIf="submitted && f.englishSubject.errors">Please enter English Subject</mat-error>
                 </mat-form-field>
 
-                <div class="col_6 my_auto">
-                  <mat-checkbox formControlName="skipDepSecratory" (change)="skipDepSecrtoryChange($event)">Skip
-                    Department Secretary</mat-checkbox>
-                </div>
-
-                <mat-form-field *ngIf="skipDepSecratory" class="col_6">
-                  <input type="text" [(ngModel)]="ApproverVal " placeholder="Approver" matInput
-                    [matAutocomplete]="Approver" formControlName="Approver">
-                  <mat-autocomplete #Approver="matAutocomplete" [displayWith]="displayFn" autoActiveFirstOption>
-                    <mat-option *ngFor="let option of DepApproverList | attrfilter:'DepApprover':ApproverVal"
-                      [value]="option">
-                      {{option.EN}}
-                    </mat-option>
-                  </mat-autocomplete>
-                </mat-form-field>
-
-                <mat-form-field class="col_6">
-                  <mat-label> Head Of Section Review</mat-label>
-                  <mat-select (selectionChange)="headOfSectionReviewRequiredChange($event)"
-                    formControlName="HOSReviewRequired">
-                    <mat-option *ngFor="let hosReview of HOSReviewOptions" [value]="hosReview">
-                      {{hosReview}}
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-                <div *ngIf="headOfSectionReview" class="col_6 my_auto">
-                  <mat-checkbox formControlName="skipHOSecratory" (change)="skipHOSSecratoryChange($event)">Skip HOS
-                    Secretary</mat-checkbox>
-                </div>
-
-                <mat-form-field *ngIf="skipHOSSecratory" class="col_6">
-                  <input type="text" [(ngModel)]="HOSApproverVal " placeholder="HOS Approver" matInput
-                    [matAutocomplete]="HOSApprover" formControlName="HOSApprover">
-                  <mat-autocomplete #HOSApprover="matAutocomplete" [displayWith]="displayFn" autoActiveFirstOption>
-                    <mat-option *ngFor="let option of HOSApproverList | attrfilter:'HOSApprover':HOSApproverVal"
-                      [value]="option">
-                      {{option.EN}}
-                    </mat-option>
-                  </mat-autocomplete>
-                </mat-form-field>
-
-
                 <mat-form-field class="col_6">
                   <input matInput autocomplete="off" placeholder="Project Code" formControlName="projectCode">
                 </mat-form-field>
@@ -336,7 +296,7 @@
         </mat-expansion-panel>
 
 
-        <mat-expansion-panel class="mat-elevation-z bg_001">
+        <mat-expansion-panel class="mat-elevation-z">
           <mat-expansion-panel-header>
             <div class="icon_wrapper">
               <div class="icon_typ icon_typ_005">
@@ -414,7 +374,7 @@
             </div>
           </div>
         </mat-expansion-panel>
-        <mat-expansion-panel class="mat-elevation-z">
+        <mat-expansion-panel class="mat-elevation-z bg_001">
           <mat-expansion-panel-header>
             <div class="icon_wrapper">
               <div class="icon_typ icon_typ_006">
@@ -524,7 +484,7 @@
           </div>
         </mat-expansion-panel>
         <form [formGroup]="colDetailsForm">
-          <mat-expansion-panel class="mat-elevation-z bg_001">
+          <mat-expansion-panel class="mat-elevation-z">
             <mat-expansion-panel-header>
               <div class="icon_wrapper">
                 <div class="icon_typ icon_typ_007">
@@ -633,7 +593,7 @@
     </div>
   </ng-scrollbar>
   <ng-scrollbar class="correspondence_deatil_prview_wrappper scroll_wrp_001" thumbClass="scroll_001"
-    [ngClass]="expandedRightAction ? 'unActive' : 'ActiveRight'" *ngIf="expandedAction" compact="true">
+    [ngClass]="expandedRightAction ? 'unActive' : 'ActiveRight'" *ngIf="expandedAction">
     <button (click)="expandeActionRightButton()" matRipple class="corsp_ext_btn">
       <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
     </button>
@@ -654,7 +614,7 @@
       <div class="org_cht_header" *ngIf="!dataSource.data.length == 0">
         <div class="search_wrapper">
           <input class="org_search" type="text" placeholder="Work authority" #organizationalChartSearch
-            (keyup.enter)="searchTreeValue(organizationalChartSearch.value)">
+            (keyup.enter)="searchTreeValue(organizationalChartSearch.value)" [(ngModel)]="orgSearch">
           <button (click)="searchTreeValue(organizationalChartSearch.value)" class="search_btn"></button>
         </div>
         <div class="right_org_head">
