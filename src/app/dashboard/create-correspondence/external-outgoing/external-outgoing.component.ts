@@ -668,7 +668,7 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
     this.initiateOutgoingCorrespondenceDetails.Confidential = this.correspondenceDetailsForm.get('confidential').value;
 
     this.initiateOutgoingCorrespondenceDetails.Disposition1 = Disposition1;
-    //this.initiateOutgoingCorrespondenceDetails.Disposition2 = Disposition2;
+    this.initiateOutgoingCorrespondenceDetails.Disposition2 = Disposition2;
     this.initiateOutgoingCorrespondenceDetails.Disposition3 = Dispostion3;
 
     this.initiateOutgoingCorrespondenceDetails.CorrespondenceType2 = this.getIDVal(this.correspondenceDetailsForm.get('correspondenceType').value);
@@ -1322,7 +1322,7 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
 
   multiApproversFormFill(approversObj: CurrentApprovers) {
     if (approversObj.minLevel) {
-      this.initiateOutgoingCorrespondenceDetails.Disposition2 = 'MultiApprove';
+      //this.initiateOutgoingCorrespondenceDetails.Disposition2 = 'MultiApprove';
       this.initiateOutgoingCorrespondenceDetails.SkipHOSSecratory = approversObj.minLevel.ApproveLevel === 1 ?
         'true' : approversObj.minLevel.SkipSecretary.toString();
       if (this.initiateOutgoingCorrespondenceDetails.SkipHOSSecratory) {
@@ -1334,7 +1334,7 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
       this.initiateOutgoingCorrespondenceDetails.HeadOfSectionSecretary = approversObj.minLevel.SecretaryGroupID.toString();
       this.initiateOutgoingCorrespondenceDetails.HeadOfSectionRequired = 'Yes';
     } else {
-      this.initiateOutgoingCorrespondenceDetails.Disposition2 = ' ';
+      //this.initiateOutgoingCorrespondenceDetails.Disposition2 = ' ';
       this.initiateOutgoingCorrespondenceDetails.HeadOfSectionRequired = 'No';
     }
     this.initiateOutgoingCorrespondenceDetails.SkipDeptSecratory = approversObj.maxLevel.ApproveLevel === 1 ?

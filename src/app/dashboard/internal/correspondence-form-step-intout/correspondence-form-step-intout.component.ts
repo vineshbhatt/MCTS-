@@ -1504,12 +1504,16 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
         this.multiApprove.setMultiApprovers();
         break;
       case '33':
-        this.body.values.WorkflowForm_1x4x1x24 = this.correspondenceDetailsForm.get('Approver').value.ID;
-        this.multiApprove.setApprover('step2', this.correspondenceDetailsForm.get('Approver').value.ID);
+        if (this.correspondenceDetailsForm.get('Approver').value) {
+          this.body.values.WorkflowForm_1x4x1x24 = this.correspondenceDetailsForm.get('Approver').value.ID;
+          this.multiApprove.setApprover('step2', this.correspondenceDetailsForm.get('Approver').value.ID);
+        }
         break;
       case '37':
-        this.body.values.WorkflowForm_1x4x1x87 = this.correspondenceDetailsForm.get('Approver').value.ID;
-        this.multiApprove.setApprover('step4', this.correspondenceDetailsForm.get('Approver').value.ID);
+        if (this.correspondenceDetailsForm.get('Approver').value) {
+          this.body.values.WorkflowForm_1x4x1x87 = this.correspondenceDetailsForm.get('Approver').value.ID;
+          this.multiApprove.setApprover('step4', this.correspondenceDetailsForm.get('Approver').value.ID);
+        }
         break;
     }
     if (action === 'SendOn') {
