@@ -23,6 +23,9 @@ export class CorrespondenenceDetailsModel {
   CorrespondenceFlowType: string;
   CorrFlowType: string;
   CorrespondencePhase: string;
+  DistCode: string;
+  DistSeq: string;
+  parentID: string;
 }
 
 export class OrgNameAutoFillModel {

@@ -9,7 +9,7 @@
         <div class="input_item_wrp auto_cmplt" *ngIf="transferAttribute">
           <mat-form-field>
             <mat-label>Role Purpose </mat-label>
-            <mat-select [(value)]="transferPurpose" (selectionChange) = groupChangePurpose()>
+            <mat-select [(value)]="transferPurpose" (selectionChange)=groupChangePurpose()>
               <mat-option *ngFor="let transferDummy of transferAttribute.Purpose" [value]="transferDummy.ID">
                 {{transferDummy.Purpose_EN}}
               </mat-option>
@@ -19,15 +19,15 @@
         <div class="input_item_wrp auto_cmplt" *ngIf="transferAttribute">
           <mat-form-field>
             <mat-label>Priority </mat-label>
-            <mat-select [(value)]="transferPriority" (selectionChange) = groupChangePriority()>
+            <mat-select [(value)]="transferPriority" (selectionChange)=groupChangePriority()>
               <mat-option *ngFor="let transferDummy of transferAttribute.Priority" [value]="transferDummy.ID">
                 {{transferDummy.Priority_EN}}
               </mat-option>
             </mat-select>
           </mat-form-field>
         </div>
-        <div class = "errormassage">
-          <p [class.msghide] = "!(transfertry && (!transferRequestForm.valid))" >Please choose the highlighted fields!</p>
+        <div class="errormassage">
+          <p [class.msghide]="!(transfertry && (!transferRequestForm.valid))">Please choose the highlighted fields!</p>
         </div>
         <button class="btn_001 mat-button" (click)="addTransferRow()" mat-button>Add Transfer</button>
       </div>
@@ -46,13 +46,16 @@
           </tr>
           <tr *ngFor="let item of transferLists.controls; let pointIndex=index" [formGroupName]="pointIndex">
             <td>
-              <div class="input_item_wrp auto_cmplt"  [ngClass]="{ 'orgstructureError': transferRequestForm.get('transfer_list').controls[pointIndex].errors?.emptyOrg  && transferRequestForm.get('transfer_list').controls[pointIndex].controls.Department.touched}">
+              <div class="input_item_wrp auto_cmplt"
+                [ngClass]="{ 'orgstructureError': transferRequestForm.get('transfer_list').controls[pointIndex].errors?.emptyOrg  && transferRequestForm.get('transfer_list').controls[pointIndex].controls.Department.touched}">
                 <mat-form-field>
-                  <input type="text" placeholder="Department Name" formControlName="Department" matInput [matAutocomplete]="TransferFormControlDepNameAuto" (keydown.enter)="emptyAction()" (focusout)="checkDepartment(pointIndex)">
+                  <input type="text" placeholder="Department Name" formControlName="Department" matInput
+                    [matAutocomplete]="TransferFormControlDepNameAuto" (keydown.enter)="emptyAction()"
+                    (focusout)="checkDepartment(pointIndex)">
                 </mat-form-field>
                 <mat-autocomplete #TransferFormControlDepNameAuto="matAutocomplete" [displayWith]="displayFieldValue">
-                  <mat-option *ngFor="let OrgName of (filteredDepNames[pointIndex] | async)?.myRows" [value]="OrgName" autoActiveFirstOption
-                  (onSelectionChange)="onDepartmentCheck(OrgName, pointIndex)">
+                  <mat-option *ngFor="let OrgName of (filteredDepNames[pointIndex] | async)?.myRows" [value]="OrgName"
+                    autoActiveFirstOption (onSelectionChange)="onDepartmentCheck(OrgName, pointIndex)">
                     <span>{{ OrgName.Val_En }}</span>
                   </mat-option>
                 </mat-autocomplete>
@@ -60,13 +63,16 @@
             </td>
             <td>
 
-              <div class="input_item_wrp auto_cmplt" [ngClass]="{ 'orgstructureError': transferRequestForm.get('transfer_list').controls[pointIndex].errors?.emptyOrg && transferRequestForm.get('transfer_list').controls[pointIndex].controls.To.touched}">
+              <div class="input_item_wrp auto_cmplt"
+                [ngClass]="{ 'orgstructureError': transferRequestForm.get('transfer_list').controls[pointIndex].errors?.emptyOrg && transferRequestForm.get('transfer_list').controls[pointIndex].controls.To.touched}">
                 <mat-form-field>
-                  <input type="text" placeholder="Employee Name" formControlName="To" matInput [matAutocomplete]="TransferFormControlEmpNameAuto" (keydown.enter)="emptyAction()" (focusout)="checkEmployee(pointIndex)">
+                  <input type="text" placeholder="Employee Name" formControlName="To" matInput
+                    [matAutocomplete]="TransferFormControlEmpNameAuto" (keydown.enter)="emptyAction()"
+                    (focusout)="checkEmployee(pointIndex)">
                 </mat-form-field>
                 <mat-autocomplete #TransferFormControlEmpNameAuto="matAutocomplete" [displayWith]="displayFieldValue">
-                  <mat-option *ngFor="let empName of (filteredEmpNames[pointIndex] | async)?.myRows" [value]="empName" autoActiveFirstOption
-                  (onSelectionChange)="onEmployeeCheck(empName,pointIndex)">
+                  <mat-option *ngFor="let empName of (filteredEmpNames[pointIndex] | async)?.myRows" [value]="empName"
+                    autoActiveFirstOption (onSelectionChange)="onEmployeeCheck(empName,pointIndex)">
                     <span>{{ empName.Val_En }}</span>
                   </mat-option>
                 </mat-autocomplete>
@@ -104,7 +110,7 @@
               <div class="input_item_wrp auto_cmplt">
                 <mat-form-field>
                   <mat-label>Priority </mat-label>
-                  <mat-select formControlName="Priority"  (selectionChange) = "changeDueDate(pointIndex)">
+                  <mat-select formControlName="Priority" (selectionChange)="changeDueDate(pointIndex)">
                     <mat-option *ngFor="let transferDummy of transferAttribute.Priority" [value]="transferDummy.ID">
                       {{transferDummy.Priority_EN}}
                     </mat-option>
@@ -113,9 +119,9 @@
               </div>
             </td>
             <td class="cstm_001">
-              <div class="input_item_wrp" [ngClass]="AdvancedSearch ? 'Active' : 'unActive'">                 
+              <div class="input_item_wrp" [ngClass]="AdvancedSearch ? 'Active' : 'unActive'">
                 <mat-form-field (click)="dueDate.open()">
-                  <input matInput [matDatepicker]="dueDate" formControlName="DueDate" placeholder="Due Date" >
+                  <input matInput [matDatepicker]="dueDate" formControlName="DueDate" placeholder="Due Date">
                   <mat-datepicker-toggle matSuffix [for]="dueDate" class="date_picker_icon"></mat-datepicker-toggle>
                   <mat-datepicker #dueDate></mat-datepicker>
                 </mat-form-field>
@@ -123,7 +129,7 @@
             </td>
             <td>
               <button class="remove_btn" (click)="deleteTransferRow(pointIndex)" mattooltip="Remove">
-                  <img alt="" src="{{basehref}}assets/images/icons/cancel-button.svg">
+                <img alt="" src="{{basehref}}assets/images/icons/cancel-button.svg">
               </button>
             </td>
           </tr>

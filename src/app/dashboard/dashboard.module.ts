@@ -112,6 +112,10 @@ import { DownloadAttachtmentsDialogComponent } from './dialog-boxes/download-att
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MultipleApproveComponent } from './shared-components/multiple-approve/multiple-approve.component';
 import { AddApproverDialogComponent } from './dialog-boxes/add-approver-dialog/add-approver-dialog.component';
+import { DistributionComponent } from './shared-components/distribution/distribution.component';
+import { AngularResizedEventModule } from 'angular-resize-event';
+import { DistributionChartComponent } from './shared-components/distribution-chart/distribution-chart.component';
+import { DistributionDialogComponent } from './dialog-boxes/distribution-dialog/distribution-dialog.component';
 
 @NgModule({
   imports: [
@@ -150,6 +154,7 @@ import { AddApproverDialogComponent } from './dialog-boxes/add-approver-dialog/a
     NgScrollbarModule,
     MatRadioModule,
     MatProgressBarModule,
+    AngularResizedEventModule,
     multiLanguageTranslatorModule.forRoot({
       defaultLang: 'en',
       storagePrefix: 'current-language'
@@ -232,7 +237,10 @@ import { AddApproverDialogComponent } from './dialog-boxes/add-approver-dialog/a
     FullSearchComponent,
     DownloadAttachtmentsDialogComponent,
     MultipleApproveComponent,
-    AddApproverDialogComponent
+    AddApproverDialogComponent,
+    DistributionComponent,
+    DistributionChartComponent,
+    DistributionDialogComponent
   ],
   entryComponents: [
     MailDetailView,
@@ -254,8 +262,10 @@ import { AddApproverDialogComponent } from './dialog-boxes/add-approver-dialog/a
     DelegationReportComponent,
     LinkedCorrDialogComponent,
     DownloadAttachtmentsDialogComponent,
-    AddApproverDialogComponent
+    AddApproverDialogComponent,
+    DistributionDialogComponent
   ],
   providers: [ErrorHandlerFctsService, NotificationService, DatePipe]
 })
 export class DashboardModule { }
+

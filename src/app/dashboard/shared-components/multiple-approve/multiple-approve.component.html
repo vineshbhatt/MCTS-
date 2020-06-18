@@ -39,50 +39,63 @@
                   </mat-form-field>
                 </div>
                 <div *ngSwitchDefault>
-                  <div *ngIf="!sectionDisabled">
-                    <mat-form-field *ngIf="!approver.controls.SkipSecretary.value">
+                  <div
+                    *ngIf="isSelectApproverStep && currentLevel.ApproveLevel === approver.controls.ApproveLevel.value; else elseBlock">
+                    <mat-form-field>
                       <mat-label>{{approver.controls.LevelName_EN.value}}</mat-label>
-                      <mat-select formControlName="SecretaryGroupID">
-                        <mat-option
-                          *ngFor="let approver of getLevel(approver.controls.ApproveLevel.value).SecretaryGroup"
-                          [value]="approver.ID">
-                          {{approver.Approver_EN}}
-                        </mat-option>
-                      </mat-select>
-                    </mat-form-field>
-                    <mat-form-field *ngIf="approver.controls.SkipSecretary.value">
-                      <mat-label>{{approver.controls.LevelName_EN.value}}</mat-label>
-                      <mat-select formControlName="ApproverID">
-                        <mat-option
-                          *ngFor="let approver of getLevel(approver.controls.ApproveLevel.value).ApproverGroup"
-                          [value]="approver.ID">
+                      <mat-select [(value)]="approverSelected">
+                        <mat-option *ngFor="let approver of ApproverList" [value]="approver.ID">
                           {{approver.Approver_EN}}
                         </mat-option>
                       </mat-select>
                     </mat-form-field>
                   </div>
-                  <div *ngIf="sectionDisabled">
-                    <mat-form-field *ngIf="!approver.controls.ApproverID.value">
-                      <mat-label>{{approver.controls.LevelName_EN.value}}</mat-label>
-                      <mat-select formControlName="SecretaryGroupID">
-                        <mat-option
-                          *ngFor="let approver of getLevel(approver.controls.ApproveLevel.value).SecretaryGroup"
-                          [value]="approver.ID">
-                          {{approver.Approver_EN}}
-                        </mat-option>
-                      </mat-select>
-                    </mat-form-field>
-                    <mat-form-field *ngIf="approver.controls.ApproverID.value">
-                      <mat-label>{{approver.controls.LevelName_EN.value}}</mat-label>
-                      <mat-select formControlName="ApproverID">
-                        <mat-option
-                          *ngFor="let approver of getLevel(approver.controls.ApproveLevel.value).ApproverGroup"
-                          [value]="approver.ID">
-                          {{approver.Approver_EN}}
-                        </mat-option>
-                      </mat-select>
-                    </mat-form-field>
-                  </div>
+                  <ng-template #elseBlock>
+                    <div *ngIf="!sectionDisabled">
+                      <mat-form-field *ngIf="!approver.controls.SkipSecretary.value">
+                        <mat-label>{{approver.controls.LevelName_EN.value}}</mat-label>
+                        <mat-select formControlName="SecretaryGroupID">
+                          <mat-option
+                            *ngFor="let approver of getLevel(approver.controls.ApproveLevel.value).SecretaryGroup"
+                            [value]="approver.ID">
+                            {{approver.Approver_EN}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      <mat-form-field *ngIf="approver.controls.SkipSecretary.value">
+                        <mat-label>{{approver.controls.LevelName_EN.value}}</mat-label>
+                        <mat-select formControlName="ApproverID">
+                          <mat-option
+                            *ngFor="let approver of getLevel(approver.controls.ApproveLevel.value).ApproverGroup"
+                            [value]="approver.ID">
+                            {{approver.Approver_EN}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <div *ngIf="sectionDisabled">
+                      <mat-form-field *ngIf="!approver.controls.ApproverID.value">
+                        <mat-label>{{approver.controls.LevelName_EN.value}}</mat-label>
+                        <mat-select formControlName="SecretaryGroupID">
+                          <mat-option
+                            *ngFor="let approver of getLevel(approver.controls.ApproveLevel.value).SecretaryGroup"
+                            [value]="approver.ID">
+                            {{approver.Approver_EN}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      <mat-form-field *ngIf="approver.controls.ApproverID.value">
+                        <mat-label>{{approver.controls.LevelName_EN.value}}</mat-label>
+                        <mat-select formControlName="ApproverID">
+                          <mat-option
+                            *ngFor="let approver of getLevel(approver.controls.ApproveLevel.value).ApproverGroup"
+                            [value]="approver.ID">
+                            {{approver.Approver_EN}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                  </ng-template>
                 </div>
               </td>
               <td class="skip-secretary">
@@ -93,7 +106,11 @@
                 </mat-checkbox>
               </td>
               <td *ngIf="sectionDisabled" class="done">
-                <mat-icon *ngIf="approver.controls.IsDone.value" class="material-icons">done</mat-icon>
+                <mat-icon *ngIf="approver.controls.IsDone.value" class="material-icons approver-marker" matTooltip="Approved by the
+                manager">done</mat-icon>
+                <mat-icon
+                  *ngIf="isApproveStep && !approver.controls.SkipSecretary.value && currentLevel.ApproveLevel === approver.controls.ApproveLevel.value"
+                  class="material-icons secr-marker" matTooltip="Processed by the secretary">done</mat-icon>
               </td>
               <td *ngIf="!sectionDisabled" class="delete">
                 <button *ngIf="approver.controls.isMandatory.value !== 2" (click)="removeApprover(i)"

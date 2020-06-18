@@ -1580,7 +1580,12 @@
         }
         .done{
           width:10%;
-          color: rgb(6, 153, 141);
+          .approver-marker{
+            color: rgb(6, 153, 141);
+          }
+          .secr-marker{
+            color: rgb(252, 103, 5);
+          }
         }
         .delete{
           width:10%;
@@ -1605,5 +1610,76 @@
   }
   .mat-input-element:disabled {
     color: #484545 !important;
+  }
+}
+
+.bgr_001 {
+  .bgr_dark {
+    background: #f7f7f7;
+  }
+}
+  
+.distribution-table-holder{
+  .distribution-table{
+    color: #484545;
+    tr.detail-row {
+        height: 0;
+    }
+    
+    .element-row td {
+        border-bottom-width: 0;
+    }
+
+    .employee-holder {
+        display: flex;
+        flex-direction: column;
+        .role {
+            font-size: 10px;
+            color: #727070;
+            line-height: 1.5em;
+        }
+    }
+
+    .current{
+        background-color: #e6fdff;
+    }
+
+    .material-icons{
+        color: #727070;
+        cursor: pointer;
+    }
+    
+    .element-detail {
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+        .detail-parameters{
+            width: 100%;
+            .mat-header-cell{
+                text-transform: uppercase;
+            }
+        }
+    }
+    
+    .left-icons-holder{
+        display: flex;
+        flex-direction: row;
+        .icon{
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            display: inline-block;
+            padding: 0px;
+            box-sizing: border-box; 
+        }
+    }   
+  }
+  
+  .empty-table-message { 
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    font-size: 13px;
   }
 }

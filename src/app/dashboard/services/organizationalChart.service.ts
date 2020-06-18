@@ -5,12 +5,16 @@ import { FCTSDashBoard } from '../../../environments/environment';
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { CorrResponse } from './correspondence-response.model';
 import { ECMDChartModel } from 'src/app/dashboard/models/organizational-Chart.model';
+import { AppLoadConstService } from 'src/app/app-load-const.service';
 @Injectable({
   providedIn: 'root'
 })
 export class OrganizationalChartService {
   private CSUrl: string = CSConfig.CSUrl;
-  constructor(private httpServices: HttpClient) { }
+  globalConstants = this.appLoadConstService.getConstants();
+  constructor(
+    private httpServices: HttpClient
+    , private appLoadConstService: AppLoadConstService) { }
   getOrgChartInternal(): Observable<organizationalChartModel[]> {
     let params = new HttpParams().set("UNITS_SHORT", "true")
       .set("SearchUnits", "")
@@ -90,19 +94,45 @@ export class OrganizationalChartService {
       }
     );
   }
+  // TODO make a model
+  getDistChart(): Observable<any> {
+    let params = new HttpParams()
+      .set("UNITS_SHORT", "true")
+      .set("onBehalfUserID", this.globalConstants.general.ProxyUserID);
+    return this.httpServices.get<any>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.DistributionsChart}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    );
+  }
+  // TODO make a model
+  getDistributionEmployeeList(OUID): Observable<any> {
+    let params = new HttpParams()
+      .set("EMP_SHORT", "true")
+      .set("onBehalfUserID", this.globalConstants.general.ProxyUserID)
+      .set("ObjectIDList", OUID.toString());
+    return this.httpServices.get<any>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.DistributionsChartEmployees}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    );
+  }
 
-  /*   ECMDDepartmentsSearch(searchType: string, value: string): Observable<any> {
-      let params = new HttpParams()
-        .set('CounterpartName', value)
-        .set(searchType, 'true');
-      return this.httpServices.get<any>(
-        this.CSUrl +
-        `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ECMDepartmentsSearch}?Format=webreport`,
-        {
-          headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
-        }
-      );
-    } */
-
-
+  fullSearchDistribution(searchParameter: string): Observable<any> {
+    let params = new HttpParams()
+      .set("ALL_DATASEARCH_SHORT", "true")
+      .set("onBehalfUserID", this.globalConstants.general.ProxyUserID)
+      .set("SearchUsers", searchParameter);
+    return this.httpServices.get<any>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.DistributionsChartEmployees}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    );
+  }
 }

@@ -114,6 +114,11 @@ export const FCTSDashBoard = {
   ApproveData: 'CTA_ApproveData',
   MultiAppAutoFill: 'CTA_MultiAppAutoFill',
   SetMultiApprovers: 'CTA_SetMultiApprovers',
+  DistributionSection: 'CTA_DistributionSection',
+  DistributionsChart: 'CTA_DistributionsChart',
+  DistributionsChartEmployees: 'CTA_DistributionsChartEmployees',
+  GetDistributionUsers: 'CTA_GetDistributionUsers',
+  CreateDistribution: 'CTA_CreateDistribution',
 
   BaseHref: '/img/fctsangular/fctsapp/',
   //BaseHref: '/',

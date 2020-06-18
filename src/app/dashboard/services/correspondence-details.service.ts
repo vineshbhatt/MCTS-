@@ -17,6 +17,7 @@ import { CorrespondenceWFFormModel } from '../models/CorrepondenceWFFormModel';
 import { AppLoadConstService } from 'src/app/app-load-const.service';
 import { stringify } from 'querystring';
 import { MultipleApproveInputData, ApproversData, ApproverDetails, ApproversFormData } from 'src/app/dashboard/shared-components/multiple-approve/multiple-approve.component';
+import { DistributionDetailsParameters } from 'src/app/dashboard/models/distribution.model';
 
 @Injectable({
   providedIn: 'root'
@@ -57,13 +58,14 @@ export class CorrespondenceDetailsService {
     );
   }
 
-  getCorrespondenceSenderDetails(SubWorkID, CorrFlowType, qLive, UserID = ''): Observable<CorrResponse[]> {
+  getCorrespondenceSenderDetails(SubWorkID, CorrFlowType, qLive, UserID = '', maxApproveLevel?: number): Observable<CorrResponse[]> {
     const params = new HttpParams()
       .set('SubWorkID', SubWorkID)
       .set('CorrFlowType', CorrFlowType)
       .set('qLive', qLive)
       .set('prompting', 'done')
-      .set('UserID', UserID);
+      .set('UserID', UserID)
+      .set('FinalAppLevel', maxApproveLevel.toString());
     return this.httpServices.get<CorrResponse[]>(
       this.CSUrl +
       `${FCTSDashBoard.WRApiV1}${
@@ -997,4 +999,69 @@ export class CorrespondenceDetailsService {
     );
   }
 
+  getDistributionData(volumeID): Observable<any> {
+    const params = new HttpParams()
+      .set('volumeID', volumeID)
+      .set('fDistrib', 'true');
+    return this.httpServices.get<any>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.DistributionSection}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken },
+        params: params
+      }
+    );
+  }
+
+  getDistributionUsers(DCID: string): Observable<DistributionDetailsParameters[]> {
+    const params = new HttpParams()
+      .set('DCID', DCID);
+    return this.httpServices.get<DistributionDetailsParameters[]>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.GetDistributionUsers}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken },
+        params: params
+      }
+    );
+  }
+
+  createDistributionRequest(transferJson, correspondenceData: CorrespondenenceDetailsModel): Observable<any> {
+    let taskID: string;
+    correspondenceData.CorrespondenceFlowType === '1' ? taskID = '32' : taskID = '3'; // for permission purpose
+    const transferVal = JSON.stringify({ transferJson });
+    const params = new HttpParams()
+      .set('transferJson', transferVal)
+      .set('volumeid', correspondenceData.VolumeID)
+      .set('taskid', taskID)
+      .set('CorrFlowType', correspondenceData.CorrFlowType)
+      .set('locationid', correspondenceData.AttachCorrID)
+      .set('parentID', correspondenceData.ID)
+      .set('rows_count', transferJson.length)
+      .set('onBehalfUserID', this._globalConstants.general.ProxyUserID);
+
+    const options = {
+      headers: new HttpHeaders()
+        .set('OTCSTICKET', CSConfig.AuthToken)
+    };
+    return this.httpServices.post<any>(this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.createTransfer}?Format=webreport`,
+      params, options);
+  }
+
+  definePriorityToShow(width: number) {
+    if (width < 480) {
+      return 1;
+    } else if (width < 600) {
+      return 2;
+    } else if (width < 768) {
+      return 3;
+    } else if (width < 900) {
+      return 4;
+    } else if (width < 1024) {
+      return 5;
+    } else {
+      return 6;
+    }
+  }
 }

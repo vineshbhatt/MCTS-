@@ -52,12 +52,18 @@
             <tr>
               <th>Organization</th>
               <th>Department</th>
+              <th>On Behalf</th>
               <th>Name</th>
             </tr>
             <tr *ngFor="let correspondenceDetails of correspondenceSenderDetailsData">
               <td *ngFor="let senderData of correspondenceDetails.myRows">{{senderData.OrganizationName_EN}} </td>
               <td *ngFor="let senderData of correspondenceDetails.myRows"> {{senderData.DepartmentName_EN}} </td>
-              <td *ngFor="let senderData of correspondenceDetails.myRows"> {{senderData.SenderName}} </td>
+              <td *ngFor="let senderData of correspondenceDetails.myRows">
+                <span *ngIf="senderData.SenderDepartment !== senderData.SenderNativeDepartment">
+                  {{senderData.DepartmentNativeName_EN}}
+                </span>
+              </td>
+              <td *ngFor="let senderData of correspondenceDetails.myRows"> {{senderData.Name_EN}} </td>
             </tr>
           </table>
         </div>
@@ -125,7 +131,8 @@
             </div>
           </div>
         </mat-expansion-panel>
-        <app-multiple-approve *ngIf="approve" [approve]="approve" [sectionDisabled]="true"></app-multiple-approve>
+        <app-multiple-approve *ngIf="sectionDisplay.Approvers.Show && approve" [approve]="approve"
+          [sectionDisabled]="true"></app-multiple-approve>
         <mat-expansion-panel class="mat-elevation-z bg_001" *ngIf="sectionDisplay.Correspondence.Show">
           <mat-expansion-panel-header (click)="correspondenceShowData()">
             <div class="icon_wrapper">
@@ -469,6 +476,10 @@
           </div>
         </mat-expansion-panel>
       </mat-accordion>
+      <app-distribution *ngIf="correspondenceData && sectionDisplay.Distribution.Show"
+        [correspondenceData]="correspondenceData" [taskID]="taskID"
+        (showDistributionChart)="showDistributionChart($event)">
+      </app-distribution>
     </div>
     <div class="corp_dtl_btn_btm_wrapper">
       <button class="btn_008" *ngIf="buttonsDisplay.corrTrReply" (click)="transferReply(correspondData)">Reply</button>
@@ -488,8 +499,13 @@
     <button (click)="expandeActionRightButton()" matRipple class="corsp_ext_btn">
       <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
     </button>
-    <div class="documentViewerDiv" *ngFor="let docpreviewData of documentPreviewURL">
-      <iframe class="iframeclass" [src]="docpreviewData.CorrespondencedocumentURL|safe"></iframe>
-    </div>
+    <ng-container *ngIf="showPreviewCoverLetter">
+      <div class="documentViewerDiv" *ngFor="let docpreviewData of documentPreviewURL">
+        <iframe class="iframeclass" [src]="docpreviewData.CorrespondencedocumentURL|safe"></iframe>
+      </div>
+    </ng-container>
+    <app-distribution-chart *ngIf="showDistributionTreeArea && correspondenceData"
+      [correspondenceData]="correspondenceData" (distributionOutputAction)="distributionOutputAction($event)">
+    </app-distribution-chart>
   </ng-scrollbar>
 </div>

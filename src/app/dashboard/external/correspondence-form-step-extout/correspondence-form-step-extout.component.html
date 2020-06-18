@@ -37,13 +37,18 @@
               <tr>
                 <th>Organization</th>
                 <th>Department</th>
+                <th>On Behalf</th>
                 <th>Name</th>
                 <th class="btn_td_wrp"></th>
               </tr>
               <tr *ngIf=correspondenceSenderDetailsData>
                 <td>{{correspondenceSenderDetailsData.OrganizationName_EN}}</td>
+                <td>{{correspondenceSenderDetailsData.DepartmentName_EN}}</td>
                 <td>
-                  {{correspondenceSenderDetailsData.DepartmentName_EN}}{{ (correspondenceSenderDetailsData.SectionName_EN != null) ? (","+correspondenceSenderDetailsData.SectionName_EN) : "" }}
+                  <span
+                    *ngIf="correspondenceSenderDetailsData.SenderDepartment !== correspondenceSenderDetailsData.SenderNativeDepartment">
+                    {{correspondenceSenderDetailsData.DepartmentNativeName_EN}}
+                  </span>
                 </td>
                 <td>{{correspondenceSenderDetailsData.Name_EN}} </td>
               </tr>
@@ -172,7 +177,8 @@
           </mat-expansion-panel>
         </form>
         <app-multiple-approve *ngIf="approve && sectionDisplay.Approvers.Show" (orgChart)="showMultiAppData($event)"
-          [approve]="approve" [confidential]="confidential" [sectionDisabled]="!sectionDisplay.Approvers.Modify">
+          (senderReload)="getCorrespondenceSenderDetails($event)" [approve]="approve" [confidential]="confidential"
+          [sectionDisabled]="!sectionDisplay.Approvers.Modify">
         </app-multiple-approve>
         <mat-expansion-panel class="mat-elevation-z bg_001">
           <mat-expansion-panel-header>
@@ -248,17 +254,6 @@
                     [ngClass]="{ 'is-invalid': submitted && f.englishSubject.errors }" required>
                   <mat-error *ngIf="submitted && f.englishSubject.errors">Please enter English Subject</mat-error>
                 </mat-form-field>
-
-                <mat-form-field *ngIf="showFields.Approver" class="col_6">
-                  <input type="text" [(ngModel)]="ApproverVal " placeholder="Approver" matInput
-                    [matAutocomplete]="Approver" formControlName="Approver">
-                  <mat-autocomplete #Approver="matAutocomplete" [displayWith]="displayAt" autoActiveFirstOption>
-                    <mat-option *ngFor="let option of ApproverList" [value]="option">
-                      {{option.Approver_EN}}
-                    </mat-option>
-                  </mat-autocomplete>
-                </mat-form-field>
-
                 <mat-form-field class="col_6">
                   <input matInput autocomplete="off" placeholder="Project Code" formControlName="projectCode">
                 </mat-form-field>

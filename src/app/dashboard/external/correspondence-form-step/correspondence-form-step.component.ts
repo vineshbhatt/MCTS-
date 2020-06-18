@@ -93,6 +93,7 @@ export class CorrespondenceFormStepComponent implements OnInit {
   currentlyChecked: any = false;
   currentlyCheckedStatus: boolean;
   showPreviewCoverLetter: boolean;
+  showDistributionTreeArea: boolean;
 
   treeControl = new NestedTreeControl<organizationalChartModel>(node => node.children);
   dataSource = new MatTreeNestedDataSource<organizationalChartModel>();
@@ -730,6 +731,7 @@ export class CorrespondenceFormStepComponent implements OnInit {
   tranlsateDocument(dataID: string): void {
     this.showPreviewTreeArea = false;
     this.showPreviewCoverLetter = true;
+    this.showDistributionTreeArea = false;
     this.correspondenceDetailsService.getDocumentTranslateURL(dataID)
       .subscribe(correspondenceCovertData => this.documentPreviewURL = correspondenceCovertData);
   }
@@ -748,6 +750,7 @@ export class CorrespondenceFormStepComponent implements OnInit {
     this.showPreviewTreeArea = false;
     this.showPreviewCoverLetter = false;
     this.showPreviewECMDTreeArea = true;
+    this.showDistributionTreeArea = false;
     this.isSearchResult = false;
     this.selectedCaption = 'Sender';
     this.currentlyChecked = false;
@@ -758,6 +761,7 @@ export class CorrespondenceFormStepComponent implements OnInit {
   showRecipientData() {
     this.showPreviewCoverLetter = false;
     this.showPreviewECMDTreeArea = false;
+    this.showDistributionTreeArea = false;
     this.showPreviewTreeArea = true;
     this.isSearchResult = false;
     this.selectedCaption = 'Recipient';
@@ -772,12 +776,20 @@ export class CorrespondenceFormStepComponent implements OnInit {
     this.showPreviewCoverLetter = false;
     this.showPreviewECMDTreeArea = false;
     this.showPreviewTreeArea = true;
+    this.showDistributionTreeArea = false;
     this.isSearchResult = false;
     this.selectedCaption = 'CC';
     this.currentlyChecked = false;
     this.showPreviewCoverLetter = false;
     this.multiSelect = true;
     this.dataSource.data = this.organizationalChartData;
+  }
+
+  showDistributionChart() {
+    this.showPreviewCoverLetter = false;
+    this.showPreviewECMDTreeArea = false;
+    this.showPreviewTreeArea = false;
+    this.showDistributionTreeArea = true;
   }
 
   getOrganizationalChartDetail(): void {
@@ -1676,4 +1688,8 @@ export class CorrespondenceFormStepComponent implements OnInit {
     return nodename.slice(0, 1).length > 0 ? nodename.slice(0, 1).toUpperCase() : 'A';
   }
   // ECMD functionality finish
+
+  distributionOutputAction(): void {
+    this.submitCorrespondenceInfo('SendOn');
+  }
 }

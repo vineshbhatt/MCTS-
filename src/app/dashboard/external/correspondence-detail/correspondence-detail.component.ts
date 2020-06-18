@@ -22,7 +22,7 @@ import { CompleteDialogComponent } from '../../dialog-boxes/complete-dialog/comp
 import { TransferReplyDialogComponent } from '../../dialog-boxes/transfer-reply-dialog/transfer-reply-dialog.component';
 import { multiLanguageTranslator } from 'src/assets/translator/index';
 import { MultipleApproveComponent, MultipleApproveInputData } from 'src/app/dashboard/shared-components/multiple-approve/multiple-approve.component';
-
+import { DistributionComponent } from 'src/app/dashboard/shared-components/distribution/distribution.component';
 
 @Component({
   selector: 'app-correspondence-detail',
@@ -91,6 +91,10 @@ export class CorrespondenceDetailComponent implements OnInit {
   // multi approve parameters
   approve: MultipleApproveInputData;
   @ViewChild(MultipleApproveComponent) multiApprove;
+  @ViewChild(DistributionComponent) distributionSection;
+  // distribution
+  showPreviewCoverLetter = true;
+  showDistributionTreeArea = false;
 
   ngOnInit() {
     this.VolumeID = this.route.snapshot.queryParamMap.get('VolumeID');
@@ -143,7 +147,7 @@ export class CorrespondenceDetailComponent implements OnInit {
   }
 
   getCorrespondenceSenderDetails(VolumeID: string, CorrespondencType: String): void {
-    this._correspondenceDetailsService.getCorrespondenceSenderDetails(VolumeID, CorrespondencType, false, '')
+    this._correspondenceDetailsService.getCorrespondenceSenderDetails(VolumeID, CorrespondencType, false, '', 0)
       .subscribe(correspondenceSenderDetailsData => {
         this.correspondenceSenderDetailsData = correspondenceSenderDetailsData;
         this.setMultiApproveParameters();
@@ -176,7 +180,7 @@ export class CorrespondenceDetailComponent implements OnInit {
   }
 
   getCoverDocumentURL(CoverID: String): void {
-
+    this.showCoverLetter();
     this._correspondenceDetailsService.getDocumentURL(CoverID)
       .subscribe(correspondenceCovertData => this.documentPreviewURL = correspondenceCovertData);
   }
@@ -406,12 +410,32 @@ export class CorrespondenceDetailComponent implements OnInit {
     this.approve = {
       UserID: this.correspondenceSenderDetailsData[0].myRows[0].SenderUserID,
       CorrID: this.locationid,
+      VolumeID: this.VolumeID,
       mainLanguage: this.translator.lang,
       TeamID: null,
       fGetStructure: true,
       fGetTeamStructure: false,
       fInitStep: false,
-      fChangeTeam: false
+      fChangeTeam: false,
+      taskID: '0',
+      selectApproverStep: '',
+      approveStep: '',
+      selectFinalApproverStep: '',
+      approveAndSignStep: ''
     };
+  }
+
+  showDistributionChart() {
+    this.showPreviewCoverLetter = false;
+    this.showDistributionTreeArea = true;
+  }
+
+  showCoverLetter() {
+    this.showPreviewCoverLetter = true;
+    this.showDistributionTreeArea = false;
+  }
+
+  distributionOutputAction(): void {
+    this.distributionSection.getDistributionData(false);
   }
 }

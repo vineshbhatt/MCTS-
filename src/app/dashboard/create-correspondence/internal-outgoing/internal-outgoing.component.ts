@@ -152,7 +152,7 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
 
 
     //Get Logged in user Information
-    this.getSenderUserInfromation('', this.corrFlowType);
+    this.getSenderUserInfromation(0);
     this.getOrganizationalChartDetail();
     this.getMetadataFilters();
 
@@ -815,11 +815,16 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
 
     }
   }
-  getSenderUserInfromation(VolumeID: string, CorrespondencType: String): void {
-    this.correspondenceDetailsService.getCorrespondenceSenderDetails(VolumeID, CorrespondencType, true, CSConfig.globaluserid)
+
+  getSenderUserInfromation(maxApproveLevel: number): void {
+    let UserID = this.appLoadConstService.getConstants().general.UserID;
+    this.correspondenceDetailsService.getCorrespondenceSenderDetails('', this.corrFlowType, true, UserID, maxApproveLevel)
       .subscribe(correspondenceSenderDetailsData => {
-        this.userInfo = correspondenceSenderDetailsData
-        this.senderDetailsForm.get('SenderInfo').setValue(this.userInfo)
+        this.userInfo = correspondenceSenderDetailsData;
+        this.senderDetailsForm.get('SenderInfo').setValue(this.userInfo);
+        if (maxApproveLevel > 0) {
+          this.syncCoverData();
+        }
       });
   }
 
@@ -827,9 +832,8 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
     this.documentMetadataSync.docFolderID = this.corrFolderData.AttachCorrCoverID.toString();
     this.documentMetadataSync.srcDocID = this.coverID;
     if (this.templateLanguage === 'EN') {
-      debugger;
       this.documentMetadataSync.SenderOrganization = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].OrganizationName_EN)
-      this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].DepartmentName_EN + (this.userInfo[0].myRows[0].SectionName_EN != null ? ("," + this.userInfo[0].myRows[0].SectionName_EN) : ""))
+      this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].DepartmentName_EN)
       this.documentMetadataSync.SenderName = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].Name_EN);
       this.documentMetadataSync.RecipientOrganization = this.convertUndefindedOrNulltoemptyString(this.IntRecipientInfo.OrgName_En)
       this.documentMetadataSync.RecipientDepartment = this.convertUndefindedOrNulltoemptyString(this.IntRecipientInfo.DepName_En)
@@ -837,12 +841,11 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
       this.documentMetadataSync.RecipientName = this.convertUndefindedOrNulltoemptyString(this.IntRecipientInfo.Name_En)
       this.documentMetadataSync.DATE = this.convertUndefindedOrNulltoemptyString(this.correspondenceDetailsForm.get('regDate').value)
       this.documentMetadataSync.SUBJECT = this.convertUndefindedOrNulltoemptyString(this.correspondenceDetailsForm.get('englishSubject').value)
-
     }
     else if (this.templateLanguage === 'AR') {
 
       this.documentMetadataSync.SenderOrganization = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].OrganizationName_AR)
-      this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].DepartmentName_AR + (this.userInfo[0].myRows[0].SectionName_AR != null ? ("," + this.userInfo[0].myRows[0].SectionName_AR) : ""))
+      this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].DepartmentName_AR)
       this.documentMetadataSync.SenderName = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].Name_AR)
 
       this.documentMetadataSync.RecipientOrganization = this.convertUndefindedOrNulltoemptyString(this.IntRecipientInfo.OrgName_Ar)
@@ -1020,7 +1023,13 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
       fGetStructure: true,
       fGetTeamStructure: false,
       fInitStep: true,
-      fChangeTeam: false
+      fChangeTeam: false,
+      VolumeID: '',
+      taskID: '',
+      selectApproverStep: '33',
+      approveStep: '35',
+      selectFinalApproverStep: '37',
+      approveAndSignStep: '38'
     };
   }
 

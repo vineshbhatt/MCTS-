@@ -117,7 +117,10 @@ export const FCTSDashBoard = {
   ApproveData: 'CTA_ApproveData',
   MultiAppAutoFill: 'CTA_MultiAppAutoFill',
   SetMultiApprovers: 'CTA_SetMultiApprovers',
-
+  DistributionSection: 'CTA_DistributionSection',
+  DistributionsChart: 'CTA_DistributionsChart',
+  DistributionsChartEmployees: 'CTA_DistributionsChartEmployees',
+  GetDistributionUsers: 'CTA_GetDistributionUsers',
   //ECMDepartmentsSearch: 'CTA_ECDMDepartments_Search',
 
 

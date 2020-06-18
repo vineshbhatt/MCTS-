@@ -8,13 +8,14 @@ import { OrgNameAutoFillModelSimpleUser } from 'src/app/dashboard/models/Corresp
 import { Observable } from 'rxjs';
 import { debounceTime, switchMap } from 'rxjs/operators';
 import { SidebarInfoService } from 'src/app/dashboard/side-navigation/sidebar-info.service';
-import { MatDialog, MatCheckboxChange } from '@angular/material';
+import { MatDialog, MatCheckboxChange, MatOptionSelectionChange } from '@angular/material';
 import { AddApproverDialogComponent } from 'src/app/dashboard/dialog-boxes/add-approver-dialog/add-approver-dialog.component';
 import { containsElement } from '@angular/animations/browser/src/render/shared';
 import { NotificationService } from 'src/app/dashboard/services/notification.service';
 
 export interface MultipleApproveInputData {
   CorrID: string;
+  VolumeID: string;
   TeamID: string;
   UserID: number;
   fChangeTeam: boolean;
@@ -22,6 +23,11 @@ export interface MultipleApproveInputData {
   fGetTeamStructure: boolean;
   fInitStep: boolean;
   mainLanguage: string;
+  taskID: string;
+  selectApproverStep: string;
+  selectFinalApproverStep: string;
+  approveStep: string;
+  approveAndSignStep: string;
 }
 
 export interface ApproversData {
@@ -76,6 +82,11 @@ export class MultipleApproveComponent implements OnInit {
   filteredNames: Observable<ApproverDetails[]>[] = [];
   firstLoadSpinner = true;
   formBuilded = false;
+  ApproverList: any[];
+  isSelectApproverStep: boolean;
+  isApproveStep: boolean;
+  currentLevel: ApproversData;
+  approverSelected: number;
 
 
 
@@ -90,10 +101,15 @@ export class MultipleApproveComponent implements OnInit {
   @Input() approve: MultipleApproveInputData;
   @Input() sectionDisabled: boolean;
   @Output() orgChart = new EventEmitter<any>();
+  @Output() senderReload = new EventEmitter<number>();
 
   @Input() confidential: boolean;
 
   ngOnInit() {
+    this.isSelectApproverStep = this.approve.taskID === this.approve.selectApproverStep
+      || this.approve.taskID === this.approve.selectFinalApproverStep;
+    this.isApproveStep = this.approve.taskID === this.approve.approveStep
+      || this.approve.taskID === this.approve.approveAndSignStep;
     this.approverDetailsForm = this.formBuilder.group({
       approverDetails: this.formBuilder.array([])
     });
@@ -108,12 +124,21 @@ export class MultipleApproveComponent implements OnInit {
     this.orgChart.next();
   }
 
+  senderReloadAction(level: number) {
+    this.senderReload.next(level);
+  }
+
   getApproversData() {
     this.correspondenceDetailsService.getApproversData(this.approve).subscribe(
       response => {
         this.approversData = response;
+        let newArr = this.approversData.filter(element => {
+          return element.IsActive === 1 && element.IsDone === 0;
+        });
+        this.currentLevel = newArr[0];
+        this.getApprovers();
         this.approversData.forEach(element => {
-          if (element.isMandatory > 0) {
+          if (element.IsActive > 0) {
             this.addApprover(element);
           }
         });
@@ -128,7 +153,6 @@ export class MultipleApproveComponent implements OnInit {
 
 
   formRebuild(levelsArr: number[]) {
-    // TODO wait for execution
     this.removeAll();
     this.approversData.forEach(element => {
       if (levelsArr.indexOf(element.ApproveLevel) > -1) {
@@ -167,6 +191,12 @@ export class MultipleApproveComponent implements OnInit {
 
   removeApprover(index: number) {
     this.approverDetails = this.approverDetailsForm.get('approverDetails') as FormArray;
+    const activeLevels = this.getLevels(true);
+    const currentLevel = this.approverDetails.at(index).get('ApproveLevel').value;
+    if (currentLevel === Math.max.apply(null, activeLevels)) {
+      const newMaxLevel = activeLevels[activeLevels.indexOf(currentLevel) - 1];
+      this.senderReloadAction(newMaxLevel);
+    }
     this.approverDetails.removeAt(index);
   }
 
@@ -210,13 +240,15 @@ export class MultipleApproveComponent implements OnInit {
       width: '100%',
       panelClass: 'add-approver-dialog',
       maxWidth: '30vw',
-      //maxHeight: '30vh',
       data: {
         unActiveApprovers: this.getLevels(false),
       }
     }).afterClosed().subscribe(
       response => {
         if (response && response.length > 0) {
+          if (Math.max.apply(null, response) > Math.max.apply(null, activeLevels)) {
+            this.senderReloadAction(Math.max.apply(null, response));
+          }
           this.formRebuild(activeLevels.concat(response));
         }
       },
@@ -241,9 +273,9 @@ export class MultipleApproveComponent implements OnInit {
   }
 
   removeAll() {
-    const arrayControl = this.approverDetailsForm.get('approverDetails') as FormArray;
+    this.approverDetails = this.approverDetailsForm.get('approverDetails') as FormArray;
     for (let i = 0; i < 5; i++) {
-      this.removeApprover(0);
+      this.approverDetails.removeAt(0);
     }
   }
   // functions for data save
@@ -255,7 +287,7 @@ export class MultipleApproveComponent implements OnInit {
     if (step === 'step1') {
       const currentApprovers: CurrentApprovers = {
         minLevel: arrayControl.value.length > 1 ? arrayControl.value[0] : null,
-        maxLevel: arrayControl.value.length > 0 ? arrayControl.value[newArr.length - 1] : null
+        maxLevel: arrayControl.value.length >= 0 ? arrayControl.value[arrayControl.length - 1] : null
       };
       return currentApprovers;
     } else if (step === 'step3') {
@@ -321,7 +353,7 @@ export class MultipleApproveComponent implements OnInit {
   approversValidation() {
     const approvers = this.getCurrentApprovers('step1');
     if (!approvers.maxLevel || approvers.maxLevel.ApproveLevel === 1) {
-      this.notificationmessage.warning('Approver is missing', 'You have to choose at least one level Approve level', 2500);
+      this.notificationmessage.warning('Approver is missing', 'You have to choose at least one Approve level', 2500);
       return false;
     }
     const arrayControl = this.approverDetailsForm.get('approverDetails') as FormArray;
@@ -342,7 +374,6 @@ export class MultipleApproveComponent implements OnInit {
   }
 
   setPMData(obj: any) {
-    console.log(obj);
     if (obj.hasOwnProperty('EID')) {
       const arrayControl = this.approverDetailsForm.get('approverDetails') as FormArray;
       arrayControl.at(0).get('ApproverID').setValue({
@@ -365,6 +396,33 @@ export class MultipleApproveComponent implements OnInit {
       this.notificationmessage.warning('Please deselect confidential mode.', 'Option can not be changed in confidential mode', 2500);
       const arrayControl = this.approverDetailsForm.get('approverDetails') as FormArray;
       arrayControl.at(i).get('SkipSecretary').setValue(true);
+    }
+  }
+
+  getApprovers() {
+    if (this.isSelectApproverStep) {
+      let ApproverType: string;
+      switch (this.approve.taskID) {
+        case this.approve.selectApproverStep:
+          ApproverType = 'qApprover_2_33';
+          break;
+        case this.approve.selectFinalApproverStep:
+          ApproverType = 'qApprover_2_37';
+          break;
+      }
+      this.correspondenceDetailsService
+        .getApproverListRunningWF(ApproverType, this.approve.VolumeID)
+        .subscribe(
+          response => {
+            this.ApproverList = response;
+            if (this.currentLevel.Approver.length > 0) {
+              this.approverSelected = this.currentLevel.Approver[0].ID;
+            }
+          }
+        ),
+        responseError => {
+          this.errorHandlerFctsService.handleError(responseError).subscribe();
+        };
     }
   }
 }

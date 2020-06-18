@@ -663,9 +663,12 @@
             </div>
           </div>
         </mat-expansion-panel>
+        <app-distribution *ngIf="sectionDisplay.Distribution.Show && correspondenceData"
+          [correspondenceData]="correspondenceData" [taskID]="taskID"
+          (showDistributionChart)="showDistributionChart($event)">
+        </app-distribution>
       </mat-accordion>
     </div>
-
     <div class="corp_dtl_btn_btm_wrapper">
       <button class="btn_008" *ngIf="showWFButtons.btnComplete"
         (click)="submitCorrespondenceInfo('SendOn')">Complete</button>
@@ -992,5 +995,8 @@
         </mat-tree>
       </div>
     </div>
+    <app-distribution-chart *ngIf="showDistributionTreeArea && correspondenceData"
+      [correspondenceData]="correspondenceData" (distributionOutputAction)="distributionOutputAction($event)">
+    </app-distribution-chart>
   </ng-scrollbar>
 </div>

@@ -104,7 +104,7 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
   employeeMap = new Map<number, organizationalChartEmployeeModel[]>();
   employeeForOUID: organizationalChartEmployeeModel[] = [];
 
-  //
+  // 
 
   showTemplateArea: boolean = false;
 
@@ -162,7 +162,7 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
 
 
     //Get Logged in user Information
-    this.getSenderUserInfromation('', this.corrFlowType);
+    this.getSenderUserInfromation(0);
     this.getOrganizationalChartDetail();
     this.getMetadataFilters();
     this.getECMDRoot(0);
@@ -647,7 +647,7 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
     this.spinnerDataLoaded = true;
     //Set each and every Value ofr the three Forms to one Single Object For Post
     this.initiateOutgoingCorrespondenceDetails.CorrespondenceID = this.corrFolderData.AttachCorrID.toString();
-    this.initiateOutgoingCorrespondenceDetails.SenderDetails = this.userInfo[0].myRows[0]
+    this.initiateOutgoingCorrespondenceDetails.SenderDetails = this.userInfo[0].myRows[0];
 
     this.initiateOutgoingCorrespondenceDetails.RecipientDetails = this.recipientDetailsForm.get('ExternalOrganization').value;
     this.initiateOutgoingCorrespondenceDetails.RecipientName = this.recipientDetailsForm.get('RecipientName').value;
@@ -823,11 +823,13 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
 
     }
   }
-  getSenderUserInfromation(VolumeID: string, CorrespondencType: String): void {
-    this.correspondenceDetailsService.getCorrespondenceSenderDetails(VolumeID, CorrespondencType, true, CSConfig.globaluserid)
+
+  getSenderUserInfromation(maxApproveLevel: number): void {
+    let UserID = this.appLoadConstService.getConstants().general.UserID;
+    this.correspondenceDetailsService.getCorrespondenceSenderDetails('', this.corrFlowType, true, UserID, maxApproveLevel)
       .subscribe(correspondenceSenderDetailsData => {
         this.userInfo = correspondenceSenderDetailsData
-        this.senderDetailsForm.get('SenderInfo').setValue(this.userInfo)
+        this.senderDetailsForm.get('SenderInfo').setValue(this.userInfo);
       });
   }
 
@@ -837,7 +839,7 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
     if (this.templateLanguage === 'EN') {
 
       this.documentMetadataSync.SenderOrganization = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].OrganizationName_EN)
-      this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].DepartmentName_EN + (this.userInfo[0].myRows[0].SectionName_EN != null ? ("," + this.userInfo[0].myRows[0].SectionName_EN) : ""))
+      this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].DepartmentName_EN)
       this.documentMetadataSync.SenderName = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].Name_EN)
       let recipientDetails: OrgNameAutoFillModel = this.recipientDetailsForm.get('ExternalOrganization').value;
       this.documentMetadataSync.RecipientOrganization = this.convertUndefindedOrNulltoemptyString(recipientDetails.OrgName_En)
@@ -851,7 +853,7 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
     else if (this.templateLanguage === 'AR') {
 
       this.documentMetadataSync.SenderOrganization = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].OrganizationName_AR)
-      this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].DepartmentName_AR + (this.userInfo[0].myRows[0].SectionName_AR != null ? ("," + this.userInfo[0].myRows[0].SectionName_AR) : ""))
+      this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].DepartmentName_AR)
       this.documentMetadataSync.SenderName = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].Name_AR)
       let recipientDetails: OrgNameAutoFillModel = this.recipientDetailsForm.get('ExternalOrganization').value
       this.documentMetadataSync.RecipientOrganization = this.convertUndefindedOrNulltoemptyString(recipientDetails.OrgName_Ar)
@@ -1311,9 +1313,16 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
       fGetStructure: true,
       fGetTeamStructure: false,
       fInitStep: true,
-      fChangeTeam: false
+      fChangeTeam: false,
+      VolumeID: '',
+      taskID: '',
+      selectApproverStep: '13',
+      approveStep: '15',
+      selectFinalApproverStep: '17',
+      approveAndSignStep: '18'
     };
   }
+
 
   multiApproversDataSave() {
     this.multiApproversFormFill(this.multiApprove.getCurrentApprovers(false));

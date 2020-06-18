@@ -277,8 +277,11 @@
           background-color: #7ae43a;
       }
       &_012 {
-        background-color: #e40d9c;
-    }
+          background-color: #e40d9c;
+      }
+      &_013 {
+          background-color: #f3055d;
+      }
       img {
           width: 17px;
           height: 17px;
@@ -793,8 +796,14 @@
                 width: 14px;
             }
         }
+        &.code_icon_wrp{
+          background-color: #2e8cc3;
+        }
     }
     &.ecmd_text_wrp{
+      padding-left: 9px;
+    }
+    &.dist_text_wrp{
       padding-left: 9px;
     }
     .ecmd_icon_wrp {

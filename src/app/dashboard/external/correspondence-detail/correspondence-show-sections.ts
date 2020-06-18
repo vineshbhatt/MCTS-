@@ -87,7 +87,7 @@ export class ShowSections implements CorrSectionList {
     this.LinkedCorrespondence = { Show: true, Modify: false };
     this.Comments = { Show: true, Modify: false };
     this.Transfer = { Show: true, Modify: false };
-    this.Distribution = { Show: false, Modify: false };
+    this.Distribution = { Show: true, Modify: true };
   }
 
 
@@ -99,6 +99,14 @@ export class ShowSections implements CorrSectionList {
       this.Transfer.Modify = true;
     } else {
       this.Transfer.Modify = false;
+    }
+    if (correspondenceData.CorrespondenceFlowType === '1') {
+      this.Approvers.Show = false;
+      this.Approvers.Modify = false;
+    }
+    if (correspondenceData.CorrespondenceFlowType === '5') {
+      this.Distribution.Show = false;
+      this.Distribution.Modify = false;
     }
   }
 

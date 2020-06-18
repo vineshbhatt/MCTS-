@@ -41,13 +41,17 @@
               <tr>
                 <th>Organization</th>
                 <th>Department</th>
+                <th>On Behalf</th>
                 <th>Name</th>
               </tr>
               <tr *ngFor="let senderData of userInfo">
                 <ng-container *ngFor="let senderUserData of senderData.myRows">
                   <td>{{senderUserData.OrganizationName_EN}}</td>
+                  <td>{{senderUserData.DepartmentName_EN}}</td>
                   <td>
-                    {{senderUserData.DepartmentName_EN}}{{ (senderUserData.SectionName_EN != null) ? (","+senderUserData.SectionName_EN) : "" }}
+                    <span *ngIf="senderUserData.SenderDepartment !== senderUserData.SenderNativeDepartment">
+                      {{senderUserData.DepartmentNativeName_EN}}
+                    </span>
                   </td>
                   <td>{{senderUserData.Name_EN}} </td>
                 </ng-container>
@@ -164,7 +168,8 @@
           </mat-expansion-panel>
         </form>
         <app-multiple-approve *ngIf="approve" [approve]="approve" [sectionDisabled]="false"
-          [confidential]="confidential" (orgChart)="showMultiAppData($event)">
+          [confidential]="confidential" (orgChart)="showMultiAppData($event)"
+          (senderReload)="getSenderUserInfromation($event)">
         </app-multiple-approve>
         <mat-expansion-panel class="mat-elevation-z bg_001">
           <mat-expansion-panel-header>

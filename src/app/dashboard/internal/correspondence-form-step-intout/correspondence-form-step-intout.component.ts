@@ -32,6 +32,7 @@ import { CorrespondenceShareService } from '../../services/correspondence-share.
 import { TransferDialogBox } from '../../external/correspondence-detail/correspondence-transfer-dialog/correspondence-transfer-dialog.component';
 import { multiLanguageTranslator } from 'src/assets/translator/index';
 import { MultipleApproveComponent, MultipleApproveInputData, CurrentApprovers } from 'src/app/dashboard/shared-components/multiple-approve/multiple-approve.component';
+import { DistributionComponent } from 'src/app/dashboard/shared-components/distribution/distribution.component';
 
 
 @Component({
@@ -57,7 +58,8 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
     , private _errorHandlerFctsService: ErrorHandlerFctsService
     , private notificationmessage: NotificationService
     , private datePipe: DatePipe
-    , public translator: multiLanguageTranslator) { super(csdocumentupload, correspondenceDetailsService) }
+    , public translator: multiLanguageTranslator
+    , public dialogU: MatDialog/*delete after dev*/) { super(csdocumentupload, correspondenceDetailsService) }
 
   get f() { return this.correspondenceDetailsForm.controls; }
 
@@ -153,7 +155,7 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
   showCorrItems = new ShowCorrItems();
   showFields = new ShowCorrItems();
   showWFButtons: ShowWFButtons;
-  ApproverList: any[];
+  //ApproverList: any[];
   showTemplateArea: boolean = false;
   templatesDocList: any[];
   templateLanguage: string;
@@ -193,7 +195,11 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
   // multi approve parameters
   approve: MultipleApproveInputData;
   @ViewChild(MultipleApproveComponent) multiApprove;
+  @ViewChild(DistributionComponent) distributionSection;
   confidential = false;
+  // distribution parameters
+  showDistributionTreeArea: boolean;
+
 
 
   ngOnInit() {
@@ -210,7 +216,6 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
     //this.getUserInfo();
 
     //this.getCorrTaskInfo();
-    this.getCorrespondenceSenderDetails();
     this.getCorrespondenceRecipientDetails();
     this.readCorrespondenceInfo();
     this.RefreshRecord();
@@ -266,8 +271,7 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
       corrNumber: new FormControl({ value: '', disabled: !this.showCorrItems.corrNumber.Modify }),
       fillinPlanPath: new FormControl({ value: '', disabled: !this.showCorrItems.fillinPlanPath.Modify }),
       dispatchMethod: new FormControl({ value: '', disabled: !this.showCorrItems.dispatchMethod.Modify }),
-      staffNumber: new FormControl({ value: '', disabled: !this.showCorrItems.staffNumber.Modify }),
-      Approver: new FormControl({ value: '', disabled: !this.showCorrItems.staffNumber.Modify })
+      staffNumber: new FormControl({ value: '', disabled: !this.showCorrItems.staffNumber.Modify })
     });
 
 
@@ -304,16 +308,18 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
     this.ReadRecord(this.locationid, '0');
   }
 
-  getCorrespondenceSenderDetails(): void {
-    this.spinnerDataLoaded = true;
+  getCorrespondenceSenderDetails(maxApproveLevel: number): void {
     this._correspondenceDetailsService
-      .getCorrespondenceSenderDetails(this.VolumeID, this.CorrespondencType, false, '')
+      .getCorrespondenceSenderDetails(this.VolumeID, this.CorrespondencType, false, this.body.values.WorkflowForm_1x4x1x12, maxApproveLevel)
       .subscribe(
         correspondenceSenderDetailsData => {
           if ((typeof correspondenceSenderDetailsData[0].myRows !== 'undefined') && correspondenceSenderDetailsData[0].myRows.length > 0) {
             this.correspondenceSenderDetailsData = correspondenceSenderDetailsData[0].myRows[0];
             this.senderDetailsForm.get('SenderInfo').setValue(this.correspondenceSenderDetailsData);
-            this.setMultiApproveParameters();
+            this.spinnerDataLoaded = false;
+            if (maxApproveLevel > 0) {
+              this.syncCoverData();
+            }
           }
         },
         responseError => {
@@ -331,7 +337,6 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
           if ((typeof correspondenceRecipientDetailsData[0].myRows !== 'undefined') && correspondenceRecipientDetailsData[0].myRows.length > 0) {
             this.correspondenceRecipientDetailsData = correspondenceRecipientDetailsData[0].myRows[0];
           }
-          this.spinnerDataLoaded = false;
         },
         responseError => {
           this._errorHandlerFctsService.handleError(responseError).subscribe();
@@ -445,11 +450,14 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
       });
   }
   readCorrespondenceInfo(): void {
+    this.spinnerDataLoaded = true;
     this._correspondenceDetailsService.getFormStepInfo(this.VolumeID, this.VolumeID, this.taskID).subscribe(
       response => {
         if ((typeof response.forms !== 'undefined') && response.forms.length > 0) {
           this.body.values = response.forms[0].data;
           this.taskTitle = response.data.title;
+          this.getCorrespondenceSenderDetails(0);
+          this.setMultiApproveParameters();
           this.getMetadataFilters();
         }
       },
@@ -498,7 +506,17 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
     if (this.CollaborationLoaded) {
       this.getCollaborationtoFormObject();
     }
+    this.getSenderToFormObject();
+  }
 
+  getSenderToFormObject(): void {
+    this.body.values.WorkflowForm_1x4x1x11 = this.correspondenceSenderDetailsData.SenderID;                // SenderID
+    this.body.values.WorkflowForm_1x4x1x12 = this.correspondenceSenderDetailsData.SenderUserID;            // SenderUserID
+    this.body.values.WorkflowForm_1x4x1x13 = this.correspondenceSenderDetailsData.SenderVersion;           // SenderVersion
+    this.body.values.WorkflowForm_1x4x1x80 = this.correspondenceSenderDetailsData.SenderDepartment;        // SenderDepartment
+    this.body.values.WorkflowForm_1x4x1x81 = this.correspondenceSenderDetailsData.SenderSection;           // SenderSection
+    this.body.values.WorkflowForm_1x4x1x82 = this.correspondenceSenderDetailsData.SenderRole;              // SenderRole
+    this.body.values.WorkflowForm_1x4x1x42 = this.correspondenceSenderDetailsData.SenderNativeDepartment;  // SenderNativeDepartment
   }
 
   getCCtoFormObject() {
@@ -581,7 +599,6 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
     this.Disposition3 = this.body.values.WorkflowForm_1x4x1x77;
 
     this.getCoverDocumentURL(this.body.values.WorkflowForm_1x4x1x61);
-    this.getApprovers();
   }
 
   getDefaultaValue(Attrname: string, ID: number): string {
@@ -932,7 +949,8 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
 
   showSenderData() {
     this.showPreviewTreeArea = true;
-    this.selectedCaption = 'Sender'
+    this.selectedCaption = 'Sender';
+    this.showDistributionTreeArea = false;
     this.currentlyChecked = false;
     this.showPreviewCoverLetter = false;
     this.multiSelect = false;
@@ -944,6 +962,7 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
   }
   showRecipientData() {
     this.showPreviewTreeArea = true;
+    this.showDistributionTreeArea = false;
     this.selectedCaption = 'Recipient'
     this.currentlyChecked = false;
     this.showPreviewCoverLetter = false;
@@ -959,6 +978,7 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
     this.selectedCaption = 'CC'
     this.currentlyChecked = false;
     this.showPreviewCoverLetter = false;
+    this.showDistributionTreeArea = false;
     this.multiSelect = true;
     this.dataSource.data = this.organizationalChartData;
     this.showTemplateArea = false;
@@ -970,6 +990,7 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
     this.selectedCaption = 'Collaboration';
     this.currentlyChecked = false;
     this.showPreviewCoverLetter = false;
+    this.showDistributionTreeArea = false;
     this.multiSelect = true;
     this.dataSource.data = this.organizationalChartData;
     this.showTemplateArea = false;
@@ -981,14 +1002,22 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
     this.selectedCaption = 'Approver';
     this.currentlyChecked = false;
     this.showPreviewCoverLetter = false;
+    this.showDistributionTreeArea = false;
     this.multiSelect = false;
     this.dataSource.data = this.organizationalChartData;
     this.showTemplateArea = false;
     this.isSearchResult = false;
   }
 
-  showTemplateSection() {
+  showDistributionChart() {
+    this.showPreviewTreeArea = false;
+    this.showPreviewCoverLetter = false;
+    this.showTemplateArea = false;
+    this.showDistributionTreeArea = true;
+  }
 
+  showTemplateSection() {
+    this.showDistributionTreeArea = false;
     this.showPreviewTreeArea = false;
     this.showPreviewCoverLetter = false;
     this.showTemplateArea = true;
@@ -1300,7 +1329,7 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
     if (this.body.values.WorkflowForm_1x4x1x48 === 'EN') {
       let senderDetails: SenderDetailsData = this.senderDetailsForm.get('SenderInfo').value;
       this.documentMetadataSync.SenderOrganization = this.convertUndefindedOrNulltoemptyString(senderDetails.OrganizationName_EN);
-      this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(senderDetails.DepartmentName_EN + (senderDetails.SectionName_EN != null ? ("," + senderDetails.SectionName_EN) : ""))
+      this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(senderDetails.DepartmentName_EN)
       this.documentMetadataSync.SenderName = this.convertUndefindedOrNulltoemptyString(senderDetails.Name_EN);
       let recipientDetails: OrgNameAutoFillModel = this.recipientDetailsForm.get('RecipientDepartment').value
       this.documentMetadataSync.RecipientDepartment = this.convertUndefindedOrNulltoemptyString(recipientDetails.DepName_En) + (this.convertUndefindedOrNulltoemptyString(recipientDetails.SecName_En) ? "," + this.convertUndefindedOrNulltoemptyString(recipientDetails.SecName_En) : "");
@@ -1312,7 +1341,7 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
 
       let senderDetails: SenderDetailsData = this.senderDetailsForm.get('SenderInfo').value;
       this.documentMetadataSync.SenderOrganization = this.convertUndefindedOrNulltoemptyString(senderDetails.OrganizationName_AR);
-      this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(senderDetails.DepartmentName_AR + (senderDetails.SectionName_AR != null ? ("," + senderDetails.SectionName_AR) : ""))
+      this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(senderDetails.DepartmentName_AR);
       this.documentMetadataSync.SenderName = this.convertUndefindedOrNulltoemptyString(senderDetails.Name_AR);
       let recipientDetails: OrgNameAutoFillModel = this.recipientDetailsForm.get('RecipientDepartment').value
       this.documentMetadataSync.RecipientDepartment = this.convertUndefindedOrNulltoemptyString(recipientDetails.DepName_AR) + (this.convertUndefindedOrNulltoemptyString(recipientDetails.SecName_Ar) ? "," + this.convertUndefindedOrNulltoemptyString(recipientDetails.SecName_Ar) : "");
@@ -1456,44 +1485,50 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
   // parameters passed to MultipleApproveComponent
   setMultiApproveParameters() {
     this.approve = {
-      UserID: this.correspondenceSenderDetailsData.SenderUserID,
+      UserID: this.body.values.WorkflowForm_1x4x1x12,
       CorrID: this.locationid,
       mainLanguage: this.translator.lang,
       TeamID: null,
       fGetStructure: true,
       fGetTeamStructure: false,
       fInitStep: false,
-      fChangeTeam: false
+      fChangeTeam: false,
+      VolumeID: this.VolumeID,
+      taskID: this.taskID,
+      selectApproverStep: '33',
+      approveStep: '35',
+      selectFinalApproverStep: '37',
+      approveAndSignStep: '38'
     };
   }
 
-  getApprovers() {
-    if (this.taskID === '33' || this.taskID === '37') {
-      let ApproverType: string;
-      let ID: number;
-      switch (this.taskID) {
-        case '33':
-          ApproverType = 'qApprover_2_33';
-          ID = this.body.values.WorkflowForm_1x4x1x24;
-          break;
-        case '37':
-          ApproverType = 'qApprover_2_37';
-          ID = this.body.values.WorkflowForm_1x4x1x87;
-          break;
+  /*   getApprovers() {
+      if (this.taskID === '33' || this.taskID === '37') {
+        let ApproverType: string;
+        let ID: number;
+        switch (this.taskID) {
+          case '33':
+            ApproverType = 'qApprover_2_33';
+            ID = this.body.values.WorkflowForm_1x4x1x24;
+            break;
+          case '37':
+            ApproverType = 'qApprover_2_37';
+            ID = this.body.values.WorkflowForm_1x4x1x87;
+            break;
+        }
+        this.correspondenceDetailsService
+          .getApproverListRunningWF(ApproverType, this.VolumeID)
+          .subscribe(
+            ApproverList => {
+              this.ApproverList = ApproverList;
+              const appValue = ApproverList.filter(element => {
+                return element.ID === ID;
+              });
+              this.correspondenceDetailsForm.get('Approver').setValue(appValue[0]);
+            }
+          );
       }
-      this.correspondenceDetailsService
-        .getApproverListRunningWF(ApproverType, this.VolumeID)
-        .subscribe(
-          ApproverList => {
-            this.ApproverList = ApproverList;
-            const appValue = ApproverList.filter(element => {
-              return element.ID === ID;
-            });
-            this.correspondenceDetailsForm.get('Approver').setValue(appValue[0]);
-          }
-        );
-    }
-  }
+    } */
 
   multiApproversDataSave(action: string) {
     switch (this.taskID) {
@@ -1504,15 +1539,15 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
         this.multiApprove.setMultiApprovers();
         break;
       case '33':
-        if (this.correspondenceDetailsForm.get('Approver').value) {
-          this.body.values.WorkflowForm_1x4x1x24 = this.correspondenceDetailsForm.get('Approver').value.ID;
-          this.multiApprove.setApprover('step2', this.correspondenceDetailsForm.get('Approver').value.ID);
+        if (this.multiApprove.approverSelected) {
+          this.body.values.WorkflowForm_1x4x1x24 = this.multiApprove.approverSelected;
+          this.multiApprove.setApprover('step2', this.multiApprove.approverSelected);
         }
         break;
       case '37':
-        if (this.correspondenceDetailsForm.get('Approver').value) {
-          this.body.values.WorkflowForm_1x4x1x87 = this.correspondenceDetailsForm.get('Approver').value.ID;
-          this.multiApprove.setApprover('step4', this.correspondenceDetailsForm.get('Approver').value.ID);
+        if (this.multiApprove.approverSelected) {
+          this.body.values.WorkflowForm_1x4x1x87 = this.multiApprove.approverSelected;
+          this.multiApprove.setApprover('step4', this.multiApprove.approverSelected);
         }
         break;
     }
@@ -1543,7 +1578,7 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
       this.body.values.WorkflowForm_1x4x1x26 = 'Yes';
     } else {
       this.body.values.WorkflowForm_1x4x1x76 = ' ';
-      if (this.taskID === '19' || this.taskID === '65') {
+      if (this.taskID === '29' || this.taskID === '65') {
         this.body.values.WorkflowForm_1x4x1x26 = 'No';
       }
     }
@@ -1558,7 +1593,7 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
 
   approversValidation(action: string): boolean {
     switch (this.taskID) {
-      case '19':
+      case '29':
       case '65':
         if (!this.multiApprove.approversValidation()) {
           return false;
@@ -1566,13 +1601,17 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
         break;
       case '33':
       case '37':
-        if (action === 'SendOn' && !this.correspondenceDetailsForm.get('Approver').value) {
+        if (action === 'SendOn' && !this.multiApprove.approverSelected) {
           this.notificationmessage.warning('Approver is missing', 'Please select the Approver.', 2500);
           return false;
         }
         break;
     }
     return true;
+  }
+
+  distributionOutputAction(): void {
+    this.submitCorrespondenceInfo('SendOn');
   }
 
 }
