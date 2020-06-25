@@ -96,6 +96,12 @@ export class CorrespondenceService {
       .set('Subject', queryFilters.Subject ? queryFilters.Subject : '')
       .set('MyAssignments', queryFilters.MyAssignments ? queryFilters.MyAssignments : '')
       .set('DocumentNumber', queryFilters.DocumentNumber ? queryFilters.DocumentNumber : '')
+
+      .set('BudgetNumber', queryFilters.Budget ? queryFilters.Budget : '')
+      .set('ProjectCode', queryFilters.Project ? queryFilters.Project : '')
+      .set('TenderNumber', queryFilters.Tender ? queryFilters.Tender : '')
+      .set('ContractNumber', queryFilters.Contract ? queryFilters.Contract : '')
+
       .set('enableTotalCount', startRow === 1 ? 'true' : 'false');
     if (isProxy) {
       params = params.append('ProxyUserID', this._globalConstants.general.ProxyUserID);

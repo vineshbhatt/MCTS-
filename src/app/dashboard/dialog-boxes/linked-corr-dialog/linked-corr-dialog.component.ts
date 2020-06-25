@@ -183,6 +183,7 @@ export class LinkedCorrDialogComponent implements OnInit {
   public startPage = 1;
   public endPage = 20;
   // test
+  filesAction = 'addFiles';
   testToggle = true;
   newwindow;
 
@@ -279,6 +280,12 @@ export class LinkedCorrDialogComponent implements OnInit {
     'ConnectionType': '1',
     'Deleted': '0'
   };
+  InsertFileConstants = {
+    'ConnectedType': 'Dtree',
+    'ReferenceType': 'Correspondence',
+    'ConnectionType': '1',
+    'Deleted': '0'
+  };
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(FilesSelectComponent) filesSelect: FilesSelectComponent;
@@ -363,9 +370,6 @@ export class LinkedCorrDialogComponent implements OnInit {
 
   changeDocumentTab(tab) {
     this.DocTabIndex = tab;
-    if (tab === 0) {
-      this.getOnlyDocumentsRelated(this.currentReference);
-    }
   }
 
   onSearchLinkedButtonClick(selecetedValues: any): void {
@@ -483,6 +487,16 @@ export class LinkedCorrDialogComponent implements OnInit {
     var params = 'width=' + width + ', height=' + height + ',top=100,left=100,resizable';
     this.newwindow = window.open(this.CSUrl + url, 'name', params);
     if (window.focus) { this.newwindow.focus() }
+  }
+
+  addFileConnection(arr: number[]) {
+    this.correspondenceShareService.insertDocConnection(this.currentReference, arr.join(), this.InsertFileConstants)
+      .subscribe(response => {
+        this.getOnlyDocumentsRelated(this.currentReference);
+      },
+        responseError => {
+          this.errorHandlerFctsService.handleError(responseError).subscribe();
+        });
   }
 }
 

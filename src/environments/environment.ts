@@ -110,6 +110,10 @@ export const FCTSDashBoard = {
   FolderFiles: 'CTA_FolderFiles',
   CorrespondenceRelatedShort: 'CTA_CorrespondenceRelatedShort',
  
+  DownloadAttachmentsBox: 'CTA_DownloadAttachments',
+  CopySelectedFiles: 'ExtractAllAttachments',
+  SetAttDownloadPermissions: 'CTA_SetAttDownloadPermissions',
+
   //BaseHref: '/img/fctsangular/fctsapp/',
   BaseHref: '/',
   CSUrl: 'http://manotcst02.mannaicorp.com.qa/otcs/cs.exe'

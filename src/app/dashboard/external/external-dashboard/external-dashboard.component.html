@@ -17,12 +17,18 @@
       <p class="text_15 color_002">{{userDetail.userMessage}}</p>
     </div>
   </div>
-
+  <!--   <button (click)="zipFunction()">Zip test</button>
+  <a *ngIf="zipTestDownload" matTooltip="Download" class="btn btn_006"
+    href="http://mv2cdmsadp02/otcs/cs.exe{{zipTestDownload}}">
+    <img src="{{basehref}}assets/images/icons/download-to-storage-drive.svg" alt="">
+  </a> -->
   <div class="header_search">
-    <input type="text" class="search_box" [placeholder]="'search' | translator">
+    <app-full-search (runFullSearch)="fullSearchParametersSet($event)"
+      (showSearchComponent)="toggleSearchCharts($event)">
+    </app-full-search>
   </div>
 </div>
-<div class="cust_row_001_wrapper">
+<div [@slideInOut]="chartsOpen" class="cust_row_001_wrapper ">
   <div class="col_50_cust col_2_cust_wrp">
     <div class="col_2_cust_50">
       <div class="chart_001">
@@ -165,6 +171,13 @@
     </div>
   </div>
 </div>
+<div [@slideInOut]="searchopen" class="advanced-full-search">
+  <!--   <button (click)="showAdvancedSearch" class="btn_002" (click)="toggleHelpMenu()">Show charts</button> -->
+  <app-searchfilter [searchExtOrgFieldShow]="searchExtOrgFieldShow"
+    [searchSenderDeptFieldShow]="searchSenderDeptFieldShow"
+    [searchRecipientDeptFieldShow]="searchRecipientDeptFieldShow" [isFullSearch]="true"
+    (searchDashboardButtonClicked)="onSearchDashboardButtonClick($event)"></app-searchfilter>
+</div>
 <p class="text_20">Inbox</p>
 
 <!-- <div [ngClass]="correspondData.selectedValue ? 'selectedWithCheckbox' : 'unSelected'" *ngFor="let correspondData of correspondenceData">{{correspondData}}</div> -->
@@ -195,7 +208,8 @@
       </thead>
       <tbody [class.sub_correspondence_open]="correspondData === openedSubCorrespond" class="flex-container flex-column"
         *ngFor="let correspondData of correspondenceData | paginate: { id: 'server', itemsPerPage: itemsPerPage, currentPage: pagenumber, totalItems: totalCount }">
-        <tr [ngClass]="correspondData.selectedValue ? 'selectedWithCheckbox' : 'unSelected'" class="mat-row"
+        <tr [ngClass]="correspondData.selectedValue ? 'selectedWithCheckbox' : 'unSelected'"
+          class="mat-row {{CorrBacklight(correspondData, false)}}"
           [class.selected]="correspondData === selectedCorrespondence">
           <td>
             <!--    <mat-checkbox [(ngModel)]="correspondData.selectedValue" [checked]="selection.isSelected(correspondData)"></mat-checkbox>
@@ -277,16 +291,25 @@
                     *ngIf=(correspondData.showButtons.Archive)>{{'actbtn_archive'|translator}}</button>
                   <button mat-menu-item (click)="startRecall(correspondData, 'SimpleRecall')"
                     *ngIf=(correspondData.showButtons.Recall)>{{'actbtn_recall'|translator}}</button>
-                  <button mat-menu-item *ngIf=(correspondData.showButtons.MRRecall)>{{'actbtn_mrrecall'|translator}}MR Recall</button>
-                  <button mat-menu-item *ngIf=(correspondData.showButtons.ReturnToAS)>{{'actbtn_returntoas'|translator}}</button>
+                  <button mat-menu-item *ngIf=(correspondData.showButtons.MRRecall)>{{'actbtn_mrrecall'|translator}}MR
+                    Recall</button>
+                  <button mat-menu-item
+                    *ngIf=(correspondData.showButtons.ReturnToAS)>{{'actbtn_returntoas'|translator}}</button>
                   <button mat-menu-item *ngIf=(correspondData.showButtons.Copy)>{{'actbtn_copy'|translator}}</button>
-                  <button mat-menu-item *ngIf=(correspondData.showButtons.ReplyIntern)>{{'actbtn_replyinternal'|translator}}</button>
+                  <button mat-menu-item
+                    *ngIf=(correspondData.showButtons.ReplyIntern)>{{'actbtn_replyinternal'|translator}}</button>
                   <button mat-menu-item (click)='transferReply(correspondData)'
                     *ngIf=(correspondData.showButtons.ReplyTrans)>{{'actbtn_replytransfer'|translator}}</button>
-                  <button mat-menu-item *ngIf=(correspondData.showButtons.SaveCorr)>{{'actbtn_savecorr'|translator}}</button>
-                  <button mat-menu-item *ngIf=(correspondData.showButtons.Delete)>{{'actbtn_delete'|translator}}</button>
-                  <button mat-menu-item *ngIf=(correspondData.showButtons.DownloadAttach)>{{'actbtn_downattachments'|translator}}</button>
-                  <button mat-menu-item *ngIf=(correspondData.showButtons.PrintBarcode)>{{'actbtn_printbcode'|translator}}</button>
+                  <button mat-menu-item
+                    *ngIf=(correspondData.showButtons.SaveCorr)>{{'actbtn_savecorr'|translator}}</button>
+                  <button mat-menu-item
+                    *ngIf=(correspondData.showButtons.Delete)>{{'actbtn_delete'|translator}}</button>
+                  <button mat-menu-item *ngIf=(correspondData.showButtons.DownloadAttach)
+                    (click)="downloadAttachmentsDialogBox(correspondData)">{{'actbtn_downattachments'|translator}}</button>
+                  <button mat-menu-item
+                    *ngIf=(correspondData.showButtons.PrintBarcode)>{{'actbtn_printbcode'|translator}}</button>
+                  <!--                   <button (click)="downloadAttachmentsDialogBox(correspondData)" mat-menu-item>Download
+                    Attachments</button> -->
                 </mat-menu>
               </li>
             </ul>

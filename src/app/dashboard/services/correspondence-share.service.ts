@@ -493,11 +493,12 @@ export class CorrespondenceShareService {
     );
   }
 
-  getFolderProperties(folder_id: string, StartRow: number, EndRow: number, IsParent: boolean): Observable<any> {
+  getFolderProperties(folder_id: string, StartRow: number, EndRow: number, IsParent: boolean, fDestination: string): Observable<any> {
     const params = new HttpParams()
       .set(IsParent ? 'childID' : 'folderID', folder_id)
       .set('StartRow', StartRow.toString())
-      .set('EndRow', EndRow.toString());
+      .set('EndRow', EndRow.toString())
+      .set('fDestination', fDestination);
     return this.httpServices.get<any>(
       this.CSUrl + `${FCTSDashBoard.WRApiV1}${IsParent ? FCTSDashBoard.GetParentData : FCTSDashBoard.FilesSerch}?Format=webreport`,
       {
@@ -513,13 +514,14 @@ export class CorrespondenceShareService {
     );
   }
 
-  getOnlyFolderContent(folder_id: string, StartRow: number, EndRow: number, searchStr?: string): Observable<any> {
+  getOnlyFolderContent(folder_id: string, StartRow: number, EndRow: number, fDestination: string, searchStr?: string): Observable<any> {
     const params = new HttpParams()
       .set('folderID', folder_id)
       .set('StartRow', StartRow.toString())
       .set('EndRow', EndRow.toString())
       .set('searchStr', searchStr)
-      .set('fSearch', searchStr ? 'true' : 'false');
+      .set('fSearch', searchStr ? 'true' : 'false')
+      .set('fDestination', fDestination);
     return this.httpServices.get<any>(
       this.CSUrl + `${FCTSDashBoard.WRApiV1}${
       FCTSDashBoard.FolderFiles}?Format=webreport`,
@@ -581,6 +583,120 @@ export class CorrespondenceShareService {
     return this.httpServices.get<any>(
       this.CSUrl + `${FCTSDashBoard.WRApiV1}${
       FCTSDashBoard.ConnectionsSearch}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
+  getAttachmentsData(CorrespondenceID: string): Observable<any> {
+    const params = new HttpParams()
+      .set('CorrespondenceID', CorrespondenceID);
+    return this.httpServices.get<any>(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${
+      FCTSDashBoard.DownloadAttachmentsBox}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
+  makeZipFunc(IDs: string): Observable<any> {
+    const body = new HttpParams()
+      .set('body', `{"id_list":[${IDs}],"type":"ZipAndDownload"}`);
+    return this.httpServices.post<any>(this.CSUrl + `${FCTSDashBoard.WFApiV2}zipanddownload`,
+      body, {
+      headers: new HttpHeaders()
+        .set('OTCSTICKET', CSConfig.AuthToken)
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+    }).pipe(
+      map(response => {
+        return response;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
+  getZip(ID: number) {
+    const params = new HttpParams();
+    return this.httpServices.get<any>(
+      this.CSUrl + `${FCTSDashBoard.WFApiV2}zipanddownload/${ID}`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
+  copyFiles(parent_id: number, original_id: string, name: string) {
+    const body = new HttpParams()
+      .set('body', `{"original_id":${original_id},"parent_id":${parent_id},"name":"${name}","roles":{"categories":{}}}`);
+    return this.httpServices.post<any>(this.CSUrl + `${FCTSDashBoard.WFApiV1}nodes`,
+      body, {
+      headers: new HttpHeaders()
+        .set('OTCSTICKET', CSConfig.AuthToken)
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+    }).pipe(
+      map(response => {
+        return response;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
+  CopySelectedFiles(LocationID: string, ObjectIDs: string, DestinationID: number): Observable<any> {
+    const params = new HttpParams()
+      .set('LocationID', LocationID)
+      .set('ObjectIDs', ObjectIDs)
+      .set('DestinationID', DestinationID.toString());
+    return this.httpServices.get<any>(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${
+      FCTSDashBoard.CopySelectedFiles}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
+  setAttachmentsDownloadPermissions(dataID: string): Observable<any> {
+    const params = new HttpParams()
+      .set('locationid', dataID)
+      .set('UserID', this._globalConstants.general.UserID)
+      .set('prompting', 'done');
+    return this.httpServices.get<any>(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${
+      FCTSDashBoard.SetAttDownloadPermissions}?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
       }

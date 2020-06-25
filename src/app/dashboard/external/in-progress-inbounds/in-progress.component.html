@@ -4,7 +4,7 @@
       <P class="heading_001 color_002">External</P>
       <P class="heading_001 color_002">Inbound</P>
       <h2 class="heading_001">Completed</h2>
-      <p class = "heading_001 color_002" *ngIf = "isProxy">({{globalConstants.general.UserName}})</p>
+      <p class="heading_001 color_002" *ngIf="isProxy">({{globalConstants.general.UserName}})</p>
     </div>
 
     <div class="header_btn_wrp">
@@ -52,7 +52,8 @@
         <tbody class="flex-container flex-column">
           <tr [ngClass]="correspondData.selectedValue ? 'selectedWithCheckbox' : 'unSelected'"
             *ngFor="let correspondData of correspondenceData | paginate: { id: 'server', itemsPerPage: itemsPerPage, currentPage: pagenumber, totalItems: totalCount }"
-            class="mat-row" [class.selected]="correspondData === selectedCorrespondence">
+            class="mat-row {{CorrBacklight(correspondData, false)}}"
+            [class.selected]="correspondData === selectedCorrespondence">
             <td>
               <!-- <mat-checkbox [(ngModel)]="correspondData.selectedValue" [checked]="selection.isSelected(correspondData)"></mat-checkbox>
               (click)="$event.stopPropagation()"
@@ -65,7 +66,8 @@
             <td class="icon_wrapper ">
               <span *ngFor="let inboxCorrespondenceIcons of correspondData.inboxCorrespondenceIcon"
                 [matTooltip]="inboxCorrespondenceIcons.title" class="icon_004"
-                [ngClass]="inboxCorrespondenceIcons.active" (click) = "correspondenceIconsFunction(correspondData,inboxCorrespondenceIcons.runfunc)">
+                [ngClass]="inboxCorrespondenceIcons.active"
+                (click)="correspondenceIconsFunction(correspondData,inboxCorrespondenceIcons.runfunc)">
                 <img class="inbox_icon_img" [src]="inboxCorrespondenceIcons.icon" alt="">
               </span>
             </td>
@@ -131,10 +133,12 @@
                       *ngIf=(correspondData.showButtons.ReplyTrans)>Reply (Transfer)</button>
                     <button mat-menu-item *ngIf=(correspondData.showButtons.SaveCorr)>Save Correspondence</button>
                     <button mat-menu-item *ngIf=(correspondData.showButtons.Delete)>Delete</button>
-                    <button mat-menu-item *ngIf=(correspondData.showButtons.DownloadAttach)>Download
+                    <button mat-menu-item *ngIf=(correspondData.showButtons.DownloadAttach)
+                      (click)="downloadAttachmentsDialogBox(correspondData)">Download
                       Attachments</button>
                     <button mat-menu-item *ngIf=(correspondData.showButtons.PrintBarcode)>Print Barcode</button>
-                    <button mat-menu-item  (click)='replyExternal(correspondData)' *ngIf=(correspondData.showButtons.ReplyExtern)>Reply External</button>
+                    <button mat-menu-item (click)='replyExternal(correspondData)'
+                      *ngIf=(correspondData.showButtons.ReplyExtern)>Reply External</button>
                   </mat-menu>
                 </li>
               </ul>
@@ -148,11 +152,11 @@
                   <button class="oppr_icon_002" (click)="previewViewWrapper(!correspondData)">
                     <img matTooltip="Quick view" (click)="quickViewWrapper(correspondData)"
                       src="{{basehref}}assets/images/icons/info_icon-white.svg" alt="">
-                  </button>                  
+                  </button>
                 </div>
                 <div class="documentViewerDiv" *ngFor="let docpreviewData of documentPreviewURL">
                   <iframe class="iframeclass" [src]="docpreviewData.CorrespondencedocumentURL | safe">
-                  </iframe>                 
+                  </iframe>
                 </div>
               </div>
 

@@ -104,6 +104,9 @@ export const FCTSDashBoard = {
   GetParentData: 'CTA_GetParentData',
   FolderFiles: 'CTA_FolderFiles',
   CorrespondenceRelatedShort: 'CTA_CorrespondenceRelatedShort',
+  DownloadAttachmentsBox: 'CTA_DownloadAttachments',
+  CopySelectedFiles: 'ExtractAllAttachments',
+  SetAttDownloadPermissions: 'CTA_SetAttDownloadPermissions',
 
   BaseHref: '/img/fctsangular/fctsapp/',
   //BaseHref: '/',

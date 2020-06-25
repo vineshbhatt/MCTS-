@@ -8,10 +8,18 @@ import { ExternalDashboardComponent } from 'src/app/dashboard/external/external-
 import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handler-fcts.service';
 import { AppLoadConstService } from 'src/app/app-load-const.service';
 import { BaseDashboardFullComponent } from '../../base-classes/base-dashboard-full/base-dashboard-full.component';
+import { animate, style, transition, trigger, state } from '@angular/animations';
 
 @Component({
   selector: 'app-mailroom-dasnboard',
-  templateUrl: '../../mailroom/mailroom-dasnboard/mailroom-dasnboard.component.html'
+  templateUrl: '../../mailroom/mailroom-dasnboard/mailroom-dasnboard.component.html',
+  animations: [
+    trigger('slideInOut', [
+      state('in', style({ overflow: 'hidden', height: '*' })),
+      state('out', style({ opacity: '0', overflow: 'hidden', height: '0px', minHeight: '0', margin: 0, padding: 0 })),
+      transition('in <=> out', animate('400ms cubic-bezier(0.4, 0.0, 0.2, 1)'))
+    ])
+  ]
 })
 
 export class MailroomDasnboardComponent extends BaseDashboardFullComponent implements OnInit {
@@ -23,9 +31,9 @@ export class MailroomDasnboardComponent extends BaseDashboardFullComponent imple
     public correspondenceShareService: CorrespondenceShareService,
     public errorHandlerFctsService: ErrorHandlerFctsService,
     public appLoadConstService: AppLoadConstService,
-    ) {
-      super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService);
-      this.reportType = 'ExtFullSearch';
+  ) {
+    super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService);
+    this.reportType = 'ExtFullSearch';
   }
 
   ngOnInit() {
@@ -33,7 +41,7 @@ export class MailroomDasnboardComponent extends BaseDashboardFullComponent imple
     this.correspondenceShareService.mrCountReady.subscribe(response => {
       this.userData = response;
       console.log(this.userData);
-    } );
+    });
   }
 
 }

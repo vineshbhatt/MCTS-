@@ -4,7 +4,7 @@
       <P class="heading_001 color_002">Internal</P>
       <P class="heading_001 color_002">Inbound</P>
       <h2 class="heading_001">Archived</h2>
-      <p class = "heading_001 color_002" *ngIf = "isProxy">({{globalConstants.general.UserName}})</p>
+      <p class="heading_001 color_002" *ngIf="isProxy">({{globalConstants.general.UserName}})</p>
     </div>
 
     <div class="header_btn_wrp">
@@ -14,8 +14,10 @@
       </button>
     </div>
   </div>
-  <app-searchfilter [searchExtOrgFieldShow]="searchExtOrgFieldShow" [searchSenderDeptFieldShow]="searchSenderDeptFieldShow"
-    [searchRecipientDeptFieldShow]="searchRecipientDeptFieldShow" (searchDashboardButtonClicked)="onSearchDashboardButtonClick($event)"></app-searchfilter>
+  <app-searchfilter [searchExtOrgFieldShow]="searchExtOrgFieldShow"
+    [searchSenderDeptFieldShow]="searchSenderDeptFieldShow"
+    [searchRecipientDeptFieldShow]="searchRecipientDeptFieldShow"
+    (searchDashboardButtonClicked)="onSearchDashboardButtonClick($event)"></app-searchfilter>
   <div class="inbox_table_002">
     <div *ngIf="progbar">
       <mat-spinner></mat-spinner>
@@ -25,7 +27,7 @@
         <thead>
           <tr class="no_bg">
             <td>
-<!--               <mat-checkbox (change)="$event ? selectionNewInboxAllCorrespondence() : null" [checked]="selection.hasValue() && selectionNewInboxAll()"
+              <!--               <mat-checkbox (change)="$event ? selectionNewInboxAllCorrespondence() : null" [checked]="selection.hasValue() && selectionNewInboxAll()"
                 [indeterminate]="selection.hasValue() && !selectionNewInboxAll()">
               </mat-checkbox> -->
             </td>
@@ -42,25 +44,29 @@
           </tr>
         </thead>
         <tbody class="flex-container flex-column">
-          <tr [ngClass]="correspondData.selectedValue ? 'selectedWithCheckbox' : 'unSelected'" *ngFor="let correspondData of correspondenceData | paginate: { id: 'server', itemsPerPage: itemsPerPage, currentPage: pagenumber, totalItems: totalCount }"
-            class="mat-row" [class.selected]="correspondData === selectedCorrespondence">
+          <tr [ngClass]="correspondData.selectedValue ? 'selectedWithCheckbox' : 'unSelected'"
+            *ngFor="let correspondData of correspondenceData | paginate: { id: 'server', itemsPerPage: itemsPerPage, currentPage: pagenumber, totalItems: totalCount }"
+            class="mat-row {{CorrBacklight(correspondData, false)}}"
+            [class.selected]="correspondData === selectedCorrespondence">
             <td>
-      <!--               <mat-checkbox [(ngModel)]="correspondData.selectedValue" [checked]="selection.isSelected(correspondData)"></mat-checkbox>
+              <!--               <mat-checkbox [(ngModel)]="correspondData.selectedValue" [checked]="selection.isSelected(correspondData)"></mat-checkbox>
                (click)="$event.stopPropagation()"
                   (change)="$event ? selection.toggle(correspondData) : null"
                   [checked]="selection.isSelected(correspondData)" [value]='correspondData.inboxCorrespondenceValue' -->
-              <mat-checkbox disabled class="disabledInput"></mat-checkbox>								  
+              <mat-checkbox disabled class="disabledInput"></mat-checkbox>
             </td>
             <td class="icon_wrapper ">
-              <span *ngFor="let inboxCorrespondenceIcons of correspondData.inboxCorrespondenceIcon" [matTooltip]="inboxCorrespondenceIcons.title"
-                class="icon_004" [ngClass]="inboxCorrespondenceIcons.active">
-                      <img class="inbox_icon_img" [src]="inboxCorrespondenceIcons.icon" alt=""  (click) = "correspondenceIconsFunction(correspondData,inboxCorrespondenceIcons.runfunc)">
-                  </span>
+              <span *ngFor="let inboxCorrespondenceIcons of correspondData.inboxCorrespondenceIcon"
+                [matTooltip]="inboxCorrespondenceIcons.title" class="icon_004"
+                [ngClass]="inboxCorrespondenceIcons.active">
+                <img class="inbox_icon_img" [src]="inboxCorrespondenceIcons.icon" alt=""
+                  (click)="correspondenceIconsFunction(correspondData,inboxCorrespondenceIcons.runfunc)">
+              </span>
             </td>
             <td (click)="previewViewWrapper(correspondData)">
               <span class="pwa_btn" (click)="onSelect(correspondData)">
-                      {{correspondData.ReferenceNumber}}
-                  </span>
+                {{correspondData.ReferenceNumber}}
+              </span>
             </td>
             <td class="td_002">
               <span class="subject_text_wrpper">{{correspondData.EnglishSubject}}</span>
@@ -75,12 +81,12 @@
               <ul class="inbt_icon_wrapper">
                 <li class="inbt_icons_wrapper" (click)="onSelect(correspondData)">
                   <button class="inbt_icon_btn" (click)="quickViewWrapper(correspondData)">
-                          <img src="{{basehref}}assets/images/icons/info_icon.svg"alt="">
-                        </button>
+                    <img src="{{basehref}}assets/images/icons/info_icon.svg" alt="">
+                  </button>
                 </li>
                 <li class="inbt_icons_wrapper">
                   <button matTooltip="Workflow History" (click)="openDialog(correspondData)" class="inbt_icon_btn">
-                    <img src="{{basehref}}assets/images/icons/history.svg"alt="">
+                    <img src="{{basehref}}assets/images/icons/history.svg" alt="">
                   </button>
                 </li>
                 <!-- <li class="inbt_icons_wrapper">
@@ -90,45 +96,53 @@
                 </li> -->
                 <li class="inbt_icons_wrapper" (click)="onSelect(correspondData)">
                   <a class="inbt_icon_btn" matTooltip="Open" (click)="routeToDetailsPage(correspondData)">
-                          <img src="{{basehref}}assets/images/icons/external-link.svg"alt="">
-                        </a>
+                    <img src="{{basehref}}assets/images/icons/external-link.svg" alt="">
+                  </a>
                 </li>
                 <li class="inbt_icons_wrapper" (click)="onSelect(correspondData)">
                   <button class="inbt_icon_btn" (click)="previewViewWrapper(correspondData)">
-                          <img src="{{basehref}}assets/images/icons/eye-close-up.svg"alt="">
-                        </button>
+                    <img src="{{basehref}}assets/images/icons/eye-close-up.svg" alt="">
+                  </button>
                 </li>
                 <li class="inbt_icons_wrapper" *ngIf=(correspondData.showButtons.ShowMore)>
-                  <button (click)="onSelect(correspondData)" [matMenuTriggerFor]="options_001" xPosition="after" yPosition="above" mat-button
-                    class="dote_btn">
-                          <img src="{{basehref}}assets/images/icons/menu.svg" alt="">
-                        </button>
+                  <button (click)="onSelect(correspondData)" [matMenuTriggerFor]="options_001" xPosition="after"
+                    yPosition="above" mat-button class="dote_btn">
+                    <img src="{{basehref}}assets/images/icons/menu.svg" alt="">
+                  </button>
                   <mat-menu #options_001="matMenu">
                     <!-- <button mat-menu-item (click)="showWorkflowAudit(correspondData.VolumeID)">Workflow Audit</button> -->
-                    <button mat-menu-item (click)="OpenDashCompleteDialog(correspondData, '1')" *ngIf=(correspondData.showButtons.Complete)>Complete</button>
-                    <button mat-menu-item (click)="OpenDashCompleteDialog(correspondData, '2')" *ngIf=(correspondData.showButtons.Archive)>Archive</button>
-                    <button mat-menu-item (click)="startRecall(correspondData, 'SimpleRecall')" *ngIf=(correspondData.showButtons.Recall)>Recall</button>
-                    <button mat-menu-item  *ngIf=(correspondData.showButtons.MRRecall)>MR Recall</button>
-                    <button mat-menu-item  *ngIf=(correspondData.showButtons.ReturnToAS)>Returt to AS</button>
-                    <button mat-menu-item  *ngIf=(correspondData.showButtons.Copy)>Copy</button>
-                    <button mat-menu-item  *ngIf=(correspondData.showButtons.ReplyIntern)>Reply (Internal)</button>
-                    <button mat-menu-item (click)='transferReply(correspondData)' *ngIf=(correspondData.showButtons.ReplyTrans)>Reply (Transfer)</button>
-                    <button mat-menu-item  *ngIf=(correspondData.showButtons.SaveCorr)>Save Correspondence</button>
-                    <button mat-menu-item  *ngIf=(correspondData.showButtons.Delete)>Delete</button>
-                    <button mat-menu-item  *ngIf=(correspondData.showButtons.DownloadAttach)>Download Attachments</button>
-                    <button mat-menu-item  *ngIf=(correspondData.showButtons.PrintBarcode)>Print Barcode</button>
+                    <button mat-menu-item (click)="OpenDashCompleteDialog(correspondData, '1')"
+                      *ngIf=(correspondData.showButtons.Complete)>Complete</button>
+                    <button mat-menu-item (click)="OpenDashCompleteDialog(correspondData, '2')"
+                      *ngIf=(correspondData.showButtons.Archive)>Archive</button>
+                    <button mat-menu-item (click)="startRecall(correspondData, 'SimpleRecall')"
+                      *ngIf=(correspondData.showButtons.Recall)>Recall</button>
+                    <button mat-menu-item *ngIf=(correspondData.showButtons.MRRecall)>MR Recall</button>
+                    <button mat-menu-item *ngIf=(correspondData.showButtons.ReturnToAS)>Returt to AS</button>
+                    <button mat-menu-item *ngIf=(correspondData.showButtons.Copy)>Copy</button>
+                    <button mat-menu-item *ngIf=(correspondData.showButtons.ReplyIntern)>Reply (Internal)</button>
+                    <button mat-menu-item (click)='transferReply(correspondData)'
+                      *ngIf=(correspondData.showButtons.ReplyTrans)>Reply (Transfer)</button>
+                    <button mat-menu-item *ngIf=(correspondData.showButtons.SaveCorr)>Save Correspondence</button>
+                    <button mat-menu-item *ngIf=(correspondData.showButtons.Delete)>Delete</button>
+                    <button mat-menu-item *ngIf=(correspondData.showButtons.DownloadAttach)
+                      (click)="downloadAttachmentsDialogBox(correspondData)">Download
+                      Attachments</button>
+                    <button mat-menu-item *ngIf=(correspondData.showButtons.PrintBarcode)>Print Barcode</button>
                   </mat-menu>
-                </li> 
+                </li>
               </ul>
               <div class="priview_wrapper" [class.active]="correspondData === previewViewCorrespondence">
                 <div class="priview_header">
-                  <button class="pre_close" (click)="previewViewWrapper(!correspondData)"><img src="{{basehref}}assets/images/icons/delete-button.svg" alt=""></button>
+                  <button class="pre_close" (click)="previewViewWrapper(!correspondData)"><img
+                      src="{{basehref}}assets/images/icons/delete-button.svg" alt=""></button>
                   <a (click)="routeToDetailsPage(correspondData)" class="oppr_icon_001">
-                          <img matTooltip="Open" src="{{basehref}}assets/images/icons/external-link-white.svg" alt="">
-                        </a>
+                    <img matTooltip="Open" src="{{basehref}}assets/images/icons/external-link-white.svg" alt="">
+                  </a>
                   <button class="oppr_icon_002" (click)="previewViewWrapper(!correspondData)">
-                          <img  matTooltip="Quick view" (click)="quickViewWrapper(correspondData)" src="{{basehref}}assets/images/icons/info_icon-white.svg" alt="">
-                        </button>
+                    <img matTooltip="Quick view" (click)="quickViewWrapper(correspondData)"
+                      src="{{basehref}}assets/images/icons/info_icon-white.svg" alt="">
+                  </button>
                   <!-- <div class="table_004_wrapper">
                     <table class="table_004">
                       <tr>
@@ -157,13 +171,15 @@
               </div>
               <div class="priview_wrapper qk_view active" [class.active]="correspondData === quickViewCorrespondence">
                 <div class="priview_header">
-                  <button class="pre_close pre_all_clos" (click)="quickViewWrapper(!correspondData)"><img src="{{basehref}}assets/images/icons/delete-button.svg" alt=""></button>
+                  <button class="pre_close pre_all_clos" (click)="quickViewWrapper(!correspondData)"><img
+                      src="{{basehref}}assets/images/icons/delete-button.svg" alt=""></button>
                   <a matTooltip="Open" (click)="routeToDetailsPage(correspondData)" class="oppr_icon_001">
-                            <img src="{{basehref}}assets/images/icons/external-link-white.svg" alt="">
-                          </a>
+                    <img src="{{basehref}}assets/images/icons/external-link-white.svg" alt="">
+                  </a>
                   <button class="oppr_icon_002" (click)="quickViewWrapper(!correspondData)">
-                            <img  matTooltip="Preview" (click)="previewViewWrapper(correspondData)" src="{{basehref}}assets/images/icons/eye-close-up-white.svg" alt="">
-                          </button>
+                    <img matTooltip="Preview" (click)="previewViewWrapper(correspondData)"
+                      src="{{basehref}}assets/images/icons/eye-close-up-white.svg" alt="">
+                  </button>
                   <p class="heading_001 blt_text mb-4">{{correspondData.EnglishSubject}}</p>
                   <p class="text_16 blt_text">ID</p>
                   <p class="text_16"># {{correspondData.ReferenceNumber}}</p>

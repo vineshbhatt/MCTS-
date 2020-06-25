@@ -106,7 +106,9 @@ import { CurrentDelegationsComponent } from './side-navigation/current-delegatio
 import { DelegationReportComponent } from './side-navigation/delegation-report/delegation-report.component';
 import { LinkedCorrDialogComponent } from './dialog-boxes/linked-corr-dialog/linked-corr-dialog.component';
 import { FilesSelectComponent } from './shared-components/files-select/files-select.component';
-import { LinkedCorrespondencesComponent } from './shared-components/linked-correspondences/linked-correspondences.component'
+import { LinkedCorrespondencesComponent } from './shared-components/linked-correspondences/linked-correspondences.component';
+import { FullSearchComponent } from './shared-components/full-search/full-search.component';
+import { DownloadAttachtmentsDialogComponent } from './dialog-boxes/download-attachtments-dialog/download-attachtments-dialog.component'
 
 
 @NgModule({
@@ -223,7 +225,9 @@ import { LinkedCorrespondencesComponent } from './shared-components/linked-corre
     DelegationReportComponent,
     LinkedCorrDialogComponent,
     FilesSelectComponent,
-    LinkedCorrespondencesComponent
+    LinkedCorrespondencesComponent,
+    FullSearchComponent,
+    DownloadAttachtmentsDialogComponent
   ],
   entryComponents: [
     MailDetailView,
@@ -243,7 +247,8 @@ import { LinkedCorrespondencesComponent } from './shared-components/linked-corre
     NewDelegationComponent,
     CurrentDelegationsComponent,
     DelegationReportComponent,
-    LinkedCorrDialogComponent
+    LinkedCorrDialogComponent,
+    DownloadAttachtmentsDialogComponent
   ],
   providers: [ErrorHandlerFctsService, NotificationService, DatePipe]
 })

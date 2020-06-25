@@ -54,27 +54,28 @@ export class FilesSelectComponent implements OnInit {
   public loadStep = 20;
   public LazyLoad;
   public searchValue: string;
+  public currentFolderSelected = false;
+  public fDestination = 'false';
   @Input() DataID: string;
   @Input() multiple: boolean;
+  @Input() getParentStructure: boolean;
+  @Input() outputActionIdent: string;
   @Output() backtodoc = new EventEmitter<number>();
+  @Output() outputAction = new EventEmitter<any>();
   @ViewChild(NgScrollbar) scrollbarRef: NgScrollbar;
   unsubscriber$ = Subscription.EMPTY;
 
+  // types that can be a destination
+  public folderTypes = ['0', '1'];
   // table fields
   FilesDisplayedColumns: string[] = ['Select', 'Type', 'Name', 'Size'];
   // objects for tables loop
   FilesTableStructure = [
+    { 'columnDef': 'Select', 'columnName': '', 'width': '5' },
     { 'columnDef': 'Type', 'columnName': 'Type', 'width': '5' },
     { 'columnDef': 'Name', 'columnName': 'Name', 'width': '75' },
     { 'columnDef': 'Size', 'columnName': 'Size', 'width': '15' }
   ];
-  // TODO constants for correspondence insert (make it global)
-  InsertFileConstants = {
-    'ConnectedType': 'Dtree',
-    'ReferenceType': 'Correspondence',
-    'ConnectionType': '1',
-    'Deleted': '0'
-  };
 
   constructor(
     public correspondenceShareService: CorrespondenceShareService,
@@ -83,12 +84,17 @@ export class FilesSelectComponent implements OnInit {
 
   ngOnInit() {
     this.currentReferenceID = this.DataID;
-    this.getFolderProperties(this.currentReferenceID, true);
+    this.getFolderProperties(this.currentReferenceID, this.getParentStructure);
   }
 
   // tslint:disable-next-line: use-life-cycle-interface
   ngOnDestroy() {
     this.unsubscriber$.unsubscribe();
+  }
+
+  onlySelectable(event) {
+    event.checked ? this.fDestination = 'true' : this.fDestination = 'false';
+    this.searchFunction();
   }
 
   scrollSubscriberFunction(searchStr: string) {
@@ -114,9 +120,11 @@ export class FilesSelectComponent implements OnInit {
 
   getFolderProperties(folder_id: string, IsParent) {
     this.searchValue = '';
+    this.currentFolderSelected = false;
+    this.selection.clear();
     this.scrollUnubscriberFunction();
     this.activeSearchSpinner = true;
-    this.correspondenceShareService.getFolderProperties(folder_id, this.StartRow, this.loadStep, IsParent).subscribe(
+    this.correspondenceShareService.getFolderProperties(folder_id, this.StartRow, this.loadStep, IsParent, this.fDestination).subscribe(
       response => {
         if (response.hasOwnProperty('FolderHierarchy') && response.FolderHierarchy.length > 0) {
           this.folderHierarchy = response.FolderHierarchy;
@@ -143,11 +151,16 @@ export class FilesSelectComponent implements OnInit {
     );
   }
 
+  searchFunction(): boolean {
+    this.fileSearch(this.searchValue);
+    return false;
+  }
+
   fileSearch(searchValue) {
     this.activeSearchSpinner = true;
-
+    this.selection.clear();
     this.scrollUnubscriberFunction();
-    this.correspondenceShareService.getOnlyFolderContent(this.currentReferenceID, this.StartRow, this.loadStep, searchValue).subscribe(
+    this.correspondenceShareService.getOnlyFolderContent(this.currentReferenceID, this.StartRow, this.loadStep, this.fDestination, searchValue).subscribe(
       response => {
         this.dataSourceBuffer = response;
         this.dataSource = new MatTableDataSource<FolderFiles>(this.dataSourceBuffer);
@@ -184,11 +197,16 @@ export class FilesSelectComponent implements OnInit {
   }
 
   changeCheckbox(event, row: FolderFiles): void {
-    if (event && !this.multiple) {
+    if (this.multiple) {
+      if (event) {
+        this.selection.toggle(row);
+      }
+    } else {
       this.selection.clear();
-      this.selection.toggle(row);
-    } else if (event) {
-      this.selection.toggle(row);
+      this.currentFolderSelected = false;
+      if (event.checked) {
+        this.selection.toggle(row);
+      }
     }
   }
 
@@ -196,24 +214,37 @@ export class FilesSelectComponent implements OnInit {
     this.backtodoc.next(0);
   }
 
+  outputActionTrigger(): void {
+    let arr = new Array;
+    this.selection.selected.forEach(element => {
+      arr.push(element.DataID);
+    });
+    if (this.currentFolderSelected) {
+      arr.push(this.currentReferenceID);
+    }
+    this.outputAction.next(arr);
+    this.BackToDocList();
+    this.selection.clear();
+  }
+
   threadedMoving(DataID) {
     this.currentReferenceID = DataID;
     this.getFolderProperties(this.currentReferenceID, true);
   }
 
-  addFileConnection() {
-    let arr = new Array;
+  currentFolderSelect() {
+    this.selection.clear();
+    this.currentFolderSelected = true;
+  }
+
+  isCheckedrow(row: FolderFiles): boolean {
+    let isChecked = false;
     this.selection.selected.forEach(element => {
-      arr.push(element.DataID);
+      if (element.position === row.position) {
+        isChecked = true;
+      }
     });
-    this.correspondenceShareService.insertDocConnection(this.DataID, arr.join(), this.InsertFileConstants)
-      .subscribe(response => {
-        this.selection.clear();
-        this.BackToDocList();
-      },
-        responseError => {
-          this.errorHandlerFctsService.handleError(responseError).subscribe();
-        });
+    return isChecked;
   }
 }
 
@@ -240,7 +271,7 @@ export class LazyLoad {
     this.loadInProcess = true;
     this.StartRow += this.filesSelectComponent.loadStep;
     this.EndRow += this.filesSelectComponent.loadStep;
-    this.correspondenceShareService.getOnlyFolderContent(this.filesSelectComponent.currentReferenceID, this.StartRow, this.EndRow, searchStr).subscribe(
+    this.correspondenceShareService.getOnlyFolderContent(this.filesSelectComponent.currentReferenceID, this.StartRow, this.EndRow, this.filesSelectComponent.fDestination, searchStr).subscribe(
       response => {
         this.filesSelectComponent.dataSourceBuffer = this.filesSelectComponent.dataSourceBuffer.concat(response);
         this.filesSelectComponent.dataSource = new MatTableDataSource<FolderFiles>(this.filesSelectComponent.dataSourceBuffer);

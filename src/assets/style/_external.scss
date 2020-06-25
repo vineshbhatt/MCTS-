@@ -83,7 +83,9 @@ app-external {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    margin: 45px 0;
+    /* margin: 45px 0; */
+    margin: 30px 0 30px -15px;
+    padding: 15px 0 15px 15px;
 
     .col_50_cust {
       flex: 1 1 50%;
@@ -370,7 +372,7 @@ app-external {
   }
 }
 
-.new_inbound_container {
+.new_inbound_container, .advanced-full-search {
   padding: 35px 0px;
 
   .search_wrapper {
@@ -985,4 +987,98 @@ app-create-correspondence {
 
 .comments-area-fullwidth {
   width: 100%;
+}
+
+.full-search-form{
+  position: relative;
+  width:350px;
+  color: #7a7c87;
+  font-size: 14px;
+  border: 2px solid #ededed; //#f3f3f3;
+  z-index: 1;
+/*     transition: width 0.225s; */
+
+  ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+      color: rgb(185, 176, 176);
+      opacity: 1; /* Firefox */
+  }
+    
+  :-ms-input-placeholder { /* Internet Explorer 10-11 */
+      color: rgb(185, 176, 176);
+  }
+    
+   ::-ms-input-placeholder { /* Microsoft Edge */
+      color: rgb(185, 176, 176);
+  }
+    
+  .search-header{
+      display: flex;
+      flex-direction: row;
+      margin: 5px;
+      .search-glass-img{
+          width: 25px;
+          height: 25px;
+          display: block;
+          margin: auto;
+          cursor: pointer;
+      }
+      .full-search-input-holder{
+          width: 100%;
+          .full-search-input{
+              height: 30px;
+              width: 100%;
+              margin: 0 10px;
+              border: none;
+              outline-width: 0;
+          }
+      }
+      .open-search-options-button{
+          height: 30px;
+          width: 40px;
+          /* border: 1px solid #ffffff; */
+          border: none;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-color: white;
+          color: #a4a4a4;
+          outline-width: 0;
+      }
+  }
+  .expanded-options{
+      position: absolute;
+      left: -2px;
+      width: 350px;
+      box-shadow: none;
+      background-color: white;
+      border-radius: 0 0 12px 12px;
+      .search-options{
+          border-top: 2px solid #ededed;    
+          .options-selector {
+              width: 50%;
+              margin: 20px;
+          }
+      }
+      .action-buttons{
+          display:flex;
+          flex-direction: row;
+          justify-content: space-between;
+          border-top: 2px solid #ededed; 
+          .btn_002{
+              margin: 15px 20px;
+          }
+      }
+  }
+}
+
+.full-search-form.full-search-with-details{
+  border-radius: 12px 12px 0 0;
+  .expanded-options{
+      border: 2px solid #ededed; 
+      border-top: none;
+  }
+}
+
+.full-search-form.full-search-without-details{
+  border-radius: 12px;
 }

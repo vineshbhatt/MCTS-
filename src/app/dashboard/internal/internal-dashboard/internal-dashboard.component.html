@@ -1,12 +1,12 @@
 <div class="header_location_wrapper">
-    <div class="header_back">
-      <a href="http://manotcst02.mannaicorp.com.qa/otcs/cs.exe/app/nodes/2000">  
-        <span matTooltip="Back to CS">
-         <img class="homeimg" src="{{basehref}}assets/images/icons/home.svg" alt="">
-      </span>     
-      </a>
-    </div>
+  <div class="header_back">
+    <a href="http://manotcst02.mannaicorp.com.qa/otcs/cs.exe/app/nodes/2000">
+      <span matTooltip="Back to CS">
+        <img class="homeimg" src="{{basehref}}assets/images/icons/home.svg" alt="">
+      </span>
+    </a>
   </div>
+</div>
 <div class="header_search_wrapper">
   <div class="header_text_area" *ngFor="let userDatas of userData">
     <div *ngFor="let userDetail of userDatas.userDetails">
@@ -17,11 +17,13 @@
       <p class="text_15 color_002">{{userDetail.userMessage}}</p>
     </div>
   </div>
-  <div class="header_search">
+  <!-- <div class="header_search">
     <input type="text" class="search_box" placeholder="search">
-  </div>
+  </div> -->
+  <app-full-search (runFullSearch)="fullSearchParametersSet($event)" (showSearchComponent)="toggleSearchCharts($event)">
+  </app-full-search>
 </div>
-<div class="cust_row_001_wrapper">
+<div [@slideInOut]="chartsOpen" class="cust_row_001_wrapper">
   <div class="col_50_cust col_2_cust_wrp">
     <div class="col_2_cust_50">
       <div class="chart_001">
@@ -164,6 +166,13 @@
     </div>
   </div>
 </div>
+<div [@slideInOut]="searchopen" class="advanced-full-search">
+  <!--   <button (click)="showAdvancedSearch" class="btn_002" (click)="toggleHelpMenu()">Show charts</button> -->
+  <app-searchfilter [searchExtOrgFieldShow]="searchExtOrgFieldShow"
+    [searchSenderDeptFieldShow]="searchSenderDeptFieldShow"
+    [searchRecipientDeptFieldShow]="searchRecipientDeptFieldShow" [isFullSearch]="true"
+    (searchDashboardButtonClicked)="onSearchDashboardButtonClick($event)"></app-searchfilter>
+</div>
 <p class="text_20">Inbox</p>
 
 <!-- <div [ngClass]="correspondData.selectedValue ? 'selectedWithCheckbox' : 'unSelected'" *ngFor="let correspondData of correspondenceData">{{correspondData}}</div> -->
@@ -195,7 +204,8 @@
       <tbody [class.sub_correspondence_open]="correspondData === openedSubCorrespond" class="flex-container flex-column"
         *ngFor="let correspondData of correspondenceData | paginate: { id: 'server', itemsPerPage: itemsPerPage, currentPage: pagenumber, totalItems: totalCount }">
         <!-- <tr [ngClass]="correspondData.selectedValue ? 'selectedWithCheckbox' : 'unSelected'" *ngFor="let correspondData of correspondenceData | paginate: { id: 'server', itemsPerPage: itemsPerPage, currentPage: pagenumber, totalItems: totalCount }" -->
-        <tr [ngClass]="correspondData.selectedValue ? 'selectedWithCheckbox' : 'unSelected'" class="mat-row"
+        <tr [ngClass]="correspondData.selectedValue ? 'selectedWithCheckbox' : 'unSelected'"
+          class="mat-row {{CorrBacklight(correspondData, false)}}"
           [class.selected]="correspondData === selectedCorrespondence">
           <td>
             <!--         <mat-checkbox [(ngModel)]="correspondData.selectedValue" [checked]="selection.isSelected(correspondData)"></mat-checkbox>
@@ -210,7 +220,8 @@
                 <span *ngFor="let inboxCorrespondenceIcons of correspondData.inboxCorrespondenceIcon"
                   [matTooltip]="inboxCorrespondenceIcons.title" class="icon_004"
                   [ngClass]="inboxCorrespondenceIcons.active">
-                  <img class="inbox_icon_img" [src]="inboxCorrespondenceIcons.icon" alt="" (click) = "correspondenceIconsFunction(correspondData,inboxCorrespondenceIcons.runfunc)">
+                  <img class="inbox_icon_img" [src]="inboxCorrespondenceIcons.icon" alt=""
+                    (click)="correspondenceIconsFunction(correspondData,inboxCorrespondenceIcons.runfunc)">
                 </span>
               </div>
               <div class="sub_correspondence">
@@ -258,32 +269,38 @@
                   <img src="{{basehref}}assets/images/icons/external-link.svg" alt="">
                 </a>
               </li>
-              <li *ngIf="correspondData.showButtons.Preview" class="inbt_icons_wrapper" (click)="onSelect(correspondData)">
+              <li *ngIf="correspondData.showButtons.Preview" class="inbt_icons_wrapper"
+                (click)="onSelect(correspondData)">
                 <button class="inbt_icon_btn" (click)="previewViewWrapper(correspondData)">
                   <img src="{{basehref}}assets/images/icons/eye-close-up.svg" alt="">
                 </button>
               </li>
               <li class="inbt_icons_wrapper" *ngIf=(correspondData.showButtons.ShowMore)>
-                <button (click)="onSelect(correspondData)" [matMenuTriggerFor]="options_001" xPosition="after" yPosition="above" mat-button
-                  class="dote_btn">
-                        <img src="{{basehref}}assets/images/icons/menu.svg" alt="">
-                      </button>
+                <button (click)="onSelect(correspondData)" [matMenuTriggerFor]="options_001" xPosition="after"
+                  yPosition="above" mat-button class="dote_btn">
+                  <img src="{{basehref}}assets/images/icons/menu.svg" alt="">
+                </button>
                 <mat-menu #options_001="matMenu">
                   <!-- <button mat-menu-item (click)="showWorkflowAudit(correspondData.VolumeID)">Workflow Audit</button> -->
-                  <button mat-menu-item (click)="OpenDashCompleteDialog(correspondData, '1')" *ngIf=(correspondData.showButtons.Complete)>Complete</button>
-                  <button mat-menu-item (click)="OpenDashCompleteDialog(correspondData, '2')" *ngIf=(correspondData.showButtons.Archive)>Archive</button>
-                  <button mat-menu-item (click)="startRecall(correspondData, 'SimpleRecall')" *ngIf=(correspondData.showButtons.Recall)>Recall</button>
-                  <button mat-menu-item  *ngIf=(correspondData.showButtons.MRRecall)>MR Recall</button>
-                  <button mat-menu-item  *ngIf=(correspondData.showButtons.ReturnToAS)>Returt to AS</button>
-                  <button mat-menu-item  *ngIf=(correspondData.showButtons.Copy)>Copy</button>
-                  <button mat-menu-item  *ngIf=(correspondData.showButtons.ReplyIntern)>Reply (Internal)</button>
-                  <button mat-menu-item (click)='transferReply(correspondData)' *ngIf=(correspondData.showButtons.ReplyTrans)>Reply (Transfer)</button>
-                  <button mat-menu-item  *ngIf=(correspondData.showButtons.SaveCorr)>Save Correspondence</button>
-                  <button mat-menu-item  *ngIf=(correspondData.showButtons.Delete)>Delete</button>
-                  <button mat-menu-item  *ngIf=(correspondData.showButtons.DownloadAttach)>Download Attachments</button>
-                  <button mat-menu-item  *ngIf=(correspondData.showButtons.PrintBarcode)>Print Barcode</button>
+                  <button mat-menu-item (click)="OpenDashCompleteDialog(correspondData, '1')"
+                    *ngIf=(correspondData.showButtons.Complete)>Complete</button>
+                  <button mat-menu-item (click)="OpenDashCompleteDialog(correspondData, '2')"
+                    *ngIf=(correspondData.showButtons.Archive)>Archive</button>
+                  <button mat-menu-item (click)="startRecall(correspondData, 'SimpleRecall')"
+                    *ngIf=(correspondData.showButtons.Recall)>Recall</button>
+                  <button mat-menu-item *ngIf=(correspondData.showButtons.MRRecall)>MR Recall</button>
+                  <button mat-menu-item *ngIf=(correspondData.showButtons.ReturnToAS)>Returt to AS</button>
+                  <button mat-menu-item *ngIf=(correspondData.showButtons.Copy)>Copy</button>
+                  <button mat-menu-item *ngIf=(correspondData.showButtons.ReplyIntern)>Reply (Internal)</button>
+                  <button mat-menu-item (click)='transferReply(correspondData)'
+                    *ngIf=(correspondData.showButtons.ReplyTrans)>Reply (Transfer)</button>
+                  <button mat-menu-item *ngIf=(correspondData.showButtons.SaveCorr)>Save Correspondence</button>
+                  <button mat-menu-item *ngIf=(correspondData.showButtons.Delete)>Delete</button>
+                  <button mat-menu-item *ngIf=(correspondData.showButtons.DownloadAttach)
+                    (click)="downloadAttachmentsDialogBox(correspondData)">Download Attachments</button>
+                  <button mat-menu-item *ngIf=(correspondData.showButtons.PrintBarcode)>Print Barcode</button>
                 </mat-menu>
-              </li> 
+              </li>
             </ul>
             <div class="priview_wrapper" [class.active]="correspondData === previewViewCorrespondence">
               <div class="priview_header">

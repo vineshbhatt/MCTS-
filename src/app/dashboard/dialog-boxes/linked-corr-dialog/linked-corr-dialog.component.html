@@ -201,13 +201,15 @@
       </mat-tab>
       <mat-tab label="Second">
         <!-- Connected documents search  -->
-        <app-files-select [DataID]="data.correspondData.DataID" [multiple]="true"
-          (backtodoc)="changeDocumentTab($event)"></app-files-select>
+        <app-files-select *ngIf="DocTabIndex===1" [DataID]="data.correspondData.DataID" [multiple]="true"
+          [getParentStructure]="true" [outputActionIdent]="this.filesAction" (backtodoc)="changeDocumentTab($event)"
+          (outputAction)="addFileConnection($event)">
+        </app-files-select>
       </mat-tab>
     </mat-tab-group>
   </mat-expansion-panel>
   <!-- Threaded View -->
-  <mat-expansion-panel [expanded]="false" hideToggle>
+  <mat-expansion-panel [expanded]=" false" hideToggle>
     <mat-expansion-panel-header>
       <mat-panel-title>
         Threaded View
@@ -253,7 +255,8 @@
                   <p class="detail-definition">{{param.Definition}}: </p>&nbsp;
                   <p *ngSwitchCase="'CorrespondenceDate'">
                     {{element[param.ParameterName] | date: 'dd/MM/yyyy HH:mm'}}</p>
-                  <p *ngSwitchCase="'DispatchDate'">{{element[param.ParameterName] | date: 'dd/MM/yyyy HH:mm'}}</p>
+                  <p *ngSwitchCase="'DispatchDate'">{{element[param.ParameterName] | date: 'dd/MM/yyyy HH:mm'}}
+                  </p>
                   <p *ngSwitchDefault>{{element[param.ParameterName]}}</p>
                 </div>
               </div>
