@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, Inject, OnInit, Pipe, PipeTransform, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, Pipe, PipeTransform, ViewChild, ElementRef } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -8,7 +8,7 @@ import { CorrespondenceDetailsService } from 'src/app/dashboard/services/corresp
 import { CorrespondenceShareService } from 'src/app/dashboard/services/correspondence-share.service';
 import { ErrorHandlerFctsService } from '../../services/error-handler-fcts.service';
 import { FCTSDashBoard } from '../../../../environments/environment';
-import { CorrespondenenceDetailsModel } from '../../models/CorrespondenenceDetails.model';
+import { CorrespondenenceDetailsModel, TableStructureParameters } from '../../models/CorrespondenenceDetails.model';
 import { StatusRequest } from '../../models/Shared.model';
 import { CorrResponse } from '../../services/correspondence-response.model';
 import { DocumentPreview } from '../../services/documentpreview.model';
@@ -23,12 +23,23 @@ import { TransferReplyDialogComponent } from '../../dialog-boxes/transfer-reply-
 import { multiLanguageTranslator } from 'src/assets/translator/index';
 import { MultipleApproveComponent, MultipleApproveInputData } from 'src/app/dashboard/shared-components/multiple-approve/multiple-approve.component';
 import { DistributionComponent } from 'src/app/dashboard/shared-components/distribution/distribution.component';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { ResizedEvent } from 'angular-resize-event';
+
 
 @Component({
   selector: 'app-correspondence-detail',
   templateUrl: './correspondence-detail.component.html',
-  styleUrls: ['./correspondence-detail.component.scss']
+  styleUrls: ['./correspondence-detail.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ]
 })
+
 export class CorrespondenceDetailComponent implements OnInit {
   private _globalConstants = this._appLoadConstService.getConstants();
 
@@ -95,6 +106,19 @@ export class CorrespondenceDetailComponent implements OnInit {
   // distribution
   showPreviewCoverLetter = true;
   showDistributionTreeArea = false;
+  // sendeer tbl structure
+  senderTableStructureFull: TableStructureParameters[] = [
+    { 'columnDef': 'OrganizationName', 'columnName': 'Organization', 'priority': 1 },
+    { 'columnDef': 'DepartmentName', 'columnName': 'Department', 'priority': 1 },
+    { 'columnDef': 'DepartmentNativeName', 'columnName': 'On Behalf', 'priority': 2 },
+    { 'columnDef': 'Name', 'columnName': 'Name', 'priority': 1 },
+  ];
+  senderTableStructure: TableStructureParameters[];
+  senderTableStructureDetails: TableStructureParameters[];
+  senderColWidth: number;
+  senderIconWidth: number;
+  senderIconWidthConst = 5;
+  @ViewChild('senderContainer') senderContainer: ElementRef;
 
   ngOnInit() {
     this.VolumeID = this.route.snapshot.queryParamMap.get('VolumeID');
@@ -153,6 +177,35 @@ export class CorrespondenceDetailComponent implements OnInit {
         this.setMultiApproveParameters();
       });
 
+  }
+
+  displayColumnsForm(width: number): void {
+    const priority = this._correspondenceDetailsService.definePriorityToShow(width);
+    this.senderTableStructure = [];
+    this.senderTableStructureDetails = [];
+    let senderTableLength = 0;
+    this.senderTableStructureFull.forEach(element => {
+      if (element.priority > priority) {
+        if (this.CorrespondencType === 'Incoming' && element.columnDef === 'DepartmentNativeName') {
+          // skip
+        } else {
+          this.senderTableStructureDetails.push(element);
+        }
+      } else {
+        if (this.CorrespondencType === 'Incoming' && element.columnDef === 'DepartmentNativeName') {
+          // skip
+        } else {
+          this.senderTableStructure.push(element);
+          senderTableLength += element.columnDef !== 'Icon' ? 1 : 0;
+        }
+      }
+    });
+    this.senderIconWidth = this.senderTableStructureDetails.length > 0 ? this.senderIconWidthConst : 0;
+    this.senderColWidth = Math.floor((100 - this.senderIconWidth) / senderTableLength);
+  }
+
+  onResized(event: ResizedEvent) {
+    this.displayColumnsForm(event.newWidth);
   }
 
   getCorrespondenceCCDetail(VolumeID: String, CorrFlowType: String): void {
@@ -437,5 +490,27 @@ export class CorrespondenceDetailComponent implements OnInit {
 
   distributionOutputAction(): void {
     this.distributionSection.getDistributionData(false);
+  }
+
+  editFile(nodeID: number, sectionName: string): void {
+    const closeMe = '&uiType=2&nextURL=http%3A%2F%2F' + FCTSDashBoard.CSUrlShort + FCTSDashBoard.CloseMe;
+    const url = this.CSUrl + '?func=Edit.Edit&nodeid=' + nodeID + closeMe;
+    const EditDocWindow: any = window.open(url, '_blank');
+    let iterations = 0;
+    const interval = setInterval(() => {
+      iterations++;
+      if (EditDocWindow.closed) {
+        if (sectionName === 'COVER') {
+          this.getCorrespondenceCoverDetail(this.VolumeID);
+        } else if (sectionName === 'ATTACHMENT') {
+          this.getCorrespondenceAttachmentsDetail();
+        } else if (sectionName === 'MISC') {
+        }
+        clearInterval(interval);
+      }
+      if (iterations > 10) {
+        clearInterval(interval);
+      }
+    }, 1000);
   }
 }

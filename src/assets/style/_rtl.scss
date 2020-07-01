@@ -125,11 +125,13 @@
                 border-right: 0px solid transparent;
             }
         }
-        .corres_table_wrapper .table {
-           td,th {
-            text-align: right;
-           }
-        }
+        .corres_table_wrapper {
+            .table, .sender-table, .table_cover_letter, .table_attachments {
+                td,th {
+                 text-align: right;
+                }
+             }  
+        } 
     }
     .show_preview_btn span {
         padding-left: 0;

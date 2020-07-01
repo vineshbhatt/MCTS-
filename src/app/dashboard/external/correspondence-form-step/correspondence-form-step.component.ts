@@ -1,4 +1,4 @@
-import { Component, OnInit, VERSION } from '@angular/core';
+import { Component, OnInit, VERSION, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
@@ -11,7 +11,7 @@ import { NgxFileDropEntry, FileSystemFileEntry, FileSystemDirectoryEntry } from 
 import { MatDialog } from '@angular/material';
 
 import { FCTSDashBoard } from 'src/environments/environment';
-import { OrgNameAutoFillModel, CorrespondenceFolderModel, CCUserSetModel, CorrespondenenceDetailsModel } from 'src/app/dashboard/models/CorrespondenenceDetails.model';
+import { OrgNameAutoFillModel, CorrespondenceFolderModel, CCUserSetModel, CorrespondenenceDetailsModel, TableStructureParameters } from 'src/app/dashboard/models/CorrespondenenceDetails.model';
 import { CorrResponse, CorrespondenceFormData, SenderDetailsData, RecipientDetailsData, CommentsNode } from '../../services/correspondence-response.model';
 
 import { SendBackDialogComponent } from '../../dialog-boxes/send-back-dialog/send-back-dialog.component';
@@ -34,11 +34,21 @@ import { ShowSections, ShowCorrItems, ShowWFButtons } from 'src/app/dashboard/ex
 import { NotificationService } from 'src/app/dashboard/services/notification.service';
 import { UploadSession } from 'src/app/dashboard/base-classes/base-correspondence-csactions/base-correspondence.component';
 import { HttpEventType, HttpProgressEvent } from '@angular/common/http';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { ResizedEvent } from 'angular-resize-event';
+
 
 @Component({
   selector: 'app-correspondence-form-step',
   templateUrl: './correspondence-form-step.component.html',
-  styleUrls: ['./correspondence-form-step.component.scss']
+  styleUrls: ['./correspondence-form-step.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ]
 })
 
 export class CorrespondenceFormStepComponent implements OnInit {
@@ -171,6 +181,19 @@ export class CorrespondenceFormStepComponent implements OnInit {
   attachLoaded = false;
   progress = 0;
 
+  // sendeer tbl structure
+  senderTableStructureFull: TableStructureParameters[] = [
+    { 'columnDef': 'OrganizationName', 'columnName': 'Organization', 'priority': 1 },
+    { 'columnDef': 'DepartmentName', 'columnName': 'Department', 'priority': 1 },
+    { 'columnDef': 'Name', 'columnName': 'Name', 'priority': 2 },
+  ];
+  senderTableStructure: TableStructureParameters[];
+  senderTableStructureDetails: TableStructureParameters[];
+  senderColWidth: number;
+  senderIconWidth: number;
+  senderIconWidthConst = 4;
+  @ViewChild('senderContainer') senderContainer: ElementRef;
+
   ngOnInit() {
     this.VolumeID = this.route.snapshot.queryParamMap.get('VolumeID');
     this.CorrespondencType = this.route.snapshot.queryParamMap.get('CorrType');
@@ -287,17 +310,39 @@ export class CorrespondenceFormStepComponent implements OnInit {
 
   getCorrespondenceSenderDetails(): void {
     this._correspondenceDetailsService
-      .getCorrespondenceSenderDetails(this.VolumeID, this.CorrespondencType, false, '')
+      .getCorrespondenceSenderDetails(this.VolumeID, this.CorrespondencType, false, '', 0)
       .subscribe(
         correspondenceSenderDetailsData => {
           if ((typeof correspondenceSenderDetailsData[0].myRows !== 'undefined') && correspondenceSenderDetailsData[0].myRows.length > 0) {
             this.correspondenceSenderDetailsData = correspondenceSenderDetailsData[0].myRows[0];
+            this.displayColumnsForm(this.senderContainer.nativeElement.clientWidth);
           }
         },
         responseError => {
           this._errorHandlerFctsService.handleError(responseError).subscribe();
         }
       );
+  }
+
+  displayColumnsForm(width: number): void {
+    const priority = this.correspondenceDetailsService.definePriorityToShow(width);
+    this.senderTableStructure = [];
+    this.senderTableStructureDetails = [];
+    let senderTableLength = 0;
+    this.senderTableStructureFull.forEach(element => {
+      if (element.priority > priority) {
+        this.senderTableStructureDetails.push(element);
+      } else {
+        this.senderTableStructure.push(element);
+        senderTableLength += element.columnDef !== 'Icon' ? 1 : 0;
+      }
+    });
+    this.senderIconWidth = this.senderTableStructureDetails.length > 0 ? (this.senderIconWidthConst * 2) : this.senderIconWidthConst;
+    this.senderColWidth = Math.floor((100 - this.senderIconWidth) / senderTableLength);
+  }
+
+  onResized(event: ResizedEvent) {
+    this.displayColumnsForm(event.newWidth);
   }
 
   getCorrespondenceRecipientDetails(): void {
@@ -1691,5 +1736,27 @@ export class CorrespondenceFormStepComponent implements OnInit {
 
   distributionOutputAction(): void {
     this.submitCorrespondenceInfo('SendOn');
+  }
+
+  editFile(nodeID: number, sectionName: string): void {
+    const closeMe = '&uiType=2&nextURL=http%3A%2F%2F' + FCTSDashBoard.CSUrlShort + FCTSDashBoard.CloseMe;
+    const url = this.CSUrl + '?func=Edit.Edit&nodeid=' + nodeID + closeMe;
+    const EditDocWindow: any = window.open(url, '_blank');
+    let iterations = 0;
+    const interval = setInterval(() => {
+      iterations++;
+      if (EditDocWindow.closed) {
+        if (sectionName === 'COVER') {
+          this.getCoverSection();
+        } else if (sectionName === 'ATTACHMENT') {
+          this.getAttachmentSection();
+        } else if (sectionName === 'MISC') {
+        }
+        clearInterval(interval);
+      }
+      if (iterations > 10) {
+        clearInterval(interval);
+      }
+    }, 1000);
   }
 }

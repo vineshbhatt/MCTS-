@@ -119,8 +119,10 @@ export const FCTSDashBoard = {
   DistributionsChartEmployees: 'CTA_DistributionsChartEmployees',
   GetDistributionUsers: 'CTA_GetDistributionUsers',
   CreateDistribution: 'CTA_CreateDistribution',
+  CloseMe: '%2Fimg%2Fcsui%2Fpages%2Fclose.html',
 
   BaseHref: '/img/fctsangular/fctsapp/',
   //BaseHref: '/',
+  CSUrlShort: 'mv2cdmsadp02',
   CSUrl: 'http://mv2cdmsadp02/otcs/cs.exe'
 };

@@ -6,7 +6,8 @@ import { CorrespondenceDetailsService } from 'src/app/dashboard/services/corresp
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CorrespondenceShareService } from 'src/app/dashboard/services/correspondence-share.service';
 import { TransferAttributes } from 'src/app/dashboard/models/DashboardFilter';
-import { TableStructureParameters, DistributionDetailsParameters, DistributionSaveObj } from 'src/app/dashboard/models/distribution.model';
+import { DistributionDetailsParameters, DistributionSaveObj } from 'src/app/dashboard/models/distribution.model';
+import { TableStructureParameters } from 'src/app/dashboard/models/CorrespondenenceDetails.model';
 import { ResizedEvent } from 'angular-resize-event';
 
 @Component({

@@ -4,8 +4,8 @@ import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handle
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ResizedEvent } from 'angular-resize-event';
 import { FCTSDashBoard } from 'src/environments/environment';
-import { CorrespondenenceDetailsModel } from 'src/app/dashboard/models/CorrespondenenceDetails.model';
-import { TableStructureParameters, DistributionDataParameters } from 'src/app/dashboard/models/distribution.model';
+import { CorrespondenenceDetailsModel, TableStructureParameters } from 'src/app/dashboard/models/CorrespondenenceDetails.model';
+import { DistributionDataParameters } from 'src/app/dashboard/models/distribution.model';
 
 
 @Component({

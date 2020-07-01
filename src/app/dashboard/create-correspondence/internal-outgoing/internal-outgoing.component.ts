@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChild } from '@angular/core';
-import { OrgNameAutoFillModel, CCUserSetModel, ColUserSetModel, SyncDocumentMetadataModel } from 'src/app/dashboard/models/CorrespondenenceDetails.model';
+import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { OrgNameAutoFillModel, CCUserSetModel, ColUserSetModel, SyncDocumentMetadataModel, TableStructureParameters } from 'src/app/dashboard/models/CorrespondenenceDetails.model';
 import { OrganizationalChartService } from 'src/app/dashboard/services/organizationalChart.service';
 import { organizationalChartModel, organizationalChartEmployeeModel } from 'src/app/dashboard/models/organizational-Chart.model';
 import { Location } from '@angular/common'
@@ -23,13 +23,21 @@ import { ErrorHandlerFctsService } from '../../services/error-handler-fcts.servi
 import { AppLoadConstService } from 'src/app/app-load-const.service';
 import { multiLanguageTranslator } from 'src/assets/translator/index';
 import { MultipleApproveComponent, MultipleApproveInputData, CurrentApprovers } from 'src/app/dashboard/shared-components/multiple-approve/multiple-approve.component';
-
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { ResizedEvent } from 'angular-resize-event';
 
 
 @Component({
   selector: 'new-internal-outgoing',
   templateUrl: './internal-outgoing.component.html',
-  styleUrls: ['./internal-outgoing.component.scss']
+  styleUrls: ['./internal-outgoing.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 
 
@@ -128,6 +136,19 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
   approve: MultipleApproveInputData;
   @ViewChild(MultipleApproveComponent) multiApprove;
   confidential = false;
+  // sendeer tbl structure
+  senderTableStructureFull: TableStructureParameters[] = [
+    { 'columnDef': 'OrganizationName', 'columnName': 'Organization', 'priority': 2 },
+    { 'columnDef': 'DepartmentName', 'columnName': 'Department', 'priority': 1 },
+    { 'columnDef': 'DepartmentNativeName', 'columnName': 'On Behalf', 'priority': 3 },
+    { 'columnDef': 'Name', 'columnName': 'Name', 'priority': 1 },
+  ];
+  senderTableStructure: TableStructureParameters[];
+  senderTableStructureDetails: TableStructureParameters[];
+  senderColWidth: number;
+  senderIconWidth: number;
+  senderIconWidthConst = 5;
+  @ViewChild('senderContainer') senderContainer: ElementRef;
 
   constructor(private _location: Location,
     private organizationalChartService: OrganizationalChartService,
@@ -822,10 +843,32 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
       .subscribe(correspondenceSenderDetailsData => {
         this.userInfo = correspondenceSenderDetailsData;
         this.senderDetailsForm.get('SenderInfo').setValue(this.userInfo);
-        if (maxApproveLevel > 0) {
+        this.displayColumnsForm(this.senderContainer.nativeElement.clientWidth);
+        if (maxApproveLevel > 0 && this.coverID) {
           this.syncCoverData();
         }
       });
+  }
+
+  displayColumnsForm(width: number): void {
+    const priority = this.correspondenceDetailsService.definePriorityToShow(width);
+    this.senderTableStructure = [];
+    this.senderTableStructureDetails = [];
+    let senderTableLength = 0;
+    this.senderTableStructureFull.forEach(element => {
+      if (element.priority > priority) {
+        this.senderTableStructureDetails.push(element);
+      } else {
+        this.senderTableStructure.push(element);
+        senderTableLength += element.columnDef !== 'Icon' ? 1 : 0;
+      }
+    });
+    this.senderIconWidth = this.senderTableStructureDetails.length > 0 ? this.senderIconWidthConst : 0;
+    this.senderColWidth = Math.floor((100 - this.senderIconWidth) / senderTableLength);
+  }
+
+  onResized(event: ResizedEvent) {
+    this.displayColumnsForm(event.newWidth);
   }
 
   syncCoverData() {

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
@@ -10,7 +10,7 @@ import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { NgxFileDropEntry } from 'ngx-file-drop';
 import { DatePipe } from '@angular/common';
 import { FCTSDashBoard } from '../../../../environments/environment';
-import { OrgNameAutoFillModel, CorrespondenceFolderModel, CCUserSetModel, CorrespondenenceDetailsModel, CorrWFTaskInfoModel, SyncDocumentMetadataModel, ColUserSetModel, TemplateModel } from 'src/app/dashboard/models/CorrespondenenceDetails.model';
+import { OrgNameAutoFillModel, CorrespondenceFolderModel, CCUserSetModel, CorrespondenenceDetailsModel, CorrWFTaskInfoModel, SyncDocumentMetadataModel, ColUserSetModel, TemplateModel, TableStructureParameters } from 'src/app/dashboard/models/CorrespondenenceDetails.model';
 import { CorrResponse, CorrespondenceFormData, SenderDetailsData, RecipientDetailsData, CommentsNode } from '../../services/correspondence-response.model';
 import { organizationalChartModel, organizationalChartEmployeeModel } from 'src/app/dashboard/models/organizational-Chart.model';
 import { DocumentPreview } from '../../services/documentpreview.model';
@@ -33,12 +33,20 @@ import { TransferDialogBox } from '../../external/correspondence-detail/correspo
 import { multiLanguageTranslator } from 'src/assets/translator/index';
 import { MultipleApproveComponent, MultipleApproveInputData, CurrentApprovers } from 'src/app/dashboard/shared-components/multiple-approve/multiple-approve.component';
 import { DistributionComponent } from 'src/app/dashboard/shared-components/distribution/distribution.component';
-
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { ResizedEvent } from 'angular-resize-event';
 
 @Component({
   selector: 'app-correspondence-form-step-intout',
   templateUrl: './correspondence-form-step-intout.component.html',
-  styleUrls: ['./correspondence-form-step-intout.component.scss']
+  styleUrls: ['./correspondence-form-step-intout.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 
 export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceComponent implements OnInit, AfterViewInit {
@@ -199,6 +207,19 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
   confidential = false;
   // distribution parameters
   showDistributionTreeArea: boolean;
+  // sendeer tbl structure
+  senderTableStructureFull: TableStructureParameters[] = [
+    { 'columnDef': 'OrganizationName', 'columnName': 'Organization', 'priority': 2 },
+    { 'columnDef': 'DepartmentName', 'columnName': 'Department', 'priority': 1 },
+    { 'columnDef': 'DepartmentNativeName', 'columnName': 'On Behalf', 'priority': 3 },
+    { 'columnDef': 'Name', 'columnName': 'Name', 'priority': 1 },
+  ];
+  senderTableStructure: TableStructureParameters[];
+  senderTableStructureDetails: TableStructureParameters[];
+  senderColWidth: number;
+  senderIconWidth: number;
+  senderIconWidthConst = 5;
+  @ViewChild('senderContainer') senderContainer: ElementRef;
 
 
 
@@ -230,7 +251,6 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
     this.senderDetailsForm = this.formBuilder.group({
       SenderInfo: ['', Validators.required]
     });
-
 
     this.recipientDetailsForm = this.formBuilder.group({
       RecipientID: [],
@@ -286,7 +306,6 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
 
   ngAfterViewInit() {
     this.getOrganizationalChartDetail();
-
   }
 
   ReadRecord(locationid: string, transid: string) {
@@ -317,6 +336,7 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
             this.correspondenceSenderDetailsData = correspondenceSenderDetailsData[0].myRows[0];
             this.senderDetailsForm.get('SenderInfo').setValue(this.correspondenceSenderDetailsData);
             this.spinnerDataLoaded = false;
+            this.displayColumnsForm(this.senderContainer.nativeElement.clientWidth);
             if (maxApproveLevel > 0) {
               this.syncCoverData();
             }
@@ -327,6 +347,28 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
         }
       );
   }
+
+  displayColumnsForm(width: number): void {
+    const priority = this.correspondenceDetailsService.definePriorityToShow(width);
+    this.senderTableStructure = [];
+    this.senderTableStructureDetails = [];
+    let senderTableLength = 0;
+    this.senderTableStructureFull.forEach(element => {
+      if (element.priority > priority) {
+        this.senderTableStructureDetails.push(element);
+      } else {
+        this.senderTableStructure.push(element);
+        senderTableLength += element.columnDef !== 'Icon' ? 1 : 0;
+      }
+    });
+    this.senderIconWidth = this.senderTableStructureDetails.length > 0 ? this.senderIconWidthConst : 0;
+    this.senderColWidth = Math.floor((100 - this.senderIconWidth) / senderTableLength);
+  }
+
+  onResized(event: ResizedEvent) {
+    this.displayColumnsForm(event.newWidth);
+  }
+
 
   getCorrespondenceRecipientDetails(): void {
     this._correspondenceDetailsService

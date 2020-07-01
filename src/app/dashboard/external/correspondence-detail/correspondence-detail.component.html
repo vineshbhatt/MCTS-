@@ -37,7 +37,7 @@
         </button>
       </div>
     </div>
-    <div class="sender_wrapper corspnt_item" *ngIf="sectionDisplay.Sender.Show">
+    <div class="sender_wrapper corspnt_item sender-section" *ngIf="sectionDisplay.Sender.Show">
       <div class="acdn_open_header">
         <div class="icon_wrapper">
           <div class="icon_typ icon_typ_001">
@@ -47,24 +47,56 @@
         <p class="title_001">Sender</p>
       </div>
       <div class="corres_data_area">
-        <div class="corres_table_wrapper">
-          <table class="table">
-            <tr>
-              <th>Organization</th>
-              <th>Department</th>
-              <th>On Behalf</th>
-              <th>Name</th>
-            </tr>
-            <tr *ngFor="let correspondenceDetails of correspondenceSenderDetailsData">
-              <td *ngFor="let senderData of correspondenceDetails.myRows">{{senderData.OrganizationName_EN}} </td>
-              <td *ngFor="let senderData of correspondenceDetails.myRows"> {{senderData.DepartmentName_EN}} </td>
-              <td *ngFor="let senderData of correspondenceDetails.myRows">
-                <span *ngIf="senderData.SenderDepartment !== senderData.SenderNativeDepartment">
-                  {{senderData.DepartmentNativeName_EN}}
-                </span>
-              </td>
-              <td *ngFor="let senderData of correspondenceDetails.myRows"> {{senderData.Name_EN}} </td>
-            </tr>
+        <div class="corres_table_wrapper" #senderContainer (resized)="onResized($event)">
+          <table class="sender-table">
+            <thead>
+              <tr>
+                <th *ngFor="let col of senderTableStructure" [style.width]="senderColWidth + '%'">
+                  {{col.columnName}}</th>
+                <th *ngIf="senderTableStructureDetails?.length > 0" [style.width]="senderIconWidth + '%'"></th>
+              </tr>
+            </thead>
+            <tbody *ngFor="let correspondenceDetails of correspondenceSenderDetailsData">
+              <ng-container *ngFor="let senderData of correspondenceDetails.myRows">
+                <tr>
+                  <td *ngFor="let col of senderTableStructure" [ngSwitch]="col.columnDef"
+                    [style.width]="senderColWidth + '%'">
+                    <p *ngSwitchCase="'DepartmentNativeName'">
+                      <span *ngIf="senderData.SenderDepartment !== senderData.SenderNativeDepartment">
+                        {{senderData[col.columnDef + '_EN']}}
+                      </span>
+                    </p>
+                    <p *ngSwitchDefault>{{senderData[col.columnDef + '_EN']}}</p>
+                  </td>
+                  <td *ngIf="senderTableStructureDetails.length > 0" [style.width]="senderIconWidth + '%'">
+                    <i (click)="expandedSenderElement = !expandedSenderElement" class="material-icons">
+                      {{expandedSenderElement ? "keyboard_arrow_up" : "keyboard_arrow_down"}}</i>
+                  </td>
+                </tr>
+                <tr class="detail-row">
+                  <td [attr.colspan]="senderTableStructure.length + 1">
+                    <div class="element-detail" [@detailExpand]="expandedSenderElement ? 'expanded' : 'collapsed'">
+                      <div class="detail-parameters">
+                        <table style="width:100%" class="sender-table-details">
+                          <tr *ngFor="let col of senderTableStructureDetails">
+                            <th>{{col.columnName}}</th>
+                            <td [ngSwitch]="col.columnDef">
+                              <p class="detail-info" *ngSwitchCase="'DepartmentNativeName'">
+                                <span *ngIf="senderData.SenderDepartment !== senderData.SenderNativeDepartment">
+                                  {{senderData[col.columnDef + '_EN']}}
+                                </span>
+                              </p>
+                              <p *ngSwitchDefault class="detail-info">
+                                {{senderData[col.columnDef + '_EN']}}</p>
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
           </table>
         </div>
       </div>
@@ -249,38 +281,59 @@
                 <mat-spinner class="spinner_sm"></mat-spinner>
               </div>
               <div *ngIf="!coverProgbar" class="corres_table_wrapper">
-                <table class="table">
-                  <tr>
-                    <th class="size_45">Type</th>
-                    <th>Name</th>
-                    <th></th>
-                    <th>Size</th>
-                    <!-- <th>Modified</th> -->
-                  </tr>
+                <table class="table_cover_letter" (mouseleave)="!attachTrigger ? hoveredIndexCover=null : null">
+                  <thead>
+                    <tr>
+                      <th class="type">Type</th>
+                      <th class="name" [ngClass]="expandedAction ? 'unexpanded-name' : 'expanded-name'">Name</th>
+                      <th class="size" *ngIf="!expandedAction">Size</th>
+                      <th class="modified" *ngIf="!expandedAction">Modified</th>
+                      <th class="creator" *ngIf="!expandedAction">Creator</th>
+                    </tr>
+                  </thead>
                   <tbody *ngFor="let correspondenceCoverDetails of correspondenceCovertData">
-                    <tr *ngFor="let coverData of correspondenceCoverDetails.myRows">
-                      <td class="size_45" [innerHtml]="coverData.CoverType">
+                    <tr *ngFor="let coverData of correspondenceCoverDetails.myRows; let index=index"
+                      (mouseover)="hoveredIndexCover=index" [class]="hoveredIndexCover===index ? 'hovered-row' : ''">
+                      <td class="type" [innerHtml]="coverData.CoverType">
                       </td>
-                      <td>
+                      <td class="attachment-cover-data-container name"
+                        [ngClass]="expandedAction ? 'unexpanded-name' : 'expanded-name'">
                         <a class="coverLink" (click)="getCoverDocumentURL(coverData.Dataid)">{{coverData.Name}} </a>
-                      </td>
-                      <td>
-                        <div class="group_btn">
-                          <!-- <button matTooltip="Print" class="btn btn_006">
+                        <div
+                          [class]="index===hoveredIndexCover ? 'group_btn_attachments_cover' : 'group_btn_attachments_cover hovered' ">
+                          <div class="group_btn_attachments_cover_background">
+                            <!-- <button matTooltip="Print" class="btn btn_006">
                           <img src="{{basehref}}assets/images/icons/printer-tool.svg" alt="">
                         </button> -->
-                          <a matTooltip="Download" class="btn btn_006" href="{{CSUrl}}{{coverData.DownloadURL}}">
-                            <img src="{{basehref}}assets/images/icons/download-to-storage-drive.svg" alt="">
-                          </a>
-                          <a matTooltip="Properties" class="btn btn_006" (click)=showActionProperties(coverData.Dataid)>
-                            <img src="{{basehref}}assets/images/icons/info-round-button.svg" alt="">
-                          </a>
-                          <a matTooltip="Translate" class="btn btn_006" (click)=tranlsateDocument(coverData.Dataid)>
-                            <img src="{{basehref}}assets/images/icons/history.svg" alt="">
-                          </a>
+                            <a matTooltip="Download" class="btn btn_006" href="{{CSUrl}}{{coverData.DownloadURL}}">
+                              <img src="{{basehref}}assets/images/icons/download-to-storage-drive.svg" alt="">
+                            </a>
+                            <a matTooltip="Properties" class="btn btn_006"
+                              (click)=showActionProperties(coverData.Dataid)>
+                              <img src="{{basehref}}assets/images/icons/info-round-button.svg" alt="">
+                            </a>
+                            <a matTooltip="Edit" class="btn btn_006" *ngIf="coverData.editperm=='TRUE'"
+                              (click)="editFile(coverData.Dataid, 'COVER')">
+                              <img src="{{basehref}}assets/images/icons/toolbar_edit.svg" alt="">
+                            </a>
+                            <a matTooltip="Translate" class="btn btn_006" (click)=tranlsateDocument(coverData.Dataid)>
+                              <img src="{{basehref}}assets/images/icons/history.svg" alt="">
+                            </a>
+                            <!-- <a [matMenuTriggerFor]="attachMenu" (menuOpened)="attachTrigger=true"
+                              (menuClosed)="attachTrigger=false" #otrigger="matMenuTrigger" matTooltip="More Options"
+                              class="btn btn_006">
+                              <img src="{{basehref}}assets/images/icons/menu.svg" alt="">
+                            </a>
+                            <mat-menu #attachMenu="matMenu">
+                            </mat-menu> -->
+                          </div>
                         </div>
                       </td>
-                      <td> {{coverData.CoverSize}} </td>
+
+                      <td class="size" *ngIf="!expandedAction"> {{coverData.CoverSize}} </td>
+                      <td class="modified" *ngIf="!expandedAction">
+                        {{coverData.ModifyDate | date: 'dd/MM/yyyy HH:mm'}} </td>
+                      <td class="creator" *ngIf="!expandedAction"> {{coverData.CreatorName_EN}} </td>
                       <!-- <td> {{coverData.ModifyDate}} </td> -->
                     </tr>
                   </tbody>
@@ -308,43 +361,61 @@
                 <mat-spinner class="spinner_sm"></mat-spinner>
               </div>
               <div *ngIf="!attachmentsProgbar" class="corres_table_wrapper">
-                <table class="table">
-                  <tr>
-                    <th class="size_45">Type</th>
-                    <th>Name</th>
-                    <th></th>
-                    <th class="size_45">Size</th>
-                    <!-- <th>Modified</th> -->
-                  </tr>
+                <table class="table_attachments" (mouseleave)="!attachTrigger ? hoveredIndex=null : null">
+                  <thead>
+                    <tr>
+                      <th class="type">Type</th>
+                      <th class="name" [ngClass]="expandedAction ? 'unexpanded-name' : 'expanded-name'">Name</th>
+                      <th class="size" *ngIf="!expandedAction">Size</th>
+                      <th class="modified" *ngIf="!expandedAction">Modified</th>
+                      <th class="creator" *ngIf="!expandedAction">Creator</th>
+                    </tr>
+                  </thead>
                   <tbody *ngFor="let correspondenceAttachmentDetails of correspondenceAttachmentsData">
-                    <tr *ngFor="let attachmentData of correspondenceAttachmentDetails.myRows">
-                      <td class="size_45" [innerHtml]="attachmentData.attachmentType">
+                    <tr *ngFor="let attachmentData of correspondenceAttachmentDetails.myRows; let index=index"
+                      (mouseover)="hoveredIndex=index" [class]="hoveredIndex===index ? 'hovered-row' : ''">
+                      <td class="type" [innerHtml]="attachmentData.attachmentType">
                       </td>
-                      <td>
+                      <td class="attachment-cover-data-container name"
+                        [ngClass]="expandedAction ? 'unexpanded-name' : 'expanded-name'">
                         <a class="coverLink"
                           (click)="getCoverDocumentURL(attachmentData.Dataid)">{{attachmentData.Name}}
                         </a>
-                      </td>
-                      <td>
-                        <div class="group_btn">
-                          <!-- <button matTooltip="Print" class="btn btn_006">
+                        <div
+                          [class]="index===hoveredIndex ? 'group_btn_attachments_cover' : 'group_btn_attachments_cover hovered' ">
+                          <div class="group_btn_attachments_cover_background">
+                            <!-- <button matTooltip="Print" class="btn btn_006">
                           <img src="{{basehref}}assets/images/icons/printer-tool.svg" alt="">
                         </button> -->
-                          <a matTooltip="Download" class="btn btn_006" href="{{CSUrl}}{{attachmentData.DownloadURL}}">
-                            <img src="{{basehref}}assets/images/icons/download-to-storage-drive.svg" alt="">
-                          </a>
-                          <a matTooltip="Properties" class="btn btn_006"
-                            (click)=showActionProperties(attachmentData.Dataid)>
-                            <img src="{{basehref}}assets/images/icons/info-round-button.svg" alt="">
-                          </a>
-                          <a matTooltip="Translate" class="btn btn_006"
-                            (click)=tranlsateDocument(attachmentData.Dataid)>
-                            <img src="{{basehref}}assets/images/icons/history.svg" alt="">
-                          </a>
+                            <a matTooltip="Download" class="btn btn_006" href="{{CSUrl}}{{attachmentData.DownloadURL}}">
+                              <img src="{{basehref}}assets/images/icons/download-to-storage-drive.svg" alt="">
+                            </a>
+                            <a matTooltip="Properties" class="btn btn_006"
+                              (click)=showActionProperties(attachmentData.Dataid)>
+                              <img src="{{basehref}}assets/images/icons/info-round-button.svg" alt="">
+                            </a>
+                            <a matTooltip="Edit" class="btn btn_006" *ngIf="attachmentData.editperm=='TRUE'"
+                              (click)="editFile(attachmentData.Dataid, 'ATTACHMENT')">
+                              <img src="{{basehref}}assets/images/icons/toolbar_edit.svg" alt="">
+                            </a>
+                            <a matTooltip="Translate" class="btn btn_006"
+                              (click)=tranlsateDocument(attachmentData.Dataid)>
+                              <img src="{{basehref}}assets/images/icons/history.svg" alt="">
+                            </a>
+                            <!-- <a [matMenuTriggerFor]="attachMenu" (menuOpened)="attachTrigger=true"
+                              (menuClosed)="attachTrigger=false" #otrigger="matMenuTrigger" matTooltip="More Options"
+                              class="btn btn_006">
+                              <img src="{{basehref}}assets/images/icons/menu.svg" alt="">
+                            </a>
+                            <mat-menu #attachMenu="matMenu">
+                            </mat-menu> -->
+                          </div>
                         </div>
                       </td>
-                      <td> {{attachmentData.AttachmentSize}} </td>
-                      <!-- <td> {{attachmentData.ModifyDate}} </td> -->
+                      <td class="size" *ngIf="!expandedAction"> {{attachmentData.AttachmentSize}} </td>
+                      <td class="modified" *ngIf="!expandedAction">
+                        {{attachmentData.ModifyDate | date: 'dd/MM/yyyy HH:mm'}} </td>
+                      <td class="creator" *ngIf="!expandedAction"> {{attachmentData.CreatorName_EN}} </td>
                     </tr>
                   </tbody>
                 </table>

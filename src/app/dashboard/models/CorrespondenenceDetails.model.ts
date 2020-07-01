@@ -162,3 +162,9 @@ export class OrgNameAutoFillModelSimpleUser {
 export class TemplateModel {
   AttrValue: string;
 }
+
+export interface TableStructureParameters {
+  columnDef: string;
+  columnName: string;
+  priority: number;
+}
