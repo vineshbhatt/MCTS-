@@ -35,6 +35,7 @@ import { MultipleApproveComponent, MultipleApproveInputData, CurrentApprovers } 
 import { DistributionComponent } from 'src/app/dashboard/shared-components/distribution/distribution.component';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ResizedEvent } from 'angular-resize-event';
+import { SelectTeamDialogComponent } from 'src/app/dashboard/dialog-boxes/select-team-dialog/select-team-dialog.component';
 
 @Component({
   selector: 'app-correspondence-form-step-intout',
@@ -208,6 +209,7 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
   // distribution parameters
   showDistributionTreeArea: boolean;
   // sendeer tbl structure
+  teamsList: SenderDetailsData[];
   senderTableStructureFull: TableStructureParameters[] = [
     { 'columnDef': 'OrganizationName', 'columnName': 'Organization', 'priority': 2 },
     { 'columnDef': 'DepartmentName', 'columnName': 'Department', 'priority': 1 },
@@ -240,6 +242,7 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
     this.getCorrespondenceRecipientDetails();
     this.readCorrespondenceInfo();
     this.RefreshRecord();
+    this.getTeams();
     this.stepUIData = this.toShowWFButtons(this.taskID);
     this.showWFButtons = this.stepUIData.ShowButtons;
     this.sectionDisplay = this.stepUIData.ShowSections;
@@ -327,20 +330,55 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
     this.ReadRecord(this.locationid, '0');
   }
 
+  getTeams() {
+    this.correspondenceDetailsService.getTeams(this.VolumeID, false)
+      .subscribe(
+        response => {
+          if (response.hasOwnProperty('myRows')) {
+            this.teamsList = response.myRows;
+          }
+        },
+        responseError => {
+          this._errorHandlerFctsService.handleError(responseError).subscribe();
+        }
+      );
+  }
+
+  selectTeamDialogBox(): void {
+    const dialogRef = this.dialog.open(SelectTeamDialogComponent, {
+      width: '100%',
+      panelClass: 'select-team-dialog',
+      maxWidth: '30vw',
+      data: {
+        teamsList: this.teamsList,
+        teamID: this.body.values.WorkflowForm_1x4x1x51
+      }
+    }).afterClosed().subscribe(result => {
+      if (result && result !== 'Cancel') {
+        this.correspondenceSenderDetailsData = result;
+        this.senderDetailsForm.get('SenderInfo').setValue(this.correspondenceSenderDetailsData);
+        const teamID = this.correspondenceSenderDetailsData.TeamID > 0 ? this.correspondenceSenderDetailsData.TeamID : null;
+        this.body.values.WorkflowForm_1x4x1x51 = teamID;
+        this.setMultiApproveParameters(teamID, true);
+        this.syncCoverData();
+      }
+    });
+  }
+
   getCorrespondenceSenderDetails(maxApproveLevel: number): void {
     this._correspondenceDetailsService
       .getCorrespondenceSenderDetails(this.VolumeID, this.CorrespondencType, false, this.body.values.WorkflowForm_1x4x1x12, maxApproveLevel)
       .subscribe(
         correspondenceSenderDetailsData => {
-          if ((typeof correspondenceSenderDetailsData[0].myRows !== 'undefined') && correspondenceSenderDetailsData[0].myRows.length > 0) {
+          if (correspondenceSenderDetailsData[0].myRows && correspondenceSenderDetailsData[0].myRows.length > 0) {
             this.correspondenceSenderDetailsData = correspondenceSenderDetailsData[0].myRows[0];
             this.senderDetailsForm.get('SenderInfo').setValue(this.correspondenceSenderDetailsData);
-            this.spinnerDataLoaded = false;
             this.displayColumnsForm(this.senderContainer.nativeElement.clientWidth);
             if (maxApproveLevel > 0) {
               this.syncCoverData();
             }
           }
+          this.spinnerDataLoaded = false;
         },
         responseError => {
           this._errorHandlerFctsService.handleError(responseError).subscribe();
@@ -499,7 +537,8 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
           this.body.values = response.forms[0].data;
           this.taskTitle = response.data.title;
           this.getCorrespondenceSenderDetails(0);
-          this.setMultiApproveParameters();
+          const teamID = this.body.values.WorkflowForm_1x4x1x51;
+          this.setMultiApproveParameters(teamID, false);
           this.getMetadataFilters();
         }
       },
@@ -1395,7 +1434,10 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
       .subscribe(
         () => { },
         () => { },
-        () => { this.getCoverSection(); }
+        () => {
+          this.getCoverSection();
+          this.getCoverDocumentURL(this.coverID);
+        }
       );
   }
 
@@ -1525,16 +1567,18 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
   }
 
   // parameters passed to MultipleApproveComponent
-  setMultiApproveParameters() {
+  setMultiApproveParameters(teamID: number, changeTeam: boolean): void {
+    const getStructure = teamID > 0 ? false : true;
+    const getTeamStructure = !getStructure;
     this.approve = {
       UserID: this.body.values.WorkflowForm_1x4x1x12,
       CorrID: this.locationid,
       mainLanguage: this.translator.lang,
-      TeamID: null,
-      fGetStructure: true,
-      fGetTeamStructure: false,
+      TeamID: teamID,
+      fGetStructure: getStructure,
+      fGetTeamStructure: getTeamStructure,
       fInitStep: false,
-      fChangeTeam: false,
+      fChangeTeam: changeTeam,
       VolumeID: this.VolumeID,
       taskID: this.taskID,
       selectApproverStep: '33',

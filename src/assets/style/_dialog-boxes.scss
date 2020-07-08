@@ -1533,3 +1533,56 @@
     }
   }
 }
+
+.select-team-dialog{
+  margin: auto !important;
+  font-size: 13px;
+  .mat-dialog-container{
+    overflow: visible;
+  }
+  .action_header {
+    padding: 15px 24px 11px;
+    background: #00b7c3;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+
+    .text_16 {
+      margin-bottom: 0px;
+      color: #fff;
+      padding-right: 20px;
+    }
+    .close-button{
+      cursor: pointer;
+    }
+  }
+  .radio-group-holer{
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      padding: 25px;
+      width: 100%;
+      .radio-button{
+        margin-bottom: 15px;
+        .mat-radio-label{
+          white-space: normal;
+          .mat-radio-container{
+            margin-right: 10px;
+          }   
+        }
+      }
+    }
+  }
+  .button-section{
+    display: flex;
+    justify-content: flex-end;
+    margin: 0 20px;
+    button{
+      padding:20px;
+    }
+  }
+
+}

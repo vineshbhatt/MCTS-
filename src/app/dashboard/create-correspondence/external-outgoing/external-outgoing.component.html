@@ -8,7 +8,7 @@
       <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
     </button>
     <div class="detail_header">
-      <div class="header_text" *ngFor="let user of userInfo">
+      <div class="header_text">
         <div class="header_back_cpd_dtl">
           <button class="back_btn" (click)="backNavigation()">
             <img src="{{basehref}}assets/images/icons/left_arrow.svg" alt="">
@@ -16,11 +16,11 @@
           <h3 class="text_23 ltg_text">Create External Outgoing Correspondence
           </h3>
         </div>
-        <div class="user_name">
+        <div class="user_name" *ngIf="correspondenceSenderDetailsData">
           <div class="user_img">
             <img src="{{basehref}}assets/images/icons/profile.svg" alt="">
           </div>
-          <p class="text_15" *ngFor="let uInfo of user.myRows">{{uInfo.Name_EN}}</p>
+          <p class="text_15">{{correspondenceSenderDetailsData.Name_EN}}</p>
         </div>
       </div>
     </div>
@@ -45,49 +45,52 @@
                   <th *ngIf="senderTableStructureDetails?.length > 0" [style.width]="senderIconWidth + '%'"></th>
                 </tr>
               </thead>
-              <tbody *ngFor="let senderData of userInfo">
-                <ng-container *ngFor="let senderUserData of senderData.myRows">
-                  <tr>
-                    <td *ngFor="let col of senderTableStructure" [ngSwitch]="col.columnDef"
-                      [style.width]="senderColWidth + '%'">
-                      <p *ngSwitchCase="'DepartmentNativeName'">
-                        <span *ngIf="senderUserData.SenderDepartment !== senderUserData.SenderNativeDepartment">
-                          {{senderUserData[col.columnDef + '_EN']}}
-                        </span>
-                      </p>
-                      <p *ngSwitchDefault>{{senderUserData[col.columnDef + '_EN']}}</p>
-                    </td>
-                    <td *ngIf="senderTableStructureDetails.length > 0" [style.width]="senderIconWidth + '%'">
-                      <i (click)="expandedSenderElement = !expandedSenderElement" class="material-icons">
-                        {{expandedSenderElement ? "keyboard_arrow_up" : "keyboard_arrow_down"}}</i></td>
-                  </tr>
-                  <tr class="detail-row">
-                    <td [attr.colspan]="senderTableStructure.length + 1">
-                      <div class="element-detail" [@detailExpand]="expandedSenderElement ? 'expanded' : 'collapsed'">
-                        <div class="detail-parameters">
-                          <table style="width:100%" class="sender-table-details">
-                            <tr *ngFor="let col of senderTableStructureDetails">
-                              <th>{{col.columnName}}</th>
-                              <td [ngSwitch]="col.columnDef">
-                                <p class="detail-info" *ngSwitchCase="'DepartmentNativeName'">
-                                  <span
-                                    *ngIf="senderUserData.SenderDepartment !== senderUserData.SenderNativeDepartment">
-                                    {{senderUserData[col.columnDef + '_EN']}}
-                                  </span>
-                                </p>
-                                <p *ngSwitchDefault class="detail-info">
-                                  {{senderUserData[col.columnDef + '_EN']}}</p>
-                              </td>
-                            </tr>
-                          </table>
-                        </div>
+              <tbody *ngIf="correspondenceSenderDetailsData">
+                <tr>
+                  <td *ngFor="let col of senderTableStructure" [ngSwitch]="col.columnDef"
+                    [style.width]="senderColWidth + '%'">
+                    <p *ngSwitchCase="'DepartmentNativeName'">
+                      <span
+                        *ngIf="correspondenceSenderDetailsData.SenderDepartment !== correspondenceSenderDetailsData.SenderNativeDepartment">
+                        {{correspondenceSenderDetailsData[col.columnDef + '_EN']}}
+                      </span>
+                    </p>
+                    <p *ngSwitchDefault>{{correspondenceSenderDetailsData[col.columnDef + '_EN']}}</p>
+                  </td>
+                  <td *ngIf="senderTableStructureDetails.length > 0" [style.width]="senderIconWidth + '%'">
+                    <i (click)="expandedSenderElement = !expandedSenderElement" class="material-icons">
+                      {{expandedSenderElement ? "keyboard_arrow_up" : "keyboard_arrow_down"}}</i></td>
+                </tr>
+                <tr class="detail-row">
+                  <td [attr.colspan]="senderTableStructure.length + 1">
+                    <div class="element-detail" [@detailExpand]="expandedSenderElement ? 'expanded' : 'collapsed'">
+                      <div class="detail-parameters">
+                        <table style="width:100%" class="sender-table-details">
+                          <tr *ngFor="let col of senderTableStructureDetails">
+                            <th>{{col.columnName}}</th>
+                            <td [ngSwitch]="col.columnDef">
+                              <p class="detail-info" *ngSwitchCase="'DepartmentNativeName'">
+                                <span
+                                  *ngIf="correspondenceSenderDetailsData.SenderDepartment !== correspondenceSenderDetailsData.SenderNativeDepartment">
+                                  {{correspondenceSenderDetailsData[col.columnDef + '_EN']}}
+                                </span>
+                              </p>
+                              <p *ngSwitchDefault class="detail-info">
+                                {{correspondenceSenderDetailsData[col.columnDef + '_EN']}}</p>
+                            </td>
+                          </tr>
+                        </table>
                       </div>
-                    </td>
-                  </tr>
-                </ng-container>
+                    </div>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
+          <button class="show_preview_btn" (click)="selectTeamDialogBox()">
+            <img src="{{basehref}}assets/images/icons/change_green_icon.svg" alt="">
+            <span>Select Team</span>
+          </button>
         </div>
       </div>
     </form>

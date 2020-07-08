@@ -83,6 +83,11 @@
               </tbody>
             </table>
           </div>
+          <button *ngIf="sectionDisplay.Sender.Modify&& teamsList?.length > 1" class="show_preview_btn"
+            (click)="selectTeamDialogBox()">
+            <img src="{{basehref}}assets/images/icons/change_green_icon.svg" alt="">
+            <span>Select Team</span>
+          </button>
         </div>
       </div>
     </form>

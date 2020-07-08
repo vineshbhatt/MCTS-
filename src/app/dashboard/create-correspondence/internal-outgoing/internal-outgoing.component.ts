@@ -25,6 +25,8 @@ import { multiLanguageTranslator } from 'src/assets/translator/index';
 import { MultipleApproveComponent, MultipleApproveInputData, CurrentApprovers } from 'src/app/dashboard/shared-components/multiple-approve/multiple-approve.component';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ResizedEvent } from 'angular-resize-event';
+import { MatDialog } from '@angular/material';
+import { SelectTeamDialogComponent } from '../../dialog-boxes/select-team-dialog/select-team-dialog.component';
 
 
 @Component({
@@ -137,6 +139,9 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
   @ViewChild(MultipleApproveComponent) multiApprove;
   confidential = false;
   // sendeer tbl structure
+  correspondenceSenderDetailsData: SenderDetailsData;
+  teamID: number = null;
+  teamsList: SenderDetailsData[];
   senderTableStructureFull: TableStructureParameters[] = [
     { 'columnDef': 'OrganizationName', 'columnName': 'Organization', 'priority': 2 },
     { 'columnDef': 'DepartmentName', 'columnName': 'Department', 'priority': 1 },
@@ -160,7 +165,9 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
     private route: ActivatedRoute,
     private _errorHandlerFctsService: ErrorHandlerFctsService,
     private appLoadConstService: AppLoadConstService,
-    public translator: multiLanguageTranslator
+    public translator: multiLanguageTranslator,
+    public dialog: MatDialog
+
   ) {
     super(csdocumentupload, correspondenceDetailsService);
   }
@@ -176,7 +183,7 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
     this.getSenderUserInfromation(0);
     this.getOrganizationalChartDetail();
     this.getMetadataFilters();
-
+    this.getTeams();
 
     this.senderDetailsForm = this.formBuilder.group({
       SenderInfo: ['', Validators.required]
@@ -656,7 +663,7 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
     this.spinnerDataLoaded = true;
     //Set each and every Value ofr the three Forms to one Single Object For Post
     this.initiateInternalCorrespondenceDetails.CorrespondenceID = this.corrFolderData.AttachCorrID.toString();
-    this.initiateInternalCorrespondenceDetails.SenderDetails = this.userInfo[0].myRows[0]
+    this.initiateInternalCorrespondenceDetails.SenderDetails = this.correspondenceSenderDetailsData;
 
     this.initiateInternalCorrespondenceDetails.RecipientDetails = this.recipientDetailsForm.get('RecipientDepartment').value;
 
@@ -837,15 +844,54 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
     }
   }
 
+  getTeams() {
+    this.correspondenceDetailsService.getTeams(null, true)
+      .subscribe(
+        response => {
+          if (response.hasOwnProperty('myRows')) {
+            this.teamsList = response.myRows;
+          }
+        },
+        responseError => {
+          this._errorHandlerFctsService.handleError(responseError).subscribe();
+        }
+      );
+  }
+
+  selectTeamDialogBox(): void {
+    const dialogRef = this.dialog.open(SelectTeamDialogComponent, {
+      width: '100%',
+      panelClass: 'select-team-dialog',
+      maxWidth: '30vw',
+      //maxHeight: '60vh',
+      data: {
+        teamsList: this.teamsList,
+        teamID: this.teamID
+      }
+    }).afterClosed().subscribe(result => {
+      if (result && result !== 'Cancel') {
+        this.correspondenceSenderDetailsData = result;
+        this.senderDetailsForm.get('SenderInfo').setValue(this.correspondenceSenderDetailsData);
+        this.teamID = this.correspondenceSenderDetailsData.TeamID > 0 ? this.correspondenceSenderDetailsData.TeamID : null;
+        this.setMultiApproveParameters(this.teamID, true);
+        if (this.coverID) {
+          this.syncCoverData();
+        }
+      }
+    });
+  }
+
   getSenderUserInfromation(maxApproveLevel: number): void {
-    let UserID = this.appLoadConstService.getConstants().general.UserID;
+    const UserID = this.appLoadConstService.getConstants().general.UserID;
     this.correspondenceDetailsService.getCorrespondenceSenderDetails('', this.corrFlowType, true, UserID, maxApproveLevel)
       .subscribe(correspondenceSenderDetailsData => {
-        this.userInfo = correspondenceSenderDetailsData;
-        this.senderDetailsForm.get('SenderInfo').setValue(this.userInfo);
-        this.displayColumnsForm(this.senderContainer.nativeElement.clientWidth);
-        if (maxApproveLevel > 0 && this.coverID) {
-          this.syncCoverData();
+        if (correspondenceSenderDetailsData[0].myRows && correspondenceSenderDetailsData[0].myRows.length > 0) {
+          this.correspondenceSenderDetailsData = correspondenceSenderDetailsData[0].myRows[0];
+          this.senderDetailsForm.get('SenderInfo').setValue(this.correspondenceSenderDetailsData);
+          this.displayColumnsForm(this.senderContainer.nativeElement.clientWidth);
+          if (maxApproveLevel > 0 && this.coverID) {
+            this.syncCoverData();
+          }
         }
       });
   }
@@ -875,9 +921,9 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
     this.documentMetadataSync.docFolderID = this.corrFolderData.AttachCorrCoverID.toString();
     this.documentMetadataSync.srcDocID = this.coverID;
     if (this.templateLanguage === 'EN') {
-      this.documentMetadataSync.SenderOrganization = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].OrganizationName_EN)
-      this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].DepartmentName_EN)
-      this.documentMetadataSync.SenderName = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].Name_EN);
+      this.documentMetadataSync.SenderOrganization = this.convertUndefindedOrNulltoemptyString(this.correspondenceSenderDetailsData.OrganizationName_EN)
+      this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(this.correspondenceSenderDetailsData.DepartmentName_EN)
+      this.documentMetadataSync.SenderName = this.convertUndefindedOrNulltoemptyString(this.correspondenceSenderDetailsData.Name_EN);
       this.documentMetadataSync.RecipientOrganization = this.convertUndefindedOrNulltoemptyString(this.IntRecipientInfo.OrgName_En)
       this.documentMetadataSync.RecipientDepartment = this.convertUndefindedOrNulltoemptyString(this.IntRecipientInfo.DepName_En)
       this.documentMetadataSync.RecipientRole = this.convertUndefindedOrNulltoemptyString(this.IntRecipientInfo.RoleName_En)
@@ -887,9 +933,9 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
     }
     else if (this.templateLanguage === 'AR') {
 
-      this.documentMetadataSync.SenderOrganization = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].OrganizationName_AR)
-      this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].DepartmentName_AR)
-      this.documentMetadataSync.SenderName = this.convertUndefindedOrNulltoemptyString(this.userInfo[0].myRows[0].Name_AR)
+      this.documentMetadataSync.SenderOrganization = this.convertUndefindedOrNulltoemptyString(this.correspondenceSenderDetailsData.OrganizationName_AR)
+      this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(this.correspondenceSenderDetailsData.DepartmentName_AR)
+      this.documentMetadataSync.SenderName = this.convertUndefindedOrNulltoemptyString(this.correspondenceSenderDetailsData.Name_AR)
 
       this.documentMetadataSync.RecipientOrganization = this.convertUndefindedOrNulltoemptyString(this.IntRecipientInfo.OrgName_Ar)
       this.documentMetadataSync.RecipientDepartment = this.convertUndefindedOrNulltoemptyString(this.IntRecipientInfo.DepName_AR)
@@ -1008,7 +1054,6 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
   }
 
   setDropDownValue(Attrname: string, ID: string): any {
-    debugger;
     if (ID == undefined || ID === '' || ID === '0') {
       return '';
     } else {
@@ -1052,21 +1097,23 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
     this.correspondenceDetailsService.createTempAttachments(corrflowType).subscribe(
       tempAttachment => {
         this.corrFolderData = tempAttachment;
-        this.setMultiApproveParameters();
+        this.setMultiApproveParameters(null, false);
       }
     );
   }
 
-  setMultiApproveParameters() {
+  setMultiApproveParameters(teamID: number, changeTeam: boolean) {
+    const getStructure = teamID > 0 ? false : true;
+    const getTeamStructure = !getStructure;
     this.approve = {
       UserID: this.appLoadConstService.getConstants().general.UserID,
       CorrID: this.corrFolderData.AttachCorrID.toString(),
       mainLanguage: this.translator.lang,
-      TeamID: null,
-      fGetStructure: true,
-      fGetTeamStructure: false,
+      TeamID: teamID,
+      fGetStructure: getStructure,
+      fGetTeamStructure: getTeamStructure,
       fInitStep: true,
-      fChangeTeam: false,
+      fChangeTeam: changeTeam,
       VolumeID: '',
       taskID: '',
       selectApproverStep: '33',

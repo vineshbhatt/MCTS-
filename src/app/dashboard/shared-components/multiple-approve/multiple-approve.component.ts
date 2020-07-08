@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter, Input, SimpleChanges } from '@angular/core';
 import { CorrespondenceDetailsService } from 'src/app/dashboard/services/correspondence-details.service';
 import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handler-fcts.service';
 import { CodegenComponentFactoryResolver } from '@angular/core/src/linker/component_factory_resolver';
@@ -16,7 +16,7 @@ import { NotificationService } from 'src/app/dashboard/services/notification.ser
 export interface MultipleApproveInputData {
   CorrID: string;
   VolumeID: string;
-  TeamID: string;
+  TeamID: number;
   UserID: number;
   fChangeTeam: boolean;
   fGetStructure: boolean;
@@ -116,8 +116,23 @@ export class MultipleApproveComponent implements OnInit {
     this.getApproversData();
   }
 
-  ngOnChanges() {
-    this.setConfidential();
+  ngOnChanges(changes: SimpleChanges) {
+    for (const propName in changes) {
+      if (changes.hasOwnProperty(propName) && !changes[propName].firstChange) {
+        switch (propName) {
+          case 'approve': {
+            this.firstLoadSpinner = true;
+            this.removeAll();
+            this.getApproversData();
+          }
+            break;
+          case 'confidential': this.setConfidential();
+            break;
+          default: console.log('Error in Approve component');
+        }
+      }
+    }
+
   }
 
   getOrgChart() {

@@ -120,6 +120,7 @@ export const FCTSDashBoard = {
   GetDistributionUsers: 'CTA_GetDistributionUsers',
   CreateDistribution: 'CTA_CreateDistribution',
   CloseMe: '%2Fimg%2Fcsui%2Fpages%2Fclose.html',
+  GetTeams: 'CTA_GetTeams',
 
   BaseHref: '/img/fctsangular/fctsapp/',
   //BaseHref: '/',

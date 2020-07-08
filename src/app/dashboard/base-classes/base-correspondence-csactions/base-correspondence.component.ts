@@ -14,7 +14,10 @@ import { FCTSDashBoard } from 'src/environments/environment';
 
 export class BaseCorrespondenceComponent implements OnInit {
 
-    constructor(public csdocumentupload: CSDocumentUploadService, public correspondenceDetailsService: CorrespondenceDetailsService) { }
+    constructor(
+        public csdocumentupload: CSDocumentUploadService,
+        public correspondenceDetailsService: CorrespondenceDetailsService
+    ) { }
     CoverLetterData: CorrResponse[];
     AttachmentFolderData: CorrResponse[];
     corrFolderData: CorrespondenceFolderModel;
@@ -196,11 +199,22 @@ export class BaseCorrespondenceComponent implements OnInit {
         }, 1000);
     }
 
-    printFile(nodeid) {
+    /* printFile(nodeid) {
         const closeMe = '&uiType=2&nextURL=http%3A%2F%2Fmv2cdmsadp02%2Fimg%2Fcsui%2Fpages%2Fclose.html';
         let url = this.CSUrl + '?func=multifile.printmulti&nodeID_list=' + nodeid + closeMe;
         let EditDocWindow: any = window.open(url, '_blank');
-    }
+    } */
+
+    /*  selectTeamDialogBox(): void {
+         const dialogRef = this.dialog.open(SelectTeamDialogComponent, {
+             width: '100%',
+             panelClass: 'select-team-dialog',
+             maxWidth: '30vw',
+         }).afterClosed().subscribe(result => {
+             this.reloadSenderSection(result);
+ 
+         });
+     } */
 }
 
 export class UploadSession {

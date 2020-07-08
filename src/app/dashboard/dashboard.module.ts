@@ -116,6 +116,7 @@ import { DistributionComponent } from './shared-components/distribution/distribu
 import { AngularResizedEventModule } from 'angular-resize-event';
 import { DistributionChartComponent } from './shared-components/distribution-chart/distribution-chart.component';
 import { DistributionDialogComponent } from './dialog-boxes/distribution-dialog/distribution-dialog.component';
+import { SelectTeamDialogComponent } from './dialog-boxes/select-team-dialog/select-team-dialog.component';
 
 @NgModule({
   imports: [
@@ -240,7 +241,8 @@ import { DistributionDialogComponent } from './dialog-boxes/distribution-dialog/
     AddApproverDialogComponent,
     DistributionComponent,
     DistributionChartComponent,
-    DistributionDialogComponent
+    DistributionDialogComponent,
+    SelectTeamDialogComponent
   ],
   entryComponents: [
     MailDetailView,
@@ -263,7 +265,8 @@ import { DistributionDialogComponent } from './dialog-boxes/distribution-dialog/
     LinkedCorrDialogComponent,
     DownloadAttachtmentsDialogComponent,
     AddApproverDialogComponent,
-    DistributionDialogComponent
+    DistributionDialogComponent,
+    SelectTeamDialogComponent
   ],
   providers: [ErrorHandlerFctsService, NotificationService, DatePipe]
 })

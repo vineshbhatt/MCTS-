@@ -45,6 +45,10 @@ export class ConfirmationDialogComponent implements OnInit {
         this.message = 'Are you sure to remove this connection?';
         break;
       }
+      case 'changeTeam': {
+        this.message = 'The list of approvers will be overwritten. Are you sure?';
+        break;
+      }
       default: {
         this._message = 'An unknown case, please inform Administrator';
         break;

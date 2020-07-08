@@ -1,4 +1,5 @@
 import { OrgNameAutoFillModel } from './CorrespondenenceDetails.model';
+import { SenderDetailsData } from 'src/app/dashboard/services/correspondence-response.model';
 export class CorrespondenceWFFormModel {
     CorrespondenceDate: string;			// CorrespondenceDate
     Confidential: string;			    // Confidential
@@ -6,7 +7,7 @@ export class CorrespondenceWFFormModel {
     ConnectedRefID: string;						// refID
     CorrespondenceID: string;			// CorrespondenceID
     CorrespondenceCode: string;			// CorrespondenceCode
-    SenderDetails: OrgNameAutoFillModel;
+    SenderDetails: OrgNameAutoFillModel | SenderDetailsData;
     RecipientDetails: OrgNameAutoFillModel;
     ExternalOrganization: string;	    // ExternalOrganization
     SenderDepartment: string;			// SenderDepartment
