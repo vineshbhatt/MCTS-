@@ -245,13 +245,6 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     this.RefreshRecord();
     this.getECMDRoot(0);
     this.getTeams();
-    this.stepUIData = this.toShowWFButtons(this.taskID);
-    this.showWFButtons = this.stepUIData.ShowButtons;
-    this.sectionDisplay = this.stepUIData.ShowSections;
-    this.showFields = this.stepUIData.ShowFields;
-
-    //this.sectionDisplay.ShowCorrSectionWF();
-
 
     this.senderDetailsForm = this.formBuilder.group({
       SenderInfo: ['', Validators.required]
@@ -307,7 +300,13 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
 
   ngAfterViewInit() {
     this.getOrganizationalChartDetail();
+  }
 
+  getShowElementsConst(taskTitle: string) {
+    this.stepUIData = this.toShowWFButtons(this.taskID, taskTitle);
+    this.showWFButtons = this.stepUIData.ShowButtons;
+    this.sectionDisplay = this.stepUIData.ShowSections;
+    this.showFields = this.stepUIData.ShowFields;
   }
 
   ReadRecord(locationid: string, transid: string) {
@@ -539,6 +538,7 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
         if ((typeof response.forms !== 'undefined') && response.forms.length > 0) {
           this.body.values = response.forms[0].data;
           this.taskTitle = response.data.title;
+          this.getShowElementsConst(this.taskTitle);
           this.getCorrespondenceSenderDetails(0);
           const teamID = this.body.values.WorkflowForm_1x4x1x51;
           this.setMultiApproveParameters(teamID, false);
@@ -1413,7 +1413,6 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
         () => { },
         () => {
           this.getCoverSection();
-          this.getCoverDocumentURL(this.coverID);
         }
       );
   }
@@ -1476,7 +1475,7 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     this.editMode = true;
   }
 
-  toShowWFButtons(taskID: string): any {
+  toShowWFButtons(taskID: string, taskTitle: string): any {
     let WFStepsUI: any;
     if (this.CorrespondencType === 'Incoming') {
       WFStepsUI = this.globalConstants.WFStepsUI.Incoming;
@@ -1486,9 +1485,10 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
       WFStepsUI = this.globalConstants.WFStepsUI.Internal;
     }
     let tmpObj: any;
+    const task = taskTitle.indexOf('Correspondence Collaboration') > -1 ? 'collaboration' : taskID;
     WFStepsUI.forEach(function (taskObj) {
-      let tempTaskList = taskObj.TaskID.split(",");
-      if (tempTaskList.indexOf(taskID) > -1) {
+      const tempTaskList = taskObj.TaskID.split(",");
+      if (tempTaskList.indexOf(task) > -1) {
         tmpObj = taskObj;
       }
     });
