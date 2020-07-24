@@ -938,7 +938,7 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
       this.documentMetadataSync.SenderName = this.convertUndefindedOrNulltoemptyString(this.correspondenceSenderDetailsData.Name_AR)
 
       this.documentMetadataSync.RecipientOrganization = this.convertUndefindedOrNulltoemptyString(this.IntRecipientInfo.OrgName_Ar)
-      this.documentMetadataSync.RecipientDepartment = this.convertUndefindedOrNulltoemptyString(this.IntRecipientInfo.DepName_AR)
+      this.documentMetadataSync.RecipientDepartment = this.convertUndefindedOrNulltoemptyString(this.IntRecipientInfo.DepName_Ar)
       this.documentMetadataSync.RecipientRole = this.convertUndefindedOrNulltoemptyString(this.IntRecipientInfo.RoleName_Ar)
       this.documentMetadataSync.RecipientName = this.convertUndefindedOrNulltoemptyString(this.IntRecipientInfo.Name_Ar)
       this.documentMetadataSync.DATE = this.convertUndefindedOrNulltoemptyString(this.correspondenceDetailsForm.get('regDate').value)

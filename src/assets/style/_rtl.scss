@@ -130,8 +130,19 @@
                 td,th {
                  text-align: right;
                 }
+                .group_btn_attachments_cover{
+                    right: auto;
+                    left:10px;
+                }
              }  
         } 
+        .multiapp_table_wrapper .table {
+            thead{
+                .approver{
+                    text-align: right;
+                }
+            }
+        }
     }
     .show_preview_btn span {
         padding-left: 0;

@@ -12,6 +12,7 @@ import { MatDialog, MatCheckboxChange, MatOptionSelectionChange } from '@angular
 import { AddApproverDialogComponent } from 'src/app/dashboard/dialog-boxes/add-approver-dialog/add-approver-dialog.component';
 import { containsElement } from '@angular/animations/browser/src/render/shared';
 import { NotificationService } from 'src/app/dashboard/services/notification.service';
+import { multiLanguageTranslatorPipe } from 'src/assets/translator/index';
 
 export interface MultipleApproveInputData {
   CorrID: string;
@@ -96,6 +97,7 @@ export class MultipleApproveComponent implements OnInit {
     private formBuilder: FormBuilder,
     public dialogU: MatDialog,
     private notificationmessage: NotificationService,
+    private translator: multiLanguageTranslatorPipe
   ) { }
 
   @Input() approve: MultipleApproveInputData;
@@ -234,7 +236,7 @@ export class MultipleApproveComponent implements OnInit {
   }
 
   displayFieldValue(fieldValue: ApproverDetails) {
-    if (fieldValue) { return fieldValue.Approver_EN; }
+    if (fieldValue) { return this.translator.transform(fieldValue.Approver_EN, fieldValue.Approver_AR); }
   }
 
   ManageNameControl(index: number, approverData: ApproverDetails[]) {

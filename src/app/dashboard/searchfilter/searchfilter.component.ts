@@ -5,12 +5,16 @@ import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { switchMap, debounceTime } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { DashboardFilter, DashboardFilterResponse } from '../models/DashboardFilter';
+import { multiLanguageTranslatorPipe } from 'src/assets/translator/index';
 @Component({
   selector: 'app-searchfilter',
   templateUrl: './searchfilter.component.html'
 })
 export class SearchfilterComponent implements OnInit {
-  constructor(private correspondenceService: CorrespondenceService) { }
+  constructor(
+    private correspondenceService: CorrespondenceService
+    , public translator: multiLanguageTranslatorPipe
+  ) { }
 
   @Input()
   set searchExtOrgFieldShow(searchExtOrgFieldShow: boolean) {
@@ -99,7 +103,7 @@ export class SearchfilterComponent implements OnInit {
   }
 
   displayFn(attribute?: any): string | undefined {
-    return attribute ? attribute.EN : undefined;
+    return attribute ? this.translator.transform(attribute.EN, attribute.AR) : undefined;
   }
   displayExtOrgName(extOrgValue: DashboardFilter) {
     if (extOrgValue) { return extOrgValue.Name; }

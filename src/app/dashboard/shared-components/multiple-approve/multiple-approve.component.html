@@ -5,19 +5,19 @@
         <img src="{{basehref}}assets/images/icons/approvers.svg" alt="">
       </div>
     </div>
-    <p class="title_001">Approvers</p>
+    <p class="title_001">{{'approvers' | translator}}</p>
   </mat-expansion-panel-header>
   <div *ngIf="firstLoadSpinner" class="spinner_sm_wrappar">
     <mat-spinner class="spinner_sm"></mat-spinner>
   </div>
   <form *ngIf="!firstLoadSpinner" [formGroup]="approverDetailsForm">
     <div class="multiapp_table_wrapper">
-      <table class="table" [class]="!sectionDisabled ? 'table-active' : 'table-disabled'">
+      <table class="table" [ngClass]="!sectionDisabled ? 'table-active' : 'table-disabled'">
         <thead>
           <tr>
-            <th class="approver">Approver</th>
-            <th class="skip-secretary">Skip Secr.</th>
-            <th *ngIf="sectionDisabled" class="done">Done</th>
+            <th class="approver">{{'approver' | translator}}</th>
+            <th class="skip-secretary">{{'skip_secr' | translator}}</th>
+            <th *ngIf="sectionDisabled" class="done">{{'done' | translator}}</th>
             <th *ngIf="!sectionDisabled" class="delete"></th>
           </tr>
         </thead>
@@ -28,12 +28,14 @@
               <td class="approver" [ngSwitch]="approver.controls.ApproveLevel.value">
                 <div *ngSwitchCase="1" style="display:flex">
                   <mat-form-field>
-                    <input type="text" placeholder="Project Manager" formControlName="ApproverID" aria-label="Number"
-                      matInput [matAutocomplete]="ProjectManagerAuto">
-                    <mat-autocomplete #ProjectManagerAuto="matAutocomplete" [displayWith]="displayFieldValue">
+                    <input type="text"
+                      [placeholder]="approver.controls.LevelName_EN.value | translator:approver.controls.LevelName_AR.value"
+                      formControlName="ApproverID" aria-label="Number" matInput [matAutocomplete]="ProjectManagerAuto">
+                    <mat-autocomplete #ProjectManagerAuto="matAutocomplete"
+                      [displayWith]="displayFieldValue.bind(this)">
                       <mat-option *ngFor="let empName of (filteredNames[i] | async)" [value]="empName"
                         autoActiveFirstOption>
-                        {{ empName?.Approver_EN }}
+                        {{ empName?.Approver_EN | translator:empName?.Approver_AR }}
                       </mat-option>
                     </mat-autocomplete>
                   </mat-form-field>
@@ -42,10 +44,12 @@
                   <div
                     *ngIf="isSelectApproverStep && currentLevel.ApproveLevel === approver.controls.ApproveLevel.value; else elseBlock">
                     <mat-form-field>
-                      <mat-label>{{approver.controls.LevelName_EN.value}}</mat-label>
+                      <mat-label>
+                        {{approver.controls.LevelName_EN.value | translator:approver.controls.LevelName_AR.value}}
+                      </mat-label>
                       <mat-select [(value)]="approverSelected">
                         <mat-option *ngFor="let approver of ApproverList" [value]="approver.ID">
-                          {{approver.Approver_EN}}
+                          {{approver.Approver_EN | translator:approver.Approver_AR}}
                         </mat-option>
                       </mat-select>
                     </mat-form-field>
@@ -53,44 +57,52 @@
                   <ng-template #elseBlock>
                     <div *ngIf="!sectionDisabled">
                       <mat-form-field *ngIf="!approver.controls.SkipSecretary.value">
-                        <mat-label>{{approver.controls.LevelName_EN.value}}</mat-label>
+                        <mat-label>
+                          {{approver.controls.LevelName_EN.value | translator:approver.controls.LevelName_AR.value}}
+                        </mat-label>
                         <mat-select formControlName="SecretaryGroupID">
                           <mat-option
                             *ngFor="let approver of getLevel(approver.controls.ApproveLevel.value).SecretaryGroup"
                             [value]="approver.ID">
-                            {{approver.Approver_EN}}
+                            {{approver.Approver_EN | translator:approver.Approver_AR}}
                           </mat-option>
                         </mat-select>
                       </mat-form-field>
                       <mat-form-field *ngIf="approver.controls.SkipSecretary.value">
-                        <mat-label>{{approver.controls.LevelName_EN.value}}</mat-label>
+                        <mat-label>
+                          {{approver.controls.LevelName_EN.value | translator:approver.controls.LevelName_AR.value}}
+                        </mat-label>
                         <mat-select formControlName="ApproverID">
                           <mat-option
                             *ngFor="let approver of getLevel(approver.controls.ApproveLevel.value).ApproverGroup"
                             [value]="approver.ID">
-                            {{approver.Approver_EN}}
+                            {{approver.Approver_EN | translator:approver.Approver_AR}}
                           </mat-option>
                         </mat-select>
                       </mat-form-field>
                     </div>
                     <div *ngIf="sectionDisabled">
                       <mat-form-field *ngIf="!approver.controls.ApproverID.value">
-                        <mat-label>{{approver.controls.LevelName_EN.value}}</mat-label>
+                        <mat-label>
+                          {{approver.controls.LevelName_EN.value | translator:approver.controls.LevelName_AR.value}}
+                        </mat-label>
                         <mat-select formControlName="SecretaryGroupID">
                           <mat-option
                             *ngFor="let approver of getLevel(approver.controls.ApproveLevel.value).SecretaryGroup"
                             [value]="approver.ID">
-                            {{approver.Approver_EN}}
+                            {{approver.Approver_EN | translator:approver.Approver_AR}}
                           </mat-option>
                         </mat-select>
                       </mat-form-field>
                       <mat-form-field *ngIf="approver.controls.ApproverID.value">
-                        <mat-label>{{approver.controls.LevelName_EN.value}}</mat-label>
+                        <mat-label>
+                          {{approver.controls.LevelName_EN.value | translator:approver.controls.LevelName_AR.value}}
+                        </mat-label>
                         <mat-select formControlName="ApproverID">
                           <mat-option
                             *ngFor="let approver of getLevel(approver.controls.ApproveLevel.value).ApproverGroup"
                             [value]="approver.ID">
-                            {{approver.Approver_EN}}
+                            {{approver.Approver_EN | translator:approver.Approver_AR}}
                           </mat-option>
                         </mat-select>
                       </mat-form-field>
@@ -100,9 +112,9 @@
               </td>
               <td class="skip-secretary">
                 <p *ngIf="!sectionDisabled && approver.controls.ApproveLevel.value === 1 " class="select-from-chart"
-                  (click)="getOrgChart()">Select</p>
+                  (click)="getOrgChart()">{{'select' | translator}}</p>
                 <mat-checkbox *ngIf="approver.controls.ApproveLevel.value != 1" formControlName="SkipSecretary"
-                  (change)="skipChange($event, i)" matTooltip="Skip Secretary">
+                  (change)="skipChange($event, i)" [matTooltip]="'skip_secr' | translator">
                 </mat-checkbox>
               </td>
               <td *ngIf="sectionDisabled" class="done">
@@ -114,7 +126,7 @@
               </td>
               <td *ngIf="!sectionDisabled" class="delete">
                 <button *ngIf="approver.controls.isMandatory.value !== 2" (click)="removeApprover(i)"
-                  class="remove_btn_002" mat-button matTooltip="Delete">
+                  class="remove_btn_002" mat-button [matTooltip]="'actbtn_delete' | translator">
                   <img src="{{basehref}}assets/images/icons/remove_icon_001.svg" alt="">
                 </button>
               </td>
@@ -125,7 +137,7 @@
     </div>
     <button *ngIf="!sectionDisabled" class="show_preview_btn" (click)="addApproverLevel()">
       <img src="{{basehref}}assets/images/icons/plus_green_btn.svg" alt="">
-      <span>Add Level</span>
+      <span>{{'add_level' | translator}}</span>
     </button>
   </form>
 </mat-expansion-panel>

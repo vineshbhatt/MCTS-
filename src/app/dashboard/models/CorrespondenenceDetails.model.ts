@@ -36,7 +36,7 @@ export class OrgNameAutoFillModel {
   Val_Ar: string;
   DepID: number;
   DepName_En: string;
-  DepName_AR: string;
+  DepName_Ar: string;
   SecID: number;
   SecName_En: string;
   SecName_Ar: string;

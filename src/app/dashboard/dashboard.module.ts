@@ -93,7 +93,7 @@ import { CommentDialogComponent } from './comments/comment-dialog/comment-dialog
 import { CommentsTreeComponent } from './comments/comments-tree/comments-tree.component';
 import { MatRadioModule } from '@angular/material';
 import { CommentSectionComponent } from './comments/comment-section/comment-section.component';
-import { multiLanguageTranslatorModule } from 'src/assets/translator/index';
+import { multiLanguageTranslatorModule, multiLanguageTranslatorPipe } from 'src/assets/translator/index';
 import { BaseDashboardArchiveComponent } from './base-classes/base-dashboard-archive/base-dashboard-archive.component';
 import { UserInfoComponent } from './side-navigation/user-info/user-info.component';
 import { ProxyInfoComponent } from './side-navigation/proxy-info/proxy-info.component';
@@ -268,7 +268,7 @@ import { SelectTeamDialogComponent } from './dialog-boxes/select-team-dialog/sel
     DistributionDialogComponent,
     SelectTeamDialogComponent
   ],
-  providers: [ErrorHandlerFctsService, NotificationService, DatePipe]
+  providers: [ErrorHandlerFctsService, NotificationService, DatePipe, multiLanguageTranslatorPipe]
 })
 export class DashboardModule { }
 
