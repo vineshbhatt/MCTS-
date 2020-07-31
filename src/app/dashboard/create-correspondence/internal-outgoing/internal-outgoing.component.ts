@@ -27,6 +27,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { ResizedEvent } from 'angular-resize-event';
 import { MatDialog } from '@angular/material';
 import { SelectTeamDialogComponent } from '../../dialog-boxes/select-team-dialog/select-team-dialog.component';
+import { CorrespondenceShareService } from 'src/app/dashboard/services/correspondence-share.service';
 
 
 @Component({
@@ -166,8 +167,8 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
     private _errorHandlerFctsService: ErrorHandlerFctsService,
     private appLoadConstService: AppLoadConstService,
     public translator: multiLanguageTranslator,
-    public dialog: MatDialog
-
+    public dialog: MatDialog,
+    private correspondenceShareService: CorrespondenceShareService
   ) {
     super(csdocumentupload, correspondenceDetailsService);
   }
@@ -322,70 +323,62 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
       .subscribe(correspondenceCovertData => this.documentPreviewURL = correspondenceCovertData);
   }
 
-  showSenderData() {
-    this.showPreviewTreeArea = true;
-    this.selectedCaption = 'Sender'
-    this.currentlyChecked = false;
+  clearTreeParameters() {
+    this.showPreviewTreeArea = false;
     this.showPreviewCoverLetter = false;
-    this.multiSelect = false;
-    this.dataSource.data = this.organizationalChartData;
+    this.showTemplateArea = false;
+    this.currentlyChecked = false;
+    this.isSearchResult = false;
     this.CCOUID = [];
     this.CCEID = [];
-    this.showTemplateArea = false;
-    this.isSearchResult = false;
   }
-  showRecipientData() {
+
+  showSenderData() {
+    this.clearTreeParameters();
     this.showPreviewTreeArea = true;
-    this.selectedCaption = 'Recipient'
-    this.currentlyChecked = false;
-    this.showPreviewCoverLetter = false;
+    this.selectedCaption = 'Sender'
     this.multiSelect = false;
     this.dataSource.data = this.organizationalChartData;
-    this.CCEID = [];
-    this.showTemplateArea = false;
-    this.isSearchResult = false;
   }
-  showCCData() {
 
+  showRecipientData() {
+    this.clearTreeParameters();
+    this.showPreviewTreeArea = true;
+    this.selectedCaption = 'Recipient'
+    this.multiSelect = false;
+    this.dataSource.data = this.organizationalChartData;
+  }
+
+  showCCData() {
+    this.clearTreeParameters();
     this.showPreviewTreeArea = true;
     this.selectedCaption = 'CC'
-    this.currentlyChecked = false;
-    this.showPreviewCoverLetter = false;
     this.multiSelect = true;
     this.dataSource.data = this.organizationalChartData;
-    this.showTemplateArea = false;
-    this.isSearchResult = false;
   }
 
   showCollaboartorData() {
+    this.clearTreeParameters();
     this.showPreviewTreeArea = true;
     this.selectedCaption = 'Collaboration';
-    this.currentlyChecked = false;
-    this.showPreviewCoverLetter = false;
     this.multiSelect = true;
     this.dataSource.data = this.organizationalChartData;
-    this.showTemplateArea = false;
-    this.isSearchResult = false;
   }
 
   showMultiAppData() {
+    this.clearTreeParameters();
     this.showPreviewTreeArea = true;
     this.selectedCaption = 'Approver';
-    this.currentlyChecked = false;
-    this.showPreviewCoverLetter = false;
     this.multiSelect = false;
     this.dataSource.data = this.organizationalChartData;
-    this.showTemplateArea = false;
-    this.isSearchResult = false;
   }
 
   showTemplateSection() {
-
-    this.showPreviewTreeArea = false;
-    this.showPreviewCoverLetter = false;
+    this.clearTreeParameters();
     this.showTemplateArea = true;
     this.getTemplatesSectionData(this.corrFlowType, 'Default', 'false');
   }
+
   getOrganizationalChartDetail(): void {
     this.organizationalChartService.getOrgChartInternal()
       .subscribe(OrgChartResponse => {
@@ -592,8 +585,10 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
     }
     else if (this.selectedCaption === 'CC') {
       this.ccProgbar = true;
-      this.ccDetailsForm = this.formBuilder.group({
-        CCDetails: this.formBuilder.array([])
+      const ccDeetails = this.ccDetailsForm.get('CCDetails') as FormArray;
+      let currentArr = new Array();
+      ccDeetails.value.forEach(element => {
+        currentArr.push(element.DepID);
       });
       let orgArray = new Array();
       this.CCOUID.forEach(function (obj) {
@@ -608,7 +603,9 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
       this.correspondenceDetailsService.getCCUserDetailsSet(orgArray.toString(), empArray.toString(), this.corrFlowType).subscribe(
         ccDepInfo => {
           for (let obj of ccDepInfo) {
-            this.addCC(obj);
+            if (currentArr.indexOf(obj.CCUserID) === -1) {
+              this.addCC(obj);
+            }
           }
           this.ccProgbar = false;
         }
@@ -618,8 +615,10 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
     }
     else if (this.selectedCaption === 'Collaboration') {
       this.colProgBar = true;
-      this.colDetailsForm = this.formBuilder.group({
-        ColDetails: this.formBuilder.array([])
+      const colDetails = this.colDetailsForm.get('ColDetails') as FormArray;
+      let currentArr = new Array();
+      colDetails.value.forEach(element => {
+        currentArr.push(element.UserColl_User);
       });
 
       let empArray = new Array();
@@ -630,7 +629,9 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
       this.correspondenceDetailsService.getCollUserDetailsSet(empArray.toString(), this.corrFlowType).subscribe(
         colEmpInfo => {
           for (let obj of colEmpInfo) {
-            this.addCollaboator(obj);
+            if (currentArr.indexOf(obj.UserColl_User) === -1) {
+              this.addCollaboator(obj);
+            }
           }
           this.colProgBar = false;
         }
@@ -689,6 +690,10 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
     this.initiateInternalCorrespondenceDetails.CoverID = this.coverID;
     this.initiateInternalCorrespondenceDetails.TemplateLanguage = this.templateLanguage;
 
+    this.initiateInternalCorrespondenceDetails.UserCollSet.forEach(element => {
+      element.UserColl_DueDate = this.correspondenceShareService.DateToISOStringAbs(element.UserColl_DueDate);
+    });
+
     this.multiApproversDataSave();
 
     this.correspondencservice.initiateWF(this.initiateInternalCorrespondenceDetails, this.corrFlowType).subscribe(
@@ -704,9 +709,8 @@ export class InternalOutgoing extends BaseCorrespondenceComponent implements OnI
 
   getIDVal(attributeObj: any): string {
     if (typeof attributeObj === 'undefined' || attributeObj === null) {
-      return ''
-    }
-    else {
+      return '';
+    } else {
       return attributeObj.ID;
     }
   }

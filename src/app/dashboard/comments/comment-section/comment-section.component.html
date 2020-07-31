@@ -1,7 +1,9 @@
 <div class="newCommentSection">
-	<div class="buttonHolder">
-		<h4 (click)="openAddCommentWindow()" class="btn_002" [class.addbutton-hide]="showAddCommentField"
-			*ngIf="commentsEditable">{{'add_comment' | translator}}</h4>
+	<div class="buttonHolder" *ngIf="commentsEditable">
+		<button class="show_preview_btn" (click)="openAddCommentWindow()" [class.addbutton-hide]="showAddCommentField">
+			<img src="{{basehref}}assets/images/icons/plus_green_btn.svg" alt="">
+			<span>{{'add_comment' | translator}}</span>
+		</button>
 	</div>
 	<div *ngIf="commentsProgbar" class="spinner_sm_wrappar">
 		<mat-spinner class="spinner_sm"></mat-spinner>
@@ -31,13 +33,10 @@
 		</div>
 	</div>
 	<div *ngIf="!commentsProgbar">
-		<ng-scrollbar thumbClass="scroll_001" compact="true"
-			*ngIf="commentsDataBufer && commentsDataBufer.length; else emptyBlock">
-			<div class="tree-holder">
-				<app-comments-tree [commentsDetails]="commentsDataBufer" [commentEdit]="commentsEditable"
-					(makeReply)="openAddReplyWindow($event)" (closeDialogBox)="getCommentsData()"></app-comments-tree>
-			</div>
-		</ng-scrollbar>
+		<div class="tree-holder" *ngIf="commentsDataBufer && commentsDataBufer.length; else emptyBlock">
+			<app-comments-tree [commentsDetails]="commentsDataBufer" [commentEdit]="commentsEditable"
+				(makeReply)="openAddReplyWindow($event)" (closeDialogBox)="getCommentsData()"></app-comments-tree>
+		</div>
 		<ng-template #emptyBlock>
 			<h3 class="empty-block">{{'no_comments_available' | translator}}</h3>
 		</ng-template>

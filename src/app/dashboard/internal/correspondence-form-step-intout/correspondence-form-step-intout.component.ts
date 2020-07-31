@@ -512,7 +512,7 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
       UserColl_Type: empDetails.UserColl_Type,
       UserColl_Purpose: empDetails.UserColl_Purpose,
       UserColl_Priority: empDetails.UserColl_Priority,
-      UserColl_DueDate: this.datePipe.transform(new Date(empDetails.UserColl_DueDate), 'full'),
+      UserColl_DueDate: empDetails.UserColl_DueDate,
       UserColl_Notes: empDetails.UserColl_Notes,
       UserColl_FurtherAction: empDetails.UserColl_FurtherAction,
       UserColl_Status: empDetails.UserColl_Status,
@@ -635,11 +635,12 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
   getCollaborationtoFormObject() {
     this.body.values.WorkflowForm_1x4x1x110.splice(this.colDetailsForm.get('ColDetails').value.length);
     for (let i = 0; i < this.colDetailsForm.get('ColDetails').value.length; i++) {
+      let date = this.colDetailsForm.get('ColDetails').value[i].UserColl_DueDate ? new Date(this.colDetailsForm.get('ColDetails').value[i].UserColl_DueDate) : '';
       if (typeof this.body.values.WorkflowForm_1x4x1x110[i] === 'object') {
         this.body.values.WorkflowForm_1x4x1x110[i].WorkflowForm_1x4x1x110_x_111 = this.colDetailsForm.get('ColDetails').value[i].UserColl_User;
         this.body.values.WorkflowForm_1x4x1x110[i].WorkflowForm_1x4x1x110_x_121 = this.colDetailsForm.get('ColDetails').value[i].UserColl_Type;
         this.body.values.WorkflowForm_1x4x1x110[i].WorkflowForm_1x4x1x110_x_113 = this.colDetailsForm.get('ColDetails').value[i].UserColl_Purpose;
-        this.body.values.WorkflowForm_1x4x1x110[i].WorkflowForm_1x4x1x110_x_115 = this.colDetailsForm.get('ColDetails').value[i].UserColl_DueDate;
+        this.body.values.WorkflowForm_1x4x1x110[i].WorkflowForm_1x4x1x110_x_115 = this.correspondenceShareService.DateToISOStringAbs(date);
         this.body.values.WorkflowForm_1x4x1x110[i].WorkflowForm_1x4x1x110_x_116 = this.colDetailsForm.get('ColDetails').value[i].UserColl_Notes;
         this.body.values.WorkflowForm_1x4x1x110[i].WorkflowForm_1x4x1x110_x_117 = this.colDetailsForm.get('ColDetails').value[i].UserColl_FurtherAction;
 
@@ -651,7 +652,7 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
           WorkflowForm_1x4x1x110_x_111: this.colDetailsForm.get('ColDetails').value[i].UserColl_User,
           WorkflowForm_1x4x1x110_x_121: this.colDetailsForm.get('ColDetails').value[i].UserColl_Type,
           WorkflowForm_1x4x1x110_x_113: this.colDetailsForm.get('ColDetails').value[i].UserColl_Purpose,
-          WorkflowForm_1x4x1x110_x_115: this.colDetailsForm.get('ColDetails').value[i].UserColl_DueDate,
+          WorkflowForm_1x4x1x110_x_115: this.correspondenceShareService.DateToISOStringAbs(date),
           WorkflowForm_1x4x1x110_x_116: this.colDetailsForm.get('ColDetails').value[i].UserColl_Notes,
           WorkflowForm_1x4x1x110_x_117: this.colDetailsForm.get('ColDetails').value[i].UserColl_FurtherAction
 
@@ -1050,83 +1051,68 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
       .subscribe(correspondenceCovertData => this.documentPreviewURL = correspondenceCovertData);
   }
 
-  showSenderData() {
-    this.showPreviewTreeArea = true;
-    this.selectedCaption = 'Sender';
+  clearTreeParameters() {
+    this.showPreviewTreeArea = false;
     this.showDistributionTreeArea = false;
-    this.currentlyChecked = false;
     this.showPreviewCoverLetter = false;
-    this.multiSelect = false;
-    this.dataSource.data = this.organizationalChartData;
+    this.showTemplateArea = false;
+    this.currentlyChecked = false;
+    this.isSearchResult = false;
     this.CCOUID = [];
     this.CCEID = [];
-    this.showTemplateArea = false;
-    this.isSearchResult = false;
   }
-  showRecipientData() {
+
+  showSenderData() {
+    this.clearTreeParameters();
     this.showPreviewTreeArea = true;
-    this.showDistributionTreeArea = false;
-    this.selectedCaption = 'chart_recipient';
-    this.currentlyChecked = false;
-    this.showPreviewCoverLetter = false;
+    this.selectedCaption = 'Sender';
     this.multiSelect = false;
     this.dataSource.data = this.organizationalChartData;
-    this.CCEID = [];
-    this.showTemplateArea = false;
-    this.isSearchResult = false;
   }
-  showCCData() {
+  showRecipientData() {
+    this.clearTreeParameters();
+    this.showPreviewTreeArea = true;
+    this.selectedCaption = 'chart_recipient';
+    this.multiSelect = false;
+    this.dataSource.data = this.organizationalChartData;
+  }
 
+  showCCData() {
+    this.clearTreeParameters();
     this.showPreviewTreeArea = true;
     this.selectedCaption = 'chart_cc';
-    this.currentlyChecked = false;
-    this.showPreviewCoverLetter = false;
-    this.showDistributionTreeArea = false;
     this.multiSelect = true;
     this.dataSource.data = this.organizationalChartData;
-    this.showTemplateArea = false;
-    this.isSearchResult = false;
   }
 
   showCollaboartorData() {
+    this.clearTreeParameters();
     this.showPreviewTreeArea = true;
     this.selectedCaption = 'chart_collaboration';
-    this.currentlyChecked = false;
-    this.showPreviewCoverLetter = false;
-    this.showDistributionTreeArea = false;
     this.multiSelect = true;
     this.dataSource.data = this.organizationalChartData;
-    this.showTemplateArea = false;
-    this.isSearchResult = false;
   }
 
   showMultiAppData() {
+    this.clearTreeParameters();
     this.showPreviewTreeArea = true;
     this.selectedCaption = 'chart_approver';
-    this.currentlyChecked = false;
-    this.showPreviewCoverLetter = false;
-    this.showDistributionTreeArea = false;
     this.multiSelect = false;
     this.dataSource.data = this.organizationalChartData;
-    this.showTemplateArea = false;
-    this.isSearchResult = false;
   }
 
   showDistributionChart() {
-    this.showPreviewTreeArea = false;
-    this.showPreviewCoverLetter = false;
-    this.showTemplateArea = false;
+    this.clearTreeParameters();
     this.showDistributionTreeArea = true;
   }
 
   showTemplateSection() {
-    this.showDistributionTreeArea = false;
-    this.showPreviewTreeArea = false;
-    this.showPreviewCoverLetter = false;
+    this.clearTreeParameters();
     this.showTemplateArea = true;
     this.getTemplatesSectionData(this.corrFlowType, 'Default', '');
     this.LoadTemplateFilter('Template_Type');
   }
+
   getOrganizationalChartDetail(): void {
     this.organizationalChartService.getOrgChartInternal()
       .subscribe(OrgChartResponse => {
@@ -1332,8 +1318,10 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
     }
     else if (this.selectedCaption === 'chart_cc') {
       this.ccProgbar = true;
-      this.ccDetailsForm = this.formBuilder.group({
-        CCDetails: this.formBuilder.array([])
+      const ccDeetails = this.ccDetailsForm.get('CCDetails') as FormArray;
+      let currentArr = new Array();
+      ccDeetails.value.forEach(element => {
+        currentArr.push(element.DepID);
       });
       let orgArray = new Array();
       this.CCOUID.forEach(function (obj) {
@@ -1348,7 +1336,9 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
       this.correspondenceDetailsService.getCCUserDetailsSet(orgArray.toString(), empArray.toString(), this.corrFlowType).subscribe(
         ccDepInfo => {
           for (let obj of ccDepInfo) {
-            this.addCC(obj);
+            if (currentArr.indexOf(obj.CCUserID) === -1) {
+              this.addCC(obj);
+            }
           }
           this.ccProgbar = false;
         }
@@ -1356,8 +1346,10 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
     }
     else if (this.selectedCaption === 'chart_collaboration') {
       this.colProgBar = true;
-      this.colDetailsForm = this.formBuilder.group({
-        ColDetails: this.formBuilder.array([])
+      const colDetails = this.colDetailsForm.get('ColDetails') as FormArray;
+      let currentArr = new Array();
+      colDetails.value.forEach(element => {
+        currentArr.push(element.UserColl_User);
       });
 
       let empArray = new Array();
@@ -1368,7 +1360,9 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
       this.correspondenceDetailsService.getCollUserDetailsSet(empArray.toString(), this.corrFlowType).subscribe(
         colEmpInfo => {
           for (let obj of colEmpInfo) {
-            this.addCollaboator(obj);
+            if (currentArr.indexOf(obj.UserColl_User) === -1) {
+              this.addCollaboator(obj);
+            }
           }
           this.colProgBar = false;
         }

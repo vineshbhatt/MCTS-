@@ -596,7 +596,7 @@
                     <tr formArrayName="ColDetails"
                       *ngFor="let col of colDetailsForm.get('ColDetails').controls; let i = index;">
                       <ng-container [formGroupName]="i">
-                        <td class="name" formControlName="Name_EN">{{col.controls.Name_EN.value}}</td>
+                        <td class="name">{{col.controls.Name_EN.value}}</td>
                         <td class="department">{{col.controls.DepartmentName_EN.value}}</td>
                         <td class="status">
                           <img matTooltip="col.controls.Status_EN.value"

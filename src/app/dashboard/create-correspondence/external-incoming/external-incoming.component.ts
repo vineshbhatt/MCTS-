@@ -295,41 +295,37 @@ export class ExternalIncoming extends BaseCorrespondenceComponent implements OnI
       .subscribe(correspondenceCovertData => this.documentPreviewURL = correspondenceCovertData);
   }
 
-
-
-  showSenderData() {
+  clearTreeParameters() {
+    this.showPreviewECMDTreeArea = false;
     this.showPreviewTreeArea = false;
     this.showPreviewCoverLetter = false;
+    this.currentlyChecked = false;
+    this.isSearchResult = false;
+    this.CCOUID = [];
+    this.CCEID = [];
+  }
+
+  showSenderData() {
+    this.clearTreeParameters();
     this.showPreviewECMDTreeArea = true;
     this.selectedCaption = 'Sender';
-    this.currentlyChecked = false;
     this.multiSelect = false;
-    this.isSearchResult = false;
   }
 
   showRecipientData() {
-    this.showPreviewCoverLetter = false;
-    this.showPreviewECMDTreeArea = false;
+    this.clearTreeParameters();
     this.showPreviewTreeArea = true;
     this.selectedCaption = 'Recipient';
-    this.currentlyChecked = false;
-    this.showPreviewCoverLetter = false;
     this.multiSelect = false;
     this.dataSource.data = this.organizationalChartData;
-    this.CCEID = [];
-    this.isSearchResult = false;
   }
 
   showCCData() {
-    this.showPreviewCoverLetter = false;
-    this.showPreviewECMDTreeArea = false;
+    this.clearTreeParameters();
     this.showPreviewTreeArea = true;
     this.selectedCaption = 'CC';
-    this.currentlyChecked = false;
-    this.showPreviewCoverLetter = false;
     this.multiSelect = true;
     this.dataSource.data = this.organizationalChartData;
-    this.isSearchResult = false;
   }
 
   getOrganizationalChartDetail(): void {
@@ -533,8 +529,10 @@ export class ExternalIncoming extends BaseCorrespondenceComponent implements OnI
       }
     } else if (this.selectedCaption === 'CC') {
       this.ccProgbar = true;
-      this.ccDetailsForm = this.formBuilder.group({
-        CCDetails: this.formBuilder.array([])
+      const ccDeetails = this.ccDetailsForm.get('CCDetails') as FormArray;
+      let currentArr = new Array();
+      ccDeetails.value.forEach(element => {
+        currentArr.push(element.DepID);
       });
       const orgArray = new Array();
       this.CCOUID.forEach(function (obj) {
@@ -549,7 +547,9 @@ export class ExternalIncoming extends BaseCorrespondenceComponent implements OnI
       this.correspondenceDetailsService.getCCUserDetailsSet(orgArray.toString(), empArray.toString(), 'Incoming').subscribe(
         ccDepInfo => {
           for (const obj of ccDepInfo) {
-            this.addCC(obj);
+            if (currentArr.indexOf(obj.CCUserID) === -1) {
+              this.addCC(obj);
+            }
           }
           this.ccProgbar = false;
         }

@@ -27,6 +27,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { ResizedEvent } from 'angular-resize-event';
 import { MatDialog } from '@angular/material';
 import { SelectTeamDialogComponent } from '../../dialog-boxes/select-team-dialog/select-team-dialog.component';
+import { CorrespondenceShareService } from 'src/app/dashboard/services/correspondence-share.service';
 
 
 
@@ -168,7 +169,8 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
   @ViewChild('senderContainer') senderContainer: ElementRef;
 
   constructor(private _location: Location,
-    private organizationalChartService: OrganizationalChartService, private formBuilder: FormBuilder,
+    private organizationalChartService: OrganizationalChartService,
+    private formBuilder: FormBuilder,
     private correspondencservice: CorrespondenceService,
     private notificationmessage: NotificationService,
     public csdocumentupload: CSDocumentUploadService,
@@ -177,7 +179,8 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
     private _errorHandlerFctsService: ErrorHandlerFctsService,
     private appLoadConstService: AppLoadConstService,
     public translator: multiLanguageTranslator,
-    public dialog: MatDialog) {
+    public dialog: MatDialog,
+    private correspondenceShareService: CorrespondenceShareService) {
     super(csdocumentupload, correspondenceDetailsService);
   }
   ngOnInit() {
@@ -329,71 +332,56 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
       .subscribe(correspondenceCovertData => this.documentPreviewURL = correspondenceCovertData);
   }
 
-  showSenderData() {
-    this.showPreviewTreeArea = true;
+  clearTreeParameters() {
     this.showPreviewECMDTreeArea = false;
-    this.selectedCaption = 'Sender'
-    this.currentlyChecked = false;
+    this.showPreviewTreeArea = false;
     this.showPreviewCoverLetter = false;
-    this.multiSelect = false;
-    this.dataSource.data = this.organizationalChartData;
+    this.showTemplateArea = false;
+    this.currentlyChecked = false;
+    this.isSearchResult = false;
     this.CCOUID = [];
     this.CCEID = [];
-    this.showTemplateArea = false;
-    this.isSearchResult = false;
   }
-  showRecipientData() {
-    this.showPreviewECMDTreeArea = true;
-    this.showPreviewTreeArea = false;
-    this.selectedCaption = 'Recipient'
-    this.currentlyChecked = false;
-    this.showPreviewCoverLetter = false;
+
+  showSenderData() {
+    this.clearTreeParameters();
+    this.showPreviewTreeArea = true;
+    this.selectedCaption = 'Sender';
     this.multiSelect = false;
     this.dataSource.data = this.organizationalChartData;
-    this.CCEID = [];
-    this.showTemplateArea = false;
-    this.isSearchResult = false;
+  }
+  showRecipientData() {
+    this.clearTreeParameters();
+    this.showPreviewECMDTreeArea = true;
+    this.selectedCaption = 'Recipient';
+    this.dataSource.data = this.organizationalChartData;
   }
   showCCData() {
-    this.showPreviewECMDTreeArea = false;
+    this.clearTreeParameters();
     this.showPreviewTreeArea = true;
-    this.selectedCaption = 'CC'
-    this.currentlyChecked = false;
-    this.showPreviewCoverLetter = false;
+    this.selectedCaption = 'CC';
     this.multiSelect = true;
     this.dataSource.data = this.organizationalChartData;
-    this.showTemplateArea = false;
-    this.isSearchResult = false;
   }
 
   showCollaboartorData() {
-    this.showPreviewECMDTreeArea = false;
+    this.clearTreeParameters();
     this.showPreviewTreeArea = true;
-    this.selectedCaption = 'Collaboration'
-    this.currentlyChecked = false;
-    this.showPreviewCoverLetter = false;
+    this.selectedCaption = 'Collaboration';
     this.multiSelect = true;
     this.dataSource.data = this.organizationalChartData;
-    this.showTemplateArea = false;
-    this.isSearchResult = false;
   }
 
   showMultiAppData() {
-    this.showPreviewECMDTreeArea = false;
+    this.clearTreeParameters();
     this.showPreviewTreeArea = true;
     this.selectedCaption = 'Approver';
-    this.currentlyChecked = false;
-    this.showPreviewCoverLetter = false;
     this.multiSelect = false;
     this.dataSource.data = this.organizationalChartData;
-    this.showTemplateArea = false;
-    this.isSearchResult = false;
   }
 
   showTemplateSection() {
-
-    this.showPreviewTreeArea = false;
-    this.showPreviewCoverLetter = false;
+    this.clearTreeParameters();
     this.showTemplateArea = true;
     this.getTemplatesSectionData(this.corrFlowType, 'Default', '');
     this.LoadTemplateFilter('Template_Type');
@@ -603,8 +591,10 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
     }
     else if (this.selectedCaption === 'CC') {
       this.ccProgbar = true;
-      this.ccDetailsForm = this.formBuilder.group({
-        CCDetails: this.formBuilder.array([])
+      const ccDeetails = this.ccDetailsForm.get('CCDetails') as FormArray;
+      let currentArr = new Array();
+      ccDeetails.value.forEach(element => {
+        currentArr.push(element.DepID);
       });
       let orgArray = new Array();
       this.CCOUID.forEach(function (obj) {
@@ -619,7 +609,9 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
       this.correspondenceDetailsService.getCCUserDetailsSet(orgArray.toString(), empArray.toString(), this.corrFlowType).subscribe(
         ccDepInfo => {
           for (let obj of ccDepInfo) {
-            this.addCC(obj);
+            if (currentArr.indexOf(obj.CCUserID) === -1) {
+              this.addCC(obj);
+            }
           }
           this.ccProgbar = false;
         }
@@ -629,8 +621,10 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
     }
     else if (this.selectedCaption === 'Collaboration') {
       this.colProgBar = true;
-      this.colDetailsForm = this.formBuilder.group({
-        ColDetails: this.formBuilder.array([])
+      const colDetails = this.colDetailsForm.get('ColDetails') as FormArray;
+      let currentArr = new Array();
+      colDetails.value.forEach(element => {
+        currentArr.push(element.UserColl_User);
       });
 
       let empArray = new Array();
@@ -641,7 +635,9 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
       this.correspondenceDetailsService.getCollUserDetailsSet(empArray.toString(), this.corrFlowType).subscribe(
         colEmpInfo => {
           for (let obj of colEmpInfo) {
-            this.addCollaboator(obj);
+            if (currentArr.indexOf(obj.UserColl_User) === -1) {
+              this.addCollaboator(obj);
+            }
           }
           this.colProgBar = false;
         }
@@ -671,11 +667,12 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
     }
     return true;
   }
+
   initiateWFCorrespondence(Disposition1: string, Disposition2: string, Dispostion3: string) {
     this.spinnerDataLoaded = true;
     //Set each and every Value ofr the three Forms to one Single Object For Post
     this.initiateOutgoingCorrespondenceDetails.CorrespondenceID = this.corrFolderData.AttachCorrID.toString();
-    this.initiateOutgoingCorrespondenceDetails.SenderDetails = this.correspondenceSenderDetailsData;;
+    this.initiateOutgoingCorrespondenceDetails.SenderDetails = this.correspondenceSenderDetailsData;
 
     this.initiateOutgoingCorrespondenceDetails.RecipientDetails = this.recipientDetailsForm.get('ExternalOrganization').value;
     this.initiateOutgoingCorrespondenceDetails.RecipientName = this.recipientDetailsForm.get('RecipientName').value;
@@ -703,6 +700,10 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
     this.initiateOutgoingCorrespondenceDetails.CoverID = this.coverID;
     this.initiateOutgoingCorrespondenceDetails.TemplateLanguage = this.templateLanguage;
 
+    this.initiateOutgoingCorrespondenceDetails.UserCollSet.forEach(element => {
+      element.UserColl_DueDate = this.correspondenceShareService.DateToISOStringAbs(element.UserColl_DueDate);
+    });
+
     this.multiApproversDataSave();
 
     this.correspondencservice.initiateWF(this.initiateOutgoingCorrespondenceDetails, this.corrFlowType).subscribe(
@@ -717,7 +718,7 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
 
   getIDVal(attributeObj: any): string {
     if (typeof attributeObj === 'undefined' || attributeObj === null) {
-      return ''
+      return '';
     }
     else {
       return attributeObj.ID;

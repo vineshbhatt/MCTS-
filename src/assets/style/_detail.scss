@@ -595,6 +595,7 @@
         margin-right: -8px;
 
         .input_item_wrp {
+          width:155px;
           padding-right: 8px;
           padding-left: 8px;
           box-sizing: border-box;
@@ -676,6 +677,11 @@
         &.table_wrapper_003 {
           max-height: calc(100vh - 280px);
           overflow: auto;
+          td:first-of-type {
+            padding-left: 12px;
+            padding-right: 0;
+            width: auto;
+          }
         }
       }
     }
@@ -1079,7 +1085,7 @@
 
 .due_date_wrp {
   .mat-form-field-infix {
-    width: 110px;
+    width: 100px !important;
     box-sizing: border-box;
   }
 

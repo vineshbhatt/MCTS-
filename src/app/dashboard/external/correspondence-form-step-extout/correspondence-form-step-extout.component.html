@@ -608,6 +608,17 @@
                           </mat-checkbox>
                         </td>
                         <td class="purpose">{{col.controls.Purpose_EN.value}}</td>
+                        <!-- <td>
+                          <mat-form-field>
+                            <mat-label>Purpose</mat-label>
+                            <mat-select formControlName="UserColl_Purpose">
+                              <mat-option *ngFor="let option of MetadataFilters | attrfilter:'Purpose'"
+                                [value]="option.ID">
+                                {{option.EN}}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </td> -->
                         <td class="due_date">
                           <div class="input_item_wrp sm_input_wrapper due_date_wrp">
                             <mat-form-field (click)="picker.open()">
@@ -681,7 +692,7 @@
         </mat-expansion-panel>
       </mat-accordion>
     </div>
-    <div class="corp_dtl_btn_btm_wrapper">
+    <div class="corp_dtl_btn_btm_wrapper" *ngIf="showWFButtons">
 
       <button class="btn_008" *ngIf="showWFButtons.btnSaveDraft" prevent-double-submit
         (click)="submitCorrespondenceAction('Save')">Save As Draft</button>

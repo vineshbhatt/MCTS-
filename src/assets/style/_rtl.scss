@@ -27,6 +27,9 @@
                 padding-left: 0px;
                 padding-right: 40px;
             }
+            .mCSB_container{
+                left:-5px !important;
+            }
         }
         .main_cnt_area .header_search_wrapper {
             .header_search {
@@ -140,6 +143,14 @@
             thead{
                 .approver{
                     text-align: right;
+                }
+            }
+        }
+        .last_note_btn{
+            .last_not_show {
+                left: -20px;
+                &:after {
+                    left: 25px;
                 }
             }
         }

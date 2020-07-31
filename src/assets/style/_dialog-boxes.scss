@@ -250,9 +250,9 @@
 }
 
 .corres_comnt_area{
-  .tree-holder{
+  /* .tree-holder{
     max-height:11.5vw;
-  }
+  } */
 
   .cmntAction{
     background: white;
@@ -265,7 +265,6 @@
   .buttonHolder{
     display:flex;
     flex-direction: row-reverse;
-    margin-right:67px;
     .btn_002{
         cursor: pointer;
     }

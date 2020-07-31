@@ -781,59 +781,43 @@ export class CorrespondenceFormStepComponent implements OnInit {
       .subscribe(correspondenceCovertData => this.documentPreviewURL = correspondenceCovertData);
   }
 
-  /*   showSenderData() {
-      this.showPreviewTreeArea = true;
-      this.selectedCaption = 'Sender';
-      this.currentlyChecked = false;
-      this.showPreviewCoverLetter = false;
-      this.multiSelect = false;
-      this.dataSource.data = this.organizationalChartData;
-      this.CCOUID = [];
-    } */
-
-  showSenderData() {
+  clearTreeParameters() {
+    this.showPreviewECMDTreeArea = false;
+    this.showDistributionTreeArea = false;
     this.showPreviewTreeArea = false;
     this.showPreviewCoverLetter = false;
-    this.showPreviewECMDTreeArea = true;
-    this.showDistributionTreeArea = false;
-    this.isSearchResult = false;
-    this.selectedCaption = 'Sender';
     this.currentlyChecked = false;
+    this.isSearchResult = false;
+    this.CCOUID = [];
+    this.CCEID = [];
+  }
+
+  showSenderData() {
+    this.clearTreeParameters();
+    this.showPreviewECMDTreeArea = true;
+    this.selectedCaption = 'Sender';
     this.multiSelect = false;
     this.CCOUID = [];
   }
 
   showRecipientData() {
-    this.showPreviewCoverLetter = false;
-    this.showPreviewECMDTreeArea = false;
-    this.showDistributionTreeArea = false;
+    this.clearTreeParameters();
     this.showPreviewTreeArea = true;
-    this.isSearchResult = false;
     this.selectedCaption = 'Recipient';
-    this.currentlyChecked = false;
-    this.showPreviewCoverLetter = false;
     this.multiSelect = false;
     this.dataSource.data = this.organizationalChartData;
-    this.CCOUID = [];
   }
 
   showCCData() {
-    this.showPreviewCoverLetter = false;
-    this.showPreviewECMDTreeArea = false;
+    this.clearTreeParameters();
     this.showPreviewTreeArea = true;
-    this.showDistributionTreeArea = false;
-    this.isSearchResult = false;
     this.selectedCaption = 'CC';
-    this.currentlyChecked = false;
-    this.showPreviewCoverLetter = false;
     this.multiSelect = true;
     this.dataSource.data = this.organizationalChartData;
   }
 
   showDistributionChart() {
-    this.showPreviewCoverLetter = false;
-    this.showPreviewECMDTreeArea = false;
-    this.showPreviewTreeArea = false;
+    this.clearTreeParameters();
     this.showDistributionTreeArea = true;
   }
 
@@ -1051,9 +1035,11 @@ export class CorrespondenceFormStepComponent implements OnInit {
       }
     } else if (this.selectedCaption === 'CC') {
       this.ccProgbar = true;
-      /*       this.ccDetailsForm = this.formBuilder.group({
-              CCDetails: this.formBuilder.array([])
-            }); */
+      const ccDeetails = this.ccDetailsForm.get('CCDetails') as FormArray;
+      let currentArr = new Array();
+      ccDeetails.value.forEach(element => {
+        currentArr.push(element.DepID);
+      });
       const orgArray = new Array();
       this.CCOUID.forEach(function (obj) {
         orgArray.push(obj.OUID);
@@ -1067,7 +1053,9 @@ export class CorrespondenceFormStepComponent implements OnInit {
       this.correspondenceDetailsService.getCCUserDetailsSet(orgArray.toString(), empArray.toString(), 'Incoming').subscribe(
         ccDepInfo => {
           for (const obj of ccDepInfo) {
-            this.addCC(obj);
+            if (currentArr.indexOf(obj.CCUserID) === -1) {
+              this.addCC(obj);
+            }
           }
           this.ccProgbar = false;
         }
