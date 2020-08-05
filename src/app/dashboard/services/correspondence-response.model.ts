@@ -34,6 +34,7 @@ export class SenderDetailsData {
   SenderVersion: string;
   SectionName_EN: string;
   SectionName_AR: string;
+  SenderNativeDepartment: number;
 }
 
 export class RecipientDetailsData {

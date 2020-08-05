@@ -7,6 +7,7 @@ import { BaseDashboardActiveComponent } from 'src/app/dashboard/base-classes/bas
 import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handler-fcts.service';
 import { CorrespondenceShareService } from 'src/app/dashboard/services/correspondence-share.service';
 import { AppLoadConstService } from 'src/app/app-load-const.service';
+import { multiLanguageTranslator } from 'src/assets/translator/index';
 
 @Component({
   selector: 'app-new-intoutbound',
@@ -16,18 +17,19 @@ import { AppLoadConstService } from 'src/app/app-load-const.service';
 
 export class NewIntOutboundComponent extends BaseDashboardActiveComponent implements OnInit {
 
-    constructor(
-      public router: Router,
-      public dialogU: MatDialog,
-      public correspondenceService: CorrespondenceService,
-      public correspondenceShareService: CorrespondenceShareService,
-      public errorHandlerFctsService: ErrorHandlerFctsService,
-      public appLoadConstService: AppLoadConstService,
-    ) {
-      super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService);
-      this.reportType = 'IntOutWIP';
-      this.routerFormStep = '/dashboard/internal/correspondence-form-step-intout';
-    }
+  constructor(
+    public router: Router,
+    public dialogU: MatDialog,
+    public correspondenceService: CorrespondenceService,
+    public correspondenceShareService: CorrespondenceShareService,
+    public errorHandlerFctsService: ErrorHandlerFctsService,
+    public appLoadConstService: AppLoadConstService,
+    public translator: multiLanguageTranslator
+  ) {
+    super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService, translator);
+    this.reportType = 'IntOutWIP';
+    this.routerFormStep = '/dashboard/internal/correspondence-form-step-intout';
+  }
 
   ngOnInit() {
     super.ngOnInit();

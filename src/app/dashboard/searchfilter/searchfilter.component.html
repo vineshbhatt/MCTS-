@@ -40,23 +40,12 @@
           [formControl]="ExteranlOrgnizationControl" matInput [matAutocomplete]="ExternalOrganization">
       </mat-form-field>
       <mat-autocomplete #ExternalOrganization="matAutocomplete" [displayWith]="displayExtOrgName">
-        <mat-option *ngFor="let OrgName of (filteredExtOrgNames | async)?.myRows" [value]="OrgName.ID"
+        <mat-option *ngFor="let OrgName of (filteredExtOrgNames | async)?.myRows" [value]="OrgName"
           autoActiveFirstOption>
           <span>{{ OrgName.Name }}</span>
         </mat-option>
       </mat-autocomplete>
     </div>
-    <!-- Vinesh Commented on TBD  -->
-    <!-- <div class="input_item_wrp auto_cmplt" *ngIf="_showExtFld" [ngClass]="AdvancedSearch ? 'Active' : 'unActive'">
-      <mat-form-field>
-        <input type="text" [(ngModel)]="SearchFilterData.ExternalDepartment" placeholder="External Department" matInput [matAutocomplete]="ExternalDepartment">
-        <mat-autocomplete #ExternalDepartment="matAutocomplete" autoActiveFirstOption>
-          <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-            {{option}}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-    </div> -->
     <div class="input_item_wrp auto_cmplt" *ngIf="_showSenderDeptFld"
       [ngClass]="AdvancedSearch ? 'Active' : 'unActive'">
       <mat-form-field>

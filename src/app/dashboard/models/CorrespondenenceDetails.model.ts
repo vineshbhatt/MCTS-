@@ -23,6 +23,9 @@ export class CorrespondenenceDetailsModel {
   CorrespondenceFlowType: string;
   CorrFlowType: string;
   CorrespondencePhase: string;
+  DistCode: string;
+  DistSeq: string;
+  parentID: string;
 }
 
 export class OrgNameAutoFillModel {
@@ -154,4 +157,8 @@ export class OrgNameAutoFillModelSimpleUser {
   RecipientVersion: number;
   _SOURCEROWNUM: number;
   _ORIGROWNUM: number;
+}
+
+export class TemplateModel {
+  AttrValue: string;
 }

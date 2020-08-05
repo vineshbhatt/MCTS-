@@ -7,6 +7,7 @@ import { CorrespondenceShareService } from '../../services/correspondence-share.
 import { BaseDashboardComponent } from 'src/app/dashboard/base-classes/base-dashboard/base-dashboard.component';
 import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handler-fcts.service';
 import { AppLoadConstService } from 'src/app/app-load-const.service';
+import { multiLanguageTranslator } from 'src/assets/translator/index';
 
 @Component({
   selector: 'app-mr-dispatched-outbounds',
@@ -16,24 +17,25 @@ import { AppLoadConstService } from 'src/app/app-load-const.service';
 
 export class MrDispatchedOutboundsComponent extends BaseDashboardComponent implements OnInit {
 
-    constructor(
-      public router: Router,
-      public dialogU: MatDialog,
-      public correspondenceService: CorrespondenceService,
-      public сorrespondenceShareService: CorrespondenceShareService,
-      public errorHandlerFctsService: ErrorHandlerFctsService,
-      public appLoadConstService: AppLoadConstService,
-    ) {
-        super(router, dialogU, correspondenceService, сorrespondenceShareService, errorHandlerFctsService, appLoadConstService);
-        this.reportType = 'MRExtOutDis';
-        this.routerFormStep = '/dashboard/mailroom/correspondence-form-step-out';
-    }
-
-    ngOnInit() {
-      super.ngOnInit();
-      this.searchExtOrgFieldShow = true;
-      this.searchRecipientDeptFieldShow = false;
-      this.searchSenderDeptFieldShow = true;
-    }
-
+  constructor(
+    public router: Router,
+    public dialogU: MatDialog,
+    public correspondenceService: CorrespondenceService,
+    public сorrespondenceShareService: CorrespondenceShareService,
+    public errorHandlerFctsService: ErrorHandlerFctsService,
+    public appLoadConstService: AppLoadConstService,
+    public translator: multiLanguageTranslator
+  ) {
+    super(router, dialogU, correspondenceService, сorrespondenceShareService, errorHandlerFctsService, appLoadConstService, translator);
+    this.reportType = 'MRExtOutDis';
+    this.routerFormStep = '/dashboard/mailroom/correspondence-form-step-out';
   }
+
+  ngOnInit() {
+    super.ngOnInit();
+    this.searchExtOrgFieldShow = true;
+    this.searchRecipientDeptFieldShow = false;
+    this.searchSenderDeptFieldShow = true;
+  }
+
+}

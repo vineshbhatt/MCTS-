@@ -257,7 +257,7 @@ export class LinkedCorrDialogComponent implements OnInit {
     DispatchDateTo: '',
     Subject: '',
     CorrespondencType: { ID: '', EN: '', AR: '' },
-    ExternalOrganization: '',
+    ExternalOrganization: { ID: '', EN: '', AR: '' },
     ExternalDepartment: '',
     RecipientDepartment: { ID: '', EN: '', AR: '' },
     SenderDepartment: { ID: '', EN: '', AR: '' },
@@ -288,7 +288,7 @@ export class LinkedCorrDialogComponent implements OnInit {
   };
 
   @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(FilesSelectComponent) filesSelect: FilesSelectComponent;
+  //@ViewChild(FilesSelectComponent) filesSelect;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -453,7 +453,7 @@ export class LinkedCorrDialogComponent implements OnInit {
     this.currentName = Rowdata.name;
     this.currentReference = Rowdata.DataID;
     this.getDataFunction(Rowdata.DataID);
-    this.filesSelect.threadedMoving(this.currentReference);
+    //this.filesSelect.threadedMoving(this.currentReference);
     this.connectedSearchDataObj = null;
   }
 

@@ -27,6 +27,7 @@ export class SideNavigationComponent implements OnInit {
   routerRoot = '/dashboard/external';
   panelOpenState = false;
   hideToggle = false;
+  CSUrl: String = FCTSDashBoard.CSUrl;
 
   constructor(
     private appLoadConstService: AppLoadConstService,
@@ -94,7 +95,7 @@ export class SideNavigationComponent implements OnInit {
       width: '90vw',
       panelClass: 'delegationReportDialogBoxClass',
       maxWidth: '90vw',
-      data: {section: 'userSection'}
+      data: { section: 'userSection' }
     });
   }
 }

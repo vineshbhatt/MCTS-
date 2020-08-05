@@ -11,7 +11,7 @@ import { Correspondence } from '../../services/correspondence.model';
 import { RecallTransferInfo } from 'src/app/dashboard/dialog-boxes/transfer-recall-dialog/transfer-recall-dialog.model';
 import { TransferReturntoasDialogComponent } from '../../dialog-boxes/transfer-returntoas-dialog/transfer-returntoas-dialog.component';
 import { TransferRequestFinal } from '../correspondence-detail/correspondence-transfer-dialog/correspondence-transfer-dialog.model';
-
+import { multiLanguageTranslator } from 'src/assets/translator/index';
 
 @Component({
   selector: 'app-in-progress',
@@ -23,17 +23,18 @@ export class InProgressComponent extends BaseDashboardActiveComponent implements
   public globalConstants = this.appLoadConstService.getConstants();
 
   constructor(
-      public router: Router,
-      public dialogU: MatDialog,
-      public correspondenceService: CorrespondenceService,
-      public correspondenceShareService: CorrespondenceShareService,
-      public errorHandlerFctsService: ErrorHandlerFctsService,
-      public appLoadConstService: AppLoadConstService
-    ) {
-      super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService);
-      this.reportType = 'ExtInbAck';
-      this.routerFormStep = '/dashboard/external/correspondence-form-step-inc';
-    }
+    public router: Router,
+    public dialogU: MatDialog,
+    public correspondenceService: CorrespondenceService,
+    public correspondenceShareService: CorrespondenceShareService,
+    public errorHandlerFctsService: ErrorHandlerFctsService,
+    public appLoadConstService: AppLoadConstService,
+    public translator: multiLanguageTranslator
+  ) {
+    super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService, translator);
+    this.reportType = 'ExtInbAck';
+    this.routerFormStep = '/dashboard/external/correspondence-form-step-inc';
+  }
 
   ngOnInit() {
     super.ngOnInit();
@@ -42,11 +43,11 @@ export class InProgressComponent extends BaseDashboardActiveComponent implements
     this.searchSenderDeptFieldShow = true;
   }
 
-  returnToASDialog( correspondData: Correspondence, recallType: string ): void {
+  returnToASDialog(correspondData: Correspondence, recallType: string): void {
     const recallTransferInfo = new RecallTransferInfo();
-          recallTransferInfo.correspondData = correspondData;
-          recallTransferInfo.recallType = recallType;
-          recallTransferInfo.selectedIDs = '';
+    recallTransferInfo.correspondData = correspondData;
+    recallTransferInfo.recallType = recallType;
+    recallTransferInfo.selectedIDs = '';
 
     this.dialogU.open(TransferReturntoasDialogComponent, {
       width: '100%',
@@ -86,30 +87,30 @@ export class InProgressComponent extends BaseDashboardActiveComponent implements
     finalRequest.push(TList);
 
     this.correspondenceShareService.createTransferRequestDash(
-        finalRequest,
-        recallTransferInfo.correspondData,
-        recallTransferInfo.recallType)
-    .subscribe(
-      (response) => {
-        this.setStatusReturnToAS(recallTransferInfo, '2');
-        this.runReturnToAS_CCRecall(recallTransferInfo);
-        this.getPage(this.pagenumber);
-      },
-      responseError => {
-        this.progbar = false;
-        this.errorHandlerFctsService.handleError(responseError).subscribe();
-      }
-    );
+      finalRequest,
+      recallTransferInfo.correspondData,
+      recallTransferInfo.recallType)
+      .subscribe(
+        (response) => {
+          this.setStatusReturnToAS(recallTransferInfo, '2');
+          this.runReturnToAS_CCRecall(recallTransferInfo);
+          this.getPage(this.pagenumber);
+        },
+        responseError => {
+          this.progbar = false;
+          this.errorHandlerFctsService.handleError(responseError).subscribe();
+        }
+      );
   }
 
   setStatusReturnToAS(recallTransferInfo: RecallTransferInfo, status: string) {
     const setStatusRequest = this.correspondenceShareService
-                                  .buildObject(
-                                      recallTransferInfo.correspondData,
-                                      status,
-                                      recallTransferInfo.recallType,
-                                      ''
-                                    );
+      .buildObject(
+        recallTransferInfo.correspondData,
+        status,
+        recallTransferInfo.recallType,
+        ''
+      );
     this.correspondenceShareService.setTransferToStatus(setStatusRequest).subscribe(
       response => {
       },

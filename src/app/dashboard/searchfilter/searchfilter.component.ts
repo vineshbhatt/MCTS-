@@ -39,7 +39,7 @@ export class SearchfilterComponent implements OnInit {
     DispatchDateTo: '',
     Subject: '',
     CorrespondencType: { ID: '', EN: '', AR: '' },
-    ExternalOrganization: '',
+    ExternalOrganization: { ID: '', EN: '', AR: '' },
     ExternalDepartment: '',
     RecipientDepartment: { ID: '', EN: '', AR: '' },
     SenderDepartment: { ID: '', EN: '', AR: '' },

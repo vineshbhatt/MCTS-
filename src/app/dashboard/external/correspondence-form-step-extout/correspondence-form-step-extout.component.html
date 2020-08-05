@@ -3,7 +3,7 @@
 </div>
 <div class="form_eic_cont_wrapper">
   <ng-scrollbar thumbClass="scroll_001" class="correspondence_detail scroll_wrp_001" *ngIf="expandedRightAction"
-    [ngClass]="expandedAction ? 'unActive' : 'ActiveLeft'" compact="true">
+    [ngClass]="expandedAction ? 'unActive' : 'ActiveLeft'">
     <button (click)="expandeActionLeftButton()" matRipple class="corsp_ext_btn">
       <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
     </button>
@@ -37,13 +37,18 @@
               <tr>
                 <th>Organization</th>
                 <th>Department</th>
+                <th>On Behalf</th>
                 <th>Name</th>
                 <th class="btn_td_wrp"></th>
               </tr>
               <tr *ngIf=correspondenceSenderDetailsData>
                 <td>{{correspondenceSenderDetailsData.OrganizationName_EN}}</td>
+                <td>{{correspondenceSenderDetailsData.DepartmentName_EN}}</td>
                 <td>
-                  {{correspondenceSenderDetailsData.DepartmentName_EN}}{{ (correspondenceSenderDetailsData.SectionName_EN != null) ? (","+correspondenceSenderDetailsData.SectionName_EN) : "" }}
+                  <span
+                    *ngIf="correspondenceSenderDetailsData.SenderDepartment !== correspondenceSenderDetailsData.SenderNativeDepartment">
+                    {{correspondenceSenderDetailsData.DepartmentNativeName_EN}}
+                  </span>
                 </td>
                 <td>{{correspondenceSenderDetailsData.Name_EN}} </td>
               </tr>
@@ -113,6 +118,10 @@
             </table>
           </div>
         </div>
+        <button class="show_preview_btn" (click)="showRecipientData()">
+          <img src="{{basehref}}assets/images/icons/plus_green_btn.svg" alt="">
+          <span>Select Recipient</span>
+        </button>
       </div>
     </form>
 
@@ -167,9 +176,11 @@
             </div>
           </mat-expansion-panel>
         </form>
-
-
-        <mat-expansion-panel class="mat-elevation-z ">
+        <app-multiple-approve *ngIf="approve && sectionDisplay.Approvers.Show" (orgChart)="showMultiAppData($event)"
+          (senderReload)="getCorrespondenceSenderDetails($event)" [approve]="approve" [confidential]="confidential"
+          [sectionDisabled]="!sectionDisplay.Approvers.Modify">
+        </app-multiple-approve>
+        <mat-expansion-panel class="mat-elevation-z bg_001">
           <mat-expansion-panel-header>
             <div class="icon_wrapper">
               <div class="icon_typ icon_typ_004">
@@ -243,49 +254,6 @@
                     [ngClass]="{ 'is-invalid': submitted && f.englishSubject.errors }" required>
                   <mat-error *ngIf="submitted && f.englishSubject.errors">Please enter English Subject</mat-error>
                 </mat-form-field>
-
-                <div class="col_6 my_auto">
-                  <mat-checkbox formControlName="skipDepSecratory" (change)="skipDepSecrtoryChange($event)">Skip
-                    Department Secretary</mat-checkbox>
-                </div>
-
-                <mat-form-field *ngIf="skipDepSecratory || showFields.DepApprover" class="col_6">
-                  <input type="text" [(ngModel)]="ApproverVal " placeholder="Approver" matInput
-                    [matAutocomplete]="Approver" formControlName="Approver">
-                  <mat-autocomplete #Approver="matAutocomplete" [displayWith]="displayFn" autoActiveFirstOption>
-                    <mat-option *ngFor="let option of DepApproverList | attrfilter:'DepApprover':ApproverVal"
-                      [value]="option">
-                      {{option.EN}}
-                    </mat-option>
-                  </mat-autocomplete>
-                </mat-form-field>
-
-                <mat-form-field class="col_6">
-                  <mat-label> Head Of Section Review</mat-label>
-                  <mat-select (selectionChange)="headOfSectionReviewRequiredChange($event)"
-                    formControlName="HOSReviewRequired">
-                    <mat-option *ngFor="let hosReview of HOSReviewOptions" [value]="hosReview">
-                      {{hosReview}}
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-                <div *ngIf="headOfSectionReview" class="col_6 my_auto">
-                  <mat-checkbox formControlName="skipHOSecratory" (change)="skipHOSSecratoryChange($event)">Skip HOS
-                    Secretary</mat-checkbox>
-                </div>
-
-                <mat-form-field *ngIf="skipHOSSecratory || showFields.HOSApprover" class="col_6">
-                  <input type="text" [(ngModel)]="HOSApproverVal " placeholder="HOS Approver" matInput
-                    [matAutocomplete]="HOSApprover" formControlName="HOSApprover">
-                  <mat-autocomplete #HOSApprover="matAutocomplete" [displayWith]="displayFn" autoActiveFirstOption>
-                    <mat-option *ngFor="let option of HOSApproverList | attrfilter:'HOSApprover':HOSApproverVal"
-                      [value]="option">
-                      {{option.EN}}
-                    </mat-option>
-                  </mat-autocomplete>
-                </mat-form-field>
-
-
                 <mat-form-field class="col_6">
                   <input matInput autocomplete="off" placeholder="Project Code" formControlName="projectCode">
                 </mat-form-field>
@@ -328,7 +296,7 @@
             </div>
           </div>
         </mat-expansion-panel>
-        <mat-expansion-panel class="mat-elevation-z bg_001">
+        <mat-expansion-panel class="mat-elevation-z">
           <mat-expansion-panel-header>
             <div class="icon_wrapper">
               <div class="icon_typ icon_typ_005">
@@ -407,7 +375,7 @@
           </div>
         </mat-expansion-panel>
 
-        <mat-expansion-panel class="mat-elevation-z">
+        <mat-expansion-panel class="mat-elevation-z bg_001">
           <mat-expansion-panel-header (click)="getAttachmentSection()">
             <div class="icon_wrapper">
               <div class="icon_typ icon_typ_006">
@@ -417,100 +385,108 @@
             <p class="title_001">Attachments</p>
           </mat-expansion-panel-header>
           <div class="corres_data_area">
-            <ul class="cl_btn_group">
-              <li class="cl_btn_wrp">
-                <button class="cl_btn cl_btn_001" (click)="refreshAttachmentSection()">
-                  <img src="{{basehref}}assets/images/icons/refresh_arrow_white.svg" alt="">
-                </button>
-              </li>
-              <li class="cl_btn_wrp">
+            <div class="attachments-container">
+              <div *ngIf="progress" class="progress-container">
+                <p>{{progress}}%</p>
+                <mat-progress-bar style="width: 75%" [mode]="determinate" [value]="progress">
+                </mat-progress-bar>
+              </div>
+              <ul class="cl_btn_group">
+                <li class="cl_btn_wrp">
+                  <button class="cl_btn cl_btn_001" (click)="refreshAttachmentSection()">
+                    <img src="{{basehref}}assets/images/icons/refresh_arrow_white.svg" alt="">
+                  </button>
+                </li>
+                <li class="cl_btn_wrp">
 
-                <div class="image-upload">
-                  <label for="file-inputAttachment" class="cl_btn cl_btn_002" matTooltip="Add document">
-                    <img src="{{basehref}}assets/images/icons/cl_file_add_doc.svg" alt="">
-                  </label>
-                  <input id="file-inputAttachment" type="file"
-                    (change)="uploadCSDocument($event.target.files,corrFolderData.AttachCorrAttachmentsID,'ATTACHMENT')" />
-                </div>
-              </li>
-              <li class="cl_btn_wrp">
-                <button class="cl_btn cl_btn_003" (click)="showCSCopy(corrFolderData.AttachCorrAttachmentsID)"
-                  matTooltip="Copy From Content Server">
-                  <img src="{{basehref}}assets/images/icons/search_icon_004.svg" alt="">
-                </button>
-              </li>
-              <li class="cl_btn_wrp">
-                <button class="cl_btn cl_btn_003" matTooltip="Scan"
-                  (click)="loadFolderPageForScan(corrFolderData.AttachCorrAttachmentsID)">
-                  <img src="{{basehref}}assets/images/icons/scanner_white.svg" alt="">
-                </button>
-              </li>
-            </ul>
-            <div *ngIf="ccProgbar" class="spinner_sm_wrappar">
-              <mat-spinner class="spinner_sm"></mat-spinner>
-            </div>
-            <div *ngIf="!ccProgbar" class="corres_table_wrapper">
-              <table class="table table_cover_letter">
-                <tr>
-                  <th class="type">Type</th>
-                  <th class="name">Name</th>
-                  <th></th>
-                  <!-- <th class="size">Size</th> -->
-                  <!-- <th class="modified">Modified</th> -->
-                </tr>
-                <tbody *ngFor="let corrAttachmentDetails of AttachmentFolderData">
-                  <tr *ngFor="let attachmentData of corrAttachmentDetails.myRows">
-                    <td class="size_45" [innerHtml]="attachmentData.attachmentType">
-                    </td>
-                    <td>
-                      <a class="coverLink" (click)="getCoverDocumentURL(attachmentData.Dataid)">{{attachmentData.Name}}
-                      </a>
-                    </td>
-                    <td>
-                      <div class="group_btn">
-                        <a *ngIf="attachmentData.addversionperm=='TRUE'" matTooltip="Add Version" class="btn btn_006"
-                          (click)="openBrowseDocument($event,'file-inputAddversionAttachment')">
-                          <img src="{{basehref}}assets/images/icons/add-version.svg" alt="">
-                        </a>
-                        <input id="file-inputAddversionAttachment" class="hidden-button" type="file"
-                          (change)="addDocumentVersion($event.target.files,attachmentData.Dataid,'ATTACHMENT')" />
-                        <a matTooltip="Download" class="btn btn_006" href="{{CSUrl}}{{attachmentData.DownloadURL}}">
-                          <img src="{{basehref}}assets/images/icons/download-to-storage-drive.svg" alt="">
-                        </a>
-                        <a matTooltip="Properties" class="btn btn_006"
-                          (click)=showActionProperties(attachmentData.Dataid)>
-                          <img src="{{basehref}}assets/images/icons/info-round-button.svg" alt="">
-                        </a>
-                        <a *ngIf="attachmentData.deleteperm=='TRUE'" matTooltip="Delete" class="btn btn_006"
-                          (click)="deleteDocument(attachmentData.Dataid,'ATTACHMENT')">
-                          <img src="{{basehref}}assets/images/icons/remove_icon_001.svg" alt="">
-                        </a>
-                      </div>
-                    </td>
-                    <!-- <td> {{attachmentData.AttachmentSize}} </td> -->
-                    <!-- <td> {{attachmentData.ModifyDate}} </td> -->
+                  <div class="image-upload">
+                    <label for="file-inputAttachment" class="cl_btn cl_btn_002" matTooltip="Add document">
+                      <img src="{{basehref}}assets/images/icons/cl_file_add_doc.svg" alt="">
+                    </label>
+                    <input id="file-inputAttachment" type="file"
+                      (change)="uploadCSDocument($event.target.files,corrFolderData.AttachCorrAttachmentsID,'ATTACHMENT')" />
+                  </div>
+                </li>
+                <li class="cl_btn_wrp">
+                  <button class="cl_btn cl_btn_003" (click)="showCSCopy(corrFolderData.AttachCorrAttachmentsID)"
+                    matTooltip="Copy From Content Server">
+                    <img src="{{basehref}}assets/images/icons/search_icon_004.svg" alt="">
+                  </button>
+                </li>
+                <li class="cl_btn_wrp">
+                  <button class="cl_btn cl_btn_003" matTooltip="Scan"
+                    (click)="loadFolderPageForScan(corrFolderData.AttachCorrAttachmentsID)">
+                    <img src="{{basehref}}assets/images/icons/scanner_white.svg" alt="">
+                  </button>
+                </li>
+              </ul>
+              <div *ngIf="ccProgbar" class="spinner_sm_wrappar">
+                <mat-spinner class="spinner_sm"></mat-spinner>
+              </div>
+              <div *ngIf="!ccProgbar" class="corres_table_wrapper">
+                <table class="table table_cover_letter">
+                  <tr>
+                    <th class="type">Type</th>
+                    <th class="name">Name</th>
+                    <th></th>
+                    <!-- <th class="size">Size</th> -->
+                    <!-- <th class="modified">Modified</th> -->
                   </tr>
-                </tbody>
-              </table>
+                  <tbody *ngFor="let corrAttachmentDetails of AttachmentFolderData">
+                    <tr *ngFor="let attachmentData of corrAttachmentDetails.myRows">
+                      <td class="size_45" [innerHtml]="attachmentData.attachmentType">
+                      </td>
+                      <td>
+                        <a class="coverLink"
+                          (click)="getCoverDocumentURL(attachmentData.Dataid)">{{attachmentData.Name}}
+                        </a>
+                      </td>
+                      <td>
+                        <div class="group_btn">
+                          <a *ngIf="attachmentData.addversionperm=='TRUE'" matTooltip="Add Version" class="btn btn_006"
+                            (click)="openBrowseDocument($event,'file-inputAddversionAttachment')">
+                            <img src="{{basehref}}assets/images/icons/add-version.svg" alt="">
+                          </a>
+                          <input id="file-inputAddversionAttachment" class="hidden-button" type="file"
+                            (change)="addDocumentVersion($event.target.files,attachmentData.Dataid,'ATTACHMENT')" />
+                          <a matTooltip="Download" class="btn btn_006" href="{{CSUrl}}{{attachmentData.DownloadURL}}">
+                            <img src="{{basehref}}assets/images/icons/download-to-storage-drive.svg" alt="">
+                          </a>
+                          <a matTooltip="Properties" class="btn btn_006"
+                            (click)=showActionProperties(attachmentData.Dataid)>
+                            <img src="{{basehref}}assets/images/icons/info-round-button.svg" alt="">
+                          </a>
+                          <a *ngIf="attachmentData.deleteperm=='TRUE'" matTooltip="Delete" class="btn btn_006"
+                            (click)="deleteDocument(attachmentData.Dataid,'ATTACHMENT')">
+                            <img src="{{basehref}}assets/images/icons/remove_icon_001.svg" alt="">
+                          </a>
+                        </div>
+                      </td>
+                      <!-- <td> {{attachmentData.AttachmentSize}} </td> -->
+                      <!-- <td> {{attachmentData.ModifyDate}} </td> -->
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- start -->
+              <div class="drop_file_wrp">
+                <ngx-file-drop dropZoneLabel="Drop files here"
+                  (onFileDrop)="dropped($event,corrFolderData.AttachCorrAttachmentsID,'ATTACHMENT')"
+                  (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)"
+                  contentClassName="attachementdraganddrop">
+                  <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+                    You can drag & drop files here
+                  </ng-template>
+                </ngx-file-drop>
+              </div>
+              <!-- end -->
             </div>
-            <!-- start -->
-            <div class="drop_file_wrp">
-              <ngx-file-drop dropZoneLabel="Drop files here"
-                (onFileDrop)="dropped($event,corrFolderData.AttachCorrAttachmentsID,'ATTACHMENT')"
-                (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)"
-                contentClassName="attachementdraganddrop">
-                <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
-                  You can drag & drop files here
-                </ng-template>
-              </ngx-file-drop>
-            </div>
-            <!-- end -->
           </div>
         </mat-expansion-panel>
 
 
         <form [formGroup]="colDetailsForm">
-          <mat-expansion-panel class="mat-elevation-z bg_001">
+          <mat-expansion-panel class="mat-elevation-z">
             <mat-expansion-panel-header (click)="collaborationShowData()">
               <div class="icon_wrapper">
                 <div class="icon_typ icon_typ_007">
@@ -606,7 +582,7 @@
         <app-linked-correspondences [DataID]="locationid" [Name]="correspondenceData?.CorrFolderName"
           [Modify]="sectionDisplay.LinkedCorrespondence.Modify" (CoverAction)="LinkedCorrAction($event)">
         </app-linked-correspondences>
-        <mat-expansion-panel class="mat-elevation-z bg_001">
+        <mat-expansion-panel class="mat-elevation-z">
           <mat-expansion-panel-header (click)="commentsProgbar = false">
             <div class="icon_wrapper">
               <div class="icon_typ icon_typ_009">
@@ -635,7 +611,6 @@
         ngxPrint>Print Barcode</button>
       <button class="btn_008" *ngIf="showWFButtons.btnPrintReceipt" prevent-double-submit
         (click)="submitCorrespondenceAction('TEST')">Print Receipt</button>
-      <!-- <button class="btn_008" *ngIf="showWFButtons.btnSendFax" prevent-double-submit (click)="submitCorrespondenceInfo('TEST')">Send Fax</button> -->
       <button class="btn_008" *ngIf="showWFButtons.btnSendOn" prevent-double-submit
         (click)="submitCorrespondenceAction('SendOn')">Send</button>
       <button class="btn_008" *ngIf="showWFButtons.btnSave" prevent-double-submit
@@ -705,7 +680,7 @@
       <div class="org_cht_header" *ngIf="!dataSource.data.length == 0">
         <div class="search_wrapper">
           <input class="org_search" type="text" placeholder="ASHGAL Public Work authority" #organizationalChartSearch
-            (keyup.enter)="searchTreeValue(organizationalChartSearch.value)">
+            (keyup.enter)="searchTreeValue(organizationalChartSearch.value)" [(ngModel)]="orgSearch">
           <button (click)="searchTreeValue(organizationalChartSearch.value)" class="search_btn"></button>
         </div>
         <div class="right_org_head">
@@ -844,6 +819,12 @@
     <div *ngIf="showTemplateArea">
       <h3 class="org_chrt_head">Outgoing Templates</h3>
       <div class="cover_letter_preview_wrapper">
+        <mat-form-field *ngIf="templateTypes && corrFlowType === 'Outgoing'">
+          <mat-label>Template Type</mat-label>
+          <mat-select (selectionChange)="CorrTypesSelectChange($event)">
+            <mat-option *ngFor="let type of templateTypes" value="{{type.AttrValue}}">{{type.AttrValue}}</mat-option>
+          </mat-select>
+        </mat-form-field>
         <table class="cover_letter_preview_table">
           <tr>
 
@@ -880,6 +861,88 @@
         </table>
 
 
+      </div>
+    </div>
+    <div *ngIf="showPreviewECMDTreeArea">
+      <h3 class="org_chrt_head">Select {{selectedCaption}} from External Counterparts Chart
+      </h3>
+      <div class="org_cht_header">
+        <div class="search_wrapper">
+          <input class="org_search" type="text" placeholder="Search for External Counterpart..." #ECMDChartSearch
+            (keyup.enter)="searchCounterParts(ECMDChartSearch.value)">
+          <button (click)="searchCounterParts(ECMDChartSearch.value)" class="search_btn"></button>
+        </div>
+        <div class="right_org_head">
+          <input class="ecmd_search" type="text" placeholder="Type name" #ECMDName>
+          <button mat-button class="btn_001" [disabled]="!currentlyChecked"
+            (click)="getSelectedECMD(ECMDName.value)">Add</button>
+        </div>
+      </div>
+      <div *ngIf="isLoading" class="spinner_sm_wrappar">
+        <mat-spinner class="spinner_sm"></mat-spinner>
+      </div>
+      <div *ngIf="!isLoading" class="cover_ltr_pre">
+        <mat-tree [dataSource]="dataSourceECMD" [treeControl]="treeControlECMD" class="tree_container">
+          <mat-tree-node *matTreeNodeDef="let node" class="employees_wrapper">
+            <div class="main_tree_wrapper">
+              <div class="mat-tree-node" [class.selected-item]="currentlyChecked == node">
+                <div class="tree_icn_wrp flex_empl_wrp">
+                  <button mat-icon-button matTreeNodeToggle (click)="ECMDTreeOpenAction(node)">
+                    <mat-icon *ngIf="node.hasOwnProperty('children') && !node.isLoading">
+                      {{treeControlECMD.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                    </mat-icon>
+                    <mat-spinner *ngIf="node.isLoading" class="ecmd-tree-spinner"></mat-spinner>
+                  </button>
+                  <div class="org_text_wrp ecmd_text_wrp" (click)="selectECMD(node)">
+                    <div class="ecmd_icon_wrp" [ngClass]="ecmdTreeType(node)">
+                      <img *ngIf="ecmdTreeType(node) === 'folder'" class="ecmd_img_001"
+                        src="{{basehref}}assets/images/icons/folder_001.svg" alt="">
+                      <p *ngIf="ecmdTreeType(node) === 'counterpart'" class="ecmd_initial_001">
+                        {{getInitials(node.Name)}}</p>
+                      <p *ngIf="ecmdTreeType(node) === 'department'" class="ecmd_initial_001">{{getInitials(node.Name)}}
+                      </p>
+                    </div>
+                    <p class="org_chart_text ecmd_char_text">{{node.Name}}<span
+                        *ngIf="ecmdTreeType(node) === 'folder' && !isSearchResult">({{node.CounterParts}})</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-tree-node>
+          <mat-nested-tree-node *matTreeNodeDef="let node; when: ECMDhasChild" class="main_tree_wrapper">
+            <div class="full_fil_wrapper">
+              <div class="mat-tree-node" [class.selected-item]="currentlyChecked == node">
+                <div class="tree_icn_wrp">
+                  <div class="{{node.employees_status}}">
+                    <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.Name">
+                      <mat-icon class="mat-icon-rtl-mirror"
+                        [ngClass]="{'activeIcon' : treeControlECMD.isExpanded(node)}">
+                        {{treeControlECMD.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                      </mat-icon>
+                    </button>
+                  </div>
+                  <div class="org_text_wrp ecmd_text_wrp" (click)="selectECMD(node)">
+                    <div class="ecmd_icon_wrp" [ngClass]="ecmdTreeType(node)">
+                      <img *ngIf="ecmdTreeType(node) === 'folder'" class="ecmd_img_001"
+                        src="{{basehref}}assets/images/icons/folder_001.svg" alt="">
+                      <p *ngIf="ecmdTreeType(node) === 'counterpart'" class="ecmd_initial_001">
+                        {{getInitials(node.Name)}}</p>
+                      <p *ngIf="ecmdTreeType(node) === 'department'" class="ecmd_initial_001">{{getInitials(node.Name)}}
+                      </p>
+                    </div>
+                    <p class="org_chart_text">{{node.Name}}<span
+                        *ngIf="ecmdTreeType(node) === 'folder' && !isSearchResult">({{node.CounterParts}})</span></p>
+                  </div>
+                </div>
+              </div>
+              <div [class.node_wrapper_invisible]="!treeControlECMD.isExpanded(node)"
+                class="tree_nested_node_child hide_employess">
+                <ng-container matTreeNodeOutlet></ng-container>
+              </div>
+            </div>
+          </mat-nested-tree-node>
+        </mat-tree>
       </div>
     </div>
   </ng-scrollbar>

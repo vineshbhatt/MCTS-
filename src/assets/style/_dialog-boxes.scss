@@ -1264,3 +1264,272 @@
     }
   }
 }
+
+.add-approver-dialog{
+  margin: auto !important;
+  .mat-dialog-container{
+    overflow: visible;
+  }
+  .action_header {
+    padding: 15px 24px 11px;
+    background: #00b7c3;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+
+    .text_16 {
+      margin-bottom: 0px;
+      color: #fff;
+      padding-right: 20px;
+    }
+    .close-button{
+      cursor: pointer;
+    }
+  }
+  .add-levels-list{
+    table{
+      margin: 20px 0;
+      .check-box{
+        width: 35%;
+        text-align: right;
+        padding-right: 20px;
+      }
+      .level-name{
+        width: 65%;
+        padding-left: 20px;
+      }
+      td{
+        padding:8px;
+      };
+    }
+  }
+  .button-section{
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 20px;
+    .btn_002{
+      font-size: 15px;
+      margin: 15px;
+    }
+  }
+}
+
+
+.distribution-dialog{
+  margin: auto !important;
+  font-size: 13px;
+
+  .spinner_sm_wrappar{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    .spinner_sm{
+      margin: auto 0;  //for IE
+    }
+  }
+  
+  .mat-dialog-container{
+    overflow: visible;
+  }
+
+  .distribution_input_item_wrp {
+    &.text_area {
+      textarea{
+        height: 18px;
+      }
+    } 
+    .mat-form-field-appearance-legacy {
+        .mat-form-field-wrapper {
+            padding-bottom: 0;
+        }
+        .mat-form-field-underline {
+            display: none;
+        }
+        .mat-form-field-infix {
+            box-sizing: border-box;
+            border: 1px solid #d8dadf;
+            border-radius: 4px;
+        }
+        .mat-form-field-label {
+            top: 50%;
+            left: 14px;
+            margin-top: 0px;
+            font-size: 14px;
+            font-family: 'Roboto', sans-serif;
+            color: #252525;
+            font-weight: 400;
+        }
+        input.mat-input-element {
+            margin-top: 6px;
+            font-size: 14px;
+            color: #252525;
+        }
+        &.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
+            transform: translateY(-10px) scale(.75) perspective(100px) translateZ(.001px);
+        }
+        &.mat-focused {
+            .mat-form-field-label {
+                color: #00b7c3;
+            }
+            .mat-form-field-infix {
+                border: 1px solid #00b7c3;
+            }
+        }
+    }
+    .mat-form-field-disabled {
+        opacity: 0.5;
+    }
+    &.auto_cmplt {
+        .mat-form-field {
+            &::after {
+                content: '';
+                position: absolute;
+                top: 50%;
+                right: 15px;
+                width: 0;
+                height: 0;
+                border: 7px solid transparent;
+                border-top: 7px solid #b4b2b2;
+                margin-top: -3px;
+            }
+        }
+    }
+    &.sm_input_wrapper .mat-form-field-appearance-legacy .mat-form-field-infix  {
+        padding-top: 0px;
+    }
+  }
+
+  .action_header {
+    padding: 15px 24px 11px;
+    background: #00b7c3;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+
+    .text_16 {
+      margin-bottom: 0px;
+      color: #fff;
+      padding-right: 20px;
+    }
+    .close-button{
+      cursor: pointer;
+    }
+  }
+
+  .general-action{
+    display: flex;
+    flex-direction: row;
+    .mat-form-field{
+      margin: 10px;
+    }
+      .mat-form-field-infix {
+        padding: 13px 5px 6px 14px;
+      }
+  }
+
+  .distribution-form {
+    padding: 10px;
+    max-height: 70vh;
+    .distribution-dialog-table{
+      max-height: 20vh;
+      thead {
+        th {
+          font-weight: 400;
+          font-size: 12px;
+          color: #676565;
+          position: sticky;
+          top: 0; 
+          background-color: white;
+          z-index: 999;
+        }
+      }
+
+      .distribution-dialog-table-body {
+        background-color: #f2f2f2;
+        margin: 5px;
+        border-bottom: 5px solid white;;
+      }
+
+      .distribution_input_item_wrp{
+        .mat-form-field-infix {
+          padding: 7px 5px 6px 14px;
+        }
+      }  
+
+      .expanded-row {
+        .left-icons-holder{
+          .material-icons{
+            color: #727070;
+            cursor: pointer;
+          }
+        }
+        td{
+          padding: 5px;
+        }
+      }
+
+      tr.detail-row {
+        height: 0;
+
+        .element-detail {
+          overflow: hidden;
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+              .detail-parameters{
+                  width: 100%;
+                  display: flex;
+                  justify-content: center;
+                  .detail-table{
+                    width: 90%;
+                    tr{
+                      border-bottom: 1px solid #dedbdb;
+                    }
+                    th {
+                      height: 35px;
+                      font-weight: 400;
+                      text-transform: uppercase;
+                      font-size: 12px;
+                      color: #676565;
+                      width: 40%;
+                      text-align: left;
+                      padding-left: 15px;
+                    }
+                    td{
+                      p{
+                        padding-left: 15px;
+                      }
+                    }
+                  }
+                  
+              }
+        }
+      }
+      
+      .employee-holder {
+        display: flex;
+        flex-direction: column;
+        .role {
+            font-size: 10px;
+            color: #727070;
+            line-height: 1.5em;
+        }
+      }
+
+      .due-days{
+        .mat-form-field-infix{
+          width: 65px;
+        }
+      }
+    }
+  }
+
+  .distribution_footer{
+    display: flex;
+    justify-content: flex-end;
+    .mat-button{
+      margin: 10px 20px;
+    }
+  }
+}

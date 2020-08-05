@@ -1,18 +1,18 @@
-import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { switchMap, debounceTime } from 'rxjs/operators';
 import { MatOptionSelectionChange, MatCheckboxChange } from '@angular/material';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { NgxFileDropEntry } from 'ngx-file-drop';
 import { DatePipe } from '@angular/common';
 import { FCTSDashBoard } from '../../../../environments/environment';
-import { OrgNameAutoFillModel, CorrespondenceFolderModel, CCUserSetModel, CorrespondenenceDetailsModel, CorrWFTaskInfoModel, SyncDocumentMetadataModel, ColUserSetModel } from 'src/app/dashboard/models/CorrespondenenceDetails.model';
+import { OrgNameAutoFillModel, CorrespondenceFolderModel, CCUserSetModel, CorrespondenenceDetailsModel, CorrWFTaskInfoModel, SyncDocumentMetadataModel, ColUserSetModel, TemplateModel } from 'src/app/dashboard/models/CorrespondenenceDetails.model';
 import { CorrResponse, CorrespondenceFormData, SenderDetailsData, RecipientDetailsData, CommentsNode } from '../../services/correspondence-response.model';
-import { organizationalChartModel, organizationalChartEmployeeModel } from 'src/app/dashboard/models/organizational-Chart.model';
+import { organizationalChartModel, organizationalChartEmployeeModel, ECMDChartModel, ECMDChartDepartmentModel } from 'src/app/dashboard/models/organizational-Chart.model';
 import { DocumentPreview } from '../../services/documentpreview.model';
 import { CorrespondenceWFFormModel } from '../../models/CorrepondenceWFFormModel';
 import { MatDialog } from '@angular/material';
@@ -30,6 +30,9 @@ import { NotificationService } from '../../services/notification.service';
 import { AppLoadConstService } from 'src/app/app-load-const.service';
 import { CorrespondenceShareService } from '../../services/correspondence-share.service';
 import { TextFieldModule } from '@angular/cdk/text-field';
+import { TestBed } from '@angular/core/testing';
+import { multiLanguageTranslator } from 'src/assets/translator/index';
+import { MultipleApproveComponent, MultipleApproveInputData, CurrentApprovers } from 'src/app/dashboard/shared-components/multiple-approve/multiple-approve.component';
 
 @Component({
   selector: 'app-correspondence-form-step-extout',
@@ -51,7 +54,10 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     , private route: ActivatedRoute
     , private appLoadConstService: AppLoadConstService
     , private correspondenceShareService: CorrespondenceShareService
-    , private _errorHandlerFctsService: ErrorHandlerFctsService, private notificationmessage: NotificationService, private datePipe: DatePipe) { super(csdocumentupload, correspondenceDetailsService) }
+    , public translator: multiLanguageTranslator
+    , private _errorHandlerFctsService: ErrorHandlerFctsService
+    , private notificationmessage: NotificationService
+    , private datePipe: DatePipe) { super(csdocumentupload, correspondenceDetailsService) }
 
   get f() { return this.correspondenceDetailsForm.controls; }
 
@@ -103,6 +109,7 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
   showEmplChartData: organizationalChartModel;
   showOrgChartData: organizationalChartModel;
   showPreviewTreeArea = false;
+  orgSearch: string;
   //
   percentDone: number;
   uploadSuccess: boolean;
@@ -145,12 +152,7 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
   showCorrItems = new ShowCorrItems();
   showFields = new ShowCorrItems();
   showWFButtons: ShowWFButtons;
-  skipDepSecratory: boolean = false;
-  skipHOSSecratory: boolean = false;
-  headOfSectionReview: boolean = false;
-  HOSReviewOptions: string[] = ['Yes', 'No']
-  DepApproverList: any[];
-  HOSApproverList: any[];
+  //ApproverList: any[];
   showTemplateArea: boolean = false;
   templatesDocList: any[];
   templateLanguage: string;
@@ -185,6 +187,19 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
   barcodeDate = new Date().toLocaleDateString();
   returnReason: string;
   returnComment: string;
+  // ECMD VAR
+  dataSourceECMD = new MatTreeNestedDataSource<any>();
+  treeControlECMD = new NestedTreeControl<any>(node => node.children);
+  isSearchResult = false;
+  isLoading = false;
+  showPreviewECMDTreeArea = false;
+  ECMDMap = new Map();
+  // temlete types
+  templateTypes: TemplateModel[];
+  // multi approve parameters
+  approve: MultipleApproveInputData;
+  @ViewChild(MultipleApproveComponent) multiApprove;
+  confidential = false;
 
   ngOnInit() {
 
@@ -200,10 +215,10 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     this.getUserInfo();
 
     //this.getCorrTaskInfo();
-    this.getCorrespondenceSenderDetails();
     this.getCorrespondenceRecipientDetails();
     this.readCorrespondenceInfo();
     this.RefreshRecord();
+    this.getECMDRoot(0);
     this.stepUIData = this.toShowWFButtons(this.taskID);
     this.showWFButtons = this.stepUIData.ShowButtons;
     this.sectionDisplay = this.stepUIData.ShowSections;
@@ -253,11 +268,6 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
       fillinPlanPath: new FormControl({ value: '', disabled: !this.showCorrItems.fillinPlanPath.Modify }),
       dispatchMethod: new FormControl({ value: '', disabled: !this.showCorrItems.dispatchMethod.Modify }),
       staffNumber: new FormControl({ value: '', disabled: !this.showCorrItems.staffNumber.Modify }),
-      skipDepSecratory: new FormControl({ value: '', disabled: !this.showCorrItems.staffNumber.Modify }),
-      Approver: new FormControl({ value: '', disabled: !this.showCorrItems.staffNumber.Modify }),
-      HOSReviewRequired: new FormControl({ value: '', disabled: !this.showCorrItems.staffNumber.Modify }),
-      skipHOSecratory: new FormControl({ value: '', disabled: !this.showCorrItems.staffNumber.Modify }),
-      HOSApprover: new FormControl({ value: '', disabled: !this.showCorrItems.staffNumber.Modify }),
     });
 
     this.filteredExtOrgNames = this.recipientDetailsForm.get('ExternalOrganization').valueChanges
@@ -293,15 +303,15 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     this.ReadRecord(this.locationid, '0');
   }
 
-  getCorrespondenceSenderDetails(): void {
-    this.spinnerDataLoaded = true;
+  getCorrespondenceSenderDetails(maxApproveLevel: number): void {
     this._correspondenceDetailsService
-      .getCorrespondenceSenderDetails(this.VolumeID, this.CorrespondencType, false, '')
+      .getCorrespondenceSenderDetails(this.VolumeID, this.CorrespondencType, false, this.body.values.WorkflowForm_1x4x1x12, maxApproveLevel)
       .subscribe(
         correspondenceSenderDetailsData => {
           if ((typeof correspondenceSenderDetailsData[0].myRows !== 'undefined') && correspondenceSenderDetailsData[0].myRows.length > 0) {
             this.correspondenceSenderDetailsData = correspondenceSenderDetailsData[0].myRows[0];
             this.senderDetailsForm.get('SenderInfo').setValue(this.correspondenceSenderDetailsData);
+            this.spinnerDataLoaded = false;
           }
         },
         responseError => {
@@ -316,14 +326,12 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
       .subscribe(
 
         correspondenceRecipientDetailsData => {
-          debugger;
           if ((typeof correspondenceRecipientDetailsData[0].myRows !== 'undefined') && correspondenceRecipientDetailsData[0].myRows.length > 0) {
             this.correspondenceRecipientDetailsData = correspondenceRecipientDetailsData[0].myRows[0];
             this.recipientDetailsForm.get('RecipientName').setValue(this.correspondenceRecipientDetailsData.Name_EN);
             this.recipientDetailsForm.get('RecipientDepartment').setValue(this.correspondenceRecipientDetailsData.DepartmentName_EN);
             this.recipientDetailsForm.get('ExternalOrganization').setValue({ OrgName_En: this.correspondenceRecipientDetailsData.OrganizationName_EN });
           }
-          this.spinnerDataLoaded = false;
         },
         responseError => {
           this._errorHandlerFctsService.handleError(responseError).subscribe();
@@ -438,11 +446,14 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
   }
   /* */
   readCorrespondenceInfo(): void {
+    this.spinnerDataLoaded = true;
     this._correspondenceDetailsService.getFormStepInfo(this.VolumeID, this.VolumeID, this.taskID).subscribe(
       response => {
         if ((typeof response.forms !== 'undefined') && response.forms.length > 0) {
           this.body.values = response.forms[0].data;
           this.taskTitle = response.data.title;
+          this.getCorrespondenceSenderDetails(0);
+          this.setMultiApproveParameters();
           this.getMetadataFilters();
         }
       },
@@ -464,11 +475,6 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     this.body.values.WorkflowForm_1x4x1x31 = this.setPopupCheckedValue('OBDocumentType', this.correspondenceDetailsForm.get('obType').value.EN);
     this.body.values.WorkflowForm_1x4x1x35 = this.correspondenceDetailsForm.get('arabicSubject').value;
     this.body.values.WorkflowForm_1x4x1x36 = this.correspondenceDetailsForm.get('englishSubject').value;
-    this.body.values.WorkflowForm_1x4x1x129 = this.correspondenceDetailsForm.get('skipDepSecratory').value;
-    this.body.values.WorkflowForm_1x4x1x87 = this.setPopupCheckedApproverValue('DepApprover', this.correspondenceDetailsForm.get('Approver').value.EN);
-    this.body.values.WorkflowForm_1x4x1x26 = this.correspondenceDetailsForm.get('HOSReviewRequired').value;
-    this.body.values.WorkflowForm_1x4x1x130 = this.correspondenceDetailsForm.get('skipHOSecratory').value;
-    this.body.values.WorkflowForm_1x4x1x24 = this.setPopupCheckedApproverValue('HOSApprover', this.correspondenceDetailsForm.get('HOSApprover').value.EN);
     this.body.values.WorkflowForm_1x4x1x37 = this.correspondenceDetailsForm.get('projectCode').value;
     this.body.values.WorkflowForm_1x4x1x38 = this.correspondenceDetailsForm.get('budgetNumber').value;
     this.body.values.WorkflowForm_1x4x1x40 = this.correspondenceDetailsForm.get('contractNumber').value;
@@ -487,7 +493,7 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     this.body.values.WorkflowForm_1x4x1x48 = this.templateLanguage;
 
     this.body.values.WorkflowForm_1x4x1x75 = this.Disposition1;
-    this.body.values.WorkflowForm_1x4x1x76 = this.Disposition2;
+    //this.body.values.WorkflowForm_1x4x1x76 = this.Disposition2;
     this.body.values.WorkflowForm_1x4x1x77 = this.Disposition3;
 
     if (this.CCLoaded) {
@@ -496,7 +502,17 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     if (this.CollaborationLoaded) {
       this.getCollaborationtoFormObject();
     }
+    this.getSenderToFormObject();
+  }
 
+  getSenderToFormObject(): void {
+    this.body.values.WorkflowForm_1x4x1x11 = this.correspondenceSenderDetailsData.SenderID;                // SenderID
+    this.body.values.WorkflowForm_1x4x1x12 = this.correspondenceSenderDetailsData.SenderUserID;            // SenderUserID
+    this.body.values.WorkflowForm_1x4x1x13 = this.correspondenceSenderDetailsData.SenderVersion;           // SenderVersion
+    this.body.values.WorkflowForm_1x4x1x80 = this.correspondenceSenderDetailsData.SenderDepartment;        // SenderDepartment
+    this.body.values.WorkflowForm_1x4x1x81 = this.correspondenceSenderDetailsData.SenderSection;           // SenderSection
+    this.body.values.WorkflowForm_1x4x1x82 = this.correspondenceSenderDetailsData.SenderRole;              // SenderRole
+    this.body.values.WorkflowForm_1x4x1x42 = this.correspondenceSenderDetailsData.SenderNativeDepartment;  // SenderNativeDepartment
   }
 
   getCCtoFormObject() {
@@ -552,27 +568,8 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
 
 
     this.correspondenceDetailsForm.get('confidential').setValue(this.body.values.WorkflowForm_1x4x1x78);
-    if (this.body.values.WorkflowForm_1x4x1x78) {
-      this.skipDepSecratory = true;
-      this.skipHOSSecratory = true;
-    }
-
-    this.correspondenceDetailsForm.get('skipDepSecratory').setValue(this.body.values.WorkflowForm_1x4x1x129);
-
-    if (this.body.values.WorkflowForm_1x4x1x129) {
-      this.skipDepSecratory = true;
-    }
-    this.correspondenceDetailsForm.get('skipHOSecratory').setValue(this.body.values.WorkflowForm_1x4x1x130);
-    if (this.body.values.WorkflowForm_1x4x1x130) {
-      this.skipHOSSecratory = true;
-    }
-    if (this.body.values.WorkflowForm_1x4x1x26 == "Yes") {
-      this.headOfSectionReview = true;
-    }
-    this.correspondenceDetailsForm.get('HOSReviewRequired').setValue(this.body.values.WorkflowForm_1x4x1x26);
+    this.confidential = this.body.values.WorkflowForm_1x4x1x78;
     this.correspondenceDetailsForm.get('personalName').setValue(this.body.values.WorkflowForm_1x4x1x88);
-    this.correspondenceDetailsForm.get('Approver').setValue({ EN: '' });
-    this.correspondenceDetailsForm.get('HOSApprover').setValue({ EN: '' });
     this.correspondenceDetailsForm.get('priority').setValue({ EN: this.getDefaultaValue('Priority', this.body.values.WorkflowForm_1x4x1x22) });
     this.correspondenceDetailsForm.get('obType').setValue({ EN: this.getDefaultaValue('OBDocumentType', this.body.values.WorkflowForm_1x4x1x31) });
     this.correspondenceDetailsForm.get('regDate').setValue(this.body.values.WorkflowForm_1x4x1x2);
@@ -601,34 +598,8 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     this.Disposition3 = this.body.values.WorkflowForm_1x4x1x77;
 
     this.getCoverDocumentURL(this.body.values.WorkflowForm_1x4x1x61);
-
-    this.getApprovers('qApprover_2_37');
-    this.getApprovers('qApprover_2_33');
-
   }
 
-  getApproverValue(Attrname: string, ID: number): string {
-    if (ID === 0 || ID == null || ID == undefined) {
-      return '';
-    } else {
-      let Name_EN: string;
-      if (Attrname == 'DepApprover') {
-        this.DepApproverList.forEach(element => {
-          if (element.AttrName === Attrname && element.ID === ID) {
-            Name_EN = element.Name_EN;
-          }
-        });
-      }
-      else if (Attrname == 'HOSApprover') {
-        this.HOSApproverList.forEach(element => {
-          if (element.AttrName === Attrname && element.ID === ID) {
-            Name_EN = element.Name_EN;
-          }
-        });
-      }
-      return Name_EN;
-    }
-  }
   getDefaultaValue(Attrname: string, ID: number): string {
     if (ID === 0 || ID === null) {
       return '';
@@ -653,32 +624,7 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     });
     return ID;
   }
-  setPopupCheckedApproverValue(Attrname: string, Name_EN: string): string {
 
-    let ID = 0;
-    if (Name_EN === '' || Name_EN == null || Name_EN == undefined) {
-      return '0';
-    }
-    else {
-      if (Attrname == 'DepApprover') {
-        this.DepApproverList.forEach(element => {
-          if (element.AttrName === Attrname && element.Name_EN === Name_EN) {
-            ID = element.ID;
-            return ID;
-          }
-        });
-      }
-      else if (Attrname == 'HOSApprover') {
-        this.HOSApproverList.forEach(element => {
-          if (element.AttrName === Attrname && element.Name_EN === Name_EN) {
-            ID = element.ID;
-            return ID;
-          }
-        });
-      }
-    }
-    return ID.toString();
-  }
   SendOnCollaborators() {
     // TODO: send on Collaborators when Send ON
   }
@@ -778,13 +724,16 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
         }
         break;
     }
+    if (!this.approversValidation(this.Disposition1)) {
+      return;
+    }
+    this.multiApproversDataSave(this.Disposition1);
     this.makeFormObjectToSubmit(action);
     this.spinnerDataLoaded = true;
     this.correspondenceDetailsService.submitCorrespondenceInfo(this.VolumeID, this.taskID, this.body)
       .subscribe(
         response => {
           if (action === '') {
-            /* submits form but doesn't Send On */
             console.log(this.body.values);
           } else {
             this.sendOnCorrespondence();
@@ -947,6 +896,10 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     return attribute ? attribute.EN : undefined;
   }
 
+  displayAt(attribute?: any): string | undefined {
+    return attribute ? attribute.Approver_EN : undefined;
+  }
+
   refreshCoverSection() {
     this.getCoverSection();
   }
@@ -972,6 +925,7 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
   }
 
   showSenderData() {
+    this.showPreviewECMDTreeArea = false;
     this.showPreviewTreeArea = true;
     this.selectedCaption = 'Sender'
     this.currentlyChecked = false;
@@ -981,19 +935,20 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     this.CCOUID = [];
     this.CCEID = [];
     this.showTemplateArea = false;
+    this.isSearchResult = false;
   }
   showRecipientData() {
-    this.showPreviewTreeArea = true;
-    this.selectedCaption = 'Recipient'
-    this.currentlyChecked = false;
+    this.showPreviewTreeArea = false;
     this.showPreviewCoverLetter = false;
+    this.showPreviewECMDTreeArea = true;
+    this.selectedCaption = 'Recipient';
+    this.currentlyChecked = false;
     this.multiSelect = false;
-    this.dataSource.data = this.organizationalChartData;
-    this.CCEID = [];
-    this.showTemplateArea = false;
+    this.CCOUID = [];
+    this.isSearchResult = false;
   }
   showCCData() {
-
+    this.showPreviewECMDTreeArea = false;
     this.showPreviewTreeArea = true;
     this.selectedCaption = 'CC'
     this.currentlyChecked = false;
@@ -1001,17 +956,31 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     this.multiSelect = true;
     this.dataSource.data = this.organizationalChartData;
     this.showTemplateArea = false;
+    this.isSearchResult = false;
   }
 
   showCollaboartorData() {
+    this.showPreviewECMDTreeArea = false;
     this.showPreviewTreeArea = true;
-    this.selectedCaption = 'Collaboration'
+    this.selectedCaption = 'Collaboration';
     this.currentlyChecked = false;
     this.showPreviewCoverLetter = false;
     this.multiSelect = true;
     this.dataSource.data = this.organizationalChartData;
     this.showTemplateArea = false;
+    this.isSearchResult = false;
+  }
 
+  showMultiAppData() {
+    this.showPreviewECMDTreeArea = false;
+    this.showPreviewTreeArea = true;
+    this.selectedCaption = 'Approver';
+    this.currentlyChecked = false;
+    this.showPreviewCoverLetter = false;
+    this.multiSelect = false;
+    this.dataSource.data = this.organizationalChartData;
+    this.showTemplateArea = false;
+    this.isSearchResult = false;
   }
 
   showTemplateSection() {
@@ -1020,6 +989,7 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     this.showPreviewCoverLetter = false;
     this.showTemplateArea = true;
     this.getTemplatesSectionData(this.corrFlowType, 'Default', '');
+    this.LoadTemplateFilter('Template_Type');
   }
   getOrganizationalChartDetail(): void {
     this.organizationalChartService.getOrgChartInternal()
@@ -1067,9 +1037,109 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
   }
   addRecipient() {
   }
-  searchTreeValue(organizationalChartSearch: string) {
 
+  searchTreeValue(organizationalChartSearch: string) {
+    if (organizationalChartSearch !== '') {
+      this.isSearchResult = true;
+      if (!this.showEmployees) {
+        let filteredData = this.filterData(this.organizationalChartData, function (item) {
+          return (item.Name.toLowerCase().indexOf(organizationalChartSearch.toLowerCase()) > -1 || item.Name_AR.toLowerCase().indexOf(organizationalChartSearch.toLowerCase()) > -1);
+        });
+        filteredData.length ? this.dataSource.data = filteredData : this.cancelSearch();
+        this.expandOrgFolders(this.dataSource.data, []);
+      } else {
+        this.organizationalChartService.fullSearchOUID(organizationalChartSearch).subscribe(
+          employees => {
+            this.employeeMap = new Map<number, organizationalChartEmployeeModel[]>();
+            let OUIDArr = [];
+
+            employees.forEach(element => {
+              element.wanted = true;
+              if (OUIDArr.indexOf(element.OUID) === -1) {
+                OUIDArr.push(element.OUID);
+              }
+            });
+
+            let filteredData = this.filterData(this.organizationalChartData, function (item) {
+              return (item.Name.toLowerCase().indexOf(organizationalChartSearch.toLowerCase()) > -1
+                || item.Name_AR.toLowerCase().indexOf(organizationalChartSearch.toLowerCase()) > -1
+                || OUIDArr.indexOf(item.OUID) > -1);
+            });
+            filteredData.length ? this.dataSource.data = filteredData : this.cancelSearch();
+            OUIDArr.forEach(OUID => {
+              this.employeeMap.set(OUID, employees.filter(empl => {
+                return empl.OUID === OUID;
+              })
+              );
+            });
+            this.expandOrgFolders(this.dataSource.data, OUIDArr);
+          },
+          responseError => {
+            this._errorHandlerFctsService.handleError(responseError).subscribe();
+          },
+          () => {
+            this.showempDetails = true;
+          }
+        );
+      }
+    } else {
+      this.cancelSearch();
+    }
   }
+
+  filterData(data: organizationalChartModel[], predicate) {
+    return !!!data ? null : data.reduce((list, entry) => {
+      let clone = null;
+      if (predicate(entry)) {
+        clone = Object.assign({}, entry);
+        clone.wanted = true;
+      } else if (entry.children != null) {
+        let children = this.filterData(entry.children, predicate);
+        if (children.length > 0) {
+          clone = Object.assign({}, entry, { children: children });
+        }
+      }
+      clone ? clone.expand = true : null
+      clone && list.push(clone);
+      return list;
+    }, []);
+  }
+
+  searchResult(node: organizationalChartModel) {
+    if (this.orgSearch !== '') {
+      if (node.Name.toLowerCase().indexOf(this.orgSearch.toLowerCase()) > -1
+        || node.Name_AR.toLowerCase().indexOf(this.orgSearch.toLowerCase()) > -1) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  expandOrgFolders(data: organizationalChartModel[], Arr): void {
+    if (data.length > 0) {
+      data.forEach(element => {
+        let expandParent;
+        element.children.forEach(child => {
+          if (child.expand) {
+            expandParent = true;
+          }
+        });
+        if (expandParent || Arr.indexOf(element.OUID) > -1) {
+          this.treeControl.expand(element);
+          this.getEmplDetail(element);
+        }
+        this.expandOrgFolders(element.children, Arr);
+      });
+    }
+  }
+
+  cancelSearch() {
+    this.dataSource.data = this.organizationalChartData;
+    this.isSearchResult = false;
+  }
+
+  /***************************************** */
+
 
   getSearchValue(value: string) {
     //this.searchVal = value;
@@ -1090,7 +1160,6 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     }
   }
   selectSinglCheckboxEmp(employeeChartData: organizationalChartEmployeeModel, e: MatCheckboxChange) {
-
     if (this.multiSelect) {
       if (e.checked) {
         if (this.CCEID.lastIndexOf(employeeChartData) === -1) {
@@ -1167,7 +1236,10 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
           }
           this.colProgBar = false;
         }
-      )
+      );
+    }
+    else if (this.selectedCaption === 'Approver') {
+      this.multiApprove.setPMData(this.currentlyChecked);
     }
   }
 
@@ -1211,69 +1283,8 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     )
   }
 
-  skipDepSecrtoryChange(e: MatCheckboxChange) {
-    if (e.checked) {
-      this.skipDepSecratory = true;
-      this.correspondenceDetailsForm.get('Approver').setValidators([Validators.required]);
-    } else {
-      this.skipDepSecratory = false;
-      this.correspondenceDetailsForm.get('Approver').clearValidators();
-    }
-    this.correspondenceDetailsForm.get('Approver').updateValueAndValidity();
-  }
-
   confidentialChange(e: MatCheckboxChange) {
-    if (e.checked) {
-      this.correspondenceDetailsForm.get('skipDepSecratory').setValue(true);
-      this.correspondenceDetailsForm.get('skipHOSecratory').setValue(true);
-      this.skipDepSecratory = true;
-      this.skipHOSSecratory = true;
-      this.correspondenceDetailsForm.get('Approver').setValidators([Validators.required]);
-    }
-
-  }
-
-  headOfSectionReviewRequiredChange(e: MatOptionSelectionChange) {
-    if (e.source.value === 'Yes') {
-      this.headOfSectionReview = true;
-    }
-    else {
-      this.headOfSectionReview = false;
-      this.correspondenceDetailsForm.get('HOSApprover').clearValidators();
-    }
-    this.correspondenceDetailsForm.get('HOSApprover').updateValueAndValidity();
-  }
-
-  skipHOSSecratoryChange(e: MatCheckboxChange) {
-    if (e.checked) {
-      this.skipHOSSecratory = true;
-      this.correspondenceDetailsForm.get('HOSApprover').setValidators([Validators.required]);
-    }
-    else {
-      this.skipHOSSecratory = false;
-      this.correspondenceDetailsForm.get('HOSApprover').clearValidators();
-
-    }
-    this.correspondenceDetailsForm.get('HOSApprover').updateValueAndValidity();
-  }
-
-
-
-  getApprovers(ApproverType: string) {
-    this.correspondenceDetailsService
-      .getApproverListRunningWF(ApproverType, this.VolumeID)
-      .subscribe(
-        ApproverList => {
-          if (ApproverType === 'qApprover_2_37') {
-            this.DepApproverList = ApproverList;
-            this.correspondenceDetailsForm.get('Approver').setValue({ EN: this.getApproverValue('DepApprover', this.body.values.WorkflowForm_1x4x1x87) });
-          }
-          else if (ApproverType === 'qApprover_2_33') {
-            this.HOSApproverList = ApproverList;
-            this.correspondenceDetailsForm.get('HOSApprover').setValue({ EN: this.getApproverValue('HOSApprover', this.body.values.WorkflowForm_1x4x1x24) });
-          }
-        }
-      );
+    this.confidential = e.checked;
   }
 
   syncCoverData() {
@@ -1282,8 +1293,8 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     if (this.body.values.WorkflowForm_1x4x1x48 === 'EN') {
       let senderDetails: OrgNameAutoFillModel = this.senderDetailsForm.get('SenderInfo').value;
       this.documentMetadataSync.SenderOrganization = this.convertUndefindedOrNulltoemptyString(senderDetails.OrgName_En);
-      this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(senderDetails.DepName_En + (senderDetails.SecName_En != null ? ("," + senderDetails.SecName_En) : ""))
-      this.documentMetadataSync.SenderName = this.convertUndefindedOrNulltoemptyString(senderDetails.Name_En)
+      this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(senderDetails.DepName_En);
+      this.documentMetadataSync.SenderName = this.convertUndefindedOrNulltoemptyString(senderDetails.Name_En);
       let recipientDetails: OrgNameAutoFillModel = this.recipientDetailsForm.get('ExternalOrganization').value;
       this.documentMetadataSync.RecipientOrganization = this.convertUndefindedOrNulltoemptyString(recipientDetails.OrgName_En)
       this.documentMetadataSync.RecipientDepartment = this.convertUndefindedOrNulltoemptyString(recipientDetails.DepName_En) + (this.convertUndefindedOrNulltoemptyString(recipientDetails.SecName_En) ? "," + this.convertUndefindedOrNulltoemptyString(recipientDetails.SecName_En) : "");
@@ -1297,7 +1308,7 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
 
       let senderDetails: OrgNameAutoFillModel = this.senderDetailsForm.get('SenderInfo').value;
       this.documentMetadataSync.SenderOrganization = this.convertUndefindedOrNulltoemptyString(senderDetails.OrgName_Ar);
-      this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(senderDetails.DepName_AR + (senderDetails.SecName_Ar != null ? ("," + senderDetails.SecName_Ar) : ""))
+      this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(senderDetails.DepName_AR);
       this.documentMetadataSync.SenderName = this.convertUndefindedOrNulltoemptyString(senderDetails.Name_Ar)
       let recipientDetails: OrgNameAutoFillModel = this.recipientDetailsForm.get('ExternalOrganization').value
       this.documentMetadataSync.RecipientOrganization = this.convertUndefindedOrNulltoemptyString(recipientDetails.OrgName_Ar)
@@ -1386,7 +1397,7 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     let tmpObj: any;
     WFStepsUI.forEach(function (taskObj) {
       let tempTaskList = taskObj.TaskID.split(",");
-      if (tempTaskList.includes(taskID)) {
+      if (tempTaskList.indexOf(taskID) > -1) {
         tmpObj = taskObj;
       }
     });
@@ -1416,5 +1427,404 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
         this.getCoverDocumentURL(obj.dataID);
       }
     }
+  }
+
+  // external organization chart functionaliyy
+  // get root element
+  getECMDRoot(NODEID: number): void {
+    this.ECMDMap = new Map();
+    this.isSearchResult = false;
+    this.isLoading = true;
+    this.organizationalChartService.getECMDChart(NODEID).subscribe(
+      response => {
+        if (response.length > 0) {
+          for (const obj of response) {
+            let ECMDData: ECMDChartModel;
+            ECMDData = obj;
+            ECMDData.children = [];
+            this.ECMDMap[ECMDData.isCPID ? ECMDData.CPID : ECMDData.NODEID] = ECMDData;
+            const parent = ECMDData.isCPID ? ECMDData.pNODEID : ECMDData.ParentID || '-1';
+            if (!this.ECMDMap[parent]) {
+              this.ECMDMap[parent] = {
+                children: []
+              };
+            }
+            this.ECMDMap[parent].children.push(ECMDData);
+          }
+          this.dataSourceECMD.data = null;
+          this.dataSourceECMD.data = this.ECMDMap['-1'].children;
+        } else {
+          delete this.ECMDMap[NODEID].children;
+          this.dataSourceECMD.data = null;
+          this.dataSourceECMD.data = this.ECMDMap['-1'].children;
+        }
+      },
+      responseError => {
+        this._errorHandlerFctsService.handleError(responseError).subscribe();
+      },
+      () => { this.isLoading = false; }
+    );
+  }
+  // build ECPM node elements
+  getECMDChart(node: ECMDChartModel): void {
+    node.isLoading = true;
+    this.organizationalChartService.getECMDChart(node.NODEID).subscribe(
+      response => {
+        if (response.length > 0) {
+          for (const obj of response) {
+            let ECMDData: ECMDChartModel;
+            ECMDData = obj;
+            ECMDData.children = [];
+            this.ECMDMap[ECMDData.isCPID ? ECMDData.CPID : ECMDData.NODEID] = ECMDData;
+            const parent = ECMDData.isCPID ? ECMDData.pNODEID : ECMDData.ParentID || '-1';
+            if (!this.ECMDMap[parent]) {
+              this.ECMDMap[parent] = {
+                children: []
+              };
+            }
+            this.ECMDMap[parent].children.push(ECMDData);
+          }
+          this.dataSourceECMD.data = null;
+          this.dataSourceECMD.data = this.ECMDMap['-1'].children;
+        } else {
+          delete this.ECMDMap[node.NODEID].children;
+          /*           this.dataSourceECMD.data = null;
+                    this.dataSourceECMD.data = this.ECMDMap['-1'].children; */
+        }
+
+      },
+      responseError => {
+        this._errorHandlerFctsService.handleError(responseError).subscribe();
+      },
+      () => { node.isLoading = false; }
+    );
+  }
+
+  // define action depending on folder/organisation/department
+  ECMDTreeOpenAction(node: ECMDChartModel): void {
+    if (!this.isSearchResult) {
+      if (node.hasOwnProperty('NODEID')) {
+        node.isCPID ? this.getECMDChartDepartments(node) : this.getECMDChart(node);
+      }
+    }
+  }
+
+  // build ECPM department elements
+  getECMDChartDepartments(node: ECMDChartModel): void {
+    node.isLoading = true;
+    this.organizationalChartService.getECMDChartDepartments(node.CPID).subscribe(
+      response => {
+        if (response.length > 0) {
+          const myMap = new Map();
+          for (const obj of response) {
+            let orgChartData: ECMDChartDepartmentModel;
+            orgChartData = obj;
+            myMap[orgChartData.DEPID] = orgChartData;
+            const parent = orgChartData.ParentID || '-1';
+            if (!myMap[parent]) {
+              myMap[parent] = {
+                children: []
+              };
+            }
+            !myMap[parent].hasOwnProperty('children') ? myMap[parent].children = [] : null;
+            myMap[parent].children.push(orgChartData);
+          }
+          this.ECMDMap[node.CPID].children = myMap['-1'].children;
+          this.dataSourceECMD.data = null;
+          this.dataSourceECMD.data = this.ECMDMap['-1'].children;
+        } else {
+          delete this.ECMDMap[node.CPID].children;
+          /*          this.dataSourceECMD.data = null;
+                   this.dataSourceECMD.data = this.ECMDMap['-1'].children; */
+        }
+      },
+      responseError => {
+        this._errorHandlerFctsService.handleError(responseError).subscribe();
+      },
+      () => { node.isLoading = false; }
+    );
+  }
+
+  ECMDhasChild = (_number: number, node: ECMDChartModel) => !!node.children && node.children.length > 0;
+
+  searchCounterParts(value: string) {
+    if (value.length > 0) {
+      this.isSearchResult = true;
+      this.isLoading = true;
+      forkJoin(
+        this.organizationalChartService.ECMDSearch('searchParentNODES', value),
+        this.organizationalChartService.ECMDSearch('searchCounterpart', value),
+        this.organizationalChartService.ECMDSearch('searchDepartment', value)
+      )
+        .subscribe(
+          ([res1, res2, res3]) => {
+            this.buildECMDChart(res1.concat(res2, res3));
+          },
+          responseError => {
+            this._errorHandlerFctsService.handleError(responseError).subscribe();
+          });
+    } else {
+      this.getECMDRoot(0);
+    }
+  }
+  // build ECMD chart for search
+  buildECMDChart(nodes) {
+    if (nodes.length > 0) {
+      const myMap = new Map();
+      for (const obj of nodes) {
+        let ECMDData: any;
+        ECMDData = obj;
+        if (ECMDData.hasOwnProperty('NODEID')) {
+          if (ECMDData.isCPID) {
+            myMap[ECMDData.CPID] = ECMDData;
+          } else {
+            myMap[ECMDData.NODEID] = ECMDData;
+          }
+        } else {
+          myMap[ECMDData.DEPID] = ECMDData;
+        }
+        myMap[ECMDData.isCPID ? ECMDData.CPID : ECMDData.NODEID] = ECMDData;
+        let parentVariable;
+        if (ECMDData.hasOwnProperty('NODEID')) {
+          if (ECMDData.isCPID) {
+            parentVariable = ECMDData.pNODEID;
+          } else {
+            parentVariable = ECMDData.ParentID;
+          }
+        } else {
+          parentVariable = ECMDData.ParentID ? ECMDData.ParentID : ECMDData.CPID;
+        }
+        const parent = parentVariable || '-1';
+        if (!myMap[parent]) {
+          myMap[parent] = {
+            children: []
+          };
+        }
+        !myMap[parent].hasOwnProperty('children') ? myMap[parent].children = [] : null;
+        myMap[parent].children.push(ECMDData);
+      }
+      this.dataSourceECMD.data = null;
+      this.dataSourceECMD.data = myMap['-1'].children;
+    }
+    this.isLoading = false;
+    this.expandFolders(this.dataSourceECMD.data);
+  }
+  // expand all elements after search
+  expandFolders(data: any): void {
+    if (data.length > 0) {
+      data.forEach(element => {
+        if (element.hasOwnProperty('children')) {
+          this.expandFolders(element.children);
+        }
+        element.NODEID > 0 ? this.treeControlECMD.expand(element) : null;
+      });
+    }
+  }
+  // define node type
+  ecmdTreeType(node: any): string {
+    if (node.hasOwnProperty('NODEID')) {
+      if (node.isCPID) {
+        return 'counterpart';
+      } else {
+        return 'folder';
+      }
+    } else {
+      return 'department';
+    }
+  }
+  // on node click function
+  selectECMD(node: any): void {
+    if (['counterpart', 'department'].indexOf(this.ecmdTreeType(node)) > -1) {
+      this.currentlyChecked = node;
+    } else {
+      this.currentlyChecked = false;
+    }
+  }
+
+  getSelectedECMD(name: string) {
+    if (this.currentlyChecked.hasOwnProperty('NODEID')) {
+      this.correspondenceDetailsService.searchFieldForAutoFillOUID(this.currentlyChecked.CPID, 'ExtOrganizationID', '').subscribe(
+        response => {
+          this.ExtSenderInfo = response[0];
+          this.ExtSenderInfo.Name_En = name;
+          if (this.selectedCaption === 'Sender') {
+            this.senderDetailsForm.get('ExternalOrganization').setValue(response[0]);
+            this.updateSenderInfo();
+          } else if (this.selectedCaption === 'Recipient') {
+            this.recipientDetailsForm.get('ExternalOrganization').setValue(response[0]);
+            this.updateRecipientInfo();
+          }
+        },
+        responseError => {
+          this._errorHandlerFctsService.handleError(responseError).subscribe();
+        }
+      );
+    } else if (this.currentlyChecked.hasOwnProperty('DEPID')) {
+      this.correspondenceDetailsService.searchFieldForAutoFillOUID(this.currentlyChecked.DEPID, 'ExtDepartmentID', '').subscribe(
+        response => {
+          this.ExtSenderInfo = response[0];
+          this.ExtSenderInfo.Name_En = name;
+          if (this.selectedCaption === 'Sender') {
+            this.senderDetailsForm.get('ExternalOrganization').setValue(response[0]);
+            this.updateSenderInfo();
+          } else if (this.selectedCaption === 'Recipient') {
+            this.recipientDetailsForm.get('ExternalOrganization').setValue(response[0]);
+            this.updateRecipientInfo();
+          }
+        },
+        responseError => {
+          this._errorHandlerFctsService.handleError(responseError).subscribe();
+        }
+      );
+    }
+  }
+
+  getInitials(nodename: string) {
+    return nodename.slice(0, 1).length > 0 ? nodename.slice(0, 1).toUpperCase() : 'A';
+  }
+  // template types
+  LoadTemplateFilter(type: string): void {
+    if (!this.templateTypes && this.corrFlowType === 'Outgoing') {
+      this.correspondenceDetailsService.LoadTemplateFilter(type)
+        .subscribe(
+          response => {
+            this.templateTypes = response;
+          },
+          responseError => {
+            this._errorHandlerFctsService.handleError(responseError).subscribe();
+          }
+        );
+    }
+  }
+
+  CorrTypesSelectChange(type): void {
+    this.getTemplatesSectionData(this.corrFlowType, type.value, '');
+  }
+  // parameters passed to MultipleApproveComponent
+  setMultiApproveParameters() {
+    this.approve = {
+      UserID: this.body.values.WorkflowForm_1x4x1x12,
+      CorrID: this.locationid,
+      mainLanguage: this.translator.lang,
+      TeamID: null,
+      fGetStructure: true,
+      fGetTeamStructure: false,
+      fInitStep: false,
+      fChangeTeam: false,
+      VolumeID: this.VolumeID,
+      taskID: this.taskID,
+      selectApproverStep: '13',
+      approveStep: '15',
+      selectFinalApproverStep: '17',
+      approveAndSignStep: '18'
+    };
+  }
+
+  /* getApprovers() {
+    if (this.taskID === '13' || this.taskID === '17') {
+      let ApproverType: string;
+      let ID: number;
+      switch (this.taskID) {
+        case '13':
+          ApproverType = 'qApprover_2_33';
+          ID = this.body.values.WorkflowForm_1x4x1x24;
+          break;
+        case '17':
+          ApproverType = 'qApprover_2_37';
+          ID = this.body.values.WorkflowForm_1x4x1x87;
+          break;
+      }
+      this.correspondenceDetailsService
+        .getApproverListRunningWF(ApproverType, this.VolumeID)
+        .subscribe(
+          ApproverList => {
+            this.ApproverList = ApproverList;
+            const appValue = ApproverList.filter(element => {
+              return element.ID === ID;
+            });
+            this.correspondenceDetailsForm.get('Approver').setValue(appValue[0]);
+          }
+        );
+    }
+  } */
+
+  multiApproversDataSave(action: string) {
+    switch (this.taskID) {
+      case '9':
+      case '45':
+        /* case '15': */
+        this.multiApproversFormFill(this.multiApprove.getCurrentApprovers('step1'));
+        this.multiApprove.setMultiApprovers();
+        break;
+      case '13':
+        if (this.multiApprove.approverSelected) {
+          this.body.values.WorkflowForm_1x4x1x24 = this.multiApprove.approverSelected;
+          this.multiApprove.setApprover('step2', this.multiApprove.approverSelected);
+        }
+        break;
+      case '17':
+        if (this.multiApprove.approverSelected) {
+          this.body.values.WorkflowForm_1x4x1x87 = this.multiApprove.approverSelected;
+          this.multiApprove.setApprover('step4', this.multiApprove.approverSelected);
+        }
+        break;
+    }
+    if (action === 'SendOn') {
+      switch (this.taskID) {
+        case '15':
+          this.multiApproversFormFill(this.multiApprove.getCurrentApprovers('step3'));
+          this.multiApprove.setIsDone('step3');
+          break;
+        case '18':
+          this.multiApprove.setIsDone('step5');
+          break;
+      }
+    }
+
+  }
+
+  multiApproversFormFill(approversObj: CurrentApprovers) {
+    if (approversObj.minLevel) {
+      this.body.values.WorkflowForm_1x4x1x76 = 'MultiApprove';
+      this.body.values.WorkflowForm_1x4x1x130 = approversObj.minLevel.ApproveLevel === 1 ? true : approversObj.minLevel.SkipSecretary;
+      if (this.body.values.WorkflowForm_1x4x1x130) {
+        this.body.values.WorkflowForm_1x4x1x24 = approversObj.minLevel.ApproveLevel === 1 ? approversObj.minLevel.ApproverID.ID : approversObj.minLevel.ApproverID;;
+      } else {
+        this.body.values.WorkflowForm_1x4x1x24 = null;
+      }
+      this.body.values.WorkflowForm_1x4x1x25 = approversObj.minLevel.SecretaryGroupID;
+      this.body.values.WorkflowForm_1x4x1x26 = 'Yes';
+    } else {
+      this.body.values.WorkflowForm_1x4x1x76 = ' ';
+      if (this.taskID === '9' || this.taskID === '45') {
+        this.body.values.WorkflowForm_1x4x1x26 = 'No';
+      }
+    }
+    this.body.values.WorkflowForm_1x4x1x129 = approversObj.maxLevel.ApproveLevel === 1 ? true : approversObj.maxLevel.SkipSecretary;
+    if (this.body.values.WorkflowForm_1x4x1x129) {
+      this.body.values.WorkflowForm_1x4x1x87 = approversObj.maxLevel.ApproveLevel === 1 ? approversObj.maxLevel.ApproverID.ID : approversObj.maxLevel.ApproverID;
+    } else {
+      this.body.values.WorkflowForm_1x4x1x87 = null;
+    }
+    this.body.values.WorkflowForm_1x4x1x98 = approversObj.maxLevel.SecretaryGroupID;
+  }
+
+  approversValidation(action: string): boolean {
+    switch (this.taskID) {
+      case '9':
+      case '45':
+        if (!this.multiApprove.approversValidation()) {
+          return false;
+        }
+        break;
+      case '13':
+      case '17':
+        if (action === 'SendOn' && !this.multiApprove.approverSelected) {
+          this.notificationmessage.warning('Approver is missing', 'Please select the Approver.', 2500);
+          return false;
+        }
+        break;
+    }
+    return true;
   }
 }

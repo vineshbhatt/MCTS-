@@ -3,7 +3,8 @@ import { CSDocumentUploadService } from '../../services/CSDocumentUpload.service
 import { NgxFileDropEntry, FileSystemFileEntry, FileSystemDirectoryEntry } from 'ngx-file-drop';
 import { CorrespondenceDetailsService } from 'src/app/dashboard/services/correspondence-details.service';
 import { CorrResponse } from '../../services/correspondence-response.model';
-import { CorrespondenceFolderModel } from 'src/app/dashboard/models/CorrespondenenceDetails.model';
+import { CorrespondenceFolderModel, TemplateModel } from 'src/app/dashboard/models/CorrespondenenceDetails.model';
+import { HttpEventType, HttpProgressEvent } from '@angular/common/http';
 
 @Component({
     selector: 'app-base-correspondence',
@@ -20,6 +21,7 @@ export class BaseCorrespondenceComponent implements OnInit {
     userInfo: CorrResponse[];
     templatesDocList: any[];
     public files: NgxFileDropEntry[] = [];
+    progress = 0;
 
     ngOnInit() {
 
@@ -42,29 +44,42 @@ export class BaseCorrespondenceComponent implements OnInit {
     }
 
     public dropped(files: NgxFileDropEntry[], parentID: string, section: string) {
+        const uploadSession: UploadSession = new UploadSession(files);
         for (const droppedFile of files) {
             if (droppedFile.fileEntry.isFile) {
                 const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
                 fileEntry.file((file: File) => {
                     this.csdocumentupload.dragandDropUpload(file, parentID).subscribe(
-                        () => '',
-                        () => '',
+                        event => {
+                            if (event.type === HttpEventType.UploadProgress) {
+                                this.calcProgressPercent(event, file, uploadSession);
+                            }
+                        },
                         () => {
+                            this.progress = 0;
+                        },
+                        () => {
+                            this.progress = 0;
                             if (section === 'COVER') {
                                 this.getCoverSection();
                             } else if (section === 'ATTACHMENT') {
                                 this.getAttachmentSection();
                             } else if (section === 'MISC') {
-                                // this.GetMiscSection();
                             }
                         }
                     );
                 });
             } else {
-                // It was a directory (empty directories are added, otherwise only files)
-                const fileEntry = droppedFile.fileEntry as FileSystemDirectoryEntry;                
+                const fileEntry = droppedFile.fileEntry as FileSystemDirectoryEntry;
             }
         }
+    }
+
+    calcProgressPercent(event: HttpProgressEvent, file: File, uploadSession: UploadSession) {
+        uploadSession.updateProgress(file, event.loaded);
+        let progressTemp = Math.round(100 * uploadSession.getTotalLoaded() / uploadSession.getTotalSize());
+        // on practice file.size is less than event.total. This prevents to problems of % calculation
+        (progressTemp > 100) ? this.progress = 100 : this.progress = progressTemp;
     }
 
     public fileOver(event) {
@@ -126,7 +141,7 @@ export class BaseCorrespondenceComponent implements OnInit {
             coverFolderdetails => {
                 this.CoverLetterData = coverFolderdetails;
                 this.coverID = coverFolderdetails[0].myRows[0].Dataid;
-                
+
             }
         );
     }
@@ -157,4 +172,41 @@ export class BaseCorrespondenceComponent implements OnInit {
         );
     }
 
+}
+
+export class UploadSession {
+    loaded: number[] = new Array();
+    totalSize = 0;
+    filesArray: File[] = new Array();
+
+    constructor(files: NgxFileDropEntry[]) {
+        for (const droppedFile of files) {
+            if (droppedFile.fileEntry.isFile) {
+                const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
+                fileEntry.file((file: File) => {
+                    this.totalSize += file.size;
+                });
+            }
+        }
+
+    }
+
+    getTotalSize() {
+        return this.totalSize;
+    }
+
+    updateProgress(file: File, loaded: number) {
+        if (this.filesArray.indexOf(file) === -1) {
+            this.filesArray.push(file);
+        }
+        this.loaded[this.filesArray.indexOf(file)] = loaded;
+    }
+
+    getTotalLoaded(): number {
+        let totalLoaded = 0;
+        for (const loaded of this.loaded) {
+            totalLoaded = totalLoaded + loaded;
+        }
+        return totalLoaded;
+    }
 }

@@ -9,6 +9,7 @@ import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handle
 import { AppLoadConstService } from 'src/app/app-load-const.service';
 import { BaseDashboardFullComponent } from '../../base-classes/base-dashboard-full/base-dashboard-full.component';
 import { animate, style, transition, trigger, state } from '@angular/animations';
+import { multiLanguageTranslator } from 'src/assets/translator/index';
 
 @Component({
   selector: 'app-mailroom-dasnboard',
@@ -31,8 +32,9 @@ export class MailroomDasnboardComponent extends BaseDashboardFullComponent imple
     public correspondenceShareService: CorrespondenceShareService,
     public errorHandlerFctsService: ErrorHandlerFctsService,
     public appLoadConstService: AppLoadConstService,
+    public translator: multiLanguageTranslator
   ) {
-    super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService);
+    super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService, translator);
     this.reportType = 'ExtFullSearch';
   }
 

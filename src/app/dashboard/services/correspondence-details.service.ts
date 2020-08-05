@@ -7,7 +7,7 @@ import { DocumentPreview } from '../services/documentpreview.model';
 import { DashboardFilterResponse, TransferAttributes } from '../models/DashboardFilter';
 import {
   CorrespondenenceDetailsModel, OrgNameAutoFillModel, CorrespondenceFolderModel, CCUserSetModel,
-  ColUserSetModel, SyncDocumentMetadataModel
+  ColUserSetModel, SyncDocumentMetadataModel, TemplateModel
 } from '../models/CorrespondenenceDetails.model';
 import { StatusRequest, SetStatusRow } from '../models/Shared.model';
 import { CorrespondenceShareService } from '../services/correspondence-share.service';
@@ -16,6 +16,8 @@ import { EMPTY } from 'rxjs';
 import { CorrespondenceWFFormModel } from '../models/CorrepondenceWFFormModel';
 import { AppLoadConstService } from 'src/app/app-load-const.service';
 import { stringify } from 'querystring';
+import { MultipleApproveInputData, ApproversData, ApproverDetails, ApproversFormData } from 'src/app/dashboard/shared-components/multiple-approve/multiple-approve.component';
+import { DistributionDetailsParameters } from 'src/app/dashboard/models/distribution.model';
 
 @Injectable({
   providedIn: 'root'
@@ -56,13 +58,14 @@ export class CorrespondenceDetailsService {
     );
   }
 
-  getCorrespondenceSenderDetails(SubWorkID, CorrFlowType, qLive, UserID = ''): Observable<CorrResponse[]> {
+  getCorrespondenceSenderDetails(SubWorkID, CorrFlowType, qLive, UserID = '', maxApproveLevel?: number): Observable<CorrResponse[]> {
     const params = new HttpParams()
       .set('SubWorkID', SubWorkID)
       .set('CorrFlowType', CorrFlowType)
       .set('qLive', qLive)
       .set('prompting', 'done')
-      .set('UserID', UserID);
+      .set('UserID', UserID)
+      .set('FinalAppLevel', maxApproveLevel.toString());
     return this.httpServices.get<CorrResponse[]>(
       this.CSUrl +
       `${FCTSDashBoard.WRApiV1}${
@@ -417,6 +420,7 @@ export class CorrespondenceDetailsService {
       }
     );
   }
+
 
   getCoverFolderDetails(FolderID: number): Observable<CorrResponse[]> {
     const params = new HttpParams()
@@ -856,4 +860,208 @@ export class CorrespondenceDetailsService {
     );
   }
 
+  LoadTemplateFilter(type: string): Observable<any> {
+    const params = new HttpParams()
+      .set('locationid', this._globalConstants.FCTS_StepConsole.TemplateFolder)
+      .set('catid', this._globalConstants.FCTS_StepConsole.TemplateCategory)
+      .set('attrname', type);
+    return this.httpServices.get<TemplateModel[]>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.FilterValuesSearch}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken },
+        params: params
+      }
+    );
+  }
+  // TODO set model to get request
+
+
+  getApproversData(approve: MultipleApproveInputData): Observable<ApproversData[]> {
+    const params = new HttpParams()
+      .set('UserID', approve.UserID.toString())
+      .set('CorrID', approve.CorrID)
+      //.set('VolumeID', approve.VolumeID)
+      .set('TeamID', approve.TeamID)
+      .set('mainLanguage', approve.mainLanguage)
+      .set('fGetStructure', approve.fGetStructure.toString())
+      .set('fGetTeamStructure', approve.fGetTeamStructure.toString())
+      .set('fInitStep', approve.fInitStep.toString())
+      .set('fChangeTeam', approve.fChangeTeam.toString());
+    return this.httpServices.get<ApproversData[]>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ApproveData}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken },
+        params: params
+      }
+    );
+  }
+  // TODO set model to get request
+  MultiAppAutoFill(searchText: string, searchField: string, ParentVal: any): Observable<ApproverDetails[]> {
+    if (searchText.length >= 3) {
+      const params = new HttpParams()
+        .set('NameVal', searchText + '%')
+        .set(searchField, 'true');
+      return this.httpServices.get<ApproverDetails[]>(
+        this.CSUrl +
+        `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.MultiAppAutoFill}?Format=webreport`,
+        {
+          headers: { OTCSTICKET: CSConfig.AuthToken },
+          params: params
+        }
+      );
+
+    }
+    return EMPTY;
+  }
+
+  setMultiApprovers(approversArray: ApproversFormData[], LevelsList: string, approveData: MultipleApproveInputData): Observable<any> {
+    const teamID = null;
+    let isTeamStructure = false;
+    if (teamID > 0) {
+      isTeamStructure = true;
+    }
+    let params = new HttpParams()
+      .set('fSetApprovers', 'true')
+      .set('CorrID', approveData.CorrID)
+      .set('UserID', approveData.UserID.toString())
+      .set('Rows_count', approversArray.length.toString())
+      .set('isTeamStructure', isTeamStructure.toString())
+      .set('TeamID', teamID)
+      .set('LevelsList', LevelsList);
+    //params.append('ApproveLevel_', approversArray.length)
+    for (let row = 0; row < approversArray.length; row++) {
+      const element = approversArray[row];
+      const keyObj = row + 1;
+      let ApproverID;
+      params = params.append('ApproveLevel_' + keyObj, element.ApproveLevel.toString());
+      if (element.SkipSecretary || element.ApproveLevel === 1) {
+        params = params.append('SkipSecretary_' + keyObj, '1');
+      } else {
+        params = params.append('SkipSecretary_' + keyObj, '0');
+      }
+      if (element.SkipSecretary) {
+        ApproverID = element.ApproveLevel === 1 ? element.ApproverID.ID : element.ApproverID;
+      } else {
+        ApproverID = null;
+      }
+      params = params.append('ApproverID_' + keyObj, ApproverID);
+      params = params.append('SecretaryGroupID_' + keyObj, element.SecretaryGroupID.toString());
+    }
+    const options = {
+      headers: new HttpHeaders()
+        .set('OTCSTICKET', CSConfig.AuthToken)
+    };
+    return this.httpServices.post<any>(this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.SetMultiApprovers}?Format=webreport`,
+      params, options)
+      .pipe(
+        map(data => {
+          return data;
+        }),
+        catchError(error => {
+          return throwError(error);
+        })
+      );
+  }
+
+  setApprover(CorrID: string, Level: number, ApproverID: number): Observable<any> {
+    const params = new HttpParams()
+      .set('CorrID', CorrID)
+      .set('ApproveLevel', Level.toString())
+      .set('ApproverID', ApproverID.toString())
+      .set('fChangeApprovers', 'true');
+    return this.httpServices.get<any>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.SetStatusMultiApprove}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken },
+        params: params
+      }
+    );
+  }
+
+  setIsDone(CorrID: string, approverData: ApproversFormData): Observable<any> {
+    const params = new HttpParams()
+      .set('CorrID', CorrID)
+      //.set('VolumeID', approve.VolumeID)
+      .set('ApproveLevel', approverData.ApproveLevel.toString())
+      .set('fChangeStatus', 'true');
+
+    return this.httpServices.get<any>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.SetStatusMultiApprove}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken },
+        params: params
+      }
+    );
+  }
+
+  getDistributionData(volumeID): Observable<any> {
+    const params = new HttpParams()
+      .set('volumeID', volumeID)
+      .set('fDistrib', 'true');
+    return this.httpServices.get<any>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.DistributionSection}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken },
+        params: params
+      }
+    );
+  }
+
+  getDistributionUsers(DCID: string): Observable<DistributionDetailsParameters[]> {
+    const params = new HttpParams()
+      .set('DCID', DCID);
+    return this.httpServices.get<DistributionDetailsParameters[]>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.GetDistributionUsers}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken },
+        params: params
+      }
+    );
+  }
+
+  createDistributionRequest(transferJson, correspondenceData: CorrespondenenceDetailsModel): Observable<any> {
+    let taskID: string;
+    correspondenceData.CorrespondenceFlowType === '1' ? taskID = '32' : taskID = '3'; // for permission purpose
+    const transferVal = JSON.stringify({ transferJson });
+    const params = new HttpParams()
+      .set('transferJson', transferVal)
+      .set('volumeid', correspondenceData.VolumeID)
+      .set('taskid', taskID)
+      .set('CorrFlowType', correspondenceData.CorrFlowType)
+      .set('locationid', correspondenceData.AttachCorrID)
+      .set('parentID', correspondenceData.ID)
+      .set('rows_count', transferJson.length)
+      .set('onBehalfUserID', this._globalConstants.general.ProxyUserID);
+
+    const options = {
+      headers: new HttpHeaders()
+        .set('OTCSTICKET', CSConfig.AuthToken)
+    };
+    return this.httpServices.post<any>(this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.createTransfer}?Format=webreport`,
+      params, options);
+  }
+
+  definePriorityToShow(width: number) {
+    if (width < 480) {
+      return 1;
+    } else if (width < 600) {
+      return 2;
+    } else if (width < 768) {
+      return 3;
+    } else if (width < 900) {
+      return 4;
+    } else if (width < 1024) {
+      return 5;
+    } else {
+      return 6;
+    }
+  }
 }

@@ -109,7 +109,13 @@ import { FilesSelectComponent } from './shared-components/files-select/files-sel
 import { LinkedCorrespondencesComponent } from './shared-components/linked-correspondences/linked-correspondences.component';
 import { FullSearchComponent } from './shared-components/full-search/full-search.component';
 import { DownloadAttachtmentsDialogComponent } from './dialog-boxes/download-attachtments-dialog/download-attachtments-dialog.component'
-
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MultipleApproveComponent } from './shared-components/multiple-approve/multiple-approve.component';
+import { AddApproverDialogComponent } from './dialog-boxes/add-approver-dialog/add-approver-dialog.component';
+import { DistributionComponent } from './shared-components/distribution/distribution.component';
+import { AngularResizedEventModule } from 'angular-resize-event';
+import { DistributionChartComponent } from './shared-components/distribution-chart/distribution-chart.component';
+import { DistributionDialogComponent } from './dialog-boxes/distribution-dialog/distribution-dialog.component';
 
 @NgModule({
   imports: [
@@ -147,6 +153,8 @@ import { DownloadAttachtmentsDialogComponent } from './dialog-boxes/download-att
     PreventDoubleSubmitModule,
     NgScrollbarModule,
     MatRadioModule,
+    MatProgressBarModule,
+    AngularResizedEventModule,
     multiLanguageTranslatorModule.forRoot({
       defaultLang: 'en',
       storagePrefix: 'current-language'
@@ -227,7 +235,12 @@ import { DownloadAttachtmentsDialogComponent } from './dialog-boxes/download-att
     FilesSelectComponent,
     LinkedCorrespondencesComponent,
     FullSearchComponent,
-    DownloadAttachtmentsDialogComponent
+    DownloadAttachtmentsDialogComponent,
+    MultipleApproveComponent,
+    AddApproverDialogComponent,
+    DistributionComponent,
+    DistributionChartComponent,
+    DistributionDialogComponent
   ],
   entryComponents: [
     MailDetailView,
@@ -248,8 +261,11 @@ import { DownloadAttachtmentsDialogComponent } from './dialog-boxes/download-att
     CurrentDelegationsComponent,
     DelegationReportComponent,
     LinkedCorrDialogComponent,
-    DownloadAttachtmentsDialogComponent
+    DownloadAttachtmentsDialogComponent,
+    AddApproverDialogComponent,
+    DistributionDialogComponent
   ],
   providers: [ErrorHandlerFctsService, NotificationService, DatePipe]
 })
 export class DashboardModule { }
+

@@ -87,7 +87,7 @@ export class ShowSections implements CorrSectionList {
     this.LinkedCorrespondence = { Show: true, Modify: false };
     this.Comments = { Show: true, Modify: false };
     this.Transfer = { Show: true, Modify: false };
-    this.Distribution = { Show: false, Modify: false };
+    this.Distribution = { Show: true, Modify: true };
   }
 
 
@@ -99,6 +99,14 @@ export class ShowSections implements CorrSectionList {
       this.Transfer.Modify = true;
     } else {
       this.Transfer.Modify = false;
+    }
+    if (correspondenceData.CorrespondenceFlowType === '1') {
+      this.Approvers.Show = false;
+      this.Approvers.Modify = false;
+    }
+    if (correspondenceData.CorrespondenceFlowType === '5') {
+      this.Distribution.Show = false;
+      this.Distribution.Modify = false;
     }
   }
 
@@ -142,7 +150,7 @@ export class ShowCorrItems implements CorrItemsList {
   private _setCorrItems() {
     this.regDate = { Show: true, Modify: false, Required: false };
     this.docsDate = { Show: true, Modify: true, Required: false };
-    this.confidential = { Show: true, Modify: false, Required: false };
+    this.confidential = { Show: true, Modify: true, Required: false };
     this.priority = { Show: true, Modify: true, Required: false };
     this.refNumber = { Show: true, Modify: true, Required: true };
     this.personalName = { Show: true, Modify: true, Required: false };

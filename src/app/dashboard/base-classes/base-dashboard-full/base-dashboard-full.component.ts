@@ -12,7 +12,7 @@ import { BaseDashboardComponent } from 'src/app/dashboard/base-classes/base-dash
 import { CorrespondenceShareService } from '../../services/correspondence-share.service';
 import { ErrorHandlerFctsService } from '../../services/error-handler-fcts.service';
 import { AppLoadConstService } from 'src/app/app-load-const.service';
-//import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { multiLanguageTranslator } from 'src/assets/translator/index';
 
 @Component({
   selector: 'app-base-dashboard-full',
@@ -27,8 +27,9 @@ export class BaseDashboardFullComponent extends BaseDashboardComponent implement
     public correspondenceShareService: CorrespondenceShareService,
     public errorHandlerFctsService: ErrorHandlerFctsService,
     public appLoadConstService: AppLoadConstService,
+    public translator: multiLanguageTranslator
   ) {
-    super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService);
+    super(router, dialogU, correspondenceService, correspondenceShareService, errorHandlerFctsService, appLoadConstService, translator);
   }
 
 

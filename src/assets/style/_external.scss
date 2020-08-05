@@ -706,7 +706,7 @@ app-external {
   top: 0;
   margin-top: 1px;
   right: 0px;
-  min-width: 150px;
+  min-width: 200px;
 
   &::before {
     content: "f";
@@ -961,6 +961,24 @@ app-create-correspondence {
 .corres_data_area {
   flex-direction: column;
   display: flex;
+  .attachments-container{
+    position: relative;
+    .progress-container{
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      width: 100%;
+      z-index: 999;
+      background-color: rgba(176, 238, 238, 0.3);
+      p{
+        font-size: 15px;
+        font-weight: 600;
+      }
+    }
+  }
 }
 
 .new_edt_cont_wrapper {
@@ -1081,4 +1099,14 @@ app-create-correspondence {
 
 .full-search-form.full-search-without-details{
   border-radius: 12px;
+}
+//IE fix. Hide bottom scroll
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  .main_cnt_area{
+    .ng-scrollbar-x-layout{
+      .ng-scrollbar-y-layout{
+        width:99% !important;
+      }
+    }
+  }
 }

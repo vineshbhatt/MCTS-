@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, EMPTY } from 'rxjs';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Correspondence, RecallStepsInfo } from './correspondence.model';
 import { FCTSDashBoard } from '../../../environments/environment';
@@ -85,7 +85,7 @@ export class CorrespondenceService {
       .set('startRow', startRow)
       .set('endRow', endRow)
       .set('CorrespondenceCode', queryFilters.ReferenceCode ? queryFilters.ReferenceCode : '')
-      .set('ExternalOrganization', queryFilters.ExternalOrganization ? queryFilters.ExternalOrganization : '')
+      .set('ExternalOrganization', queryFilters.ExternalOrganization.ID ? queryFilters.ExternalOrganization.ID : '')
       .set('ExternalDepartment', queryFilters.ExternalDepartment ? queryFilters.ExternalDepartment : '')
       .set('Priority', queryFilters.Priority.ID ? queryFilters.Priority.ID : '')
       .set('ReceivedDateFrom', queryFilters.DispatchDateFrom ? queryFilters.DispatchDateFrom : '')
@@ -170,6 +170,7 @@ export class CorrespondenceService {
           params: params
         });
     }
+    return EMPTY;
     // .pipe(
     // tap((response: DashboardFilterResponse) => {
     //   response.results = response.results
@@ -535,4 +536,74 @@ export class CorrespondenceService {
     }
     return recallList;
   }
+
+
+  getExcelFile(reportType: string, queryFilters, isProxy: boolean, header: string, lang: string) {
+    let params = new HttpParams()
+      .set('reportType', reportType)
+      .set('startRow', '1')
+      .set('endRow', '999999999999999999')
+      .set('CorrespondenceCode', queryFilters.ReferenceCode ? queryFilters.ReferenceCode : '')
+      .set('ExternalOrganization', queryFilters.ExternalOrganization.ID ? queryFilters.ExternalOrganization.ID : '')
+      .set('ExternalDepartment', queryFilters.ExternalDepartment ? queryFilters.ExternalDepartment : '')
+      .set('Priority', queryFilters.Priority.ID ? queryFilters.Priority.ID : '')
+      .set('ReceivedDateFrom', queryFilters.DispatchDateFrom ? this.DateToString(queryFilters.DispatchDateFrom) : '')
+      .set('ReceivedDateTo', queryFilters.DispatchDateTo ? this.DateToString(queryFilters.DispatchDateTo) : '')
+      .set('FromDep', queryFilters.SenderDepartment.ID ? queryFilters.SenderDepartment.ID : '')
+      .set('ToDep', queryFilters.RecipientDepartment.ID ? queryFilters.RecipientDepartment.ID : '')
+      .set('BaseType', queryFilters.BaseType.ID ? queryFilters.BaseType.ID : '')
+      .set('Subject', queryFilters.Subject ? queryFilters.Subject : '')
+      .set('MyAssignments', queryFilters.MyAssignments ? queryFilters.MyAssignments : '')
+      .set('DocumentNumber', queryFilters.DocumentNumber ? queryFilters.DocumentNumber : '')
+      .set('BudgetNumber', queryFilters.Budget ? queryFilters.Budget : '')
+      .set('ProjectCode', queryFilters.Project ? queryFilters.Project : '')
+      .set('TenderNumber', queryFilters.Tender ? queryFilters.Tender : '')
+      .set('ContractNumber', queryFilters.Contract ? queryFilters.Contract : '')
+      .set('ReportTitle', header)
+      .set('lang', lang);
+    if (lang === 'ar') {
+      params = params.append('FromDepName', queryFilters.SenderDepartment.ID ? queryFilters.SenderDepartment.AR : '');
+      params = params.append('ToDepName', queryFilters.RecipientDepartment.ID ? queryFilters.RecipientDepartment.AR : '');
+      params = params.append('PriorityName', queryFilters.Priority.ID ? queryFilters.Priority.AR : '');
+      params = params.append('ExternalOrganizationName', queryFilters.ExternalOrganization.ID ? queryFilters.ExternalOrganization.Name_AR : '');
+    } else {
+      params = params.append('FromDepName', queryFilters.SenderDepartment.ID ? queryFilters.SenderDepartment.EN : '');
+      params = params.append('ToDepName', queryFilters.RecipientDepartment.ID ? queryFilters.RecipientDepartment.EN : '');
+      params = params.append('PriorityName', queryFilters.Priority.ID ? queryFilters.Priority.EN : '');
+      params = params.append('ExternalOrganizationName', queryFilters.ExternalOrganization.ID ? queryFilters.ExternalOrganization.Name : '');
+    }
+    if (isProxy) {
+      params = params.append('ProxyUserID', this._globalConstants.general.ProxyUserID);
+      params = params.append('fProxy', isProxy.toString());
+      params = params.append('Proxy', isProxy.toString());
+    }
+    return this.httpServices
+      .get(this._CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ExportCorrespondence}?Format=webreport`,
+        { responseType: 'blob', headers: { OTCSTICKET: CSConfig.AuthToken }, params: params })
+      .pipe(
+        map(response => {
+          return response;
+        }),
+        catchError(error => {
+          console.log(error);
+          return throwError(error);
+        })
+      );
+  }
+
+  DateToString(mDate): string {
+    function pad(n) { return n < 10 ? '0' + n : n; }
+    if (mDate instanceof Date) {
+      return 'D' + '/'
+        + mDate.getFullYear() + '/'
+        + pad(mDate.getMonth() + 1) + '/'
+        + pad(mDate.getDate()) + ':'
+        + pad(mDate.getHours()) + ':'
+        + pad(mDate.getMinutes()) + ':'
+        + pad(mDate.getSeconds());
+    } else {
+      return '';
+    }
+  }
+
 }

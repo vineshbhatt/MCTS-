@@ -1,7 +1,7 @@
 <div class="new_edt_cont_wrapper correspondence_detail_wrapper">
   <ng-scrollbar thumbClass="scroll_001" *ngIf="expandedRightAction"
     [ngClass]="expandedAction ? 'unActive' : 'ActiveLeft'"
-    class="correspondence_detail correspondence_detail_pad_0_wrp scroll_wrp_001" compact="true">
+    class="correspondence_detail correspondence_detail_pad_0_wrp scroll_wrp_001">
     <button (click)="expandeActionLeftButton()" matRipple class="corsp_ext_btn">
       <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
     </button>
@@ -52,12 +52,18 @@
             <tr>
               <th>Organization</th>
               <th>Department</th>
+              <th>On Behalf</th>
               <th>Name</th>
             </tr>
             <tr *ngFor="let correspondenceDetails of correspondenceSenderDetailsData">
               <td *ngFor="let senderData of correspondenceDetails.myRows">{{senderData.OrganizationName_EN}} </td>
               <td *ngFor="let senderData of correspondenceDetails.myRows"> {{senderData.DepartmentName_EN}} </td>
-              <td *ngFor="let senderData of correspondenceDetails.myRows"> {{senderData.SenderName}} </td>
+              <td *ngFor="let senderData of correspondenceDetails.myRows">
+                <span *ngIf="senderData.SenderDepartment !== senderData.SenderNativeDepartment">
+                  {{senderData.DepartmentNativeName_EN}}
+                </span>
+              </td>
+              <td *ngFor="let senderData of correspondenceDetails.myRows"> {{senderData.Name_EN}} </td>
             </tr>
           </table>
         </div>
@@ -125,7 +131,9 @@
             </div>
           </div>
         </mat-expansion-panel>
-        <mat-expansion-panel class="mat-elevation-z" *ngIf="sectionDisplay.Correspondence.Show">
+        <app-multiple-approve *ngIf="sectionDisplay.Approvers.Show && approve" [approve]="approve"
+          [sectionDisabled]="true"></app-multiple-approve>
+        <mat-expansion-panel class="mat-elevation-z bg_001" *ngIf="sectionDisplay.Correspondence.Show">
           <mat-expansion-panel-header (click)="correspondenceShowData()">
             <div class="icon_wrapper">
               <div class="icon_typ icon_typ_004">
@@ -226,7 +234,7 @@
             </div>
           </div>
         </mat-expansion-panel>
-        <mat-expansion-panel *ngIf="sectionDisplay.Cover.Show" class="mat-elevation-z bg_001" expanded>
+        <mat-expansion-panel *ngIf="sectionDisplay.Cover.Show" class="mat-elevation-z" expanded>
           <mat-expansion-panel-header>
             <div class="icon_wrapper">
               <div class="icon_typ icon_typ_005">
@@ -281,7 +289,7 @@
             </div>
           </div>
         </mat-expansion-panel>
-        <mat-expansion-panel class="mat-elevation-z" *ngIf="sectionDisplay.Attachments.Show">
+        <mat-expansion-panel class="mat-elevation-z bg_001" *ngIf="sectionDisplay.Attachments.Show">
           <mat-expansion-panel-header (click)="attachmentShowData();">
             <div class="icon_wrapper">
               <div class="icon_typ icon_typ_006">
@@ -344,7 +352,7 @@
             </div>
           </div>
         </mat-expansion-panel>
-        <mat-expansion-panel class="mat-elevation-z bg_001" *ngIf="sectionDisplay.UserCollaboration.Show">
+        <mat-expansion-panel class="mat-elevation-z" *ngIf="sectionDisplay.UserCollaboration.Show">
           <mat-expansion-panel-header (click)="collaborationShowData();">
             <div class="icon_wrapper">
               <div class="icon_typ icon_typ_007">
@@ -385,7 +393,7 @@
           [Name]="correspondenceData?.CorrFolderName" [Modify]="sectionDisplay.LinkedCorrespondence.Modify"
           (CoverAction)="LinkedCorrAction($event)">
         </app-linked-correspondences>
-        <mat-expansion-panel class="mat-elevation-z bg_001" *ngIf="sectionDisplay.Comments.Show">
+        <mat-expansion-panel class="mat-elevation-z" *ngIf="sectionDisplay.Comments.Show">
           <mat-expansion-panel-header (click)="commentsProgbar = false">
             <div class="icon_wrapper">
               <div class="icon_typ icon_typ_009">
@@ -404,7 +412,7 @@
             </div>
           </div>
         </mat-expansion-panel>
-        <mat-expansion-panel class="mat-elevation-z panal_pd_0" *ngIf="sectionDisplay.Transfer.Show">
+        <mat-expansion-panel class="mat-elevation-z panal_pd_0  bg_001" *ngIf="sectionDisplay.Transfer.Show">
           <mat-expansion-panel-header (click)="transferTabShowData()">
             <div class="icon_wrapper">
               <div class="icon_typ icon_typ_011">
@@ -468,6 +476,10 @@
           </div>
         </mat-expansion-panel>
       </mat-accordion>
+      <app-distribution *ngIf="correspondenceData && sectionDisplay.Distribution.Show"
+        [correspondenceData]="correspondenceData" [taskID]="taskID"
+        (showDistributionChart)="showDistributionChart($event)">
+      </app-distribution>
     </div>
     <div class="corp_dtl_btn_btm_wrapper">
       <button class="btn_008" *ngIf="buttonsDisplay.corrTrReply" (click)="transferReply(correspondData)">Reply</button>
@@ -487,8 +499,13 @@
     <button (click)="expandeActionRightButton()" matRipple class="corsp_ext_btn">
       <img src="{{basehref}}assets/images/icons/full-screen.svg" alt="">
     </button>
-    <div class="documentViewerDiv" *ngFor="let docpreviewData of documentPreviewURL">
-      <iframe class="iframeclass" [src]="docpreviewData.CorrespondencedocumentURL|safe"></iframe>
-    </div>
+    <ng-container *ngIf="showPreviewCoverLetter">
+      <div class="documentViewerDiv" *ngFor="let docpreviewData of documentPreviewURL">
+        <iframe class="iframeclass" [src]="docpreviewData.CorrespondencedocumentURL|safe"></iframe>
+      </div>
+    </ng-container>
+    <app-distribution-chart *ngIf="showDistributionTreeArea && correspondenceData"
+      [correspondenceData]="correspondenceData" (distributionOutputAction)="distributionOutputAction($event)">
+    </app-distribution-chart>
   </ng-scrollbar>
 </div>
