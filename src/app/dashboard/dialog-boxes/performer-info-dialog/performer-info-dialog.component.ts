@@ -73,8 +73,7 @@ export class PerformerInfoDialogComponent implements OnInit {
   }
 
   setInitials() {
-    this.initials = this.performerInfo.PrfInfo_General.FirstName_EN.slice(0, 1).toUpperCase() + this.performerInfo.PrfInfo_General.LastName_EN.slice(0, 1).toUpperCase();
-    console.log(this.initials)
+    this.initials = this.performerInfo.PrfInfo_General.FirstName_EN.slice(0, 1).toUpperCase() + this.performerInfo.PrfInfo_General.LastName_EN.slice(0, 1).toUpperCase();    
   }
 
   sanitize(url: string) {

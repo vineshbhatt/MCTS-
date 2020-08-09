@@ -105,13 +105,11 @@ export class CommentsTreeComponent implements OnInit {
     this.closeDialogBox.next();
   }
 
-  treeRebuild() {
-    console.log('REBUILD');
+  treeRebuild() {    
     this.dataSource.data = this.commentsDetails;
   }
 
-  testChild() {
-    console.log('child');
+  testChild() {    
   }
 
   deleteItem(commentParams: CommentsNode) {

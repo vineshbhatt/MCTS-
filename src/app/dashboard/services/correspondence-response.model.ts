@@ -35,6 +35,9 @@ export class SenderDetailsData {
   SectionName_EN: string;
   SectionName_AR: string;
   SenderNativeDepartment: number;
+  DepartmentNativeName_AR: string;
+  DepartmentNativeName_EN: string;
+  TeamID?: number;
 }
 
 export class RecipientDetailsData {

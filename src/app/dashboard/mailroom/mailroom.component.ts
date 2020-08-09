@@ -40,11 +40,10 @@ export class MailroomsComponent implements OnInit, AfterViewInit {
 
   menuActionButton() {
     this.menuAction = !this.menuAction;
-    console.log(this.menuAction);
+    // console.log(this.menuAction);
   }
 
-  changeItem(itemsCount: number) {
-    debugger;
+  changeItem(itemsCount: number) {    
     if (Array.isArray(this.menuItems) && this.menuItems.length) {
       const locationName = window.location.pathname.split('/').pop();
       this.menuItems[0].inbounds.forEach((element) => {

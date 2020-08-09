@@ -39,8 +39,7 @@ export class NewIntInboundComponent extends BaseDashboardActiveComponent impleme
     this.searchSenderDeptFieldShow = true;
   }
   /*
-    setItemCount() {
-      debugger;
+    setItemCount() {      
       this.dataSharingService.currentItemsCount.subscribe(itemsCount => {
         this.itemsCount = itemsCount;
         if (typeof this.itemsCount !== 'undefined') {

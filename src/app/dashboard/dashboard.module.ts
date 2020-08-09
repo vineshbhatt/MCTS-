@@ -93,7 +93,7 @@ import { CommentDialogComponent } from './comments/comment-dialog/comment-dialog
 import { CommentsTreeComponent } from './comments/comments-tree/comments-tree.component';
 import { MatRadioModule } from '@angular/material';
 import { CommentSectionComponent } from './comments/comment-section/comment-section.component';
-import { multiLanguageTranslatorModule } from 'src/assets/translator/index';
+import { multiLanguageTranslatorModule, multiLanguageTranslatorPipe } from 'src/assets/translator/index';
 import { BaseDashboardArchiveComponent } from './base-classes/base-dashboard-archive/base-dashboard-archive.component';
 import { UserInfoComponent } from './side-navigation/user-info/user-info.component';
 import { ProxyInfoComponent } from './side-navigation/proxy-info/proxy-info.component';
@@ -116,6 +116,7 @@ import { DistributionComponent } from './shared-components/distribution/distribu
 import { AngularResizedEventModule } from 'angular-resize-event';
 import { DistributionChartComponent } from './shared-components/distribution-chart/distribution-chart.component';
 import { DistributionDialogComponent } from './dialog-boxes/distribution-dialog/distribution-dialog.component';
+import { SelectTeamDialogComponent } from './dialog-boxes/select-team-dialog/select-team-dialog.component';
 
 @NgModule({
   imports: [
@@ -240,7 +241,8 @@ import { DistributionDialogComponent } from './dialog-boxes/distribution-dialog/
     AddApproverDialogComponent,
     DistributionComponent,
     DistributionChartComponent,
-    DistributionDialogComponent
+    DistributionDialogComponent,
+    SelectTeamDialogComponent
   ],
   entryComponents: [
     MailDetailView,
@@ -263,9 +265,10 @@ import { DistributionDialogComponent } from './dialog-boxes/distribution-dialog/
     LinkedCorrDialogComponent,
     DownloadAttachtmentsDialogComponent,
     AddApproverDialogComponent,
-    DistributionDialogComponent
+    DistributionDialogComponent,
+    SelectTeamDialogComponent
   ],
-  providers: [ErrorHandlerFctsService, NotificationService, DatePipe]
+  providers: [ErrorHandlerFctsService, NotificationService, DatePipe, multiLanguageTranslatorPipe]
 })
 export class DashboardModule { }
 

@@ -52,7 +52,7 @@ export class InternalComponent implements OnInit, AfterViewInit, OnDestroy {
 
   menuActionButton() {
     this.menuAction = !this.menuAction;
-    console.log(this.menuAction);
+    // console.log(this.menuAction);
   }
 
   changeItem(itemsCount: number) {

@@ -1,9 +1,3 @@
-export interface TableStructureParameters {
-    columnDef: string;
-    columnName: string;
-    priority: number;
-}
-
 export interface DistributionDetailsParameters {
     Comments: string;
     DepartmentName_AR: string;

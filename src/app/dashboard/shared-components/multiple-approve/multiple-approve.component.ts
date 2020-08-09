@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter, Input, SimpleChanges } from '@angular/core';
 import { CorrespondenceDetailsService } from 'src/app/dashboard/services/correspondence-details.service';
 import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handler-fcts.service';
 import { CodegenComponentFactoryResolver } from '@angular/core/src/linker/component_factory_resolver';
@@ -12,11 +12,12 @@ import { MatDialog, MatCheckboxChange, MatOptionSelectionChange } from '@angular
 import { AddApproverDialogComponent } from 'src/app/dashboard/dialog-boxes/add-approver-dialog/add-approver-dialog.component';
 import { containsElement } from '@angular/animations/browser/src/render/shared';
 import { NotificationService } from 'src/app/dashboard/services/notification.service';
+import { multiLanguageTranslatorPipe } from 'src/assets/translator/index';
 
 export interface MultipleApproveInputData {
   CorrID: string;
   VolumeID: string;
-  TeamID: string;
+  TeamID: number;
   UserID: number;
   fChangeTeam: boolean;
   fGetStructure: boolean;
@@ -96,6 +97,7 @@ export class MultipleApproveComponent implements OnInit {
     private formBuilder: FormBuilder,
     public dialogU: MatDialog,
     private notificationmessage: NotificationService,
+    private translator: multiLanguageTranslatorPipe
   ) { }
 
   @Input() approve: MultipleApproveInputData;
@@ -116,8 +118,23 @@ export class MultipleApproveComponent implements OnInit {
     this.getApproversData();
   }
 
-  ngOnChanges() {
-    this.setConfidential();
+  ngOnChanges(changes: SimpleChanges) {
+    for (const propName in changes) {
+      if (changes.hasOwnProperty(propName) && !changes[propName].firstChange) {
+        switch (propName) {
+          case 'approve': {
+            this.firstLoadSpinner = true;
+            this.removeAll();
+            this.getApproversData();
+          }
+            break;
+          case 'confidential': this.setConfidential();
+            break;
+          default: console.log('Error in Approve component');
+        }
+      }
+    }
+
   }
 
   getOrgChart() {
@@ -219,7 +236,7 @@ export class MultipleApproveComponent implements OnInit {
   }
 
   displayFieldValue(fieldValue: ApproverDetails) {
-    if (fieldValue) { return fieldValue.Approver_EN; }
+    if (fieldValue) { return this.translator.transform(fieldValue.Approver_EN, fieldValue.Approver_AR); }
   }
 
   ManageNameControl(index: number, approverData: ApproverDetails[]) {
@@ -309,7 +326,7 @@ export class MultipleApproveComponent implements OnInit {
     const arrayControl = this.approverDetailsForm.get('approverDetails') as FormArray;
     this.correspondenceDetailsService.setMultiApprovers(arrayControl.value, this.getLevels(true).join(), this.approve).subscribe(
       response => {
-        console.log('approvers are saved');
+        // console.log('approvers are saved');
       },
       responseError => {
         this.errorHandlerFctsService.handleError(responseError).subscribe();
@@ -342,7 +359,7 @@ export class MultipleApproveComponent implements OnInit {
     }
     this.correspondenceDetailsService.setApprover(this.approve.CorrID, level, approver).subscribe(
       response => {
-        console.log('Approver is saved');
+        // console.log('Approver is saved');
       },
       responseError => {
         this.errorHandlerFctsService.handleError(responseError).subscribe();

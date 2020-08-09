@@ -42,7 +42,7 @@ export class MailroomDasnboardComponent extends BaseDashboardFullComponent imple
     super.ngOnInit();
     this.correspondenceShareService.mrCountReady.subscribe(response => {
       this.userData = response;
-      console.log(this.userData);
+      // console.log(this.userData);
     });
   }
 

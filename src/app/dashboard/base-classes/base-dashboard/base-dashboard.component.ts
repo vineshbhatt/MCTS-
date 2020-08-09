@@ -204,7 +204,7 @@ export class BaseDashboardComponent implements OnInit, OnDestroy {
     } else if (correspondData.transID > 0 && correspondData.transHoldSecretaryID !== this.stepPerformer) {
       this.userConfirmation('assignTransfer', correspondData);
       /*} else if (correspondenceData.transID > 0 && correspondenceData.transHoldSecretaryID != CSConfig.globaluserid ) {
-        console.log("transfer assigned to USER"); */
+ */
     } else {
       this.router.navigate([this.routerCorrDetail],
         {
@@ -253,8 +253,7 @@ export class BaseDashboardComponent implements OnInit, OnDestroy {
 
   onSearchDashboardButtonClick(selecetedValues: any): void {
     this.SearchFilterData = selecetedValues;
-    this.SearchDashboard();
-    console.log('SearchFilterData', this.SearchFilterData);
+    this.SearchDashboard();    
   }
   /* ************************************* Correspondence History window *************************************** */
   openDialog(correspondData: Correspondence): void {
@@ -437,8 +436,7 @@ export class BaseDashboardComponent implements OnInit, OnDestroy {
           this.showMessage('The Correspondence was initiated before Recall functionality has been created');
         } else {
           if (recallType === 'SimpleRecall') {
-            if (response.currTask !== -1 && response.prevTask !== -1) {
-              console.log('DEV: simple WF recall');
+            if (response.currTask !== -1 && response.prevTask !== -1) {              
               this.runWFRecall(response);
             } else {
               this.showMessage('You can not recall this Correspondence');
@@ -463,8 +461,7 @@ export class BaseDashboardComponent implements OnInit, OnDestroy {
   runWFRecall(stepsInfo: RecallStepsInfo) {
     this.correspondenceService.runRecallWF(stepsInfo)
       .subscribe(
-        response => {
-          console.log(response);
+        response => {          
           if (response.ok.toString() === 'true') {
             this.setDispAudit(stepsInfo, 'Recall');
             this.multipleApprove_Recall(stepsInfo);
@@ -504,8 +501,7 @@ export class BaseDashboardComponent implements OnInit, OnDestroy {
   multipleApprove_Recall(stepsInfo: RecallStepsInfo): void {
     if ((stepsInfo.CorrespondenceFlowType === '7' && stepsInfo.currTask === 37) || (stepsInfo.CorrespondenceFlowType === '5' && stepsInfo.currTask === 17)) {
       this.correspondenceService.recallMultipleApprove(stepsInfo).subscribe(
-        response => {
-          console.log(response);
+        response => {          
         },
         responseError => {
           this.errorHandlerFctsService.handleError(responseError).subscribe();
@@ -516,8 +512,7 @@ export class BaseDashboardComponent implements OnInit, OnDestroy {
 
   sendNotification(stepsInfo: RecallStepsInfo): void {
     this.correspondenceService.sendRecallNotification(stepsInfo).subscribe(
-      response => {
-        console.log(response);
+      response => {        
       },
       responseError => {
         this.errorHandlerFctsService.handleError(responseError).subscribe();
@@ -571,8 +566,7 @@ export class BaseDashboardComponent implements OnInit, OnDestroy {
     if (icon === 'openComments') {
       this.commentsDialogBox(correspondData);
     } else if (icon === 'openProxyInfo') {
-      this.performerInfoDialogBox(correspondData.SubWorkTask_PerformerID);
-      /* console.log(correspondData.SubWorkTask_PerformerID); */
+      this.performerInfoDialogBox(correspondData.SubWorkTask_PerformerID);      
     } else if (icon === 'openLinkedCorrInfo') {
       this.LinkedCorrespondenceDialogBox(correspondData);
     }
@@ -609,8 +603,7 @@ export class BaseDashboardComponent implements OnInit, OnDestroy {
     this.correspondenceService.getExcelFile(this.reportType, this.SearchFilterData, this.isProxy, this.getExcelHeader(), lang)
       .subscribe(
         response => {
-          this.downLoadFile(response, 'application/vnd.ms-excel');
-          console.log('response', response);
+          this.downLoadFile(response, 'application/vnd.ms-excel');          
           this.expButton = false;
         },
         responseError => {

@@ -5,6 +5,7 @@ import { CorrespondenceDetailsService } from 'src/app/dashboard/services/corresp
 import { CorrResponse } from '../../services/correspondence-response.model';
 import { CorrespondenceFolderModel, TemplateModel } from 'src/app/dashboard/models/CorrespondenenceDetails.model';
 import { HttpEventType, HttpProgressEvent } from '@angular/common/http';
+import { FCTSDashBoard } from 'src/environments/environment';
 
 @Component({
     selector: 'app-base-correspondence',
@@ -13,7 +14,10 @@ import { HttpEventType, HttpProgressEvent } from '@angular/common/http';
 
 export class BaseCorrespondenceComponent implements OnInit {
 
-    constructor(public csdocumentupload: CSDocumentUploadService, public correspondenceDetailsService: CorrespondenceDetailsService) { }
+    constructor(
+        public csdocumentupload: CSDocumentUploadService,
+        public correspondenceDetailsService: CorrespondenceDetailsService
+    ) { }
     CoverLetterData: CorrResponse[];
     AttachmentFolderData: CorrResponse[];
     corrFolderData: CorrespondenceFolderModel;
@@ -22,6 +26,7 @@ export class BaseCorrespondenceComponent implements OnInit {
     templatesDocList: any[];
     public files: NgxFileDropEntry[] = [];
     progress = 0;
+    CSUrl: String = FCTSDashBoard.CSUrl;
 
     ngOnInit() {
 
@@ -172,6 +177,44 @@ export class BaseCorrespondenceComponent implements OnInit {
         );
     }
 
+    editFile(nodeID: number, sectionName: string): void {
+        const closeMe = '&uiType=2&nextURL=http%3A%2F%2F' + FCTSDashBoard.CSUrlShort + FCTSDashBoard.CloseMe;
+        const url = this.CSUrl + '?func=Edit.Edit&nodeid=' + nodeID + closeMe;
+        const EditDocWindow: any = window.open(url, '_blank');
+        let iterations = 0;
+        const interval = setInterval(() => {
+            iterations++;
+            if (EditDocWindow.closed) {
+                if (sectionName === 'COVER') {
+                    this.getCoverSection();
+                } else if (sectionName === 'ATTACHMENT') {
+                    this.getAttachmentSection();
+                } else if (sectionName === 'MISC') {
+                }
+                clearInterval(interval);
+            }
+            if (iterations > 10) {
+                clearInterval(interval);
+            }
+        }, 1000);
+    }
+
+    /* printFile(nodeid) {
+        const closeMe = '&uiType=2&nextURL=http%3A%2F%2Fmv2cdmsadp02%2Fimg%2Fcsui%2Fpages%2Fclose.html';
+        let url = this.CSUrl + '?func=multifile.printmulti&nodeID_list=' + nodeid + closeMe;
+        let EditDocWindow: any = window.open(url, '_blank');
+    } */
+
+    /*  selectTeamDialogBox(): void {
+         const dialogRef = this.dialog.open(SelectTeamDialogComponent, {
+             width: '100%',
+             panelClass: 'select-team-dialog',
+             maxWidth: '30vw',
+         }).afterClosed().subscribe(result => {
+             this.reloadSenderSection(result);
+ 
+         });
+     } */
 }
 
 export class UploadSession {

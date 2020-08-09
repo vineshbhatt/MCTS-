@@ -33,8 +33,7 @@ export class TransferRecallDialogComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this._inputData = this._data;
-    console.log(this._inputData);
+    this._inputData = this._data;    
     this.getTransferRecall(this._inputData);
   }
 
@@ -47,8 +46,7 @@ export class TransferRecallDialogComponent implements OnInit {
     if ( this.selection.selected.length ) {
     this._inputData.selectedIDs = this._getSelectedIDs().toString();
     this._correspondenceService.runRecallTransfer(this._inputData).subscribe(
-      response => {
-        console.log(response);
+      response => {        
         this.recallDialogBoxClose('recall');
       },
       responseError => {
@@ -57,7 +55,7 @@ export class TransferRecallDialogComponent implements OnInit {
       }
     );
     } else {
-      console.log('please select at least one row');
+      //console.log('please select at least one row');
     }
   }
 
@@ -87,7 +85,7 @@ export class TransferRecallDialogComponent implements OnInit {
     this._transferRecallService.getTransRecallData(recallTransferInfo).subscribe(
       response => {
         this.allTransferedRows = response;
-        console.log(this.allTransferedRows);
+        //console.log(this.allTransferedRows);
       },
       responseError => {
         this._errorHandlerFctsService.handleError(responseError).subscribe();

@@ -75,7 +75,7 @@ interface CorrButtonsList {
         correspondenceData.perform07.toString() === '1' && correspondenceData.CCstatus !== 'Archived'
           ? this.corrArchive = true : this.corrArchive = false;
       }
-      console.log(this);
+      // console.log(this);
     }
 
   }

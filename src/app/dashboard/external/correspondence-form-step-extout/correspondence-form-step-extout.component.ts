@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
@@ -10,7 +10,7 @@ import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { NgxFileDropEntry } from 'ngx-file-drop';
 import { DatePipe } from '@angular/common';
 import { FCTSDashBoard } from '../../../../environments/environment';
-import { OrgNameAutoFillModel, CorrespondenceFolderModel, CCUserSetModel, CorrespondenenceDetailsModel, CorrWFTaskInfoModel, SyncDocumentMetadataModel, ColUserSetModel, TemplateModel } from 'src/app/dashboard/models/CorrespondenenceDetails.model';
+import { OrgNameAutoFillModel, CorrespondenceFolderModel, CCUserSetModel, CorrespondenenceDetailsModel, CorrWFTaskInfoModel, SyncDocumentMetadataModel, ColUserSetModel, TemplateModel, TableStructureParameters } from 'src/app/dashboard/models/CorrespondenenceDetails.model';
 import { CorrResponse, CorrespondenceFormData, SenderDetailsData, RecipientDetailsData, CommentsNode } from '../../services/correspondence-response.model';
 import { organizationalChartModel, organizationalChartEmployeeModel, ECMDChartModel, ECMDChartDepartmentModel } from 'src/app/dashboard/models/organizational-Chart.model';
 import { DocumentPreview } from '../../services/documentpreview.model';
@@ -33,11 +33,22 @@ import { TextFieldModule } from '@angular/cdk/text-field';
 import { TestBed } from '@angular/core/testing';
 import { multiLanguageTranslator } from 'src/assets/translator/index';
 import { MultipleApproveComponent, MultipleApproveInputData, CurrentApprovers } from 'src/app/dashboard/shared-components/multiple-approve/multiple-approve.component';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { ResizedEvent } from 'angular-resize-event';
+import { SelectTeamDialogComponent } from 'src/app/dashboard/dialog-boxes/select-team-dialog/select-team-dialog.component';
 
 @Component({
   selector: 'app-correspondence-form-step-extout',
   templateUrl: './correspondence-form-step-extout.component.html',
-  styleUrls: ['./correspondence-form-step-extout.component.scss']
+  styleUrls: ['./correspondence-form-step-extout.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ]
+
 })
 
 export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceComponent implements OnInit, AfterViewInit {
@@ -200,6 +211,20 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
   approve: MultipleApproveInputData;
   @ViewChild(MultipleApproveComponent) multiApprove;
   confidential = false;
+  // sendeer tbl structure
+  teamsList: SenderDetailsData[];
+  senderTableStructureFull: TableStructureParameters[] = [
+    { 'columnDef': 'OrganizationName', 'columnName': 'Organization', 'priority': 2 },
+    { 'columnDef': 'DepartmentName', 'columnName': 'Department', 'priority': 1 },
+    { 'columnDef': 'DepartmentNativeName', 'columnName': 'On Behalf', 'priority': 3 },
+    { 'columnDef': 'Name', 'columnName': 'Name', 'priority': 1 },
+  ];
+  senderTableStructure: TableStructureParameters[];
+  senderTableStructureDetails: TableStructureParameters[];
+  senderColWidth: number;
+  senderIconWidth: number;
+  senderIconWidthConst = 5;
+  @ViewChild('senderContainer') senderContainer: ElementRef;
 
   ngOnInit() {
 
@@ -219,13 +244,7 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     this.readCorrespondenceInfo();
     this.RefreshRecord();
     this.getECMDRoot(0);
-    this.stepUIData = this.toShowWFButtons(this.taskID);
-    this.showWFButtons = this.stepUIData.ShowButtons;
-    this.sectionDisplay = this.stepUIData.ShowSections;
-    this.showFields = this.stepUIData.ShowFields;
-
-    //this.sectionDisplay.ShowCorrSectionWF();
-
+    this.getTeams();
 
     this.senderDetailsForm = this.formBuilder.group({
       SenderInfo: ['', Validators.required]
@@ -281,7 +300,13 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
 
   ngAfterViewInit() {
     this.getOrganizationalChartDetail();
+  }
 
+  getShowElementsConst(taskTitle: string) {
+    this.stepUIData = this.toShowWFButtons(this.taskID, taskTitle);
+    this.showWFButtons = this.stepUIData.ShowButtons;
+    this.sectionDisplay = this.stepUIData.ShowSections;
+    this.showFields = this.stepUIData.ShowFields;
   }
 
   ReadRecord(locationid: string, transid: string) {
@@ -303,15 +328,12 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     this.ReadRecord(this.locationid, '0');
   }
 
-  getCorrespondenceSenderDetails(maxApproveLevel: number): void {
-    this._correspondenceDetailsService
-      .getCorrespondenceSenderDetails(this.VolumeID, this.CorrespondencType, false, this.body.values.WorkflowForm_1x4x1x12, maxApproveLevel)
+  getTeams() {
+    this.correspondenceDetailsService.getTeams(this.VolumeID, false)
       .subscribe(
-        correspondenceSenderDetailsData => {
-          if ((typeof correspondenceSenderDetailsData[0].myRows !== 'undefined') && correspondenceSenderDetailsData[0].myRows.length > 0) {
-            this.correspondenceSenderDetailsData = correspondenceSenderDetailsData[0].myRows[0];
-            this.senderDetailsForm.get('SenderInfo').setValue(this.correspondenceSenderDetailsData);
-            this.spinnerDataLoaded = false;
+        response => {
+          if (response.hasOwnProperty('myRows')) {
+            this.teamsList = response.myRows;
           }
         },
         responseError => {
@@ -319,6 +341,70 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
         }
       );
   }
+
+  selectTeamDialogBox(): void {
+    const dialogRef = this.dialog.open(SelectTeamDialogComponent, {
+      width: '100%',
+      panelClass: 'select-team-dialog',
+      maxWidth: '30vw',
+      data: {
+        teamsList: this.teamsList,
+        teamID: this.body.values.WorkflowForm_1x4x1x51
+      }
+    }).afterClosed().subscribe(result => {
+      if (result && result !== 'Cancel') {
+        this.correspondenceSenderDetailsData = result;
+        this.senderDetailsForm.get('SenderInfo').setValue(this.correspondenceSenderDetailsData);
+        const teamID = this.correspondenceSenderDetailsData.TeamID > 0 ? this.correspondenceSenderDetailsData.TeamID : null;
+        this.body.values.WorkflowForm_1x4x1x51 = teamID;
+        this.setMultiApproveParameters(teamID, true);
+        this.syncCoverData();
+      }
+    });
+  }
+
+  getCorrespondenceSenderDetails(maxApproveLevel: number): void {
+    this._correspondenceDetailsService
+      .getCorrespondenceSenderDetails(this.VolumeID, this.CorrespondencType, false, this.body.values.WorkflowForm_1x4x1x12, maxApproveLevel)
+      .subscribe(
+        correspondenceSenderDetailsData => {
+          if (correspondenceSenderDetailsData[0].myRows && correspondenceSenderDetailsData[0].myRows.length > 0) {
+            this.correspondenceSenderDetailsData = correspondenceSenderDetailsData[0].myRows[0];
+            this.senderDetailsForm.get('SenderInfo').setValue(this.correspondenceSenderDetailsData);
+            this.displayColumnsForm(this.senderContainer.nativeElement.clientWidth);
+            if (maxApproveLevel > 0) {
+              this.syncCoverData();
+            }
+          }
+          this.spinnerDataLoaded = false;
+        },
+        responseError => {
+          this._errorHandlerFctsService.handleError(responseError).subscribe();
+        }
+      );
+  }
+
+  displayColumnsForm(width: number): void {
+    const priority = this.correspondenceDetailsService.definePriorityToShow(width);
+    this.senderTableStructure = [];
+    this.senderTableStructureDetails = [];
+    let senderTableLength = 0;
+    this.senderTableStructureFull.forEach(element => {
+      if (element.priority > priority) {
+        this.senderTableStructureDetails.push(element);
+      } else {
+        this.senderTableStructure.push(element);
+        senderTableLength += element.columnDef !== 'Icon' ? 1 : 0;
+      }
+    });
+    this.senderIconWidth = this.senderTableStructureDetails.length > 0 ? this.senderIconWidthConst : 0;
+    this.senderColWidth = Math.floor((100 - this.senderIconWidth) / senderTableLength);
+  }
+
+  onResized(event: ResizedEvent) {
+    this.displayColumnsForm(event.newWidth);
+  }
+
 
   getCorrespondenceRecipientDetails(): void {
     this._correspondenceDetailsService
@@ -411,7 +497,7 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
       UserColl_Type: empDetails.UserColl_Type,
       UserColl_Purpose: empDetails.UserColl_Purpose,
       UserColl_Priority: empDetails.UserColl_Priority,
-      UserColl_DueDate: this.datePipe.transform(new Date(empDetails.UserColl_DueDate), 'full'),
+      UserColl_DueDate: empDetails.UserColl_DueDate,
       UserColl_Notes: empDetails.UserColl_Notes,
       UserColl_FurtherAction: empDetails.UserColl_FurtherAction,
       UserColl_Status: empDetails.UserColl_Status,
@@ -452,8 +538,10 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
         if ((typeof response.forms !== 'undefined') && response.forms.length > 0) {
           this.body.values = response.forms[0].data;
           this.taskTitle = response.data.title;
+          this.getShowElementsConst(this.taskTitle);
           this.getCorrespondenceSenderDetails(0);
-          this.setMultiApproveParameters();
+          const teamID = this.body.values.WorkflowForm_1x4x1x51;
+          this.setMultiApproveParameters(teamID, false);
           this.getMetadataFilters();
         }
       },
@@ -530,29 +618,28 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
       }
     }
   }
+
   getCollaborationtoFormObject() {
     this.body.values.WorkflowForm_1x4x1x110.splice(this.colDetailsForm.get('ColDetails').value.length);
     for (let i = 0; i < this.colDetailsForm.get('ColDetails').value.length; i++) {
+      let date = this.colDetailsForm.get('ColDetails').value[i].UserColl_DueDate ? new Date(this.colDetailsForm.get('ColDetails').value[i].UserColl_DueDate) : '';
       if (typeof this.body.values.WorkflowForm_1x4x1x110[i] === 'object') {
         this.body.values.WorkflowForm_1x4x1x110[i].WorkflowForm_1x4x1x110_x_111 = this.colDetailsForm.get('ColDetails').value[i].UserColl_User;
-        this.body.values.WorkflowForm_1x4x1x110[i].WorkflowForm_1x4x1x110_x_121 = this.colDetailsForm.get('ColDetails').value[i].UserColl_Type;
         this.body.values.WorkflowForm_1x4x1x110[i].WorkflowForm_1x4x1x110_x_113 = this.colDetailsForm.get('ColDetails').value[i].UserColl_Purpose;
-        this.body.values.WorkflowForm_1x4x1x110[i].WorkflowForm_1x4x1x110_x_115 = this.colDetailsForm.get('ColDetails').value[i].UserColl_DueDate;
+        this.body.values.WorkflowForm_1x4x1x110[i].WorkflowForm_1x4x1x110_x_115 = this.correspondenceShareService.DateToISOStringAbs(date);
         this.body.values.WorkflowForm_1x4x1x110[i].WorkflowForm_1x4x1x110_x_116 = this.colDetailsForm.get('ColDetails').value[i].UserColl_Notes;
         this.body.values.WorkflowForm_1x4x1x110[i].WorkflowForm_1x4x1x110_x_117 = this.colDetailsForm.get('ColDetails').value[i].UserColl_FurtherAction;
-
-
+        this.body.values.WorkflowForm_1x4x1x110[i].WorkflowForm_1x4x1x110_x_121 = this.colDetailsForm.get('ColDetails').value[i].UserColl_Type;
       } else {
-        this.body.values.WorkflowForm_1x4x1x110.push({
 
+        this.body.values.WorkflowForm_1x4x1x110.push({
 
           WorkflowForm_1x4x1x110_x_111: this.colDetailsForm.get('ColDetails').value[i].UserColl_User,
           WorkflowForm_1x4x1x110_x_121: this.colDetailsForm.get('ColDetails').value[i].UserColl_Type,
           WorkflowForm_1x4x1x110_x_113: this.colDetailsForm.get('ColDetails').value[i].UserColl_Purpose,
-          WorkflowForm_1x4x1x110_x_115: this.colDetailsForm.get('ColDetails').value[i].UserColl_DueDate,
+          WorkflowForm_1x4x1x110_x_115: this.correspondenceShareService.DateToISOStringAbs(date),
           WorkflowForm_1x4x1x110_x_116: this.colDetailsForm.get('ColDetails').value[i].UserColl_Notes,
           WorkflowForm_1x4x1x110_x_117: this.colDetailsForm.get('ColDetails').value[i].UserColl_FurtherAction
-
 
         });
       }
@@ -734,7 +821,7 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
       .subscribe(
         response => {
           if (action === '') {
-            console.log(this.body.values);
+            // console.log(this.body.values);
           } else {
             this.sendOnCorrespondence();
           }
@@ -798,7 +885,7 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
         response => {
           if (action === '') {
             /* submits form but doesn't Send On */
-            console.log(this.body.values);
+            // console.log(this.body.values);
           } else {
             this.sendOnCorrespondence();
           }
@@ -924,73 +1011,60 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
       .subscribe(correspondenceCovertData => this.documentPreviewURL = correspondenceCovertData);
   }
 
-  showSenderData() {
+  clearTreeParameters() {
     this.showPreviewECMDTreeArea = false;
-    this.showPreviewTreeArea = true;
-    this.selectedCaption = 'Sender'
-    this.currentlyChecked = false;
-    this.showPreviewCoverLetter = false;
-    this.multiSelect = false;
-    this.dataSource.data = this.organizationalChartData;
-    this.CCOUID = [];
-    this.CCEID = [];
-    this.showTemplateArea = false;
-    this.isSearchResult = false;
-  }
-  showRecipientData() {
     this.showPreviewTreeArea = false;
     this.showPreviewCoverLetter = false;
+    this.showTemplateArea = false;
+    this.currentlyChecked = false;
+    this.isSearchResult = false;
+    this.CCOUID = [];
+    this.CCEID = [];
+  }
+
+  showSenderData() {
+    this.clearTreeParameters();
+    this.showPreviewTreeArea = true;
+    this.selectedCaption = 'Sender';
+    this.dataSource.data = this.organizationalChartData;
+  }
+  showRecipientData() {
+    this.clearTreeParameters();
     this.showPreviewECMDTreeArea = true;
     this.selectedCaption = 'Recipient';
-    this.currentlyChecked = false;
     this.multiSelect = false;
-    this.CCOUID = [];
-    this.isSearchResult = false;
   }
   showCCData() {
-    this.showPreviewECMDTreeArea = false;
+    this.clearTreeParameters();
     this.showPreviewTreeArea = true;
-    this.selectedCaption = 'CC'
-    this.currentlyChecked = false;
-    this.showPreviewCoverLetter = false;
+    this.selectedCaption = 'CC';
     this.multiSelect = true;
     this.dataSource.data = this.organizationalChartData;
-    this.showTemplateArea = false;
-    this.isSearchResult = false;
   }
 
   showCollaboartorData() {
-    this.showPreviewECMDTreeArea = false;
+    this.clearTreeParameters();
     this.showPreviewTreeArea = true;
     this.selectedCaption = 'Collaboration';
-    this.currentlyChecked = false;
-    this.showPreviewCoverLetter = false;
     this.multiSelect = true;
     this.dataSource.data = this.organizationalChartData;
-    this.showTemplateArea = false;
-    this.isSearchResult = false;
   }
 
   showMultiAppData() {
-    this.showPreviewECMDTreeArea = false;
+    this.clearTreeParameters();
     this.showPreviewTreeArea = true;
     this.selectedCaption = 'Approver';
-    this.currentlyChecked = false;
-    this.showPreviewCoverLetter = false;
     this.multiSelect = false;
     this.dataSource.data = this.organizationalChartData;
-    this.showTemplateArea = false;
-    this.isSearchResult = false;
   }
 
   showTemplateSection() {
-
-    this.showPreviewTreeArea = false;
-    this.showPreviewCoverLetter = false;
+    this.clearTreeParameters();
     this.showTemplateArea = true;
     this.getTemplatesSectionData(this.corrFlowType, 'Default', '');
     this.LoadTemplateFilter('Template_Type');
   }
+
   getOrganizationalChartDetail(): void {
     this.organizationalChartService.getOrgChartInternal()
       .subscribe(OrgChartResponse => {
@@ -1196,8 +1270,10 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     }
     else if (this.selectedCaption === 'CC') {
       this.ccProgbar = true;
-      this.ccDetailsForm = this.formBuilder.group({
-        CCDetails: this.formBuilder.array([])
+      const ccDeetails = this.ccDetailsForm.get('CCDetails') as FormArray;
+      let currentArr = new Array();
+      ccDeetails.value.forEach(element => {
+        currentArr.push(element.DepID);
       });
       let orgArray = new Array();
       this.CCOUID.forEach(function (obj) {
@@ -1212,18 +1288,21 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
       this.correspondenceDetailsService.getCCUserDetailsSet(orgArray.toString(), empArray.toString(), this.corrFlowType).subscribe(
         ccDepInfo => {
           for (let obj of ccDepInfo) {
-            this.addCC(obj);
+            if (currentArr.indexOf(obj.CCUserID) === -1) {
+              this.addCC(obj);
+            }
           }
           this.ccProgbar = false;
         }
-      )
+      );
     }
     else if (this.selectedCaption === 'Collaboration') {
       this.colProgBar = true;
-      this.colDetailsForm = this.formBuilder.group({
-        ColDetails: this.formBuilder.array([])
+      const colDetails = this.colDetailsForm.get('ColDetails') as FormArray;
+      let currentArr = new Array();
+      colDetails.value.forEach(element => {
+        currentArr.push(element.UserColl_User);
       });
-
       let empArray = new Array();
       this.CCEID.forEach(function (obj) {
         empArray.push(obj.EID);
@@ -1232,7 +1311,9 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
       this.correspondenceDetailsService.getCollUserDetailsSet(empArray.toString(), this.corrFlowType).subscribe(
         colEmpInfo => {
           for (let obj of colEmpInfo) {
-            this.addCollaboator(obj);
+            if (currentArr.indexOf(obj.UserColl_User) === -1) {
+              this.addCollaboator(obj);
+            }
           }
           this.colProgBar = false;
         }
@@ -1291,10 +1372,10 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     this.documentMetadataSync.docFolderID = this.correspondenceData.AttachCorrCoverID.toString();
     this.documentMetadataSync.srcDocID = this.body.values.WorkflowForm_1x4x1x61;
     if (this.body.values.WorkflowForm_1x4x1x48 === 'EN') {
-      let senderDetails: OrgNameAutoFillModel = this.senderDetailsForm.get('SenderInfo').value;
-      this.documentMetadataSync.SenderOrganization = this.convertUndefindedOrNulltoemptyString(senderDetails.OrgName_En);
-      this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(senderDetails.DepName_En);
-      this.documentMetadataSync.SenderName = this.convertUndefindedOrNulltoemptyString(senderDetails.Name_En);
+      let senderDetails: SenderDetailsData = this.senderDetailsForm.get('SenderInfo').value;
+      this.documentMetadataSync.SenderOrganization = this.convertUndefindedOrNulltoemptyString(senderDetails.OrganizationName_EN);
+      this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(senderDetails.DepartmentName_EN);
+      this.documentMetadataSync.SenderName = this.convertUndefindedOrNulltoemptyString(senderDetails.Name_EN);
       let recipientDetails: OrgNameAutoFillModel = this.recipientDetailsForm.get('ExternalOrganization').value;
       this.documentMetadataSync.RecipientOrganization = this.convertUndefindedOrNulltoemptyString(recipientDetails.OrgName_En)
       this.documentMetadataSync.RecipientDepartment = this.convertUndefindedOrNulltoemptyString(recipientDetails.DepName_En) + (this.convertUndefindedOrNulltoemptyString(recipientDetails.SecName_En) ? "," + this.convertUndefindedOrNulltoemptyString(recipientDetails.SecName_En) : "");
@@ -1306,24 +1387,26 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     }
     else if (this.body.values.WorkflowForm_1x4x1x48 === 'AR') {
 
-      let senderDetails: OrgNameAutoFillModel = this.senderDetailsForm.get('SenderInfo').value;
-      this.documentMetadataSync.SenderOrganization = this.convertUndefindedOrNulltoemptyString(senderDetails.OrgName_Ar);
-      this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(senderDetails.DepName_AR);
-      this.documentMetadataSync.SenderName = this.convertUndefindedOrNulltoemptyString(senderDetails.Name_Ar)
+      let senderDetails: SenderDetailsData = this.senderDetailsForm.get('SenderInfo').value;
+      this.documentMetadataSync.SenderOrganization = this.convertUndefindedOrNulltoemptyString(senderDetails.OrganizationName_AR);
+      this.documentMetadataSync.SenderDepartment = this.convertUndefindedOrNulltoemptyString(senderDetails.DepartmentName_AR);
+      this.documentMetadataSync.SenderName = this.convertUndefindedOrNulltoemptyString(senderDetails.Name_AR)
       let recipientDetails: OrgNameAutoFillModel = this.recipientDetailsForm.get('ExternalOrganization').value
       this.documentMetadataSync.RecipientOrganization = this.convertUndefindedOrNulltoemptyString(recipientDetails.OrgName_Ar)
-      this.documentMetadataSync.RecipientDepartment = this.convertUndefindedOrNulltoemptyString(recipientDetails.DepName_AR) + (this.convertUndefindedOrNulltoemptyString(recipientDetails.SecName_Ar) ? "," + this.convertUndefindedOrNulltoemptyString(recipientDetails.SecName_Ar) : "");
+      this.documentMetadataSync.RecipientDepartment = this.convertUndefindedOrNulltoemptyString(recipientDetails.DepName_Ar) + (this.convertUndefindedOrNulltoemptyString(recipientDetails.SecName_Ar) ? "," + this.convertUndefindedOrNulltoemptyString(recipientDetails.SecName_Ar) : "");
       this.documentMetadataSync.RecipientRole = this.convertUndefindedOrNulltoemptyString(recipientDetails.RoleName_Ar)
       this.documentMetadataSync.RecipientName = this.convertUndefindedOrNulltoemptyString(this.recipientDetailsForm.get('RecipientName').value)
       this.documentMetadataSync.DATE = this.convertUndefindedOrNulltoemptyString(this.correspondenceDetailsForm.get('regDate').value)
-      this.documentMetadataSync.SUBJECT = this.convertUndefindedOrNulltoemptyString(this.correspondenceDetailsForm.get('arabicsubject').value)
+      this.documentMetadataSync.SUBJECT = this.convertUndefindedOrNulltoemptyString(this.correspondenceDetailsForm.get('arabicSubject').value)
     }
 
     this.correspondenceDetailsService.syncDocumentMetadata(this.documentMetadataSync)
       .subscribe(
         () => { },
         () => { },
-        () => { this.getCoverSection(); }
+        () => {
+          this.getCoverSection();
+        }
       );
   }
 
@@ -1385,7 +1468,7 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     this.editMode = true;
   }
 
-  toShowWFButtons(taskID: string): any {
+  toShowWFButtons(taskID: string, taskTitle: string): any {
     let WFStepsUI: any;
     if (this.CorrespondencType === 'Incoming') {
       WFStepsUI = this.globalConstants.WFStepsUI.Incoming;
@@ -1395,9 +1478,10 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
       WFStepsUI = this.globalConstants.WFStepsUI.Internal;
     }
     let tmpObj: any;
+    const task = taskTitle.indexOf('Correspondence Collaboration') > -1 ? 'collaboration' : taskID;
     WFStepsUI.forEach(function (taskObj) {
-      let tempTaskList = taskObj.TaskID.split(",");
-      if (tempTaskList.indexOf(taskID) > -1) {
+      const tempTaskList = taskObj.TaskID.split(",");
+      if (tempTaskList.indexOf(task) > -1) {
         tmpObj = taskObj;
       }
     });
@@ -1481,7 +1565,7 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
               this.ECMDMap[parent] = {
                 children: []
               };
-            }
+            }            
             this.ECMDMap[parent].children.push(ECMDData);
           }
           this.dataSourceECMD.data = null;
@@ -1701,16 +1785,18 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
     this.getTemplatesSectionData(this.corrFlowType, type.value, '');
   }
   // parameters passed to MultipleApproveComponent
-  setMultiApproveParameters() {
+  setMultiApproveParameters(teamID: number, changeTeam: boolean): void {
+    const getStructure = teamID > 0 ? false : true;
+    const getTeamStructure = !getStructure;
     this.approve = {
       UserID: this.body.values.WorkflowForm_1x4x1x12,
       CorrID: this.locationid,
       mainLanguage: this.translator.lang,
-      TeamID: null,
-      fGetStructure: true,
-      fGetTeamStructure: false,
+      TeamID: teamID,
+      fGetStructure: getStructure,
+      fGetTeamStructure: getTeamStructure,
       fInitStep: false,
-      fChangeTeam: false,
+      fChangeTeam: changeTeam,
       VolumeID: this.VolumeID,
       taskID: this.taskID,
       selectApproverStep: '13',

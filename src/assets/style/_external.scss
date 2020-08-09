@@ -1100,6 +1100,33 @@ app-create-correspondence {
 .full-search-form.full-search-without-details{
   border-radius: 12px;
 }
+
+.attachment-cover-data-container {
+  position: relative;
+  .group_btn_attachments_cover {
+    height: 100%;
+    min-height: 43px;
+    border-right: none;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    right: 10px;
+    z-index: 999;
+    .group_btn_attachments_cover_background {
+      display: flex;
+      background: white;
+      border-radius: 15px;
+    }
+    .btn_006 {
+      display: block;
+    }
+  }
+
+  .hovered{
+    display: none;
+  }
+}
 //IE fix. Hide bottom scroll
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
   .main_cnt_area{

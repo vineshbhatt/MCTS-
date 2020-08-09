@@ -44,7 +44,7 @@ export class SideNavigationComponent implements OnInit {
     this.showMR = this.globalConstants.general.showMR;
     this.sidebarInfoService.getUsersInfo().subscribe(
       response => {
-        console.log(response);
+        // console.log(response);
         this.userData = response;
         /*  this.getUserImg(); */
       },

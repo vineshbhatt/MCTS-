@@ -133,7 +133,7 @@ export class CorrespondenceService {
       correspondenceData[index].showButtons = new DashboardShowButtons(correspondenceData[index], reportType);
       // console.log(correspondenceData[index]);
     }
-    console.log(correspondenceData[0]);
+    // console.log(correspondenceData[0]);
     return correspondenceData;
   }
   getDocumentURL(coverdocumentid): Observable<DocumentPreview[]> {
@@ -180,7 +180,7 @@ export class CorrespondenceService {
     // );
   }
   setPerformerPermission(correspondData): Observable<any> {
-    console.log('correspondData-test', correspondData)
+    // console.log('correspondData-test', correspondData)
     const params = new HttpParams()
       .set('locationid', correspondData.DataID)
       .set('UserID', CSConfig.globaluserid)
@@ -199,11 +199,11 @@ export class CorrespondenceService {
       )
       .pipe(
         map(data => {
-          console.log('performer permission is set');
+          // console.log('performer permission is set');
           return data;
         }),
         catchError(error => {
-          console.log('set Performer permission ERROR => ' + error.message || 'some error with set performer permission');
+          // console.log('set Performer permission ERROR => ' + error.message || 'some error with set performer permission');
           return error;
         })
       );
@@ -223,11 +223,11 @@ export class CorrespondenceService {
       .put<any[]>(url, body, options)
       .pipe(
         map(data => {
-          console.log('DEV: task assigned');
+          // console.log('DEV: task assigned');
           return data;
         }),
         catchError(error => {
-          console.log('DEV: task wasnt assigned');
+          // console.log('DEV: task wasnt assigned');
           return throwError(error);
         })
       );
@@ -247,11 +247,11 @@ export class CorrespondenceService {
         map(response => {
           response.iterNum = '';
           response.CorrID = correspondData.DataID.toString();
-          console.log(response);
+          // console.log(response);
           return response;
         }),
         catchError(error => {
-          console.log(error);
+          // console.log(error);
           return throwError(error);
         })
       );
@@ -288,11 +288,11 @@ export class CorrespondenceService {
       .get<any>(url, { headers: { OTCSTICKET: CSConfig.AuthToken }, params: params })
       .pipe(
         map(data => {
-          console.log(data);
+          // console.log(data);
           return data;
         }),
         catchError(error => {
-          console.log(error);
+          // console.log(error);
           return throwError(error);
         })
       );
@@ -315,7 +315,7 @@ export class CorrespondenceService {
           return response;
         }),
         catchError(error => {
-          console.log(error);
+          // console.log(error);
           return throwError(error);
         })
       );
@@ -331,11 +331,11 @@ export class CorrespondenceService {
       .get<any>(url, { headers: { OTCSTICKET: CSConfig.AuthToken }, params: params })
       .pipe(
         map(response => {
-          console.log(response);
+          // console.log(response);
           return response;
         }),
         catchError(error => {
-          console.log(error);
+          // console.log(error);
           return throwError(error);
         })
       );
@@ -355,11 +355,11 @@ export class CorrespondenceService {
       .get<any>(url, { headers: headers, params: params, responseType: 'text' as 'json' })
       .pipe(
         map(response => {
-          console.log(response);
+          // console.log(response);
           return response;
         }),
         catchError(error => {
-          console.log(error);
+          // console.log(error);
           return throwError(error);
         })
       );
@@ -417,7 +417,7 @@ export class CorrespondenceService {
           return response;
         }),
         catchError(error => {
-          console.log(error);
+          // console.log(error);
           return throwError(error);
         })
       );
@@ -585,7 +585,7 @@ export class CorrespondenceService {
           return response;
         }),
         catchError(error => {
-          console.log(error);
+          // console.log(error);
           return throwError(error);
         })
       );

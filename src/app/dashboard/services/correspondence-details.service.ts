@@ -52,7 +52,7 @@ export class CorrespondenceDetailsService {
         return data;
       }),
       catchError(error => {
-        console.log('correspondence ERROR => ' + error.message || 'some error with correspondence');
+        // console.log('correspondence ERROR => ' + error.message || 'some error with correspondence');
         return throwError(error);
       })
     );
@@ -79,7 +79,7 @@ export class CorrespondenceDetailsService {
         return data;
       }),
       catchError(error => {
-        console.log('correspondence ERROR => ' + error.message || 'some error with correspondence');
+        // console.log('correspondence ERROR => ' + error.message || 'some error with correspondence');
         return throwError(error);
       })
     );
@@ -344,7 +344,7 @@ export class CorrespondenceDetailsService {
           return data;
         }),
         catchError(error => {
-          console.log('transfer ERROR => ' + error.message || 'some error with transfer');
+          // console.log('transfer ERROR => ' + error.message || 'some error with transfer');
           return error;
         })
       );
@@ -519,7 +519,7 @@ export class CorrespondenceDetailsService {
         return data;
       }),
       catchError(error => {
-        console.log('correspondence ERROR => ' + error.message || 'some error with correspondence');
+        // console.log('correspondence ERROR => ' + error.message || 'some error with correspondence');
         return throwError(error);
       })
     );
@@ -538,15 +538,16 @@ export class CorrespondenceDetailsService {
         return response;
       }),
       catchError(error => {
-        console.log('correspondence ERROR => ' + error.message || 'some error with correspondence');
+        // console.log('correspondence ERROR => ' + error.message || 'some error with correspondence');
         return throwError(error);
       })
     );
   }
 
   sendOnCorrespondence(WorkID: string, TaskID: string) {
-    const url = this.CSUrl + `${FCTSDashBoard.WFApiV2}processes/${WorkID}/subprocesses/${WorkID}/tasks/${TaskID}?action=SendOn`;
-    const body = new HttpParams();
+    const url = this.CSUrl + `${FCTSDashBoard.WFApiV2}processes/${WorkID}/subprocesses/${WorkID}/tasks/${TaskID}`;
+    const body = new HttpParams()
+    .set("action","SendOn");
     return this.httpServices.put<any>(url, body, {
       headers: new HttpHeaders()
         .set('OTCSTICKET', CSConfig.AuthToken)
@@ -555,7 +556,7 @@ export class CorrespondenceDetailsService {
         return response;
       }),
       catchError(error => {
-        console.log('correspondence ERROR => ' + error.message || 'some error with correspondence');
+        // console.log('correspondence ERROR => ' + error.message || 'some error with correspondence');
         return throwError(error);
       })
     );
@@ -645,25 +646,25 @@ export class CorrespondenceDetailsService {
       }
     );
   }
-  syncDocumentMetadata(documentMetadataSync: SyncDocumentMetadataModel): Observable<any> {
+  syncDocumentMetadata(documentMetadataSync: SyncDocumentMetadataModel): Observable<any> {    
     const formData = new FormData();
-    formData.append('docFolderID', documentMetadataSync.docFolderID);
-    formData.append('srcDocID', documentMetadataSync.srcDocID);
-    formData.append('SenderOrganization', documentMetadataSync.SenderOrganization);
-    formData.append('SenderDepartment', documentMetadataSync.SenderDepartment);
-    formData.append('RecipientOrganization', documentMetadataSync.RecipientOrganization);
-    formData.append('RecipientDepartment', documentMetadataSync.RecipientDepartment);
-    formData.append('RecipientName', documentMetadataSync.RecipientName);
-    formData.append('DATE', documentMetadataSync.DATE);
-    formData.append('DocumentNumber', documentMetadataSync.DocumentNumber);
-    formData.append('SUBJECT', documentMetadataSync.SUBJECT);
-    formData.append('CorrespondencePurpose', documentMetadataSync.CorrespondencePurpose);
-    formData.append('BaseType', documentMetadataSync.BaseType);
-    formData.append('ProjectCode', documentMetadataSync.ProjectCode);
-    formData.append('BudgetNumber', documentMetadataSync.BudgetNumber);
-    formData.append('ContractNumber', documentMetadataSync.ContractNumber);
-    formData.append('CommitmentNumber', documentMetadataSync.CommitmentNumber);
-    formData.append('TenderNumber', documentMetadataSync.TenderNumber);
+    formData.append('docFolderID', documentMetadataSync.docFolderID ? documentMetadataSync.docFolderID : '');
+    formData.append('srcDocID', documentMetadataSync.srcDocID ? documentMetadataSync.srcDocID : '');
+    formData.append('SenderOrganization', documentMetadataSync.SenderOrganization ? documentMetadataSync.SenderOrganization : '');
+    formData.append('SenderDepartment', documentMetadataSync.SenderDepartment ? documentMetadataSync.SenderDepartment : '');
+    formData.append('RecipientOrganization', documentMetadataSync.RecipientOrganization ? documentMetadataSync.RecipientOrganization : '');
+    formData.append('RecipientDepartment', documentMetadataSync.RecipientDepartment ? documentMetadataSync.RecipientDepartment : '');
+    formData.append('RecipientName', documentMetadataSync.RecipientName ? documentMetadataSync.RecipientName : '');
+    formData.append('DATE', documentMetadataSync.DATE ? documentMetadataSync.DATE : '');
+    formData.append('DocumentNumber', documentMetadataSync.DocumentNumber ? documentMetadataSync.DocumentNumber : '');
+    formData.append('SUBJECT', documentMetadataSync.SUBJECT ? documentMetadataSync.SUBJECT : '');
+    formData.append('CorrespondencePurpose', documentMetadataSync.CorrespondencePurpose ? documentMetadataSync.CorrespondencePurpose : '');
+    formData.append('BaseType', documentMetadataSync.BaseType ? documentMetadataSync.BaseType : '');
+    formData.append('ProjectCode', documentMetadataSync.ProjectCode ? documentMetadataSync.ProjectCode : '');
+    formData.append('BudgetNumber', documentMetadataSync.BudgetNumber ? documentMetadataSync.BudgetNumber : '');
+    formData.append('ContractNumber', documentMetadataSync.ContractNumber ? documentMetadataSync.ContractNumber : '');
+    formData.append('CommitmentNumber', documentMetadataSync.CommitmentNumber ? documentMetadataSync.CommitmentNumber : '');
+    formData.append('TenderNumber', documentMetadataSync.TenderNumber ? documentMetadataSync.TenderNumber : '');
 
     return this.httpServices.post(this.CSUrl + `${FCTSDashBoard.WFApiV1}${
       FCTSDashBoard.syncDoc
@@ -809,7 +810,7 @@ export class CorrespondenceDetailsService {
       )
       .pipe(
         map(data => {
-          console.log('performer permission is set');
+          // console.log('performer permission is set');
           return data;
         }),
         catchError(error => {
@@ -882,7 +883,7 @@ export class CorrespondenceDetailsService {
       .set('UserID', approve.UserID.toString())
       .set('CorrID', approve.CorrID)
       //.set('VolumeID', approve.VolumeID)
-      .set('TeamID', approve.TeamID)
+      .set('TeamID', approve.TeamID ? approve.TeamID.toString() : '')
       .set('mainLanguage', approve.mainLanguage)
       .set('fGetStructure', approve.fGetStructure.toString())
       .set('fGetTeamStructure', approve.fGetTeamStructure.toString())
@@ -917,19 +918,16 @@ export class CorrespondenceDetailsService {
   }
 
   setMultiApprovers(approversArray: ApproversFormData[], LevelsList: string, approveData: MultipleApproveInputData): Observable<any> {
-    const teamID = null;
-    let isTeamStructure = false;
-    if (teamID > 0) {
-      isTeamStructure = true;
-    }
+    const isTeamStructure = approveData.TeamID > 0 ? true : false;
     let params = new HttpParams()
       .set('fSetApprovers', 'true')
       .set('CorrID', approveData.CorrID)
       .set('UserID', approveData.UserID.toString())
       .set('Rows_count', approversArray.length.toString())
-      .set('isTeamStructure', isTeamStructure.toString())
-      .set('TeamID', teamID)
-      .set('LevelsList', LevelsList);
+      .set('fTeamStructure', isTeamStructure.toString())
+      .set('TeamID', approveData.TeamID ? approveData.TeamID.toString() : '')
+      .set('LevelsList', LevelsList)
+      .set('Format',"webreport");
     //params.append('ApproveLevel_', approversArray.length)
     for (let row = 0; row < approversArray.length; row++) {
       const element = approversArray[row];
@@ -954,7 +952,7 @@ export class CorrespondenceDetailsService {
         .set('OTCSTICKET', CSConfig.AuthToken)
     };
     return this.httpServices.post<any>(this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.SetMultiApprovers}?Format=webreport`,
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.SetMultiApprovers}`,
       params, options)
       .pipe(
         map(data => {
@@ -1063,5 +1061,19 @@ export class CorrespondenceDetailsService {
     } else {
       return 6;
     }
+  }
+
+  getTeams(VolumeID: string, qLive: boolean): Observable<any> {
+    const params = new HttpParams()
+      .set('VolumeID', VolumeID)
+      .set('qLive', qLive.toString());
+    return this.httpServices.get<any>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.GetTeams}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken },
+        params: params
+      }
+    );
   }
 }

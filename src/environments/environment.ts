@@ -126,7 +126,7 @@ export const FCTSDashBoard = {
   GetTeams: 'CTA_GetTeams',
   //BaseHref: '/img/fctsangular/fctsapp/',
   BaseHref: '/',
-  CSUrlShort: '172.18.169.245',
+  CSUrlShort: 'manotctsdev.mannaicorp.com.qa',
 
   CSUrl: 'http://manotctsdev.mannaicorp.com.qa/otcs/cs.exe'
 };

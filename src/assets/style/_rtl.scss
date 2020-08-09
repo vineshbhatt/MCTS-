@@ -27,6 +27,9 @@
                 padding-left: 0px;
                 padding-right: 40px;
             }
+            .mCSB_container{
+                left:-5px !important;
+            }
         }
         .main_cnt_area .header_search_wrapper {
             .header_search {
@@ -125,10 +128,31 @@
                 border-right: 0px solid transparent;
             }
         }
-        .corres_table_wrapper .table {
-           td,th {
-            text-align: right;
-           }
+        .corres_table_wrapper {
+            .table, .sender-table, .table_cover_letter, .table_attachments {
+                td,th {
+                 text-align: right;
+                }
+                .group_btn_attachments_cover{
+                    right: auto;
+                    left:10px;
+                }
+             }  
+        } 
+        .multiapp_table_wrapper .table {
+            thead{
+                .approver{
+                    text-align: right;
+                }
+            }
+        }
+        .last_note_btn{
+            .last_not_show {
+                left: -20px;
+                &:after {
+                    left: 25px;
+                }
+            }
         }
     }
     .show_preview_btn span {

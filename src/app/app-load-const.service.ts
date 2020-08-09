@@ -49,8 +49,7 @@ export class AppLoadConstService {
     }
 
     setUserGroupArray(userGroups: string) {
-      this._CSConstants.FCTS_Dashboard.UserGroupsArray = userGroups.split(',');
-      // console.log(this._CSConstants.FCTS_Dashboard.UserGroupsArray);
+      this._CSConstants.FCTS_Dashboard.UserGroupsArray = userGroups.split(',');      
     }
 
 }

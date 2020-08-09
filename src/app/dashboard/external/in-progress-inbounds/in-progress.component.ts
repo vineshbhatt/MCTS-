@@ -59,7 +59,7 @@ export class InProgressComponent extends BaseDashboardActiveComponent implements
         this.progbar = true;
         this.runRecallTransfer(recallTransferInfo, result.comment);
       } else {
-        console.log('canceled');
+        // console.log('canceled');
       }
     });
   }
@@ -124,7 +124,7 @@ export class InProgressComponent extends BaseDashboardActiveComponent implements
   runReturnToAS_CCRecall(recallTransferInfo: RecallTransferInfo) {
     this.correspondenceService.returnToAS_CCRecall(recallTransferInfo).subscribe(
       response => {
-        console.log(response);
+        // console.log(response);
       },
       responseError => {
         this.progbar = false;

@@ -1,6 +1,6 @@
 import { Injectable, } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { FCTSDashBoard } from '../../../environments/environment';
 import { map, catchError } from 'rxjs/operators'; /* added 24/06/2019 */
 
@@ -17,8 +17,7 @@ export class CSDocumentUploadService {
 
 
 
-    uploadDocument(files: File[], parentID: string): Observable<any> {
-        debugger;
+    uploadDocument(files: File[], parentID: string): Observable<any> {        
         var formData = new FormData();
         Array.from(files).forEach(f => {
             var inputBody = new UploadParameterModel();
@@ -61,21 +60,22 @@ export class CSDocumentUploadService {
     }
 
     copyDocToCoverFolder(sourceDocumentDataid: string, destinationDataID: number, newFileName: string): Observable<any> {
-        const params = new HttpParams()
-            .set('original_id', sourceDocumentDataid)
-            .set('parent_id', destinationDataID.toString())
-            .set('name', newFileName)
-        return this.httpServices.post<any>(this.CSUrl + `${FCTSDashBoard.WFApiV1}nodes`, '',
-            { headers: { OTCSTICKET: CSConfig.AuthToken }, params: params })
-            .pipe(
-                map(data => {
-                    return data;
-                }),
-                catchError(error => {
-                    return throwError(error);
-                })
-            );
 
+        const body = new HttpParams()
+      .set('body', `{"original_id":${sourceDocumentDataid},"parent_id":${destinationDataID.toString()},"name":"${newFileName}","roles":{"categories":{}}}`);
+    return this.httpServices.post<any>(this.CSUrl + `${FCTSDashBoard.WFApiV1}nodes`,
+      body, {
+      headers: new HttpHeaders()
+        .set('OTCSTICKET', CSConfig.AuthToken)
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+    }).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );            
     }
 
     uploadDocumentVersion(files: File[], documentID: string): Observable<any> {

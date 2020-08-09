@@ -13,6 +13,7 @@ import { CorrespondenceDetailsService } from '../../../services/correspondence-d
 import { UserValueResponse, TransferRequestFinal } from './correspondence-transfer-dialog.model';
 import { OrgStructureValidator } from './transfer-autocomlete.validator';
 import { CorrespondenceShareService } from '../../../services/correspondence-share.service';
+import { multiLanguageTranslatorPipe } from 'src/assets/translator/index';
 
 @Component({
   selector: 'correspondence-transfer-dialog',
@@ -46,7 +47,8 @@ export class TransferDialogBox implements OnInit {
     private _correspondenceDetailsService: CorrespondenceDetailsService,
     private _correspondenceShareService: CorrespondenceShareService,
     private transfer_data: FormBuilder,
-    private route: ActivatedRoute) {
+    private route: ActivatedRoute,
+    private translator: multiLanguageTranslatorPipe) {
     this.createForm();
   }
 
@@ -67,11 +69,11 @@ export class TransferDialogBox implements OnInit {
         Department: [''],
         Purpose: ['', Validators.required],
         To: [''],
-        Role: [{value: '', disabled: true}],
+        Role: [{ value: '', disabled: true }],
         Priority: ['', Validators.required],
         Comments: [''],
         DueDate: ['', Validators.required]
-      }, {validator: OrgStructureValidator}));
+      }, { validator: OrgStructureValidator }));
     }
     return formArray;
   }
@@ -108,14 +110,14 @@ export class TransferDialogBox implements OnInit {
   addTransferRow() {
     const controls = <FormArray>this.transferRequestForm.controls['transfer_list'];
     this.transferLists.push(this.transfer_data.group({
-      Department:  [''],
+      Department: [''],
       Purpose: ['', Validators.required],
       To: [''],
-      Role: [{value: '', disabled: true}],
+      Role: [{ value: '', disabled: true }],
       Priority: ['', Validators.required],
       Comments: [''],
       DueDate: ['', Validators.required]
-    }, {validator: OrgStructureValidator}));
+    }, { validator: OrgStructureValidator }));
     this.ManageNameControl(controls.length - 1);
     this.changePriority(controls.length - 1);
     this.transfertry = false;
@@ -146,86 +148,75 @@ export class TransferDialogBox implements OnInit {
   }
 
   displayFieldValue(fieldValue: UserValueResponse) {
-    if (fieldValue) { return fieldValue.Val_En; }
+    if (fieldValue) { return this.translator.transform(fieldValue.Val_En, fieldValue.Val_Ar) }
   }
 
   onEmployeeCheck(OrgName, pointIndex): void {
     const arrayControl = this.transferRequestForm.get('transfer_list') as FormArray;
     arrayControl.at(pointIndex).get('Department').setValue({
-      Val_En: OrgName.DepName_En + (OrgName.SecName_En ? ', ' + OrgName.SecName_En : '')
+      Val_En: OrgName.DepName_En + (OrgName.SecName_En ? ', ' + OrgName.SecName_En : ''),
+      Val_Ar: OrgName.DepName_Ar + (OrgName.SecName_Ar ? ', ' + OrgName.SecName_Ar : '')
     });
-   arrayControl.at(pointIndex).get('Role').setValue(OrgName.RoleName_En);
+    arrayControl.at(pointIndex).get('Role').setValue(this.translator.transform(OrgName.RoleName_En, OrgName.RoleName_Ar));
   }
 
   onDepartmentCheck(OrgName, pointIndex): void {
     const arrayControl = this.transferRequestForm.get('transfer_list') as FormArray;
-    arrayControl.at(pointIndex).get('Role').setValue(OrgName.RoleName_En);
-    arrayControl.at(pointIndex).get('To').setValue({Val_En: ''});
+    arrayControl.at(pointIndex).get('Role').setValue(this.translator.transform(OrgName.RoleName_En, OrgName.RoleName_Ar));
+    arrayControl.at(pointIndex).get('To').setValue({});
   }
 
-  checkEmployee(index): void {
+  checkRecord(index): void {
     const arrayControl = this.transferRequestForm.get('transfer_list') as FormArray;
     const employee = arrayControl.at(index).get('To').value;
     const department = arrayControl.at(index).get('Department').value;
-    if ( employee.RecipientUserID ) {
-      arrayControl.at(index).get('Department').setValue({Val_En: employee.DepName_En + (employee.SecName_En ? ', ' + employee.SecName_En : '')});
-     } else if (department.RecipientUserID) {
-      arrayControl.at(index).get('To').setValue({Val_En: ''});
-     } else {
-      arrayControl.at(index).get('To').setValue({Val_En: ''});
-      arrayControl.at(index).get('Department').setValue({Val_En: ''});
-      arrayControl.at(index).get('Role').setValue('');
-    }
-  }
-
-  checkDepartment(index): void {
-    const arrayControl = this.transferRequestForm.get('transfer_list') as FormArray;
-    const employee = arrayControl.at(index).get('To').value;
-    const department = arrayControl.at(index).get('Department').value;
-    if ( department.RecipientUserID ) {
-      arrayControl.at(index).get('To').setValue({Val_En: ''});
-     } else if (employee.RecipientUserID) {
-      arrayControl.at(index).get('Department').setValue({Val_En: employee.DepName_En});
-     } else {
-      arrayControl.at(index).get('Department').setValue({Val_En: ''});
-      arrayControl.at(index).get('To').setValue({Val_En: ''});
+    if (employee.RecipientUserID) {
+      arrayControl.at(index).get('Department').setValue({
+        Val_En: employee.DepName_En + (employee.SecName_En ? ', ' + employee.SecName_En : ''),
+        Val_Ar: employee.DepName_Ar + (employee.SecName_Ar ? ', ' + employee.SecName_Ar : '')
+      });
+    } else if (department.RecipientUserID) {
+      arrayControl.at(index).get('To').setValue({});
+    } else {
+      arrayControl.at(index).get('To').setValue({});
+      arrayControl.at(index).get('Department').setValue({});
       arrayControl.at(index).get('Role').setValue('');
     }
   }
 
   postTransferToRequest(myForm: any): void {
-      this.fieldTouch();
-      if (this.transferRequestForm.valid) {
-        const finalRequest: TransferRequestFinal[] = [];
-        const CorArray = this.transferRequestForm.value;
-        for (let i = 0; i < CorArray.transfer_list.length; i++) {
-          const TList: TransferRequestFinal = new TransferRequestFinal;
+    this.fieldTouch();
+    if (this.transferRequestForm.valid) {
+      const finalRequest: TransferRequestFinal[] = [];
+      const CorArray = this.transferRequestForm.value;
+      for (let i = 0; i < CorArray.transfer_list.length; i++) {
+        const TList: TransferRequestFinal = new TransferRequestFinal;
 
-          TList.Department = CorArray.transfer_list[i].Department.RecipientUserID;
-          TList.To = CorArray.transfer_list[i].To.RecipientUserID;
-          TList.Purpose = CorArray.transfer_list[i].Purpose;
-          TList.Priority = CorArray.transfer_list[i].Priority;
-          TList.Comments = CorArray.transfer_list[i].Comments;
-          TList.DueDate = this._correspondenceShareService.DateToISOStringAbs(CorArray.transfer_list[i].DueDate);
-          finalRequest.push(TList);
-        }
-          this._correspondenceDetailsService.createTransferRequest(finalRequest, this.data)
-          .subscribe(transferResponse => {
-            this.transferResponse = transferResponse;
-            this.dialogRef.close('transfered');
-          });
-      } else {
-        this.transfertry = true;
+        TList.Department = CorArray.transfer_list[i].Department.RecipientUserID;
+        TList.To = CorArray.transfer_list[i].To.RecipientUserID;
+        TList.Purpose = CorArray.transfer_list[i].Purpose;
+        TList.Priority = CorArray.transfer_list[i].Priority;
+        TList.Comments = CorArray.transfer_list[i].Comments;
+        TList.DueDate = this._correspondenceShareService.DateToISOStringAbs(CorArray.transfer_list[i].DueDate);
+        finalRequest.push(TList);
       }
+      this._correspondenceDetailsService.createTransferRequest(finalRequest, this.data)
+        .subscribe(transferResponse => {
+          this.transferResponse = transferResponse;
+          this.dialogRef.close('transfered');
+        });
+    } else {
+      this.transfertry = true;
+    }
   }
 
   fieldTouch() {
     const arrayControl = this.transferRequestForm.get('transfer_list') as FormArray;
-      for (let i = 0; i < arrayControl.length; i++) {
-        arrayControl.at(i).get('Department').markAsTouched();
-        arrayControl.at(i).get('To').markAsTouched();
-        arrayControl.at(i).get('Purpose').markAsTouched();
-      }
+    for (let i = 0; i < arrayControl.length; i++) {
+      arrayControl.at(i).get('Department').markAsTouched();
+      arrayControl.at(i).get('To').markAsTouched();
+      arrayControl.at(i).get('Purpose').markAsTouched();
+    }
   }
 
   addGroup() {
@@ -233,11 +224,11 @@ export class TransferDialogBox implements OnInit {
       Department: [''],
       Purpose: ['', Validators.required],
       To: [''],
-      Role: [{value: '', disabled: true}],
-      Priority:  ['', Validators.required],
+      Role: [{ value: '', disabled: true }],
+      Priority: ['', Validators.required],
       Comments: [''],
       DueDate: ['', Validators.required]
-    }, {validator: OrgStructureValidator});
+    }, { validator: OrgStructureValidator });
     this.newMethod(val);
   }
 
@@ -255,7 +246,7 @@ export class TransferDialogBox implements OnInit {
     return index;
   }
 
- groupChangePriority() {
+  groupChangePriority() {
     const arrayControl = this.transferRequestForm.get('transfer_list') as FormArray;
     for (let i = 0; i < arrayControl.length; i++) {
       arrayControl.at(i).get('Priority').setValue(this.transferPriority);

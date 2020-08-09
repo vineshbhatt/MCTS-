@@ -1,5 +1,5 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { OrgNameAutoFillModel, CCUserSetModel } from 'src/app/dashboard/models/CorrespondenenceDetails.model';
+import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import { OrgNameAutoFillModel, CCUserSetModel, TableStructureParameters } from 'src/app/dashboard/models/CorrespondenenceDetails.model';
 import { OrganizationalChartService } from 'src/app/dashboard/services/organizationalChart.service';
 import { organizationalChartModel, organizationalChartEmployeeModel, ECMDChartModel, ECMDChartDepartmentModel } from 'src/app/dashboard/models/organizational-Chart.model';
 import { Location } from '@angular/common';
@@ -18,7 +18,8 @@ import { BaseCorrespondenceComponent } from '../../base-classes/base-corresponde
 import { CorrespondenceDetailsService } from 'src/app/dashboard/services/correspondence-details.service';
 import { CSDocumentUploadService } from '../../services/CSDocumentUpload.service';
 import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handler-fcts.service';
-
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { ResizedEvent } from 'angular-resize-event';
 
 
 
@@ -26,7 +27,14 @@ import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handle
 @Component({
   selector: 'new-external-incoming',
   templateUrl: './external-incoming.component.html',
-  styleUrls: ['./external-incoming.component.scss']
+  styleUrls: ['./external-incoming.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ]
 })
 
 
@@ -106,7 +114,18 @@ export class ExternalIncoming extends BaseCorrespondenceComponent implements OnI
   isLoading = false;
   showPreviewECMDTreeArea = false;
   ECMDMap = new Map();
-  //
+  // sendeer tbl structure
+  senderTableStructureFull: TableStructureParameters[] = [
+    { 'columnDef': 'OrganizationName', 'columnName': 'Organization', 'priority': 1 },
+    { 'columnDef': 'DepartmentName', 'columnName': 'Department', 'priority': 1 },
+    { 'columnDef': 'Name', 'columnName': 'Name', 'priority': 2 },
+  ];
+  senderTableStructure: TableStructureParameters[];
+  senderTableStructureDetails: TableStructureParameters[];
+  senderColWidth: number;
+  senderIconWidth: number;
+  senderIconWidthConst = 4;
+  @ViewChild('senderContainer') senderContainer: ElementRef;
 
 
   constructor(private _location: Location,
@@ -183,8 +202,6 @@ export class ExternalIncoming extends BaseCorrespondenceComponent implements OnI
           this.correspondenceDetailsService.searchFieldForAutoFill(value, 'IntDepartment', '')
         )
       );
-
-
   }
 
   ngAfterViewInit() {
@@ -242,8 +259,7 @@ export class ExternalIncoming extends BaseCorrespondenceComponent implements OnI
     // stop here if form is invalid
     if (this.correspondenceDetailsForm.invalid) {
       return;
-    }
-    console.log(JSON.stringify(this.correspondenceDetailsForm.value));
+    }    
   }
 
   displayFn(attribute?: any): string | undefined {
@@ -278,41 +294,37 @@ export class ExternalIncoming extends BaseCorrespondenceComponent implements OnI
       .subscribe(correspondenceCovertData => this.documentPreviewURL = correspondenceCovertData);
   }
 
-
-
-  showSenderData() {
+  clearTreeParameters() {
+    this.showPreviewECMDTreeArea = false;
     this.showPreviewTreeArea = false;
     this.showPreviewCoverLetter = false;
+    this.currentlyChecked = false;
+    this.isSearchResult = false;
+    this.CCOUID = [];
+    this.CCEID = [];
+  }
+
+  showSenderData() {
+    this.clearTreeParameters();
     this.showPreviewECMDTreeArea = true;
     this.selectedCaption = 'Sender';
-    this.currentlyChecked = false;
     this.multiSelect = false;
-    this.isSearchResult = false;
   }
 
   showRecipientData() {
-    this.showPreviewCoverLetter = false;
-    this.showPreviewECMDTreeArea = false;
+    this.clearTreeParameters();
     this.showPreviewTreeArea = true;
     this.selectedCaption = 'Recipient';
-    this.currentlyChecked = false;
-    this.showPreviewCoverLetter = false;
     this.multiSelect = false;
     this.dataSource.data = this.organizationalChartData;
-    this.CCEID = [];
-    this.isSearchResult = false;
   }
 
   showCCData() {
-    this.showPreviewCoverLetter = false;
-    this.showPreviewECMDTreeArea = false;
+    this.clearTreeParameters();
     this.showPreviewTreeArea = true;
     this.selectedCaption = 'CC';
-    this.currentlyChecked = false;
-    this.showPreviewCoverLetter = false;
     this.multiSelect = true;
     this.dataSource.data = this.organizationalChartData;
-    this.isSearchResult = false;
   }
 
   getOrganizationalChartDetail(): void {
@@ -516,8 +528,10 @@ export class ExternalIncoming extends BaseCorrespondenceComponent implements OnI
       }
     } else if (this.selectedCaption === 'CC') {
       this.ccProgbar = true;
-      this.ccDetailsForm = this.formBuilder.group({
-        CCDetails: this.formBuilder.array([])
+      const ccDeetails = this.ccDetailsForm.get('CCDetails') as FormArray;
+      let currentArr = new Array();
+      ccDeetails.value.forEach(element => {
+        currentArr.push(element.DepID);
       });
       const orgArray = new Array();
       this.CCOUID.forEach(function (obj) {
@@ -532,7 +546,9 @@ export class ExternalIncoming extends BaseCorrespondenceComponent implements OnI
       this.correspondenceDetailsService.getCCUserDetailsSet(orgArray.toString(), empArray.toString(), 'Incoming').subscribe(
         ccDepInfo => {
           for (const obj of ccDepInfo) {
-            this.addCC(obj);
+            if (currentArr.indexOf(obj.CCUserID) === -1) {
+              this.addCC(obj);
+            }
           }
           this.ccProgbar = false;
         }
@@ -971,8 +987,7 @@ export class ExternalIncoming extends BaseCorrespondenceComponent implements OnI
   getSelectedECMD(name: string) {
     if (this.currentlyChecked.hasOwnProperty('NODEID')) {
       this.correspondenceDetailsService.searchFieldForAutoFillOUID(this.currentlyChecked.CPID, 'ExtOrganizationID', '').subscribe(
-        response => {
-          console.log('1', this.senderDetailsForm.get('ExternalOrganization').value)
+        response => {          
           this.ExtSenderInfo = response[0];
           this.ExtSenderInfo.Name_En = name;
           if (this.selectedCaption === 'Sender') {
@@ -1010,6 +1025,27 @@ export class ExternalIncoming extends BaseCorrespondenceComponent implements OnI
   getInitials(nodename: string) {
     return nodename.slice(0, 1).length > 0 ? nodename.slice(0, 1).toUpperCase() : 'A';
   }
-  // ECMD functionality finish
+
+  // flex sender section
+  displayColumnsForm(width: number): void {
+    const priority = this.correspondenceDetailsService.definePriorityToShow(width);
+    this.senderTableStructure = [];
+    this.senderTableStructureDetails = [];
+    let senderTableLength = 0;
+    this.senderTableStructureFull.forEach(element => {
+      if (element.priority > priority) {
+        this.senderTableStructureDetails.push(element);
+      } else {
+        this.senderTableStructure.push(element);
+        senderTableLength += element.columnDef !== 'Icon' ? 1 : 0;
+      }
+    });
+    this.senderIconWidth = this.senderTableStructureDetails.length > 0 ? (this.senderIconWidthConst * 2) : this.senderIconWidthConst;
+    this.senderColWidth = Math.floor((100 - this.senderIconWidth) / senderTableLength);
+  }
+
+  onResized(event: ResizedEvent) {
+    this.displayColumnsForm(event.newWidth);
+  }
 
 }

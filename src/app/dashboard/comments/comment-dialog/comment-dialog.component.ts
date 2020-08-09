@@ -71,8 +71,7 @@ export class CommentDialogComponent implements OnInit {
         this.correspondenceCommentsDetail = response;
         if ( Array.isArray(this.correspondenceCommentsDetail) && this.correspondenceCommentsDetail.length) {
           this.commentsDataBufer = this.correspondenceCommentsDetail[0].myRows;
-        } else {
-          console.log('Comments data error!!!');
+        } else {          
         }
         this.commentsProgbar = false;
       },

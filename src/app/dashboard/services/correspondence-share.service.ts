@@ -56,7 +56,7 @@ export class CorrespondenceShareService {
           return responseData;
         }),
         catchError(error => {
-          console.log('set Status ERROR => ' + error.message || 'some error with transfer');
+          // console.log('set Status ERROR => ' + error.message || 'some error with transfer');
           return error;
         })
       );
