@@ -926,7 +926,7 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
     this.displayColumnsForm(event.newWidth);
   }
 
-  syncCoverData() {    
+  syncCoverData() {
     this.documentMetadataSync.docFolderID = this.corrFolderData.AttachCorrCoverID.toString();
     this.documentMetadataSync.srcDocID = this.coverID;
     if (this.templateLanguage === 'EN') {
@@ -1043,7 +1043,7 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
   }
   getParentCorrespondenceSenderDetails(): void {
     this.correspondenceDetailsService
-      .getCorrespondenceSenderDetails(this.VolumeID, 'Incoming', false, '',0)
+      .getCorrespondenceSenderDetails(this.VolumeID, 'Incoming', false, '', 0)
       .subscribe(
         correspondenceSenderDetailsData => {
           if ((typeof correspondenceSenderDetailsData[0].myRows !== 'undefined') && correspondenceSenderDetailsData[0].myRows.length > 0) {
@@ -1070,7 +1070,7 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
       this.parentIncomingCorrespondenceDetails.CorrespondenceType2));
   }
 
-  setDropDownValue(Attrname: string, ID: string): any {    
+  setDropDownValue(Attrname: string, ID: string): any {
     if (ID == undefined || ID === '' || ID === '0') {
       return '';
     } else {
@@ -1123,8 +1123,9 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
             let ECMDData: ECMDChartModel;
             ECMDData = obj;
             ECMDData.children = [];
-            this.ECMDMap[ECMDData.isCPID ? ECMDData.CPID : ECMDData.NODEID] = ECMDData;
-            const parent = ECMDData.isCPID ? ECMDData.pNODEID : ECMDData.ParentID || '-1';
+            this.ECMDMap[ECMDData.isCPID ? 'C' + ECMDData.CPID : 'N' + ECMDData.NODEID] = ECMDData;
+            const parentNodeID = ECMDData.ParentID ? 'N' + ECMDData.ParentID : '-1';
+            const parent = ECMDData.isCPID ? 'C' + ECMDData.pNODEID : parentNodeID;
             if (!this.ECMDMap[parent]) {
               this.ECMDMap[parent] = {
                 children: []
@@ -1156,8 +1157,10 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
             let ECMDData: ECMDChartModel;
             ECMDData = obj;
             ECMDData.children = [];
-            this.ECMDMap[ECMDData.isCPID ? ECMDData.CPID : ECMDData.NODEID] = ECMDData;
-            const parent = ECMDData.isCPID ? ECMDData.pNODEID : ECMDData.ParentID || '-1';
+            this.ECMDMap[ECMDData.isCPID ? 'C' + ECMDData.CPID : 'N' + ECMDData.NODEID] = ECMDData;
+            const parentNodeID = ECMDData.ParentID ? 'N' + ECMDData.ParentID : '-1';
+            const parent = ECMDData.isCPID ? 'N' + ECMDData.pNODEID : parentNodeID;
+
             if (!this.ECMDMap[parent]) {
               this.ECMDMap[parent] = {
                 children: []
@@ -1168,11 +1171,8 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
           this.dataSourceECMD.data = null;
           this.dataSourceECMD.data = this.ECMDMap['-1'].children;
         } else {
-          delete this.ECMDMap[node.NODEID].children;
-          /*           this.dataSourceECMD.data = null;
-                    this.dataSourceECMD.data = this.ECMDMap['-1'].children; */
+          delete this.ECMDMap['N' + node.NODEID].children;
         }
-
       },
       responseError => {
         this._errorHandlerFctsService.handleError(responseError).subscribe();
@@ -1210,13 +1210,12 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
             !myMap[parent].hasOwnProperty('children') ? myMap[parent].children = [] : null;
             myMap[parent].children.push(orgChartData);
           }
-          this.ECMDMap[node.CPID].children = myMap['-1'].children;
+          this.ECMDMap['C' + node.CPID].children = myMap['-1'].children;
           this.dataSourceECMD.data = null;
           this.dataSourceECMD.data = this.ECMDMap['-1'].children;
+
         } else {
-          delete this.ECMDMap[node.CPID].children;
-          /*          this.dataSourceECMD.data = null;
-                   this.dataSourceECMD.data = this.ECMDMap['-1'].children; */
+          delete this.ECMDMap['C' + node.CPID].children;
         }
       },
       responseError => {
@@ -1257,25 +1256,29 @@ export class ExternalOutgoing extends BaseCorrespondenceComponent implements OnI
         ECMDData = obj;
         if (ECMDData.hasOwnProperty('NODEID')) {
           if (ECMDData.isCPID) {
-            myMap[ECMDData.CPID] = ECMDData;
+            myMap['C' + ECMDData.CPID] = ECMDData;
           } else {
-            myMap[ECMDData.NODEID] = ECMDData;
+            myMap['N' + ECMDData.NODEID] = ECMDData;
           }
         } else {
-          myMap[ECMDData.DEPID] = ECMDData;
+          myMap['D' + ECMDData.DEPID] = ECMDData;
         }
-        myMap[ECMDData.isCPID ? ECMDData.CPID : ECMDData.NODEID] = ECMDData;
-        let parentVariable;
+        //myMap[ECMDData.isCPID ? ECMDData.CPID : ECMDData.NODEID] = ECMDData;
+        let parentID;
+        let parentPrefix;
         if (ECMDData.hasOwnProperty('NODEID')) {
           if (ECMDData.isCPID) {
-            parentVariable = ECMDData.pNODEID;
+            parentID = ECMDData.pNODEID;
+            parentPrefix = 'N';
           } else {
-            parentVariable = ECMDData.ParentID;
+            parentID = ECMDData.ParentID;
+            parentPrefix = 'N';
           }
         } else {
-          parentVariable = ECMDData.ParentID ? ECMDData.ParentID : ECMDData.CPID;
+          parentID = ECMDData.ParentID ? ECMDData.ParentID : ECMDData.CPID;
+          parentPrefix = ECMDData.ParentID ? 'D' : 'C';
         }
-        const parent = parentVariable || '-1';
+        const parent = parentID ? parentPrefix + parentID : '-1';
         if (!myMap[parent]) {
           myMap[parent] = {
             children: []
