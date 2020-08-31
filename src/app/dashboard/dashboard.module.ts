@@ -117,6 +117,7 @@ import { AngularResizedEventModule } from 'angular-resize-event';
 import { DistributionChartComponent } from './shared-components/distribution-chart/distribution-chart.component';
 import { DistributionDialogComponent } from './dialog-boxes/distribution-dialog/distribution-dialog.component';
 import { SelectTeamDialogComponent } from './dialog-boxes/select-team-dialog/select-team-dialog.component';
+import { AdministrationComponent } from './administration/administration.component';
 
 @NgModule({
   imports: [
@@ -242,7 +243,8 @@ import { SelectTeamDialogComponent } from './dialog-boxes/select-team-dialog/sel
     DistributionComponent,
     DistributionChartComponent,
     DistributionDialogComponent,
-    SelectTeamDialogComponent
+    SelectTeamDialogComponent,
+    AdministrationComponent
   ],
   entryComponents: [
     MailDetailView,

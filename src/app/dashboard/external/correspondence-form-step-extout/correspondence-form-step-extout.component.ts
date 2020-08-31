@@ -1576,7 +1576,6 @@ export class CorrespondenceFormStepExtOutComponent extends BaseCorrespondenceCom
         } else {
           delete this.ECMDMap['N' + node.NODEID].children;
         }
-        console.log(this.ECMDMap);
       },
       responseError => {
         this._errorHandlerFctsService.handleError(responseError).subscribe();

@@ -1647,7 +1647,6 @@ export class CorrespondenceFormStepComponent implements OnInit {
         !myMap[parent].hasOwnProperty('children') ? myMap[parent].children = [] : null;
         myMap[parent].children.push(ECMDData);
       }
-      console.log(myMap);
       this.dataSourceECMD.data = null;
       this.dataSourceECMD.data = myMap['-1'].children;
     }

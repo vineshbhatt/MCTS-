@@ -1161,6 +1161,7 @@ export class CorrespondenceFormStepIntOutComponent extends BaseCorrespondenceCom
   }
 
   searchTreeValue(organizationalChartSearch: string) {
+    debugger;
     if (organizationalChartSearch !== '') {
       this.isSearchResult = true;
       if (!this.showEmployees) {

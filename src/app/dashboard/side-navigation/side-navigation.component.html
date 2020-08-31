@@ -42,6 +42,12 @@
           </li> -->
   </ul>
   <ul class="nav_items_001">
+    <li *ngIf="globalConstants.FCTS_Dashboard.AdminGroup" class="nav_item">
+      <a class="nav_icon_002" matTooltip="Administration" matTooltipClass="matTooltip_001" matTooltipPosition="right"
+        routerLink="./administration" routerLinkActive="active">
+        <img class="nav_item_img_002" src="{{basehref}}assets/images/icons/administration.svg" alt="">
+      </a>
+    </li>
     <li class="nav_item">
       <a class="nav_icon_002" matTooltip="Notification" matTooltipClass="matTooltip_001" matTooltipPosition="right">
         <span class="notif_icon">23</span>

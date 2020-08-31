@@ -36,6 +36,8 @@ import { ExternalOutgoing } from './create-correspondence/external-outgoing/exte
 import { InternalOutgoing } from './create-correspondence/internal-outgoing/internal-outgoing.component';
 import { CorrespondenceFormStepExtOutComponent } from './external/correspondence-form-step-extout/correspondence-form-step-extout.component';
 import { CorrespondenceFormStepIntOutComponent } from './internal/correspondence-form-step-intout/correspondence-form-step-intout.component';
+import { AdministrationComponent } from 'src/app/dashboard/administration/administration.component';
+import { IsadminGuard } from 'src/app/dashboard/administration/isadmin.guard';
 
 const dashboardRoutes: Routes = [
   {
@@ -116,6 +118,21 @@ const dashboardRoutes: Routes = [
                   { path: 'correspondence-form-step-inc', component: CorrespondenceFormStepComponent },
                   { path: 'correspondence-form-step-out', component: CorrespondenceFormStepExtOutComponent },
                   { path: '', component: MailroomDasnboardComponent },
+                ]
+              }
+            ]
+          },
+          {
+            path: 'administration',
+            component: AdministrationComponent,
+            canActivate: [IsadminGuard],
+            children: [
+              {
+                path: '',
+                children: [
+                  /* { path: 'mr-new-inbounds', component: MrNewInboundsComponent },
+                  { path: 'mr-dispatched-inbounds', component: MrDispatchedInboundsComponent },
+                   */
                 ]
               }
             ]
