@@ -335,5 +335,16 @@
     .scroll_wrp_001 ng-scrollbar-x.ng-scrollbar-visible, .scroll_wrp_001 ng-scrollbar-y.ng-scrollbar-visible {
         left: 0px;
         margin-left: 0px !important;
-    } 
+    }
+
+
+    .main_admin_wrapper{
+        .breadcrumbs_wapper{
+            p{
+                background-image: url(assets/images/icons/arrow_point_icon_002.svg);
+                padding: 0 0 0 15px;
+                background-position: left center;
+            }
+        }
+    }
 }

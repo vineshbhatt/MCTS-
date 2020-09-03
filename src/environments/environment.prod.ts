@@ -122,6 +122,10 @@ export const FCTSDashBoard = {
   CloseMe: '%2Fimg%2Fcsui%2Fpages%2Fclose.html',
   GetTeams: 'CTA_GetTeams',
 
+  // Admin page reports
+
+  AdminPageStructure: 'CTA_AdminPageStructure',
+
   BaseHref: '/img/fctsangular/fctsapp/',
   //BaseHref: '/',
   CSUrlShort: 'mv2cdmsadp02',

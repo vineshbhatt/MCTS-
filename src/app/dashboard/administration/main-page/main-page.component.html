@@ -1,0 +1,56 @@
+<div class="main_admin_wrapper">
+  <div class="header_wapper">
+    <div class="breadcrumbs_wapper">
+      <p>Administration</p>
+    </div>
+    <div class="search_wrapper">
+      <div class="search-header">
+        <img src="{{basehref}}assets/images/icons/search.svg" class="search-glass-img"
+          (click)="searchInAdminStructure(searchString.value)">
+        <input type="text" placeholder="Search" #searchString
+          (keyup.enter)="searchInAdminStructure(searchString.value)">
+      </div>
+      <div class="action-buttons">
+        <button mat-stroked-button (click)="accordionAction()">{{possibleAction}}</button>
+      </div>
+    </div>
+  </div>
+  <div class="accordion_wrappar">
+    <mat-accordion class="admin-accordion" multi>
+      <ng-container *ngFor="let section of pageStructure">
+        <mat-expansion-panel *ngIf="section.level">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{section.name.en | translator:section.name.ar}}
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="section-header">
+            <h3>Page(s)</h3>
+            <h3>Description</h3>
+          </div>
+          <div class="section-body">
+            <ng-container *ngTemplateOutlet="recursiveListTmpl; context:{ list: section.children }"></ng-container>
+            <ng-template #recursiveListTmpl let-list="list">
+              <ng-container *ngFor="let item of list">
+                <div *ngIf="item.level" class="paragraph-wrapper">
+                  <div class="paragraph-data">
+                    <div class="paragraph-name"
+                      [style.paddingRight]="translator.lang === 'ar' ? (item.level > 2 ? item.level*20 : 15) + 'px' : 0"
+                      [style.paddingLeft]="translator.lang !== 'ar' ? (item.level > 2 ? item.level*20 : 15) + 'px' : 0">
+                      <a class="color_003" [routerLink]="item.route">{{ item.name.en | translator:item.name.ar }}</a>
+                    </div>
+                    <div class="paragraph-description">{{ item.description.en | translator:item.description.ar }}</div>
+                  </div>
+                  <div *ngIf="item.children.length > 0">
+                    <ng-container *ngTemplateOutlet="recursiveListTmpl; context:{ list: item.children }"></ng-container>
+                  </div>
+                </div>
+              </ng-container>
+            </ng-template>
+          </div>
+        </mat-expansion-panel>
+      </ng-container>
+    </mat-accordion>
+  </div>
+  <div class="empty-search" *ngIf="pageStructure.length === 0">No matches found.</div>
+</div>

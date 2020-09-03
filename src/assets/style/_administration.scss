@@ -6,7 +6,7 @@ app-administration{
 
 ::-webkit-scrollbar
 {
-	width: 10px;
+	width: 7px;
 	background-color: #F5F5F5;
 }
 
@@ -35,6 +35,7 @@ app-administration{
       display: flex; // margin-bottom: 10px;
       margin-bottom: auto;
       margin-top: auto;
+      align-items: center;
       p {
         background-image: url(assets/images/icons/arrow_point_icon_001.svg);
         padding-right: 15px;
@@ -57,6 +58,7 @@ app-administration{
         border: 1px solid #D8DADF;
         box-sizing: border-box;
         border-radius: 4px;
+        margin: 0 15px;
 
         ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
           color: rgb(185, 176, 176);
@@ -89,7 +91,6 @@ app-administration{
       .action-buttons{
         button{
           background: #F2F2F2;
-          margin-left: 15px;
           min-width: 110px;
           border: none;
         }
@@ -103,9 +104,16 @@ app-administration{
         margin: 10px 0;
         box-shadow: none;
         .mat-expansion-panel-header{
+          display: flex;
+          flex-direction: row-reverse;
           font-weight: bold;
           background: #EDF0F0;
           font-size: 14px;
+          .mat-expansion-panel-header-title{
+            display: flex;
+            align-items: center;
+            margin: 0 25px;
+          }
         }
         .mat-expansion-panel-content{
           background: #F9F9F9;
@@ -139,10 +147,17 @@ app-administration{
             cursor: pointer;
           }
           .paragraph-description{
-            padding-left: 15px;
+            padding: 0 15px;
           }
         }
       }
     }
+  }
+  .empty-search{
+    display: flex;
+    justify-content: center;
+    font-size: 14px;
+    align-items: center;
+    height: 100px;
   }
 }
