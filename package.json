@@ -38,7 +38,7 @@
     "ngx-prevent-double-submission": "^0.1.0",
     "ngx-print": "^1.2.0-beta.2",
     "ngx-scrollbar": "^4.2.0",
-    "node-sass": "^4.12.0",
+    "node-sass": "^4.13.1",
     "postcss-loader": "^3.0.0",
     "rxjs": "^6.5.3",
     "smooth-scrollbar": "^8.3.1",
