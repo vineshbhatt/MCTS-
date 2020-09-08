@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
-import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handler-fcts.service';
 import { MatAccordion } from '@angular/material/expansion';
 import { FCTSDashBoard } from 'src/environments/environment';
 import { multiLanguageTranslator } from 'src/assets/translator/index';
@@ -53,7 +52,6 @@ export class MainPageComponent implements OnInit {
         }
         return result;
       });
-      console.log('filteredData', filteredData)
       this.pageStructure = filteredData;
       setTimeout(() => {
         this.accordion.openAll();

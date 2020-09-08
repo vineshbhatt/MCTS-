@@ -32,4 +32,22 @@ export class AdministrationService {
       })
     );
   }
+
+  getOrgmdRoles(): Observable<any> {
+    const params = new HttpParams();
+    return this.httpServices.get<any>(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${
+      FCTSDashBoard.ORGMasterDataRoles}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
 }

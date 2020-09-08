@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 import { AdministrationComponent } from './administration.component';
 import { OrgmdRolesComponent } from './orgmd/orgmd-roles/orgmd-roles.component';
+import { EditOrganizationalChartComponent } from './orgmd/edit-organizational-chart/edit-organizational-chart.component';
 
 const routes: Routes = [
   {
@@ -10,7 +11,7 @@ const routes: Routes = [
     component: AdministrationComponent,
     children: [
       { path: 'orgmd-roles', component: OrgmdRolesComponent },
-      /*     { path:'', component: ProductListComponent,  } */
+      { path: 'edit-org-chart', component: EditOrganizationalChartComponent },
     ]
   }
 ];

@@ -124,7 +124,8 @@ const dashboardRoutes: Routes = [
           {
             path: 'administration',
             loadChildren: './administration/administration.module#AdministrationModule',
-            canActivate: [IsadminGuard]
+            /* canActivate: [IsadminGuard] */
+            canLoad: [IsadminGuard]
           },
           { path: '', redirectTo: '/dashboard/external', pathMatch: 'full' },
 

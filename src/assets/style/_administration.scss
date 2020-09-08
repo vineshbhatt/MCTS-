@@ -72,13 +72,21 @@ app-administration{
         ::-ms-input-placeholder { /* Microsoft Edge */
             color: rgb(185, 176, 176);
         }
-        .search-glass-img{
-            padding: 5px;
+        .search-img{
             width: 20px;
             height: 20px;
             display: block;
             margin: auto;
             cursor: pointer;
+            &.glass{
+              padding: 5px;
+            }
+            &.filter{
+              padding: 0 10px;
+            }
+        }
+        .filter-list-img{
+
         }
         input{
             height: 30px;
@@ -159,5 +167,93 @@ app-administration{
     font-size: 14px;
     align-items: center;
     height: 100px;
+  }
+
+  .mat-expansion-panel-body{
+    padding: 0;
+    .filter-form{
+      display: flex;
+      flex-direction: row;
+      align-content: center;
+      .input_filter_wrp{
+        width: 200px;
+        margin: 0 5px 0 0;
+      }
+    }
+  }
+
+  .table_wrapper{
+    
+    thead{
+      .mat-header-cell{
+        font-weight: bold;
+        color: #65676F;
+        font-size: 14px;
+        border: none;
+      }
+    }
+    tbody{
+      .mat-row{
+        margin: 0 10px;
+        background: #F5F5F5;
+        height: 60px;
+        &:hover{
+          background: #E8F9FA;
+        }
+        .mat-cell{
+          border-bottom: 10px solid white;
+          font-size: 14px;
+          color: #65676F;
+          padding-top: 12px;
+          padding-bottom: 12px;
+        }
+      }
+    }
+    
+  }
+}
+
+.input_filter_wrp {
+  .mat-form-field-appearance-legacy {
+      .mat-form-field-wrapper {
+          padding-bottom: 0;
+      }
+      .mat-form-field-underline {
+          display: none;
+      }
+      .mat-form-field-infix {
+          box-sizing: border-box;
+          border: 1px solid #d8dadf;
+          padding: 13px 15px 6px 14px;
+          border-radius: 4px;
+      }
+      .mat-form-field-label {
+          top: 50%;
+          left: 14px;
+          margin-top: 0px;
+          font-size: 14px;
+          font-family: 'Roboto', sans-serif;
+          color: #252525;
+          font-weight: 400;
+      }
+      input.mat-input-element {
+          margin-top: 6px;
+          font-size: 14px;
+          color: #252525;
+      }
+      &.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
+          transform: translateY(-10px) scale(.75) perspective(100px) translateZ(.001px);
+      }
+      &.mat-focused {
+          .mat-form-field-label {
+              color: #00b7c3;
+          }
+          .mat-form-field-infix {
+              border: 1px solid #00b7c3;
+          }
+      }
+  }
+  &.sm_input_wrapper .mat-form-field-appearance-legacy .mat-form-field-infix  {
+      padding-top: 0px;
   }
 }
