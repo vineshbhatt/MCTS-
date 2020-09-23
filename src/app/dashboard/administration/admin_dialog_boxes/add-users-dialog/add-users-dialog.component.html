@@ -1,0 +1,56 @@
+<header class="action_header">
+  <h2>
+    {{'assign' | translator}} {{data.itemName}}(s)
+  </h2>
+  <mat-icon class="close-button" (click)="closeDialog([])">close</mat-icon>
+</header>
+<form [formGroup]="filtersForm" class="search-area">
+  <div class="full-search">
+    <img src="{{basehref}}assets/images/icons/search.svg" class="search-img glass" (click)="applyFilter()">
+    <input type="text" [placeholder]="'search' | translator" #searchString (keyup.enter)="applyFilter()"
+      formControlName="SearchString">
+  </div>
+  <div class="input_filter_wrp">
+    <mat-form-field>
+      <input type="text" aria-label="Number" matInput [placeholder]="'department' | translator" #depstring
+        formControlName="Department" [matAutocomplete]="departmentFilter"
+        (keyup.enter)="clearDepSearch(depstring.value)">
+      <mat-autocomplete #departmentFilter="matAutocomplete" [displayWith]="displayFieldValue.bind(this)"
+        (optionSelected)='applyFilter()'>
+        <mat-option *ngFor="let DepName of (filteredDepartments | async)" [value]="DepName">
+          {{DepName.Name_EN | translator:DepName.Name_AR}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </div>
+</form>
+<div class="table_wrapper" infinite-scroll [scrollWindow]="false" (scrolled)="onScrollDown()">
+  <div *ngIf="showSpinner; else elseBlock" class="spinner-wrappar">
+    <mat-spinner></mat-spinner>
+  </div>
+  <ng-template #elseBlock>
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z0" style="width:100%">
+      <ng-container *ngFor="let col of tableStructure" [matColumnDef]="col.columnDef">
+        <td mat-cell *matCellDef="let element" [ngSwitch]="col.columnDef" [ngClass]="col.className">
+          <mat-checkbox *ngSwitchCase="'CheckBox'" (click)="$event.stopPropagation()"
+            (change)="$event ? selection.toggle(element) : null" [checked]="selection.isSelected(element)"
+            [aria-label]="checkboxLabel(element)">
+          </mat-checkbox>
+          <div class="user-icon" *ngSwitchCase="'Photo'">
+            <p>{{getInitials(element.FirstName_EN, element.LastName_EN)}}</p>
+          </div>
+          <p *ngSwitchCase="'Name'">
+            <span>{{element.FirstName_EN | translator:element.FirstName_AR}}</span>&nbsp;<span>{{element.LastName_EN | translator:element.LastName_AR}}</span>
+          </p>
+          <p *ngSwitchDefault>{{element[col.columnDef]}}</p>
+        </td>
+      </ng-container>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <div class="empty-search" *ngIf="dataSource.data.length === 0">No matches found.</div>
+  </ng-template>
+</div>
+<footer *ngIf="!showSpinner" class="dialog-footer">
+  <button mat-flat-button class="btn_011" (click)="closeDialog([])">{{'cancel' | translator}}</button>
+  <button mat-flat-button class="btn_012" (click)="addUsers()">{{'assign' | translator}}</button>
+</footer>

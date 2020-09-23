@@ -170,5 +170,11 @@
   "chart_cc": "Select CC from organizational chart ar",
   "chart_approver": "Select Approver from organizational chart ar",
   "chart_collaboration": "Select Collaboration from organizational chart ar",
-  "chart_recipient": "Select Recipient from organizational chart ar"
+  "chart_recipient": "Select Recipient from organizational chart ar",
+  "add_role": "Add Role ar",
+  "role_definition": "Role Definition ar",
+  "description": "Description ar",
+  "assign": "Assign ar",
+  "surname": "Surname ar",
+  "login": "Login ar"
 }

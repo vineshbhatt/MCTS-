@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { MatAccordion } from '@angular/material/expansion';
 import { FCTSDashBoard } from 'src/environments/environment';
 import { multiLanguageTranslator } from 'src/assets/translator/index';
+import { AdministrationService } from '../services/administration.service';
 
 @Component({
   selector: 'app-main-page',
@@ -13,16 +14,24 @@ export class MainPageComponent implements OnInit {
   pageStructure: any;
   possibleAction = 'Expand All';
   basehref: string = FCTSDashBoard.BaseHref;
+  secExp: string;
 
   @Input() structureJson;
   @ViewChild(MatAccordion) accordion: MatAccordion;
 
   constructor(
-    public translator: multiLanguageTranslator
+    public translator: multiLanguageTranslator,
+    public _administrationService: AdministrationService
   ) { }
 
   ngOnInit() {
     this.pageStructure = this.structureJson;
+
+    this._administrationService.currentSecExp.subscribe(currentSecExp => this.secExp = currentSecExp);
+  }
+
+  ngOnDestroy() {
+
   }
 
   accordionAction(): void {
@@ -80,5 +89,4 @@ export class MainPageComponent implements OnInit {
       return list;
     }, []);
   }
-
 }

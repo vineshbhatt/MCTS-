@@ -1,9 +1,12 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { AdministrationService } from 'src/app/dashboard/administration/services/administration.service';
 import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handler-fcts.service';
 import { MatTableDataSource, MatAccordion } from '@angular/material';
-import { multiLanguageTranslator } from 'src/assets/translator/index';
-import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
+import { RolesData } from '../../administration.model';
+import { FCTSDashBoard } from 'src/environments/environment';
+
 
 @Component({
   selector: 'app-orgmd-roles',
@@ -12,25 +15,24 @@ import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 
 })
 export class OrgmdRolesComponent implements OnInit {
-  rolesList: any[]; // TODO make model
+  basehref = FCTSDashBoard.BaseHref;
+  rolesList: RolesData[];
   filtersForm: FormGroup;
+  filterState = false;
   // table structure
   dataSource: any;
   displayedColumns: string[] = ['name', 'description'];
-  possibleAction = 'Add role';
-  filterState = 'in';
-  filter = {
-    role: '',
-    description: ''
-  }
+  possibleAction = 'add_role';
+  editUsersRoute = 'dashboard/administration/orgmd-roles/role-users';
 
   @ViewChild(MatAccordion) accordion: MatAccordion;
+  @ViewChild('searchString') searchString: ElementRef;
 
   constructor(
     private _administration: AdministrationService
-    , public translator: multiLanguageTranslator
     , private formBuilder: FormBuilder
-    , private _errorHandlerFctsService: ErrorHandlerFctsService) { }
+    , private _errorHandlerFctsService: ErrorHandlerFctsService
+    , private router: Router) { }
 
   ngOnInit() {
     this.getOrgmdRoles();
@@ -46,22 +48,53 @@ export class OrgmdRolesComponent implements OnInit {
       response => {
         this.rolesList = response;
         this.dataSource = new MatTableDataSource(this.rolesList);
-        console.log('this.rolesList', response, this.dataSource);
       },
       responseError => {
         this._errorHandlerFctsService.handleError(responseError).subscribe();
       }
     );
   }
-
-  applyFilter(event: Event) {
+  // actions with search and filter
+  applyMainFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  openFilter(): void {
-    this.accordion.openAll();
+  openFilter() {
+    this.filterState = !this.filterState;
+    this.searchString.nativeElement.value = '';
+    this.dataSource.filter = '';
   }
 
+  onFocus() {
+    this.filterState = false;
+    this.filtersForm.reset();
+    this.dataSource = new MatTableDataSource(this.rolesList);
+  }
 
+  filterObject(): void {
+    const searchValue = this.filtersForm.value;
+    let filteredRolesList = this.rolesList.filter(element => {
+      let contain = false;
+      const role = searchValue.Role ? searchValue.Role.toLowerCase() : '';
+      const desc = searchValue.Description ? searchValue.Description.toLowerCase() : '';
+      if ((element.Name_EN.toLowerCase().indexOf(role) > -1 || element.Name_AR.toLowerCase().indexOf(role) > -1) &&
+        (element.Description_EN.toLowerCase().indexOf(desc) > -1 || element.Description_AR.toLowerCase().indexOf(desc) > -1)) {
+        contain = true;
+      }
+      return contain;
+    });
+    this.dataSource = new MatTableDataSource(filteredRolesList);
+  }
+  // move to edit-users component
+  editRoleUsers(role: RolesData) {
+    this.router.navigate([this.editUsersRoute],
+      {
+        queryParams:
+        {
+          ID: role.Grid,
+          ItemName: role.Name_EN.replace(/\s/g, '')
+        }
+      });
+  }
 }

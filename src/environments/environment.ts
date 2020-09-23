@@ -128,6 +128,9 @@ export const FCTSDashBoard = {
 
   AdminPageStructure: 'CTA_AdminPageStructure',
   ORGMasterDataRoles: 'CTA_ORGMasterDataRoles',
+  ORGMDRoleUsers: 'CTA_ORGMDRoleUsers',
+  DepartmentsList: 'CTA_DepartmentsList',
+  GetAllUsers: 'CTA_GetAllUsers',
 
   //BaseHref: '/img/fctsangular/fctsapp/',
   BaseHref: '/',

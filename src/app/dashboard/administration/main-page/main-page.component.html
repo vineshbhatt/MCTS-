@@ -1,8 +1,6 @@
 <div class="main_admin_wrapper">
   <div class="header_wapper">
-    <div class="breadcrumbs_wapper">
-      <p>Administration</p>
-    </div>
+    <app-breadcrumbs></app-breadcrumbs>
     <div class="search_wrapper">
       <div class="search-header">
         <img src="{{basehref}}assets/images/icons/search.svg" class="search-img glass"
@@ -11,14 +9,14 @@
           (keyup.enter)="searchInAdminStructure(searchString.value)">
       </div>
       <div class="action-buttons">
-        <button mat-stroked-button (click)="accordionAction()">{{possibleAction}}</button>
+        <button class="btn_011" mat-stroked-button (click)="accordionAction()">{{possibleAction}}</button>
       </div>
     </div>
   </div>
   <div class="accordion_wrappar">
     <mat-accordion class="admin-accordion" multi>
       <ng-container *ngFor="let section of pageStructure">
-        <mat-expansion-panel *ngIf="section.level">
+        <mat-expansion-panel [expanded]="secExp == section.route" *ngIf="section.level">
           <mat-expansion-panel-header>
             <mat-panel-title>
               {{section.name.en | translator:section.name.ar}}
