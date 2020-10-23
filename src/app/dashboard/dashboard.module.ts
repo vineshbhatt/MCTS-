@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MalihuScrollbarModule } from 'ngx-malihu-scrollbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule, MatCheckboxModule, MatNativeDateModule, MatIconModule, MatTreeModule, MatTabsModule } from '@angular/material';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -78,7 +77,7 @@ import { NgxBarcodeModule } from 'ngx-barcode';
 import { NotificationComponent } from './dialog-boxes/notification/notification.component';
 import { NotificationService } from './services/notification.service';
 import { PreventDoubleSubmitModule } from 'ngx-prevent-double-submission';
-import { EmployeeMapList } from '../dashboard/pipes/employeemaplist.pipe';
+/* import { EmployeeMapList } from '../dashboard/pipes/employeemaplist.pipe'; */
 
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { BaseCorrespondenceComponent } from './base-classes/base-correspondence-csactions/base-correspondence.component';
@@ -117,6 +116,7 @@ import { AngularResizedEventModule } from 'angular-resize-event';
 import { DistributionChartComponent } from './shared-components/distribution-chart/distribution-chart.component';
 import { DistributionDialogComponent } from './dialog-boxes/distribution-dialog/distribution-dialog.component';
 import { SelectTeamDialogComponent } from './dialog-boxes/select-team-dialog/select-team-dialog.component';
+import { SharedImportsModule } from './shared-imports.module';
 
 @NgModule({
   imports: [
@@ -131,7 +131,6 @@ import { SelectTeamDialogComponent } from './dialog-boxes/select-team-dialog/sel
     MatButtonModule,
     MatCheckboxModule,
     MatInputModule,
-    MatMenuModule,
     MatProgressSpinnerModule,
     MatDatepickerModule,
     MatNativeDateModule,
@@ -156,6 +155,7 @@ import { SelectTeamDialogComponent } from './dialog-boxes/select-team-dialog/sel
     MatRadioModule,
     MatProgressBarModule,
     AngularResizedEventModule,
+    SharedImportsModule,
     multiLanguageTranslatorModule.forRoot({
       defaultLang: 'en',
       storagePrefix: 'current-language'
@@ -212,7 +212,7 @@ import { SelectTeamDialogComponent } from './dialog-boxes/select-team-dialog/sel
     TransferReturntoasDialogComponent,
     CorrespondenceFormStepComponent,
     NotificationComponent,
-    EmployeeMapList,
+    /* EmployeeMapList, */
     BaseCorrespondenceComponent,
     ExternalOutgoing,
     CorrespondenceFormStepComponent,

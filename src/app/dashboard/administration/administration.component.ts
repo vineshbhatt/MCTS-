@@ -14,6 +14,7 @@ export class AdministrationComponent implements OnInit {
   breadcrumbList: Array<any> = [];
   routeObj = new Object();
   navigateEvent: Subscription;
+  paragraphArr = [2, 3];
 
   constructor(
     public _router: Router
@@ -32,6 +33,7 @@ export class AdministrationComponent implements OnInit {
     this._administration.getAdminPageStructure().subscribe(
       response => {
         this.structureJson = response;
+        this._administration.changeMPageStr(this.structureJson);
         this.listenRouting();
         if (this.breadcrumbList.length === 0) {
           this.biuldBreadCrumbs(this._router.url);
@@ -68,7 +70,7 @@ export class AdministrationComponent implements OnInit {
       } else {
         routeObj = this.recursionSearch(target, router);
         name = routeObj && routeObj.hasOwnProperty('name') ? routeObj['name'].en : '';
-        if (routeObj && routeObj['level'] === 2) {
+        if (routeObj && this.paragraphArr.indexOf(routeObj['level']) > -1) {
           const parent = this.getLevelStructure(target, router);
           this.fillBreadcrumbList(parent.name.en, '', parent.route, index);
         }

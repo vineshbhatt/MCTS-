@@ -5,7 +5,7 @@ import { ValueConverter } from '@angular/compiler/src/render3/view/template';
 @Pipe({ name: 'translator', pure: false })
 export class multiLanguageTranslatorPipe implements PipeTransform {
   constructor(private translator: multiLanguageTranslator) { }
-  transform(value: any, ar: any) {
+  transform(value: any, ar?: any) {
     if (!value) return;
     if (ar !== undefined) {
       return Object.keys({ ar })[0] === this.translator.lang ? ar : value;

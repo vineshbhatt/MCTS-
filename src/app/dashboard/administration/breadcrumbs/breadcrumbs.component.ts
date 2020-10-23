@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdministrationService } from '../services/administration.service';
 import { BreadCrumbsModel } from '../administration.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-breadcrumbs',
@@ -11,13 +12,18 @@ import { BreadCrumbsModel } from '../administration.model';
 export class BreadcrumbsComponent implements OnInit {
 
   public breadcrumbs: BreadCrumbsModel[];
+  breadcrumbsSubscription: Subscription;
 
   constructor(
     private router: Router,
     public _administrationService: AdministrationService) { }
 
   ngOnInit() {
-    this._administrationService.currentBreadcrumbList.subscribe(breadcrumbList => this.breadcrumbs = breadcrumbList);
+    this.breadcrumbsSubscription = this._administrationService.currentBreadcrumbList.subscribe(breadcrumbList => this.breadcrumbs = breadcrumbList);
+  }
+
+  ngOnDestroy() {
+    this.breadcrumbsSubscription.unsubscribe();
   }
 
   navigateTo(element: BreadCrumbsModel) {

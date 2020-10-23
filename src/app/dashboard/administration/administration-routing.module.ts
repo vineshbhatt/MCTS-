@@ -4,10 +4,12 @@ import { Routes, RouterModule } from '@angular/router';
 import { AdministrationComponent } from './administration.component';
 import { OrgmdRolesComponent } from './orgmd/orgmd-roles/orgmd-roles.component';
 import { EditOrganizationalChartComponent } from './orgmd/edit-organizational-chart/edit-organizational-chart.component';
-import { CurrentUsersComponent } from './shared-components/current-users/current-users.component';
 import { OrgmdRolesMainComponent } from './orgmd/orgmd-roles-main/orgmd-roles-main.component';
 import { EditOrgChartMainComponent } from './orgmd/edit-org-chart-main/edit-org-chart-main.component';
 import { MainPageComponent } from './main-page/main-page.component';
+import { OrgmdRoleUsersComponent } from './orgmd/orgmd-roles/orgmd-role-users/orgmd-role-users.component';
+import { OrgChartUsersComponent } from './orgmd/edit-organizational-chart/org-chart-users/org-chart-users.component';
+import { EditOrgChartRolesComponent } from './orgmd/edit-organizational-chart/edit-org-chart-roles/edit-org-chart-roles.component';
 
 const routes: Routes = [
   {
@@ -15,12 +17,15 @@ const routes: Routes = [
     component: AdministrationComponent,
     children: [
       {
+        path: '',
+        component: MainPageComponent,
+      },
+      {
         path: 'orgmd-roles',
         component: OrgmdRolesMainComponent,
         children: [
           { path: '', component: OrgmdRolesComponent },
-          /*  { path: 'role-users/:id', component: CurrentUsersComponent, data: { userActions: 'roleUsersActions' } } */
-          { path: 'role-users', component: CurrentUsersComponent, data: { userActions: 'orgmdRoleUsersActions', section: 'orgmdroles' } }
+          { path: 'role-users', component: OrgmdRoleUsersComponent }
         ]
       },
       {
@@ -28,7 +33,8 @@ const routes: Routes = [
         component: EditOrgChartMainComponent,
         children: [
           { path: '', component: EditOrganizationalChartComponent },
-          { path: 'chart-users/:id', component: CurrentUsersComponent }
+          { path: 'users', component: OrgChartUsersComponent },
+          { path: 'unit-roles', component: EditOrgChartRolesComponent }
         ]
       }
     ]

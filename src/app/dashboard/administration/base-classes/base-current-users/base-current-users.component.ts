@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ViewChild, ElementRef } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { AdministrationService } from 'src/app/dashboard/administration/services/administration.service';
 import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handler-fcts.service';
@@ -10,16 +11,15 @@ import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { DepFilterData, UsersData, PaginationParameters, DialogDirection } from '../../administration.model';
 import { MatDialog } from '@angular/material';
-import { AddUsersDialogComponent } from '../../admin_dialog_boxes/add-users-dialog/add-users-dialog.component';
+import { AddUsersDialogComponent } from '../../admin-dialog-boxes/add-users-dialog/add-users-dialog.component';
 import { multiLanguageTranslator, multiLanguageTranslatorPipe } from 'src/assets/translator/index';
 
-
 @Component({
-  selector: 'app-current-users',
-  templateUrl: './current-users.component.html',
-  styleUrls: ['./current-users.component.scss']
+  selector: 'app-base-current-users',
+  templateUrl: './base-current-users.component.html',
+  styleUrls: ['./base-current-users.component.scss']
 })
-export class CurrentUsersComponent implements OnInit {
+export class BaseCurrentUsersComponent implements OnInit {
   // main data
   basehref = FCTSDashBoard.BaseHref;
   itemName: string;
@@ -55,45 +55,16 @@ export class CurrentUsersComponent implements OnInit {
   @ViewChild('searchString') searchString: ElementRef;
 
   constructor(
-    private _administration: AdministrationService
-    , private formBuilder: FormBuilder
-    , private _errorHandlerFctsService: ErrorHandlerFctsService
-    , private _route: ActivatedRoute
+    public _administration: AdministrationService
+    , public formBuilder: FormBuilder
+    , public _errorHandlerFctsService: ErrorHandlerFctsService
+    , public _route: ActivatedRoute
     , public dialogU: MatDialog
-    , private translator: multiLanguageTranslatorPipe
-    , private translatorService: multiLanguageTranslator) {
-  }
+    , public translator: multiLanguageTranslatorPipe
+    , public translatorService: multiLanguageTranslator) { }
 
-  ngOnInit() {
-    this.itemID = this._route.snapshot.queryParamMap.get('ID');
-    this.itemName = this._route.snapshot.queryParamMap.get('ItemName');
-    this.routeDataEvent = this._route.data
-      .subscribe(data => {
-        this.routeData = data;
-        this.getPage(this.pagenumber);
-      });
+  ngOnInit() { }
 
-    this.breadcrumbsSubscription();
-
-    this.filtersForm = this.formBuilder.group({
-      Name: [],
-      Surname: [],
-      Login: [],
-      Department: []
-    });
-
-    this.filteredDepartments = this.filtersForm.get('Department').valueChanges
-      .pipe(
-        debounceTime(300),
-        switchMap(value =>
-          this._administration.getDepartmentsList(value)
-        )
-      );
-  }
-
-  ngOnDestroy() {
-    this.routeDataEvent.unsubscribe();
-  }
   // get breadcrumbs and push the item
   breadcrumbsSubscription() {
     let destroyer = new Subject();
@@ -123,27 +94,7 @@ export class CurrentUsersComponent implements OnInit {
   }
 
   currentUsersActions(paginationParameters: PaginationParameters, usersForAction?: string[]): void {
-    this._administration[this.routeData.userActions](this.itemID, this.collectActionData(), paginationParameters, usersForAction)
-      .subscribe(
-        response => {
-          this.usersList = response;
-          if (this.usersList.length === 0) {
-            this.totalCount = 0;
-          } else if (paginationParameters.startRow === 1) {
-            this.totalCount = this.usersList[0].totalRowCount;
-          }
-          this.selection = new SelectionModel<any>(true, []);
-          this.pagenumber = paginationParameters.page;
-        },
-        responseError => {
-          this._errorHandlerFctsService.handleError(responseError).subscribe();
-        },
-        () => {
-          if (this.action === 'addusers' || this.action === 'removeusers') {
-            this.action = '';
-          }
-        }
-      );
+    // overwritten in extends component
   }
 
   collectActionData(): any {
@@ -231,7 +182,7 @@ export class CurrentUsersComponent implements OnInit {
       data: {
         itemName: this.itemName,
         itemID: this.itemID,
-        section: this.routeData.section
+        allUsersActions: this.routeData.allUsersActions
       }
     }).afterClosed().subscribe(result => {
       if (result && result.length > 0) {
@@ -244,4 +195,5 @@ export class CurrentUsersComponent implements OnInit {
     this.action = 'addusers';
     this.getPage(1, usersList);
   }
+
 }

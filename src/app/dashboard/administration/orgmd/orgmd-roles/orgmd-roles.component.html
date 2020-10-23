@@ -16,17 +16,17 @@
   <mat-accordion class="filter-wrapper">
     <mat-expansion-panel class="mat-elevation-z0" [expanded]="filterState">
       <form [formGroup]="filtersForm" class="filter-form">
-        <div class="input_filter_wrp">
+        <div class="input_field_wrp">
           <mat-form-field>
             <input matInput [placeholder]="'role_definition' | translator" formControlName="Role" autocomplete="off">
           </mat-form-field>
         </div>
-        <div class="input_filter_wrp">
+        <div class="input_field_wrp">
           <mat-form-field>
             <input matInput [placeholder]="'description' | translator" formControlName="Description" autocomplete="off">
           </mat-form-field>
         </div>
-        <div class="input_filter_wrp">
+        <div class="input_field_wrp">
           <button class="btn_001" mat-button (click)="filterObject()">{{'search' | translator}}</button>
         </div>
       </form>

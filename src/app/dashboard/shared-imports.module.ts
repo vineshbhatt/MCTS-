@@ -1,17 +1,21 @@
-import { NgModule, ModuleWithProviders } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatButtonModule } from '@angular/material';
+import { EmployeeMapList } from '../dashboard/pipes/employeemaplist.pipe';
+import { MatMenuModule } from '@angular/material/menu';
 
 
 @NgModule({
   imports: [
-    CommonModule,
-    MatExpansionModule,
-    MatButtonModule
+    MatMenuModule
   ],
-  declarations: []
+  declarations: [
+    EmployeeMapList
+  ],
+  exports: [
+    EmployeeMapList,
+    MatMenuModule
+  ]
 })
 export class SharedImportsModule {
 

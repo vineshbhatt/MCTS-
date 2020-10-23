@@ -17,22 +17,22 @@
   <mat-accordion class="filter-wrapper">
     <mat-expansion-panel class="mat-elevation-z0" [expanded]="filterState">
       <form [formGroup]="filtersForm" class="filter-form">
-        <div class="input_filter_wrp">
+        <div class="input_field_wrp">
           <mat-form-field>
             <input matInput [placeholder]="'name' | translator" formControlName="Name" autocomplete="off">
           </mat-form-field>
         </div>
-        <div class="input_filter_wrp">
+        <div class="input_field_wrp">
           <mat-form-field>
             <input matInput [placeholder]="'surname' | translator" formControlName="Surname" autocomplete="off">
           </mat-form-field>
         </div>
-        <div class="input_filter_wrp">
+        <div class="input_field_wrp">
           <mat-form-field>
             <input matInput [placeholder]="'login' | translator" formControlName="Login" autocomplete="off">
           </mat-form-field>
         </div>
-        <div class="input_filter_wrp">
+        <div class="input_field_wrp">
           <mat-form-field>
             <input type="text" aria-label="'number'" matInput [placeholder]="'department' | translator"
               formControlName="Department" [matAutocomplete]="departmentFilter">
@@ -43,7 +43,7 @@
             </mat-autocomplete>
           </mat-form-field>
         </div>
-        <div class="input_filter_wrp">
+        <div class="input_field_wrp">
           <button class="btn_001" mat-button (click)="filterObject()">{{'search' | translator}}</button>
         </div>
       </form>
@@ -80,9 +80,8 @@
             <div class="user-icon" *ngSwitchCase="'photo'">
               <p>{{getInitials(element.FirstName_EN, element.LastName_EN)}}</p>
             </div>
-            <div class="row-action-single-button-wrapper">
-              <a *ngSwitchCase="'actionButtons'" [matTooltip]="'actbtn_delete' | translator" class="btn btn_006"
-                (click)="removeRecord([element.ID])">
+            <div *ngSwitchCase="'actionButtons'" class="row-action-single-button-wrapper">
+              <a [matTooltip]="'actbtn_delete' | translator" class="btn btn_006" (click)="removeRecord([element.ID])">
                 <img src="{{basehref}}assets/images/icons/admin_delete.svg" alt="">
               </a>
             </div>

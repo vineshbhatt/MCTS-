@@ -63,3 +63,90 @@ export enum DialogDirection {
     ltr = 'ltr'
 }
 
+export interface OrgStructure {
+    OUID: number;
+    Parent: number;
+    Name_EN: string;
+    Name_AR: string;
+    ShortName_AR: string;
+    ShortName_EN: string;
+    Description_AR: string;
+    Description_EN: string;
+    OUTID: number;
+    LTID: number;
+    Code: string;
+    ParentName?: string;
+    ParentName_EN?: string;
+    ParentName_AR?: string;
+    Type_EN?: string;
+    Type_AR?: string;
+    LinkType_EN?: string;
+    LinkType_AR?: string;
+    expand?: boolean;
+    isLoading?: boolean;
+    wanted?: boolean;
+    children?: OrgStructure[];
+}
+
+export interface OrgChartEmployeeModel {
+    OUID: number;
+    Parent: number;
+    EID: number;
+    Login: string;
+    LastName_EN: string;
+    MiddleName_EN: string;
+    FirstName_EN: string;
+    LastName_AR: string;
+    MiddleName_AR: string;
+    FirstName_AR: string;
+    Code: string;
+    EName_AR: string;
+    KuafID: string;
+    Title_EN?: string;
+    Title_AR?: string;
+    MailAddress?: string;
+    PersonalEmail?: string;
+    PersonalEmail2?: string;
+    PersonalEmail3?: string;
+    PersonalEmail4?: string;
+    PersonalEmail5?: string;
+    LTID?: number;
+    OUTID?: number;
+    RoleID?: string;
+    RoleName_AR?: string;
+    RoleName_EN?: string;
+    ParentName_EN?: string;
+    ParentName_AR?: string;
+    wanted?: boolean;
+}
+
+export interface UnitDefinitionModel {
+    Description_AR: string;
+    Description_EN: string;
+    Name_AR: string;
+    Name_EN: string;
+    OUTID: number;
+}
+
+export interface EntityRelModel {
+    Description_AR: string;
+    Description_EN: string;
+    LTID: number;
+    Name_AR: string;
+    Name_EN: string;
+}
+
+export interface UserRolesModel {
+    Name_AR: string;
+    Name_EN: string;
+    RID: number;
+    ShortName_EN?: string;
+    ShortName_AR?: string;
+    Description_EN?: string;
+    Description_AR?: string;
+    Main?: number;
+    RowNum?: number;
+    totalRowCount?: number;
+}
+
+

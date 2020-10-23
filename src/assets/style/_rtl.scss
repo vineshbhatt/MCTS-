@@ -351,7 +351,7 @@
                 background-position: left center;
             }
         }
-        .input_filter_wrp {
+        .input_field_wrp {
             .mat-form-field-label{
                 right: 14px;
             }
@@ -369,13 +369,73 @@
             }
 
         }
+        .org_chart_tree {
+            .tree_container {
+                .tree_wrapper {
+                    .full_fill_wrapper .tree_nested_node_child {
+                        .tree_wrapper {
+                            padding-right: 44px;
+                            padding-left: 0;
+                        }
+                    }
+                }
+            }
+            .org_chart_text {
+                padding-left: 0;
+                padding-right: 15px;
+            }
+            .mat-tree .show_empl_name_wrp {
+                .show_empl_name_ul {
+                    padding-left: 0px;
+                    padding-right: 64px;
+                    .show_empl_name {
+                        padding-left: 0px;
+                        padding-right: 24px;
+                    }
+                }
+            }
+        }
+        .org-chart-wrapper{
+            .drawer-animation-holder{
+                border-left: none;
+                border-right: 1px solid #E4E5E7;
+            .drawer-wrapper{
+                padding: 25px;
+                padding-left: 0;
+                }
+            }
+            &.drawer-opened {
+                .org-chart-block {
+                  overflow: auto;
+                  padding-right: 0px;
+                  padding-left: 25px;
+                }
+            }
+            .prop-list{
+                h4, p{
+                    padding-right: 0px;
+                    padding-left: 5px;
+                }
+            }
+        }
     }
     .dialog-box-wrapper{
-        .input_filter_wrp {
+        .input_field_wrp {
             .mat-form-field-label{
                 right: 14px;
             }
         }
+        .show_preview_btn{
+            justify-content: flex-start;
+        }
+        .action_inside{
+            .btn{
+                right: auto;
+                left: 0;
+            }
+            
+        }
+        
     }
 }
 

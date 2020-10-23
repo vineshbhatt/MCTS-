@@ -3,6 +3,7 @@ import { MatAccordion } from '@angular/material/expansion';
 import { FCTSDashBoard } from 'src/environments/environment';
 import { multiLanguageTranslator } from 'src/assets/translator/index';
 import { AdministrationService } from '../services/administration.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-main-page',
@@ -11,12 +12,14 @@ import { AdministrationService } from '../services/administration.service';
 })
 
 export class MainPageComponent implements OnInit {
+  pageStructureSubscription: Subscription;
+  secExpSubscription: Subscription;
   pageStructure: any;
+  structureJson: any;
   possibleAction = 'Expand All';
   basehref: string = FCTSDashBoard.BaseHref;
   secExp: string;
 
-  @Input() structureJson;
   @ViewChild(MatAccordion) accordion: MatAccordion;
 
   constructor(
@@ -25,13 +28,17 @@ export class MainPageComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.pageStructure = this.structureJson;
+    this.pageStructureSubscription = this._administrationService.mainPageStrArr.subscribe(pageStructure => {
+      this.structureJson = pageStructure;
+      this.pageStructure = this.structureJson;
+    });
+    this.secExpSubscription = this._administrationService.currentSecExp.subscribe(currentSecExp => this.secExp = currentSecExp);
 
-    this._administrationService.currentSecExp.subscribe(currentSecExp => this.secExp = currentSecExp);
   }
 
   ngOnDestroy() {
-
+    this.pageStructureSubscription.unsubscribe();
+    this.secExpSubscription.unsubscribe();
   }
 
   accordionAction(): void {

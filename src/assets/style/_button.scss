@@ -330,9 +330,22 @@
 .btn_011 {
   background: #F2F2F2;
   border: none !important;
+  min-width: 110px;
+  &.long-name{
+    min-width: 140px;
+  }
 }
 
 .btn_012 {
   background-color: #00B7C3;
   color: #FFF;
+}
+
+.btn_013 {
+  padding: 7px 10px;
+
+  img {
+    max-width: 18px;
+    width: 18px;
+  }
 }

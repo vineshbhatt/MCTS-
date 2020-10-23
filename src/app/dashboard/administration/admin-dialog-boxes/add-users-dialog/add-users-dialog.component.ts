@@ -69,7 +69,7 @@ export class AddUsersDialogComponent implements OnInit {
   getAllUsers(startRow: number): void {
     this.startRow = startRow;
     this.showSpinner = startRow === 1 ? true : false;
-    this._administration.getAllUsers(this.collectSearchData(), startRow, startRow + this.loadStep)
+    this._administration[this.data.allUsersActions](this.collectSearchData(), startRow, startRow + this.loadStep)
       .subscribe(
         response => {
           this.usersList = this.usersList.concat(response);
@@ -87,7 +87,6 @@ export class AddUsersDialogComponent implements OnInit {
   collectSearchData() {
     let searchParams = {
       action: this.action,
-      section: this.data.section,
       itemID: this.data.itemID,
       searchString: this.action === 'search' ? this.searchString.nativeElement.value : '',
       department: this.action === 'search' && this.filtersForm.get('Department').value ?

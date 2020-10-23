@@ -1,4 +1,4 @@
-<header class="action_header">
+<header class="dialog_header">
   <h2>
     {{'assign' | translator}} {{data.itemName}}(s)
   </h2>
@@ -10,7 +10,7 @@
     <input type="text" [placeholder]="'search' | translator" #searchString (keyup.enter)="applyFilter()"
       formControlName="SearchString">
   </div>
-  <div class="input_filter_wrp">
+  <div class="input_field_wrp">
     <mat-form-field>
       <input type="text" aria-label="Number" matInput [placeholder]="'department' | translator" #depstring
         formControlName="Department" [matAutocomplete]="departmentFilter"
@@ -24,7 +24,8 @@
     </mat-form-field>
   </div>
 </form>
-<div class="table_wrapper" infinite-scroll [scrollWindow]="false" (scrolled)="onScrollDown()">
+<div class="table_wrapper all-users" mat-dialog-content infinite-scroll [scrollWindow]="false"
+  (scrolled)="onScrollDown()">
   <div *ngIf="showSpinner; else elseBlock" class="spinner-wrappar">
     <mat-spinner></mat-spinner>
   </div>
