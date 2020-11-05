@@ -27,8 +27,7 @@ export class BaseCurrentUsersComponent implements OnInit {
   action = '';
   possibleAction = 'assign';
   usersList: UsersData[];
-  routeDataEvent: Subscription;
-  routeData: any;
+  isLoading = false;
   // filter data
   filtersForm: FormGroup;
   filterState = false;
@@ -40,13 +39,13 @@ export class BaseCurrentUsersComponent implements OnInit {
   // table structure
   lang: string = this.translatorService.lang.toUpperCase();
   selection: any;
-  displayedColumns: string[] = ['checkBox', 'photo', 'FirstName_' + this.lang, 'LastName_' + this.lang, 'NameLogin', 'DepartmentName_' + this.lang, 'actionButtons'];
+  displayedColumns: string[] = ['checkBox', 'photo', 'FirstName_' + this.lang, 'LastName_' + this.lang, 'Login', 'DepartmentName_' + this.lang, 'actionButtons'];
   tableStructure = [
     { 'columnDef': 'checkBox', 'columnName': '', 'className': 'check-box' },
     { 'columnDef': 'photo', 'columnName': '', 'className': 'photo-wrapper' },
     { 'columnDef': 'FirstName_' + this.lang, 'columnName': 'name', 'className': '' },
     { 'columnDef': 'LastName_' + this.lang, 'columnName': 'surname', 'className': '' },
-    { 'columnDef': 'NameLogin', 'columnName': 'login', 'className': '' },
+    { 'columnDef': 'Login', 'columnName': 'login', 'className': '' },
     { 'columnDef': 'DepartmentName_' + this.lang, 'columnName': 'department', 'className': '' },
     { 'columnDef': 'actionButtons', 'columnName': '', 'className': 'single-action-button' }
   ];
@@ -79,49 +78,9 @@ export class BaseCurrentUsersComponent implements OnInit {
         }
       });
   }
-  // get users func
-  getPage(page: number, usersForAction?: string[]): void {
-    const perPage = this.itemsPerPage;
-    const start = ((page - 1) * perPage) + 1;
-    const end = (start + perPage) - 1;
-    const paginationParameters: PaginationParameters = {
-      'perPage': perPage,
-      'startRow': start,
-      'endRow': end,
-      'page': page
-    };
-    this.currentUsersActions(paginationParameters, usersForAction);
-  }
-
-  currentUsersActions(paginationParameters: PaginationParameters, usersForAction?: string[]): void {
-    // overwritten in extends component
-  }
-
-  collectActionData(): any {
-    let actionParams = {
-      action: this.action,
-      fullSearchStr: this.action === 'fullsearch' ? this.searchString.nativeElement.value : '',
-      name: this.action === 'filtersearch' && this.filtersForm.get('Name').value ? this.filtersForm.get('Name').value : '',
-      surname: this.action === 'filtersearch' && this.filtersForm.get('Surname').value ? this.filtersForm.get('Surname').value : '',
-      login: this.action === 'filtersearch' && this.filtersForm.get('Login').value ? this.filtersForm.get('Login').value : '',
-      department: this.action === 'filtersearch' && this.filtersForm.get('Department').value ?
-        this.filtersForm.get('Department').value.OUID : -1
-    };
-    return actionParams;
-  }
 
   getInitials(firstName: string, lastName: string) {
     return firstName.slice(0, 1).toUpperCase() + lastName.slice(0, 1).toUpperCase();
-  }
-  // search/filter functions
-  applyMainFilter() {
-    this.action = this.searchString.nativeElement.value.length > 0 ? 'fullsearch' : '';
-    this.getPage(1);
-  }
-
-  filterObject() {
-    this.action = 'filtersearch';
-    this.getPage(1);
   }
 
   openFilter() {
@@ -156,44 +115,6 @@ export class BaseCurrentUsersComponent implements OnInit {
   // autocomplete display func
   displayFieldValue(fieldValue: DepFilterData) {
     if (fieldValue) { return this.translator.transform(fieldValue.Name_EN, fieldValue.Name_AR); }
-  }
-
-  // delete user(s) func
-  removeRecord(usersList: string[]): void {
-    this.action = 'removeusers';
-    this.getPage(1, usersList);
-  }
-
-  removeRecords(): void {
-    this.action = 'removeusers';
-    let usersList = new Array();
-    this.selection.selected.forEach(element => {
-      usersList.push(element.ID);
-    });
-    this.getPage(1, usersList);
-  }
-
-  addUsersDialogBox(): void {
-    const dialogRef = this.dialogU.open(AddUsersDialogComponent, {
-      width: '100%',
-      panelClass: 'dialog-box-wrapper',
-      maxWidth: '650px',
-      direction: DialogDirection[this.translatorService.translatorDir],
-      data: {
-        itemName: this.itemName,
-        itemID: this.itemID,
-        allUsersActions: this.routeData.allUsersActions
-      }
-    }).afterClosed().subscribe(result => {
-      if (result && result.length > 0) {
-        this.addUsers(result);
-      }
-    });
-  }
-
-  addUsers(usersList: string[]) {
-    this.action = 'addusers';
-    this.getPage(1, usersList);
   }
 
 }

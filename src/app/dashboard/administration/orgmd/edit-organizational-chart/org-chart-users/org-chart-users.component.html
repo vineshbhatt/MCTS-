@@ -35,17 +35,6 @@
                         <input matInput [placeholder]="'login' | translator" formControlName="Login" autocomplete="off">
                     </mat-form-field>
                 </div>
-                <!--           <div class="input_field_wrp">
-            <mat-form-field>
-              <input type="text" aria-label="'number'" matInput [placeholder]="'department' | translator"
-                formControlName="Department" [matAutocomplete]="departmentFilter">
-              <mat-autocomplete #departmentFilter="matAutocomplete" [displayWith]="displayFieldValue.bind(this)">
-                <mat-option *ngFor="let DepName of (filteredDepartments | async)" [value]="DepName">
-                  {{DepName.Name_EN | translator:DepName.Name_AR}}
-                </mat-option>
-              </mat-autocomplete>
-            </mat-form-field>
-          </div> -->
                 <div class="input_field_wrp">
                     <button class="btn_001" mat-button (click)="filterObject()">{{'search' | translator}}</button>
                 </div>
@@ -53,7 +42,7 @@
         </mat-expansion-panel>
     </mat-accordion>
     <div class="table_wrapper">
-        <div *ngIf="!usersList; else elseBlock" class="spinner-wrappar">
+        <div *ngIf="isLoading; else elseBlock" class="spinner-wrappar">
             <mat-spinner></mat-spinner>
         </div>
         <ng-template #elseBlock>

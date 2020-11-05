@@ -341,7 +341,11 @@
         .action-buttons{
             button{
                 margin-left: 0 !important;
-                margin-right: 15px;
+                margin-right: 5px;
+                &:first-child{
+                    margin-left: 0 !important;
+                    margin-right: 15px;
+                  }
             }
         }
         .breadcrumbs_wapper{

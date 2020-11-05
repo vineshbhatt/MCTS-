@@ -26,7 +26,7 @@ export interface UsersData {
     ID: string;
     LastName_AR: string;
     LastName_EN: string;
-    NameLogin: string;
+    Login: string;
     RowNum?: string;
     totalRowCount?: number;
     Email?: string;
@@ -149,4 +149,40 @@ export interface UserRolesModel {
     totalRowCount?: number;
 }
 
+export interface SpecRolesOrgStructure {
+    CSGroup: string;
+    Code: string;
+    GroupName: string;
+    LTID: string;
+    Name_AR: string;
+    Name_EN: string;
+    OUID: number;
+    OUTID: string;
+    Parent: number;
+    expand?: boolean;
+    isLoading?: boolean;
+    children?: SpecRolesOrgStructure[];
+}
+
+export interface SpecRolesEmployees {
+    OUID: number;
+    EID: number;
+    FirstName_EN: string;
+    FirstName_AR: string;
+    LastName_EN: string;
+    LastName_AR: string;
+    RoleName: string;
+    RoleName_AR: string;
+    Code: string;
+    EName: string;
+    EName_AR: string;
+}
+
+export interface CommonRoleModel {
+    GRID: number;
+    Description_AR: string;
+    Description_EN: string;
+    Name_AR: string;
+    Name_EN: string;
+}
 

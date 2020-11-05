@@ -36,8 +36,6 @@ export class OrgChartUsersComponent extends BaseCurrentUsersComponent implements
 
     this.breadcrumbsSubscription();
 
-    this.getPage(this.pagenumber);
-
     this.filtersForm = this.formBuilder.group({
       Name: [],
       Surname: [],
@@ -52,10 +50,27 @@ export class OrgChartUsersComponent extends BaseCurrentUsersComponent implements
           this._administration.getDepartmentsList(value)
         )
       );
+
+    this.getPage(this.pagenumber);
   }
 
-  currentUsersActions(paginationParameters: PaginationParameters, usersForAction?: string[]): void {
-    this._administration.orgmdOrgUnitUsers(this.itemID, this.collectActionData(), paginationParameters, usersForAction)
+  // get users func
+  getPage(page: number): void {
+    const perPage = this.itemsPerPage;
+    const start = ((page - 1) * perPage) + 1;
+    const end = (start + perPage) - 1;
+    const paginationParameters: PaginationParameters = {
+      'perPage': perPage,
+      'startRow': start,
+      'endRow': end,
+      'page': page
+    };
+    this.getCurrentUsers(paginationParameters);
+  }
+
+  getCurrentUsers(paginationParameters: PaginationParameters): void {
+    this.isLoading = true;
+    this._administration.orgmdOrgUnitUsers(this.itemID, this.collectActionData(), paginationParameters)
       .subscribe(
         response => {
           this.usersList = response;
@@ -71,9 +86,19 @@ export class OrgChartUsersComponent extends BaseCurrentUsersComponent implements
           this._errorHandlerFctsService.handleError(responseError).subscribe();
         },
         () => {
-          if (this.action === 'addusers' || this.action === 'removeusers') {
-            this.action = '';
-          }
+          this.isLoading = false;
+        }
+      );
+  }
+
+  usersActions(action: string, usersList: string[]): void {
+    this._administration.orgmdOrgUnitUserActions(this.itemID, action, usersList)
+      .subscribe(
+        response => {
+          this.getPage(1);
+        },
+        responseError => {
+          this._errorHandlerFctsService.handleError(responseError).subscribe();
         }
       );
   }
@@ -91,22 +116,47 @@ export class OrgChartUsersComponent extends BaseCurrentUsersComponent implements
       }
     }).afterClosed().subscribe(result => {
       if (result && result.length > 0) {
-        this.addUsers(result);
+        this.usersActions('addusers', result);
       }
     });
   }
 
   collectActionData(): any {
-    let actionParams = {
+    const actionParams = {
       action: this.action,
-      fullSearchStr: this.action === 'fullsearch' ? this.searchString.nativeElement.value : '',
-      name: this.action === 'filtersearch' && this.filtersForm.get('Name').value ? this.filtersForm.get('Name').value : '',
-      surname: this.action === 'filtersearch' && this.filtersForm.get('Surname').value ? this.filtersForm.get('Surname').value : '',
-      login: this.action === 'filtersearch' && this.filtersForm.get('Login').value ? this.filtersForm.get('Login').value : '',
-      /*       department: this.action === 'filtersearch' && this.filtersForm.get('Department').value ?
-              this.filtersForm.get('Department').value.OUID : -1 */
+      fullSearchStr: this.searchString.nativeElement.value,
+      name: this.filtersForm.get('Name').value,
+      surname: this.filtersForm.get('Surname').value,
+      login: this.filtersForm.get('Login').value
     };
+    if (!actionParams.fullSearchStr && !actionParams.name && !actionParams.surname && !actionParams.login) {
+      actionParams.action = '';
+      this.action = '';
+    }
     return actionParams;
   }
 
+  // search/filter functions
+  applyMainFilter() {
+    this.action = 'fullsearch';
+    this.getPage(1);
+  }
+
+  filterObject() {
+    this.action = 'filtersearch';
+    this.getPage(1);
+  }
+
+  // delete user(s) func
+  removeRecord(usersList: string[]): void {
+    this.usersActions('removeusers', usersList);
+  }
+
+  removeRecords(): void {
+    let usersList = new Array();
+    this.selection.selected.forEach(element => {
+      usersList.push(element.ID);
+    });
+    this.usersActions('removeusers', usersList);
+  }
 }

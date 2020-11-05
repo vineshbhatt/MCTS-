@@ -1,10 +1,10 @@
 import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { MatDialogRef, MatTableDataSource, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Observable } from 'rxjs';
 import { debounceTime, switchMap } from 'rxjs/operators';
 import { FCTSDashBoard } from 'src/environments/environment';
-import { DepFilterData, UsersData } from '../../administration.model';
+import { DepFilterData, UsersData } from '../../../administration.model';
 import { AdministrationService } from 'src/app/dashboard/administration/services/administration.service';
 import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handler-fcts.service';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -12,11 +12,11 @@ import { multiLanguageTranslatorPipe } from 'src/assets/translator/index';
 import { MatAutocompleteTrigger } from '@angular/material';
 
 @Component({
-  selector: 'app-add-users-dialog',
-  templateUrl: './add-users-dialog.component.html',
-  styleUrls: ['./add-users-dialog.component.scss']
+  selector: 'app-fcts-specific-roles-add-users',
+  templateUrl: './fcts-specific-roles-add-users.component.html',
+  styleUrls: ['./fcts-specific-roles-add-users.component.scss']
 })
-export class AddUsersDialogComponent implements OnInit {
+export class FctsSpecificRolesAddUsersComponent implements OnInit {
   basehref = FCTSDashBoard.BaseHref;
   filteredDepartments: Observable<DepFilterData[]>;
   selection = new SelectionModel<any>(true, []);
@@ -24,7 +24,6 @@ export class AddUsersDialogComponent implements OnInit {
   usersList: UsersData[] = new Array();
   startRow = 1;
   loadStep = 100;
-  action: string;
   selectedDepartment: string;
   showSpinner = true;
   displayedColumns: string[] = ['CheckBox', 'Photo', 'Name', 'Email'];
@@ -44,11 +43,9 @@ export class AddUsersDialogComponent implements OnInit {
     , private _administration: AdministrationService
     , private _formBuilder: FormBuilder
     , private _errorHandlerFctsService: ErrorHandlerFctsService
-    , private translator: multiLanguageTranslatorPipe
-  ) { }
+    , private translator: multiLanguageTranslatorPipe) { }
 
   ngOnInit() {
-    this.getAllUsers(1);
 
     this.filtersForm = this._formBuilder.group({
       SearchString: [],
@@ -63,12 +60,14 @@ export class AddUsersDialogComponent implements OnInit {
           this._administration.getDepartmentsList(value)
         )
       );
+
+    this.getAllUsers(1);
   }
 
   getAllUsers(startRow: number): void {
     this.startRow = startRow;
     this.showSpinner = startRow === 1 ? true : false;
-    this._administration[this.data.allUsersActions](this.collectSearchData(), startRow, startRow + this.loadStep)
+    this._administration.getSpecificRolesAllUsers(this.collectSearchData(), this.data, startRow, startRow + this.loadStep)
       .subscribe(
         response => {
           this.usersList = this.usersList.concat(response);
@@ -84,21 +83,17 @@ export class AddUsersDialogComponent implements OnInit {
 
   collectSearchData() {
     let searchParams = {
-      action: this.action,
-      itemID: this.data.itemID,
-      searchString: this.action === 'search' ? this.searchString.nativeElement.value : '',
-      department: this.action === 'search' && this.filtersForm.get('Department').value ?
-        this.filtersForm.get('Department').value.OUID : -1
+      search: false,
+      searchString: this.searchString.nativeElement.value,
+      department: this.filtersForm.get('Department').value ? this.filtersForm.get('Department').value.OUID : -1
     };
-    if (!searchParams.searchString && searchParams.department < 0) {
-      searchParams.action = '';
-      this.action = '';
+    if (searchParams.searchString || searchParams.department >= 0) {
+      searchParams.search = true;
     }
     return searchParams;
   }
 
   applyFilter() {
-    this.action = 'search';
     this.usersList = new Array();
     this.selection.clear();
     this.getAllUsers(1);
@@ -142,6 +137,7 @@ export class AddUsersDialogComponent implements OnInit {
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
   }
 
+
   addUsers() {
     let usersArray = new Array();
     this.selection.selected.forEach(element => {
@@ -160,4 +156,5 @@ export class AddUsersDialogComponent implements OnInit {
   numSequence(n: number): Array<number> {
     return Array(n);
   }
+
 }

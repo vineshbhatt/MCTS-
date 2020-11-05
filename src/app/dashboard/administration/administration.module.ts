@@ -38,6 +38,12 @@ import { OrgChartUsersComponent } from './orgmd/edit-organizational-chart/org-ch
 import { EditOrgChatUsersDialogComponent } from './orgmd/edit-organizational-chart/edit-org-chat-users-dialog/edit-org-chat-users-dialog.component';
 import { EditOrgChartRolesComponent } from './orgmd/edit-organizational-chart/edit-org-chart-roles/edit-org-chart-roles.component';
 import { EditOrgChartRolesDialogComponent } from './orgmd/edit-organizational-chart/edit-org-chart-roles-dialog/edit-org-chart-roles-dialog.component';
+import { FctsSpecificRolesComponent } from './fcts-roles-setup/fcts-specific-roles/fcts-specific-roles.component';
+import { FctsRolesSetupMainComponent } from './fcts-roles-setup/fcts-roles-setup-main/fcts-roles-setup-main.component';
+import { FctsSpecificRolesUsersComponent } from './fcts-roles-setup/fcts-specific-roles/fcts-specific-roles-users/fcts-specific-roles-users.component';
+import { FctsSpecificRolesAddUsersComponent } from './fcts-roles-setup/fcts-specific-roles/fcts-specific-roles-add-users/fcts-specific-roles-add-users.component';
+import { FctsCommonRolesComponent } from './fcts-roles-setup/fcts-common-roles/fcts-common-roles.component';
+import { FctsCommonRolesUsersComponent } from './fcts-roles-setup/fcts-common-roles/fcts-common-roles-users/fcts-common-roles-users.component';
 
 @NgModule({
   imports: [
@@ -88,6 +94,12 @@ import { EditOrgChartRolesDialogComponent } from './orgmd/edit-organizational-ch
     EditOrgChatUsersDialogComponent,
     EditOrgChartRolesComponent,
     EditOrgChartRolesDialogComponent,
+    FctsSpecificRolesComponent,
+    FctsRolesSetupMainComponent,
+    FctsSpecificRolesUsersComponent,
+    FctsSpecificRolesAddUsersComponent,
+    FctsCommonRolesComponent,
+    FctsCommonRolesUsersComponent,
     /* EmployeeMapList, */
   ],
   entryComponents: [
@@ -95,7 +107,8 @@ import { EditOrgChartRolesDialogComponent } from './orgmd/edit-organizational-ch
     EditOrgChartDialogComponent,
     ConfirmationDialogComponent,
     EditOrgChatUsersDialogComponent,
-    EditOrgChartRolesDialogComponent
+    EditOrgChartRolesDialogComponent,
+    FctsSpecificRolesAddUsersComponent
   ],
   providers: [
     multiLanguageTranslatorPipe

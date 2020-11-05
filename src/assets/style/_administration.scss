@@ -114,7 +114,10 @@ app-administration{
       }
       .action-buttons{
         button{
-          margin-left: 15px;
+          margin-left: 5px;
+          &:first-child{
+            margin-left: 15px;
+          }
         }
       }
     }
@@ -205,6 +208,9 @@ app-administration{
 }
 
 .main_admin_wrapper, .dialog-box-wrapper{
+  .mat-dialog-container {
+    border-radius: 0px !important;
+  }
   .table_wrapper{
     &.all-users{
       height: 65vh;
@@ -381,6 +387,17 @@ app-administration{
     padding-left: 20px;
     padding-right: 13px;
     overflow-y: scroll;
+    .user-wrapper{
+      display: flex;
+      .check-box{
+        width: 40px;
+        padding-left: 24px;
+        padding-right: 5px;
+      }
+      .icon-wrapper{
+        padding:5px;
+      }
+    }
   }
   .dialog-body{
     padding: 0 20px;
@@ -514,7 +531,7 @@ app-administration{
   }
 
   .org_chart_text{
-    cursor: default;
+    cursor: pointer/* default */;
   }
   .search-result{
     color: #b04609;

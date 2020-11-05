@@ -10,6 +10,11 @@ import { MainPageComponent } from './main-page/main-page.component';
 import { OrgmdRoleUsersComponent } from './orgmd/orgmd-roles/orgmd-role-users/orgmd-role-users.component';
 import { OrgChartUsersComponent } from './orgmd/edit-organizational-chart/org-chart-users/org-chart-users.component';
 import { EditOrgChartRolesComponent } from './orgmd/edit-organizational-chart/edit-org-chart-roles/edit-org-chart-roles.component';
+import { FctsSpecificRolesComponent } from './fcts-roles-setup/fcts-specific-roles/fcts-specific-roles.component';
+import { FctsRolesSetupMainComponent } from './fcts-roles-setup/fcts-roles-setup-main/fcts-roles-setup-main.component';
+import { FctsSpecificRolesUsersComponent } from './fcts-roles-setup/fcts-specific-roles/fcts-specific-roles-users/fcts-specific-roles-users.component';
+import { FctsCommonRolesComponent } from './fcts-roles-setup/fcts-common-roles/fcts-common-roles.component';
+import { FctsCommonRolesUsersComponent } from './fcts-roles-setup/fcts-common-roles/fcts-common-roles-users/fcts-common-roles-users.component';
 
 const routes: Routes = [
   {
@@ -35,6 +40,70 @@ const routes: Routes = [
           { path: '', component: EditOrganizationalChartComponent },
           { path: 'users', component: OrgChartUsersComponent },
           { path: 'unit-roles', component: EditOrgChartRolesComponent }
+        ]
+      },
+      {
+        path: 'common-roles',
+        component: FctsRolesSetupMainComponent,
+        children: [
+          { path: '', component: FctsCommonRolesComponent },
+          { path: 'users', component: FctsCommonRolesUsersComponent },
+        ]
+      },
+      {
+        path: 'fcts-confidential-receiver',
+        component: FctsRolesSetupMainComponent,
+        children: [
+          { path: '', component: FctsSpecificRolesComponent, data: { roleCode: 'CR' } },
+          { path: 'users', component: FctsSpecificRolesUsersComponent },
+        ]
+      },
+      {
+        path: 'fcts-search-authority',
+        component: FctsRolesSetupMainComponent,
+        children: [
+          { path: '', component: FctsSpecificRolesComponent, data: { roleCode: 'SRA' } },
+          { path: 'users', component: FctsSpecificRolesUsersComponent },
+        ]
+      },
+      {
+        path: 'fcts-structure-receiver',
+        component: FctsRolesSetupMainComponent,
+        children: [
+          { path: '', component: FctsSpecificRolesComponent, data: { roleCode: 'SR' } },
+          { path: 'users', component: FctsSpecificRolesUsersComponent },
+        ]
+      },
+      {
+        path: 'fcts-signing-authority',
+        component: FctsRolesSetupMainComponent,
+        children: [
+          { path: '', component: FctsSpecificRolesComponent, data: { roleCode: 'SGA' } },
+          { path: 'users', component: FctsSpecificRolesUsersComponent },
+        ]
+      },
+      {
+        path: 'fcts-dep-secretary',
+        component: FctsRolesSetupMainComponent,
+        children: [
+          { path: '', component: FctsSpecificRolesComponent, data: { roleCode: 'DS' } },
+          { path: 'users', component: FctsSpecificRolesUsersComponent },
+        ]
+      },
+      {
+        path: 'fcts-hed-of-section',
+        component: FctsRolesSetupMainComponent,
+        children: [
+          { path: '', component: FctsSpecificRolesComponent, data: { roleCode: 'HS' } },
+          { path: 'users', component: FctsSpecificRolesUsersComponent },
+        ]
+      },
+      {
+        path: 'fcts-hos-secretary',
+        component: FctsRolesSetupMainComponent,
+        children: [
+          { path: '', component: FctsSpecificRolesComponent, data: { roleCode: 'HSS' } },
+          { path: 'users', component: FctsSpecificRolesUsersComponent },
         ]
       }
     ]

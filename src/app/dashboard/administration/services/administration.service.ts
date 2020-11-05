@@ -3,7 +3,10 @@ import { Observable, throwError, EMPTY, BehaviorSubject } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { FCTSDashBoard } from 'src/environments/environment';
-import { RolesData, UsersData, PaginationParameters, DepFilterData, OrgStructure, UserRolesModel, UnitDefinitionModel, EntityRelModel } from '../administration.model';
+import {
+  RolesData, UsersData, PaginationParameters, DepFilterData, OrgStructure, UserRolesModel,
+  UnitDefinitionModel, EntityRelModel, SpecRolesOrgStructure, SpecRolesEmployees, CommonRoleModel
+} from '../administration.model';
 import { AppLoadConstService } from 'src/app/app-load-const.service';
 
 @Injectable({
@@ -74,29 +77,21 @@ export class AdministrationService {
     );
   }
 
-  orgmdRoleUsers(itemID: string, actionParameters: any, pageParameters: PaginationParameters, selectedUsers?: any[]): Observable<UsersData[]> {
+  orgmdRoleUsers(itemID: string, actionParameters: any, pageParameters: PaginationParameters): Observable<UsersData[]> {
     let params = new HttpParams()
       .set('StartRow', pageParameters.startRow.toString())
       .set('EndRow', pageParameters.endRow.toString())
       .set('GRID', itemID)
       .set('rowCount', pageParameters.startRow === 1 ? 'true' : 'false');
-    if (actionParameters.action && actionParameters.action === 'fullsearch') {
-      params = params.append('FullSearchStr', '%' + actionParameters.fullSearchStr + '%');
-      params = params.append(actionParameters.action, 'true');
-    } else if (actionParameters.action && actionParameters.action === 'filtersearch') {
-      params = params.append('FirstName', actionParameters.name);
-      params = params.append('LastName', actionParameters.surname);
-      params = params.append('Login', actionParameters.login);
+    if (actionParameters.action) {
+      params = params.append('FullSearchStr', actionParameters.fullSearchStr ? actionParameters.fullSearchStr : '');
+      params = params.append('FirstName', actionParameters.name ? actionParameters.name : '');
+      params = params.append('LastName', actionParameters.surname ? actionParameters.surname : '');
+      params = params.append('Login', actionParameters.login ? actionParameters.login : '');
       params = params.append('DepID', actionParameters.department);
       params = params.append(actionParameters.action, 'true');
-    } else if (actionParameters.action && actionParameters.action === 'removeusers') {
-      params = params.append('UserIDs', selectedUsers.toString());
-      params = params.append(actionParameters.action, 'true');
-    } else if (actionParameters.action && actionParameters.action === 'addusers') {
-      params = params.append('UserIDs', selectedUsers.toString());
-      params = params.append(actionParameters.action, 'true');
     }
-    return this.httpServices.get<any>(
+    return this.httpServices.get<UsersData[]>(
       this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ORGMDRoleUsers}?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
@@ -109,6 +104,20 @@ export class AdministrationService {
         return throwError(error);
       })
     );
+  }
+
+  orgmdRoleUsersActions(itemID: string, action: string, usersList: string[]): Observable<any> {
+    let params = new HttpParams()
+      .set('GRID', itemID)
+      .set('UserIDs', usersList.toString())
+      .set(action, 'true');
+    const options = {
+      headers: new HttpHeaders()
+        .set('OTCSTICKET', CSConfig.AuthToken)
+    };
+    return this.httpServices.post(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ORGMDRoleUsersAction}?Format=webreport`,
+      params, options);
   }
 
   orgmdRoleAllUsers(searchParameters: any, startRow: number, endRow: number): Observable<UsersData[]> {
@@ -136,29 +145,20 @@ export class AdministrationService {
     );
   }
 
-  orgmdOrgUnitUsers(itemID: string, actionParameters: any, pageParameters: PaginationParameters, selectedUsers?: any[]): Observable<UsersData[]> {
+  orgmdOrgUnitUsers(itemID: string, actionParameters: any, pageParameters: PaginationParameters): Observable<UsersData[]> {
     let params = new HttpParams()
       .set('StartRow', pageParameters.startRow.toString())
       .set('EndRow', pageParameters.endRow.toString())
       .set('GRID', itemID)
       .set('rowCount', pageParameters.startRow === 1 ? 'true' : 'false');
-    if (actionParameters.action && actionParameters.action === 'fullsearch') {
-      params = params.append('FullSearchStr', '%' + actionParameters.fullSearchStr + '%');
-      params = params.append(actionParameters.action, 'true');
-    } else if (actionParameters.action && actionParameters.action === 'filtersearch') {
-      params = params.append('FirstName', actionParameters.name);
-      params = params.append('LastName', actionParameters.surname);
-      params = params.append('Login', actionParameters.login);
-      /*     params = params.append('DepID', actionParameters.department); */
-      params = params.append(actionParameters.action, 'true');
-    } else if (actionParameters.action && actionParameters.action === 'removeusers') {
-      params = params.append('UserIDs', selectedUsers.toString());
-      params = params.append(actionParameters.action, 'true');
-    } else if (actionParameters.action && actionParameters.action === 'addusers') {
-      params = params.append('UserIDs', selectedUsers.toString());
+    if (actionParameters.action) {
+      params = params.append('FullSearchStr', actionParameters.fullSearchStr ? actionParameters.fullSearchStr : '');
+      params = params.append('FirstName', actionParameters.name ? actionParameters.name : '');
+      params = params.append('LastName', actionParameters.surname ? actionParameters.surname : '');
+      params = params.append('Login', actionParameters.login ? actionParameters.login : '');
       params = params.append(actionParameters.action, 'true');
     }
-    return this.httpServices.get<any>(
+    return this.httpServices.get<UsersData[]>(
       this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ORGMDOrgUnitUsers}?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
@@ -171,6 +171,20 @@ export class AdministrationService {
         return throwError(error);
       })
     );
+  }
+
+  orgmdOrgUnitUserActions(itemID: string, action: string, usersList: string[]): Observable<any> {
+    let params = new HttpParams()
+      .set('GRID', itemID)
+      .set('UserIDs', usersList.toString())
+      .set(action, 'true');
+    const options = {
+      headers: new HttpHeaders()
+        .set('OTCSTICKET', CSConfig.AuthToken)
+    };
+    return this.httpServices.post(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ORGMDOrgUnitUsersActions}?Format=webreport`,
+      params, options);
   }
 
   orgmdOrgUnitAllUsers(searchParameters: any, startRow: number, endRow: number): Observable<UsersData[]> {
@@ -478,5 +492,168 @@ export class AdministrationService {
       this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ORGMDOrgChartRoles}?Format=webreport`,
       params, options);
 
+  }
+
+  getSpecificRoleUnits(roleCode: string): Observable<SpecRolesOrgStructure[]> {
+    let params = new HttpParams()
+      .set('recRoleCode', roleCode)
+      .set('UNITS', 'true');
+    return this.httpServices.get<SpecRolesOrgStructure[]>(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.FCTSSpecificRole}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
+  getSpecificRoleChartUsers(roleCode: string, OUID: number): Observable<any> {
+    let params = new HttpParams()
+      .set('recRoleCode', roleCode)
+      .set('OUID', OUID.toString())
+      .set('USERS', 'true');
+    return this.httpServices.get<UserRolesModel[]>(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.FCTSSpecificRoleTreeUsers}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
+  searchSpecificRoleChartUsers(roleCode: string, searchStr: string): Observable<SpecRolesEmployees[]> {
+    let params = new HttpParams()
+      .set('recRoleCode', roleCode)
+      .set('SearchStr', searchStr)
+      .set('SEARCH_USERS', 'true');
+    return this.httpServices.get<SpecRolesEmployees[]>(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.FCTSSpecificRoleTreeUsers}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
+  getSpecificRolesCurrentUsers(OUID: string, roleCode: string, actionParameters: any, pagParams: PaginationParameters) {
+    let params = new HttpParams()
+      .set('StartRow', pagParams.startRow.toString())
+      .set('EndRow', pagParams.endRow.toString())
+      .set('recRoleCode', roleCode)
+      .set('GRID', OUID)
+      /* .set('groupmembers', 'true') */
+      .set('rowCount', pagParams.startRow === 1 ? 'true' : 'false');
+    if (actionParameters.action) {
+      params = params.append('FullSearchStr', actionParameters.fullSearchStr ? actionParameters.fullSearchStr : '');
+      params = params.append('FirstName', actionParameters.name ? actionParameters.name : '');
+      params = params.append('LastName', actionParameters.surname ? actionParameters.surname : '');
+      params = params.append('Login', actionParameters.login ? actionParameters.login : '');
+      params = params.append('DepID', actionParameters.department);
+      params = params.append(actionParameters.action, 'true');
+    }
+
+    return this.httpServices.get<any>(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.FCTSSpecificRoleUsers}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
+  specificRolesUserActions(GRID: string, action: string, usersList: string[]): Observable<any> {
+    let params = new HttpParams()
+      .set('Operation', action)
+      .set('UserIDs', usersList.toString())
+      .set('GRID', GRID);
+    const options = {
+      headers: new HttpHeaders()
+        .set('OTCSTICKET', CSConfig.AuthToken)
+    };
+    return this.httpServices.post(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.FCTSRolesOperations}?Format=webreport`,
+      params, options);
+  }
+
+  getSpecificRolesAllUsers(searchParameters, inputData, startRow: number, endRow: number): Observable<UsersData[]> {
+    let params = new HttpParams()
+      .set('StartRow', startRow.toString())
+      .set('EndRow', endRow.toString())
+      .set('GRID', this._globalConstants.FCTS_Dashboard.FCTS_SU)
+      .set('recRoleCode', inputData.roleCode)
+      .set('OUID', inputData.OUID);
+    if (searchParameters.search) {
+      params = params.append('SearchStr', searchParameters.searchString);
+      params = params.append('DepID', searchParameters.department);
+      params = params.append('search', 'true');
+    }
+    return this.httpServices.get<UsersData[]>(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.FCTSSpecificRoleAllUsers}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
+  specificRolesCreateGroups(orgUnitIDs: number[], action: string, roleCode: string): Observable<any> {
+    let params = new HttpParams()
+      .set('Operation', action)
+      .set('RoleCode', roleCode)
+      .set('ORGMDOrgUnitIDs', orgUnitIDs.toString());
+    const options = {
+      headers: new HttpHeaders()
+        .set('OTCSTICKET', CSConfig.AuthToken)
+    };
+    return this.httpServices.post(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.FCTSRolesOperations}?Format=webreport`,
+      params, options);
+  }
+
+  getCommonRoles(): Observable<CommonRoleModel[]> {
+    const params = new HttpParams();
+    return this.httpServices.get<CommonRoleModel[]>(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.FCTSCommonRoles}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
   }
 }
