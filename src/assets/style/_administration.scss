@@ -536,6 +536,14 @@ app-administration{
   .search-result{
     color: #b04609;
   }
+
+  .deactivated-marker{
+    margin: 0 25px;
+    padding: 2px;
+    border-radius: 3px;
+    background-color: #EB5757;
+    color: white;
+  }
 }
 
 .org-chart-wrapper{

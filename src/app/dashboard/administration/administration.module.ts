@@ -41,9 +41,16 @@ import { EditOrgChartRolesDialogComponent } from './orgmd/edit-organizational-ch
 import { FctsSpecificRolesComponent } from './fcts-roles-setup/fcts-specific-roles/fcts-specific-roles.component';
 import { FctsRolesSetupMainComponent } from './fcts-roles-setup/fcts-roles-setup-main/fcts-roles-setup-main.component';
 import { FctsSpecificRolesUsersComponent } from './fcts-roles-setup/fcts-specific-roles/fcts-specific-roles-users/fcts-specific-roles-users.component';
-import { FctsSpecificRolesAddUsersComponent } from './fcts-roles-setup/fcts-specific-roles/fcts-specific-roles-add-users/fcts-specific-roles-add-users.component';
+import { FctsRolesAddUsersComponent } from './fcts-roles-setup/fcts-roles-add-users/fcts-roles-add-users.component';
 import { FctsCommonRolesComponent } from './fcts-roles-setup/fcts-common-roles/fcts-common-roles.component';
-import { FctsCommonRolesUsersComponent } from './fcts-roles-setup/fcts-common-roles/fcts-common-roles-users/fcts-common-roles-users.component';
+import { FctsCommonRoleUsersComponent } from './fcts-roles-setup/fcts-common-roles/fcts-common-roles-users/fcts-common-roles-users.component';
+import { EcmdMainComponent } from './ecmd/ecmd-main/ecmd-main.component';
+import { EcmdRecordsManagementComponent } from './ecmd/ecmd-records-management/ecmd-records-management.component';
+import { EcmdChartComponent } from './ecmd/ecmd-chart/ecmd-chart.component';
+import { EditNodeDialogComponent } from './ecmd/edit-node-dialog/edit-node-dialog.component';
+import { EditCounterpartDialogComponent } from './ecmd/edit-counterpart-dialog/edit-counterpart-dialog.component';
+import { EditDepartmentDialogComponent } from './ecmd/edit-department-dialog/edit-department-dialog.component';
+import { EditContactDialogComponent } from './ecmd/edit-contact-dialog/edit-contact-dialog.component';
 
 @NgModule({
   imports: [
@@ -97,9 +104,16 @@ import { FctsCommonRolesUsersComponent } from './fcts-roles-setup/fcts-common-ro
     FctsSpecificRolesComponent,
     FctsRolesSetupMainComponent,
     FctsSpecificRolesUsersComponent,
-    FctsSpecificRolesAddUsersComponent,
+    FctsRolesAddUsersComponent,
     FctsCommonRolesComponent,
-    FctsCommonRolesUsersComponent,
+    FctsCommonRoleUsersComponent,
+    EcmdMainComponent,
+    EcmdRecordsManagementComponent,
+    EcmdChartComponent,
+    EditNodeDialogComponent,
+    EditCounterpartDialogComponent,
+    EditDepartmentDialogComponent,
+    EditContactDialogComponent,
     /* EmployeeMapList, */
   ],
   entryComponents: [
@@ -108,7 +122,11 @@ import { FctsCommonRolesUsersComponent } from './fcts-roles-setup/fcts-common-ro
     ConfirmationDialogComponent,
     EditOrgChatUsersDialogComponent,
     EditOrgChartRolesDialogComponent,
-    FctsSpecificRolesAddUsersComponent
+    FctsRolesAddUsersComponent,
+    EditNodeDialogComponent,
+    EditCounterpartDialogComponent,
+    EditDepartmentDialogComponent,
+    EditContactDialogComponent
   ],
   providers: [
     multiLanguageTranslatorPipe

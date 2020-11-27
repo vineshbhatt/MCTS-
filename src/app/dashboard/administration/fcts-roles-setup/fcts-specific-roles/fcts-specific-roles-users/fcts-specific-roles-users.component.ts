@@ -7,7 +7,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { ActivatedRoute } from '@angular/router';
 import { PaginationParameters, DialogDirection } from '../../../administration.model';
 import { MatDialog } from '@angular/material';
-import { FctsSpecificRolesAddUsersComponent } from '../fcts-specific-roles-add-users/fcts-specific-roles-add-users.component';
+import { FctsRolesAddUsersComponent } from '../../fcts-roles-add-users/fcts-roles-add-users.component';
 import { multiLanguageTranslator, multiLanguageTranslatorPipe } from 'src/assets/translator/index';
 import { debounceTime, switchMap } from 'rxjs/operators';
 
@@ -18,7 +18,6 @@ import { debounceTime, switchMap } from 'rxjs/operators';
 })
 export class FctsSpecificRolesUsersComponent extends BaseCurrentUsersComponent implements OnInit {
   roleCode: string;
-  kuafID: string;
   OUID: string;
 
 
@@ -34,9 +33,9 @@ export class FctsSpecificRolesUsersComponent extends BaseCurrentUsersComponent i
   }
 
   ngOnInit() {
-    this.kuafID = this._route.snapshot.queryParamMap.get('KuafID');
-    this.OUID = this._route.snapshot.queryParamMap.get('OUID');
+    this.itemID = this._route.snapshot.queryParamMap.get('CSGroup');
     this.itemName = this._route.snapshot.queryParamMap.get('ItemName');
+    this.OUID = this._route.snapshot.queryParamMap.get('OUID');
     this.roleCode = this._route.snapshot.queryParamMap.get('RoleCode');
 
     this.breadcrumbsSubscription();
@@ -97,7 +96,7 @@ export class FctsSpecificRolesUsersComponent extends BaseCurrentUsersComponent i
   }
 
   usersActions(action: string, usersList: string[]): void {
-    this._administration.specificRolesUserActions(this.kuafID, action, usersList)
+    this._administration.fctsRolesUserActions(this.itemID, action, usersList)
       .subscribe(
         response => {
           this.getPage(1);
@@ -121,16 +120,17 @@ export class FctsSpecificRolesUsersComponent extends BaseCurrentUsersComponent i
   }
 
   addUsersDialogBox(): void {
-    const dialogRef = this.dialogU.open(FctsSpecificRolesAddUsersComponent, {
+    const dialogRef = this.dialogU.open(FctsRolesAddUsersComponent, {
       width: '100%',
       panelClass: 'dialog-box-wrapper',
       maxWidth: '650px',
       direction: DialogDirection[this.translatorService.translatorDir],
       data: {
+        itemID: this.itemID,
         itemName: this.itemName,
         OUID: this.OUID,
-        kuafID: this.kuafID,
-        roleCode: this.roleCode
+        roleCode: this.roleCode,
+        getUsersMethod: 'getSpecificRolesAllUsers'
       }
     }).afterClosed().subscribe(result => {
       if (result && result.length > 0) {

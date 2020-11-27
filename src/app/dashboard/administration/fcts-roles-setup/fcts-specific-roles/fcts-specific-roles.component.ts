@@ -219,7 +219,7 @@ export class FctsSpecificRolesComponent implements OnInit {
       {
         queryParams:
         {
-          KuafID: node.CSGroup,
+          CSGroup: node.CSGroup,
           OUID: node.OUID,
           RoleCode: this.roleCode,
           ItemName: node.Name_EN

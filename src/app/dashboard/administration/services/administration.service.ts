@@ -585,7 +585,7 @@ export class AdministrationService {
     );
   }
 
-  specificRolesUserActions(GRID: string, action: string, usersList: string[]): Observable<any> {
+  fctsRolesUserActions(GRID: string, action: string, usersList: string[]): Observable<any> {
     let params = new HttpParams()
       .set('Operation', action)
       .set('UserIDs', usersList.toString())
@@ -656,4 +656,64 @@ export class AdministrationService {
       })
     );
   }
+
+  getCommonRoleCurrentUsers(GRID: string, actionParameters: any, pagParams: PaginationParameters) {
+    let params = new HttpParams()
+      .set('StartRow', pagParams.startRow.toString())
+      .set('EndRow', pagParams.endRow.toString())
+      .set('GRID', GRID)
+      .set('rowCount', pagParams.startRow === 1 ? 'true' : 'false');
+    if (actionParameters.action) {
+      params = params.append('FullSearchStr', actionParameters.fullSearchStr ? actionParameters.fullSearchStr : '');
+      params = params.append('FirstName', actionParameters.name ? actionParameters.name : '');
+      params = params.append('LastName', actionParameters.surname ? actionParameters.surname : '');
+      params = params.append('Login', actionParameters.login ? actionParameters.login : '');
+      params = params.append('DepID', actionParameters.department);
+      params = params.append(actionParameters.action, 'true');
+    }
+
+    return this.httpServices.get<any>(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.FCTSCommonRolesUsers}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
+  getCommonRolesAllUsers(searchParameters, inputData, startRow: number, endRow: number): Observable<UsersData[]> {
+    let params = new HttpParams()
+      .set('StartRow', startRow.toString())
+      .set('EndRow', endRow.toString())
+      .set('GRID', this._globalConstants.FCTS_Dashboard.FCTS_SU)
+      .set('ItemID', inputData.itemID)
+      .set('StandartUsers', inputData.itemName === 'SU' ? 'false' : 'true');
+    if (searchParameters.search) {
+      params = params.append('SearchStr', searchParameters.searchString);
+      params = params.append('DepID', searchParameters.department);
+      params = params.append('search', 'true');
+    }
+    return this.httpServices.get<UsersData[]>(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.FCTSCommonRoleAllUsers}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
+
+
 }

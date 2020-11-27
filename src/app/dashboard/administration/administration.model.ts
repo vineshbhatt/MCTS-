@@ -185,4 +185,3 @@ export interface CommonRoleModel {
     Name_AR: string;
     Name_EN: string;
 }
-

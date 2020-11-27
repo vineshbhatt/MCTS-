@@ -103,7 +103,7 @@ export class EditOrgChartDialogComponent implements OnInit {
             this._dialogRef.close(this.OrgUnitData.value);
           }
         } else {
-          this.notificationmessage.error('Item name coincidence', this.translator.transform('gbl_err_orgmdOrgChartEdit'), 2500);
+          this.notificationmessage.error('Item name coincidence', this.translator.transform('gbl_err_name_coincidence'), 2500);
         }
       },
       responseError => {

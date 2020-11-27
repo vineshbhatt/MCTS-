@@ -90,7 +90,7 @@ export class FctsCommonRolesComponent implements OnInit {
       {
         queryParams:
         {
-          GRID: role.GRID,
+          CSGroup: role.GRID,
           ItemName: role.Name_EN
         }
       });

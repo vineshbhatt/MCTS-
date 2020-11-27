@@ -14,7 +14,9 @@ import { FctsSpecificRolesComponent } from './fcts-roles-setup/fcts-specific-rol
 import { FctsRolesSetupMainComponent } from './fcts-roles-setup/fcts-roles-setup-main/fcts-roles-setup-main.component';
 import { FctsSpecificRolesUsersComponent } from './fcts-roles-setup/fcts-specific-roles/fcts-specific-roles-users/fcts-specific-roles-users.component';
 import { FctsCommonRolesComponent } from './fcts-roles-setup/fcts-common-roles/fcts-common-roles.component';
-import { FctsCommonRolesUsersComponent } from './fcts-roles-setup/fcts-common-roles/fcts-common-roles-users/fcts-common-roles-users.component';
+import { FctsCommonRoleUsersComponent } from './fcts-roles-setup/fcts-common-roles/fcts-common-roles-users/fcts-common-roles-users.component';
+import { EcmdMainComponent } from './ecmd/ecmd-main/ecmd-main.component';
+import { EcmdRecordsManagementComponent } from './ecmd/ecmd-records-management/ecmd-records-management.component';
 
 const routes: Routes = [
   {
@@ -43,11 +45,20 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'common-roles',
+        path: 'ecmd-records-management',
+        component: EcmdMainComponent,
+        children: [
+          { path: '', component: EcmdRecordsManagementComponent },
+          /*{ path: 'users', component: OrgChartUsersComponent },
+          { path: 'unit-roles', component: EditOrgChartRolesComponent } */
+        ]
+      },
+      {
+        path: 'fcts-common-roles',
         component: FctsRolesSetupMainComponent,
         children: [
           { path: '', component: FctsCommonRolesComponent },
-          { path: 'users', component: FctsCommonRolesUsersComponent },
+          { path: 'users', component: FctsCommonRoleUsersComponent },
         ]
       },
       {

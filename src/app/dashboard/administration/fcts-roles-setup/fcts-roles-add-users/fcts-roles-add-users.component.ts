@@ -4,7 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Observable } from 'rxjs';
 import { debounceTime, switchMap } from 'rxjs/operators';
 import { FCTSDashBoard } from 'src/environments/environment';
-import { DepFilterData, UsersData } from '../../../administration.model';
+import { DepFilterData, UsersData } from '../../administration.model';
 import { AdministrationService } from 'src/app/dashboard/administration/services/administration.service';
 import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handler-fcts.service';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -12,11 +12,11 @@ import { multiLanguageTranslatorPipe } from 'src/assets/translator/index';
 import { MatAutocompleteTrigger } from '@angular/material';
 
 @Component({
-  selector: 'app-fcts-specific-roles-add-users',
-  templateUrl: './fcts-specific-roles-add-users.component.html',
-  styleUrls: ['./fcts-specific-roles-add-users.component.scss']
+  selector: 'app-fcts-roles-add-users',
+  templateUrl: './fcts-roles-add-users.component.html',
+  styleUrls: ['./fcts-roles-add-users.component.scss']
 })
-export class FctsSpecificRolesAddUsersComponent implements OnInit {
+export class FctsRolesAddUsersComponent implements OnInit {
   basehref = FCTSDashBoard.BaseHref;
   filteredDepartments: Observable<DepFilterData[]>;
   selection = new SelectionModel<any>(true, []);
@@ -67,7 +67,7 @@ export class FctsSpecificRolesAddUsersComponent implements OnInit {
   getAllUsers(startRow: number): void {
     this.startRow = startRow;
     this.showSpinner = startRow === 1 ? true : false;
-    this._administration.getSpecificRolesAllUsers(this.collectSearchData(), this.data, startRow, startRow + this.loadStep)
+    this._administration[this.data.getUsersMethod](this.collectSearchData(), this.data, startRow, startRow + this.loadStep)
       .subscribe(
         response => {
           this.usersList = this.usersList.concat(response);
@@ -85,7 +85,7 @@ export class FctsSpecificRolesAddUsersComponent implements OnInit {
     let searchParams = {
       search: false,
       searchString: this.searchString.nativeElement.value,
-      department: this.filtersForm.get('Department').value ? this.filtersForm.get('Department').value.OUID : -1
+      department: this.filtersForm.get('Department').value ? this.filtersForm.get('Department').value.OUID : ''
     };
     if (searchParams.searchString || searchParams.department >= 0) {
       searchParams.search = true;
