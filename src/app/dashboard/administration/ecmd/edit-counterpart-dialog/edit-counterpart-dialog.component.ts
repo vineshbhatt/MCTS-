@@ -132,32 +132,32 @@ export class EditCounterpartDialogComponent implements OnInit {
   }
 
   save() {
-    const obj = {
-      templateName: 'VAT_CODE',
-      objectID: this.NodeData.get('CPID').value,
-      field1: this.NodeData.get('VatCode').value,
-      field2: '',
-      field3: '',
-      field4: '',
-      csvIDS: '',
-    };
-    this._ecmdService.canChange(obj).subscribe(
-      response => {
-        if (response[0].Counter === 0) {
-          this.fieldTouch();
-          if (this.NodeData.valid) {
+    this.fieldTouch();
+    if (this.NodeData.valid) {
+      const obj = {
+        templateName: 'VAT_CODE',
+        objectID: this.NodeData.get('CPID').value,
+        field1: this.NodeData.get('VatCode').value,
+        field2: '',
+        field3: '',
+        field4: '',
+        csvIDS: '',
+      };
+      this._ecmdService.canChange(obj).subscribe(
+        response => {
+          if (response[0].Counter === 0) {
             this._dialogRef.close(this.NodeData.value);
+          } else {
+            this.notificationmessage.error(
+              'Vat Code name coincidence', this.translator.transform('gbl_err_vat_code_coincidence'),
+              2500);
           }
-        } else {
-          this.notificationmessage.error(
-            'Vat Code name coincidence', this.translator.transform('gbl_err_vat_code_coincidence'),
-            2500);
+        },
+        responseError => {
+          this._errorHandlerFctsService.handleError(responseError).subscribe();
         }
-      },
-      responseError => {
-        this._errorHandlerFctsService.handleError(responseError).subscribe();
-      }
-    );
+      );
+    }
   }
 
   fieldTouch() {

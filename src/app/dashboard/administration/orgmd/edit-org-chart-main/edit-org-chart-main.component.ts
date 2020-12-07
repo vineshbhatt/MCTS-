@@ -5,7 +5,7 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './edit-org-chart-main.component.html',
   styleUrls: ['./edit-org-chart-main.component.scss']
 })
-export class EditOrgChartMainComponent implements OnInit {
+export class ORGMDMainComponent implements OnInit {
 
   constructor() { }
 

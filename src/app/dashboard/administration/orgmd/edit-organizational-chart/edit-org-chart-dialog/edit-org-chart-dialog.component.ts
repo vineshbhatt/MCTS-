@@ -94,22 +94,22 @@ export class EditOrgChartDialogComponent implements OnInit {
   }
 
   save() {
-    const elem = this.OrgUnitData.value;
-    this._administration.canChange('orgmdOrgChartEdit', elem.OUID, elem.Name_EN, elem.Name_AR, elem.Parent, '', '').subscribe(
-      response => {
-        if (response[0].Counter === 0) {
-          this.fieldTouch();
-          if (this.OrgUnitData.valid) {
+    this.fieldTouch();
+    if (this.OrgUnitData.valid) {
+      const elem = this.OrgUnitData.value;
+      this._administration.canChange('orgmdOrgChartEdit', elem.OUID, elem.Name_EN, elem.Name_AR, elem.Parent, '', '').subscribe(
+        response => {
+          if (response[0].Counter === 0) {
             this._dialogRef.close(this.OrgUnitData.value);
+          } else {
+            this.notificationmessage.error('Item name coincidence', this.translator.transform('gbl_err_name_coincidence'), 2500);
           }
-        } else {
-          this.notificationmessage.error('Item name coincidence', this.translator.transform('gbl_err_name_coincidence'), 2500);
+        },
+        responseError => {
+          this._errorHandlerFctsService.handleError(responseError).subscribe();
         }
-      },
-      responseError => {
-        this._errorHandlerFctsService.handleError(responseError).subscribe();
-      }
-    );
+      );
+    }
   }
 
   fieldTouch() {

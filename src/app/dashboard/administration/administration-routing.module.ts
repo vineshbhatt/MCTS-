@@ -5,7 +5,7 @@ import { AdministrationComponent } from './administration.component';
 import { OrgmdRolesComponent } from './orgmd/orgmd-roles/orgmd-roles.component';
 import { EditOrganizationalChartComponent } from './orgmd/edit-organizational-chart/edit-organizational-chart.component';
 import { OrgmdRolesMainComponent } from './orgmd/orgmd-roles-main/orgmd-roles-main.component';
-import { EditOrgChartMainComponent } from './orgmd/edit-org-chart-main/edit-org-chart-main.component';
+import { ORGMDMainComponent } from './orgmd/edit-org-chart-main/edit-org-chart-main.component';
 import { MainPageComponent } from './main-page/main-page.component';
 import { OrgmdRoleUsersComponent } from './orgmd/orgmd-roles/orgmd-role-users/orgmd-role-users.component';
 import { OrgChartUsersComponent } from './orgmd/edit-organizational-chart/org-chart-users/org-chart-users.component';
@@ -17,6 +17,8 @@ import { FctsCommonRolesComponent } from './fcts-roles-setup/fcts-common-roles/f
 import { FctsCommonRoleUsersComponent } from './fcts-roles-setup/fcts-common-roles/fcts-common-roles-users/fcts-common-roles-users.component';
 import { EcmdMainComponent } from './ecmd/ecmd-main/ecmd-main.component';
 import { EcmdRecordsManagementComponent } from './ecmd/ecmd-records-management/ecmd-records-management.component';
+import { OrgmdTeamManagementComponent } from './orgmd/orgmd-team-management/orgmd-team-management.component';
+import { OrgmdTeamUsersComponent } from './orgmd/orgmd-team-management/orgmd-team-users/orgmd-team-users.component';
 
 const routes: Routes = [
   {
@@ -29,15 +31,23 @@ const routes: Routes = [
       },
       {
         path: 'orgmd-roles',
-        component: OrgmdRolesMainComponent,
+        component: ORGMDMainComponent,
         children: [
           { path: '', component: OrgmdRolesComponent },
           { path: 'role-users', component: OrgmdRoleUsersComponent }
         ]
       },
       {
+        path: 'orgmd-team-management',
+        component: ORGMDMainComponent,
+        children: [
+          { path: '', component: OrgmdTeamManagementComponent },
+          { path: 'users', component: OrgmdTeamUsersComponent }
+        ]
+      },
+      {
         path: 'edit-org-chart',
-        component: EditOrgChartMainComponent,
+        component: ORGMDMainComponent,
         children: [
           { path: '', component: EditOrganizationalChartComponent },
           { path: 'users', component: OrgChartUsersComponent },

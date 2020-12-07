@@ -133,7 +133,7 @@ app-administration{
         display: flex;
         flex-direction: row;
         align-items: center;
-        height: 99px;
+        /* height: 99px; */
         min-height: 100px;
         border-bottom: 1px solid #E4E5E7;
         flex-wrap: wrap;
@@ -441,6 +441,10 @@ app-administration{
 
 .spinner-wrappar{
   padding: 100px;
+}
+
+.button-spinner circle {
+  stroke: #ffffff !important;
 }
 
 .tree-loading-spinner{

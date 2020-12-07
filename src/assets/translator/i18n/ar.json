@@ -191,6 +191,8 @@
   "gbl_err_orgmdOrgChartDelete": "You cannot delete this record, all the employee in this organizational unit have to be removed and need to be re-assigned to another one",
   "gbl_err_RID_Delete": "You cannot delete this record, all the employee in this organizational unit have to be removed and need to be re-assigned to another one ar",
   "gbl_err_delete_parent_item": "You cannot delete a record with existing child items. ar",
+  "gbl_err_team_group_exists": "A group with this name already exists. ar",
+  "gbl_err_team_unable_to_create": "Unable to create a group. Please contact the administrator. ar",
   "insert_org_unit": "Add Organizational Unit ar",
   "update_org_unit": "Edit Organizational Unit ar",
   "first_name": "First Name ar",
@@ -232,5 +234,17 @@
   "edit_department": "Edit Department ar",
   "edit_contact": "Edit Contact ar",
   "deactivate": "Deactivate ar",
-  "activate": "Activate ar"
+  "activate": "Activate ar",
+  "team": "Team ar",
+  "team_description": "Team Description",
+  "team_description_ar": "Team Description AR",
+  "team_purpose_short": "Team Purpose short",
+  "team_purpose_short_ar": "Team Purpose short AR",
+  "team_purpose": "Team Purpose Long",
+  "team_purpose_ar": "Team Purpose Long AR",
+  "project": "Project",
+  "add_team": "Add Team",
+  "edit_team": "Edit Team",
+  "permissions": "Permissions ar",
+  "employees": "Employees ar"
 }

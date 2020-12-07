@@ -714,6 +714,31 @@ export class AdministrationService {
     );
   }
 
+  orgmdTeamAllUsers(searchParameters: any, startRow: number, endRow: number): Observable<UsersData[]> {
+    let params = new HttpParams()
+      .set('StartRow', startRow.toString())
+      .set('EndRow', endRow.toString())
+      .set('ItemID', searchParameters.itemID);
+    if (searchParameters.action && searchParameters.action === 'search') {
+      params = params.append('SearchStr', searchParameters.searchString);
+      params = params.append('DepID', searchParameters.department);
+      params = params.append(searchParameters.action, 'true');
+    }
+    return this.httpServices.get<any>(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ORGMDTeamAllUsers}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
 
 
 }

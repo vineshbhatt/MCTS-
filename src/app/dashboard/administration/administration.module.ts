@@ -20,7 +20,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { OrgmdRolesMainComponent } from './orgmd/orgmd-roles-main/orgmd-roles-main.component';
-import { EditOrgChartMainComponent } from './orgmd/edit-org-chart-main/edit-org-chart-main.component';
+import { ORGMDMainComponent } from './orgmd/edit-org-chart-main/edit-org-chart-main.component';
 import { AddUsersDialogComponent } from './admin-dialog-boxes/add-users-dialog/add-users-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
@@ -51,6 +51,10 @@ import { EditNodeDialogComponent } from './ecmd/edit-node-dialog/edit-node-dialo
 import { EditCounterpartDialogComponent } from './ecmd/edit-counterpart-dialog/edit-counterpart-dialog.component';
 import { EditDepartmentDialogComponent } from './ecmd/edit-department-dialog/edit-department-dialog.component';
 import { EditContactDialogComponent } from './ecmd/edit-contact-dialog/edit-contact-dialog.component';
+import { OrgmdTeamManagementComponent } from './orgmd/orgmd-team-management/orgmd-team-management.component';
+import { OrgmdTeamsChartComponent } from './orgmd/orgmd-team-management/orgmd-teams-chart/orgmd-teams-chart.component';
+import { OrgmdAddTeamDialogComponent } from './orgmd/orgmd-team-management/orgmd-add-team-dialog/orgmd-add-team-dialog.component';
+import { OrgmdTeamUsersComponent } from './orgmd/orgmd-team-management/orgmd-team-users/orgmd-team-users.component';
 
 @NgModule({
   imports: [
@@ -89,7 +93,7 @@ import { EditContactDialogComponent } from './ecmd/edit-contact-dialog/edit-cont
     EditOrganizationalChartComponent,
     BreadcrumbsComponent,
     OrgmdRolesMainComponent,
-    EditOrgChartMainComponent,
+    ORGMDMainComponent,
     AddUsersDialogComponent,
     OrgmdChartComponent,
     ClickStopPropagationDirective,
@@ -114,6 +118,10 @@ import { EditContactDialogComponent } from './ecmd/edit-contact-dialog/edit-cont
     EditCounterpartDialogComponent,
     EditDepartmentDialogComponent,
     EditContactDialogComponent,
+    OrgmdTeamManagementComponent,
+    OrgmdTeamsChartComponent,
+    OrgmdAddTeamDialogComponent,
+    OrgmdTeamUsersComponent,
     /* EmployeeMapList, */
   ],
   entryComponents: [
@@ -126,7 +134,8 @@ import { EditContactDialogComponent } from './ecmd/edit-contact-dialog/edit-cont
     EditNodeDialogComponent,
     EditCounterpartDialogComponent,
     EditDepartmentDialogComponent,
-    EditContactDialogComponent
+    EditContactDialogComponent,
+    OrgmdAddTeamDialogComponent
   ],
   providers: [
     multiLanguageTranslatorPipe

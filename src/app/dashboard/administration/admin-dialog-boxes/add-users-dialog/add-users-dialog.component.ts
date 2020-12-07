@@ -83,14 +83,14 @@ export class AddUsersDialogComponent implements OnInit {
   }
 
   collectSearchData() {
-    let searchParams = {
+    const searchParams = {
       action: this.action,
       itemID: this.data.itemID,
       searchString: this.action === 'search' ? this.searchString.nativeElement.value : '',
       department: this.action === 'search' && this.filtersForm.get('Department').value ?
-        this.filtersForm.get('Department').value.OUID : -1
+        this.filtersForm.get('Department').value.OUID : ''
     };
-    if (!searchParams.searchString && searchParams.department < 0) {
+    if (!searchParams.searchString && !searchParams.department) {
       searchParams.action = '';
       this.action = '';
     }

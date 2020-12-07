@@ -98,31 +98,31 @@ export class EditNodeDialogComponent implements OnInit {
   }
 
   save() {
-    const obj = {
-      templateName: 'EcmdNodeEdit',
-      objectID: this.NodeData.get('NODEID').value,
-      field1: this.NodeData.get('Name_EN').value,
-      field2: this.NodeData.get('Name_AR').value,
-      field3: this.NodeData.get('ParentID').value,
-      field4: '',
-      csvIDS: '',
-    };
-    this._ecmdService.canChange(obj).subscribe(
-      response => {
-        if (response[0].Counter === 0) {
-          this.fieldTouch();
-          if (this.NodeData.valid) {
+    this.fieldTouch();
+    if (this.NodeData.valid) {
+      const obj = {
+        templateName: 'EcmdNodeEdit',
+        objectID: this.NodeData.get('NODEID').value,
+        field1: this.NodeData.get('Name_EN').value,
+        field2: this.NodeData.get('Name_AR').value,
+        field3: this.NodeData.get('ParentID').value,
+        field4: '',
+        csvIDS: '',
+      };
+      this._ecmdService.canChange(obj).subscribe(
+        response => {
+          if (response[0].Counter === 0) {
             this._ecmdService.changeNodeList([]);
             this._dialogRef.close(this.NodeData.value);
+          } else {
+            this.notificationmessage.error('Item name coincidence', this.translator.transform('gbl_err_name_coincidence'), 2500);
           }
-        } else {
-          this.notificationmessage.error('Item name coincidence', this.translator.transform('gbl_err_name_coincidence'), 2500);
+        },
+        responseError => {
+          this._errorHandlerFctsService.handleError(responseError).subscribe();
         }
-      },
-      responseError => {
-        this._errorHandlerFctsService.handleError(responseError).subscribe();
-      }
-    );
+      );
+    }
   }
 
   fieldTouch() {

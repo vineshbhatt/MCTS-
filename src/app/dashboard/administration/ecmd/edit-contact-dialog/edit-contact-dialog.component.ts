@@ -43,7 +43,7 @@ export class EditContactDialogComponent implements OnInit {
       Phone1: '',
       Phone2: '',
       Fax: '',
-      Email: ['', Validators.email]
+      Email: ['', ([Validators.required, Validators.email])]
     });
 
     if (this.data.action === 'updateLvl4') {

@@ -165,9 +165,21 @@ export const FCTSDashBoard = {
   ECMDChartCountries: 'CTA_ECMDChartCountries',
   ECMDChartStates: 'CTA_ECMDChartStates',
   ChartPagination: 200,
+  ORGMDOrgUnits: 'CTA_ORGMDOrgUnits',
+  ORGMDTeams: 'CTA_ORGMDTeams',
+  ORGMDTeamUser: 'CTA_ORGMDTeamUser',
+  ORGMDTeamsUserRoles: 'CTA_ORGMDTeamsUserRoles',
+  ORGMDTeamActions: 'CTA_ORGMDTeamActions',
+  ORGMDCreateGroup: 'CTA_ORGMDCreateGroup',
+  ORGMDTeamUsers: 'CTA_ORGMDTeamUsers',
+  ORGMDTeamAllUsers: 'CTA_ORGMDTeamAllUsers',
+  ORGMDManageTeamUsers: 'CTA_ORGMDManageTeamUsers',
+  ORGMDTeamProjects: 'CTA_ORGMDTeamProjects',
+  ORGMDTeamEmployeeRoles: 'CTA_ORGMDTeamEmployeeRoles',
+  ORGMDDeleteGroup: 'CTA_ORGMDDeleteGroup',
 
 
-  //BaseHref: '/img/fctsangular/fctsapp/',
+  // BaseHref: '/img/fctsangular/fctsapp/',
   BaseHref: '/',
   CSUrlShort: 'mv2cdmsadp02',
   CSUrl: 'http://mv2cdmsadp02/otcs/cs.exe'
