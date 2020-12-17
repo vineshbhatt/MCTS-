@@ -30,7 +30,7 @@
                   <span>{{node.Name_EN | translator:node.Name_AR}}</span>
                 </ng-template>
               </p>
-              <p *ngIf="!node.isActive" class="deactivated-marker">{{'deactivated' | translator}}</p>
+              <p *ngIf="!node.isActive" class="status-marker deactivated">{{'deactivated' | translator}}</p>
             </div>
             <div class="tree-action-button-wrapper" *ngIf="node.Type !== 'pagination'"
               [ngClass]="node.getCode===hoveredIndex ? '' : 'hovered'">
@@ -87,7 +87,7 @@
                   <span>{{node.Name_EN | translator:node.Name_AR}}</span>
                 </ng-template>
               </p>
-              <p *ngIf="!node.isActive" class="deactivated-marker">{{'deactivated' | translator}}</p>
+              <p *ngIf="!node.isActive" class="status-marker deactivated">{{'deactivated' | translator}}</p>
             </div>
             <div class="tree-action-button-wrapper" *ngIf="node.Type !== 'pagination'"
               [ngClass]="node.getCode===hoveredIndex ? '' : 'hovered'">

@@ -21,6 +21,10 @@ app-administration{
   color: #00B7C3;
 }
 
+.color_004{
+  color: #839091;
+}
+
 /* .flex-drawer-style-container{
   display: flex;
   flex-direction: column;
@@ -35,7 +39,9 @@ app-administration{
  */
 .main_admin_wrapper{
   padding: 0 42px;
-  
+}
+
+.main_admin_wrapper, .admin_small_window_wrapper{
   .header_wapper{
     padding-top:40px;
     display: flex;
@@ -128,16 +134,16 @@ app-administration{
       margin: 5px 0;
     }
     .mat-expansion-panel-body{
-    padding: 0;
-      .filter-form{
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        /* height: 99px; */
-        min-height: 100px;
-        border-bottom: 1px solid #E4E5E7;
-        flex-wrap: wrap;
-      }
+      padding: 0;
+    }
+    .filter-form{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      /* height: 99px; */
+      min-height: 100px;
+      border-bottom: 1px solid #E4E5E7;
+      flex-wrap: wrap;
     }
   }
 }
@@ -216,7 +222,7 @@ app-administration{
       height: 65vh;
     }
     table{
-      word-break: break-word;
+      word-break: normal;//break-word;
     }
     thead{
       th{
@@ -236,10 +242,14 @@ app-administration{
         background: #F5F5F5;
         height: 52px;
         cursor: pointer;
+        &.default-pointer {
+          cursor: default;
+        }
         &:hover{
           background: #E8F9FA;
         }
         td{
+          /* height: 47px !important; */
           border-bottom: 10px solid white;
           font-size: 14px;
           color: #65676F;
@@ -284,7 +294,28 @@ app-administration{
         width: 75px;
       }
     }
-    
+  }
+  .table-row-expansion-panel{
+    margin: 0 -5px;
+    background-color: inherit;
+    font-size: 14px;
+    color: #65676F;
+    .mat-expansion-panel-header{
+      height: 47px !important;
+      padding: 0 5px;
+      font-size: 14px;
+      color: #65676F;
+      .mat-content{
+        flex: none;
+      }
+      .mat-expansion-indicator{
+        display: flex;
+        margin: 0px 5px;
+      }
+    }
+    .mat-expansion-panel-body {
+      padding: 0 5px 16px;
+    }
   }
 }
 
@@ -443,6 +474,19 @@ app-administration{
   padding: 100px;
 }
 
+.submit-blocker{
+  position: absolute;
+  padding: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  z-index: 999;
+  background-color: #8080802b;
+  border-radius: 12px;
+}
+
 .button-spinner circle {
   stroke: #ffffff !important;
 }
@@ -540,13 +584,20 @@ app-administration{
   .search-result{
     color: #b04609;
   }
+}
 
-  .deactivated-marker{
+.status-marker{
+  padding: 2px;
+  border-radius: 3px;
+  color: white;
+  &.deactivated{
     margin: 0 25px;
-    padding: 2px;
-    border-radius: 3px;
     background-color: #EB5757;
-    color: white;
+  }
+  &.active{
+    display: inline-block;
+    background-color:#19D28F;
+    word-break: keep-all;
   }
 }
 
@@ -620,3 +671,90 @@ app-administration{
     }
   }
 }
+
+.admin_small_window_wrapper{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  .breadcrumbs_wapper{
+    padding-right: 42px;
+    padding-left: 42px;
+  }
+  .fictitious-dialog-wrapper{
+    justify-content: center;
+    display: flex;
+    padding: 42px;
+    background: #f9f9f9;
+    flex: 1;
+  }
+  .fictitious-dialog{
+    position: relative;
+    background: #FFFFFF;
+    border: 1px solid #E4E5E7;
+    box-sizing: border-box;
+    border-radius: 12px;
+    min-width: 520px;
+    padding: 20px;
+    //height: max-content;
+    align-self: flex-start;
+    .dialog_header{
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      padding: 20px;
+      h2{
+        font-size: 24px;
+        font-weight: normal;
+      }
+    }
+    .dialog-body{
+      padding: 0 20px;
+      .interaction_items_arr_wrapper{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+      }
+      .add-button {
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .interaction-list{
+        display: flex;
+        align-items: center;
+        margin: 10px 0;
+        h4{
+          width: 40%;
+          font-size: 14px;
+          font-weight: normal;
+          color: #65676F;
+          &.proxy{
+            width: 20%;
+          }
+        }
+        .active-checkbox{
+          width:20%;
+        }
+        .mat-radio-button{
+          width:10%;
+        }
+        .input_field_wrp{
+          width:60%;
+          .mat-form-field{
+            width:100%
+          }
+        }
+      }
+    }
+    .dialog-footer{
+      display: flex;
+      justify-content: flex-end;
+      padding: 20px;
+      button.btn_011{
+        margin: 0 20px;
+      }
+    }
+  }
+}
+
+

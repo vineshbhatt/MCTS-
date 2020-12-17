@@ -1072,6 +1072,15 @@
 
 .input_field_wrp {
   width: 230px;
+  position: relative;
+  .mat-form-field-suffix {
+      position: inherit;
+  }
+  .date_picker_icon {
+      position: absolute;
+      right: 15px;
+      top: 12px;
+  }
   .mat-form-field-appearance-legacy {
     .mat-form-field-wrapper {
         padding-bottom: 0;
@@ -1140,6 +1149,12 @@
   }
   &.sm_input_wrapper .mat-form-field-appearance-legacy .mat-form-field-infix  {
     padding: 9px 15px 10px 14px;
+  }
+  &.lbl_select_wrapper .mat-select-trigger {
+    margin-top: 6px;
+    .mat-select-arrow-wrapper{
+      vertical-align: top;
+    }
   }
   &.action_inside {
     position: relative;

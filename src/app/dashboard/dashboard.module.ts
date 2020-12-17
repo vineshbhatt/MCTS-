@@ -1,18 +1,9 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { MalihuScrollbarModule } from 'ngx-malihu-scrollbar';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatButtonModule, MatCheckboxModule, MatNativeDateModule, MatIconModule, MatTreeModule, MatTabsModule } from '@angular/material';
-import { MatTableModule } from '@angular/material/table';
+import { MatNativeDateModule, MatTabsModule } from '@angular/material';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatDialogModule } from '@angular/material/dialog';
 import { ChartsModule } from 'ng2-charts';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatInputModule } from '@angular/material/input';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatSelectModule } from '@angular/material/select';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 import { SideNavigationComponent } from './side-navigation/side-navigation.component';
@@ -28,14 +19,11 @@ import { NewOutboundComponent } from './external/new-outbound/new-outbound.compo
 import { InProgressOutboundComponent } from './external/in-progress-outbound/in-progress-outbound.component';
 import { AchievedOutboundComponent } from './external/achieved-outbound/achieved-outbound.component';
 import { HttpClientModule } from '@angular/common/http';
-import { NgxPaginationModule } from 'ngx-pagination';
 import { NgxFileDropModule } from 'ngx-file-drop';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Dashboardfilterattribute } from 'src/app/dashboard/pipes/dashbaordfilterattribute.pipe';
 import { CorrespondenceDetailComponent } from './external/correspondence-detail/correspondence-detail.component';
 import { SearchfilterComponent } from './searchfilter/searchfilter.component';
 import { TransferDialogBox } from './external/correspondence-detail/correspondence-transfer-dialog/correspondence-transfer-dialog.component';
-import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { WorkflowHistoryDialogBox } from './workflow-history/workflow-history.component';
 import { InternalDashboardComponent } from './internal/internal-dashboard/internal-dashboard.component';
 import { NewIntInboundComponent } from './internal/new-intinbound/new-intinbound.component';
@@ -77,7 +65,6 @@ import { NgxBarcodeModule } from 'ngx-barcode';
 import { NotificationComponent } from './dialog-boxes/notification/notification.component';
 import { NotificationService } from './services/notification.service';
 import { PreventDoubleSubmitModule } from 'ngx-prevent-double-submission';
-/* import { EmployeeMapList } from '../dashboard/pipes/employeemaplist.pipe'; */
 
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { BaseCorrespondenceComponent } from './base-classes/base-correspondence-csactions/base-correspondence.component';
@@ -90,9 +77,8 @@ import { SendBackDialogComponent } from './dialog-boxes/send-back-dialog/send-ba
 
 import { CommentDialogComponent } from './comments/comment-dialog/comment-dialog.component';
 import { CommentsTreeComponent } from './comments/comments-tree/comments-tree.component';
-import { MatRadioModule } from '@angular/material';
 import { CommentSectionComponent } from './comments/comment-section/comment-section.component';
-import { multiLanguageTranslatorModule, multiLanguageTranslatorPipe } from 'src/assets/translator/index';
+/* import { multiLanguageTranslatorModule, multiLanguageTranslatorPipe } from 'src/assets/translator/index'; */
 import { BaseDashboardArchiveComponent } from './base-classes/base-dashboard-archive/base-dashboard-archive.component';
 import { UserInfoComponent } from './side-navigation/user-info/user-info.component';
 import { ProxyInfoComponent } from './side-navigation/proxy-info/proxy-info.component';
@@ -120,46 +106,22 @@ import { SharedImportsModule } from './shared-imports.module';
 
 @NgModule({
   imports: [
-    CommonModule,
     DashboardRoutingModule,
     MalihuScrollbarModule.forRoot(),
-    MatTooltipModule,
     ChartsModule,
     MatPaginatorModule,
-    MatTableModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatCheckboxModule,
-    MatInputModule,
-    MatProgressSpinnerModule,
-    MatDatepickerModule,
     MatNativeDateModule,
-    MatSelectModule,
-    MatAutocompleteModule,
     MatSortModule,
     HttpClientModule,
-    NgxPaginationModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatExpansionModule,
-    OwlDateTimeModule,
-    OwlNativeDateTimeModule,
-    MatTreeModule,
     MatTabsModule,
-    MatIconModule,
     NgxFileDropModule,
     NgxPrintModule,
     NgxBarcodeModule,
     PreventDoubleSubmitModule,
     NgScrollbarModule,
-    MatRadioModule,
     MatProgressBarModule,
     AngularResizedEventModule,
     SharedImportsModule,
-    multiLanguageTranslatorModule.forRoot({
-      defaultLang: 'en',
-      storagePrefix: 'current-language'
-    })
   ],
   declarations: [
     DashboardComponent,
@@ -212,7 +174,6 @@ import { SharedImportsModule } from './shared-imports.module';
     TransferReturntoasDialogComponent,
     CorrespondenceFormStepComponent,
     NotificationComponent,
-    /* EmployeeMapList, */
     BaseCorrespondenceComponent,
     ExternalOutgoing,
     CorrespondenceFormStepComponent,
@@ -268,7 +229,7 @@ import { SharedImportsModule } from './shared-imports.module';
     DistributionDialogComponent,
     SelectTeamDialogComponent
   ],
-  providers: [ErrorHandlerFctsService, NotificationService, DatePipe, multiLanguageTranslatorPipe]
+  providers: [ErrorHandlerFctsService, NotificationService, DatePipe]
 })
 export class DashboardModule { }
 

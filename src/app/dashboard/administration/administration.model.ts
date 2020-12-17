@@ -6,9 +6,7 @@ export interface RolesData {
     Name_EN: string;
 }
 
-/* export interface ServiceMethods {
-    userActions: string;
-} */
+
 
 export interface DepFilterData {
     Name_AR: string;

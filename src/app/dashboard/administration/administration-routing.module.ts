@@ -19,6 +19,11 @@ import { EcmdMainComponent } from './ecmd/ecmd-main/ecmd-main.component';
 import { EcmdRecordsManagementComponent } from './ecmd/ecmd-records-management/ecmd-records-management.component';
 import { OrgmdTeamManagementComponent } from './orgmd/orgmd-team-management/orgmd-team-management.component';
 import { OrgmdTeamUsersComponent } from './orgmd/orgmd-team-management/orgmd-team-users/orgmd-team-users.component';
+import { CreateDelegationComponent } from './delegation-management/create-delegation/create-delegation.component';
+import { CurrentDelegationsComponent } from './delegation-management/current-delegations/current-delegations.component';
+import { DelegationsReportComponent } from './delegation-management/delegations-report/delegations-report.component';
+
+
 
 const routes: Routes = [
   {
@@ -126,6 +131,18 @@ const routes: Routes = [
           { path: '', component: FctsSpecificRolesComponent, data: { roleCode: 'HSS' } },
           { path: 'users', component: FctsSpecificRolesUsersComponent },
         ]
+      },
+      {
+        path: 'new-delegation',
+        component: CreateDelegationComponent
+      },
+      {
+        path: 'current-delegations',
+        component: CurrentDelegationsComponent
+      },
+      {
+        path: 'delegations-report',
+        component: DelegationsReportComponent
       }
     ]
   }

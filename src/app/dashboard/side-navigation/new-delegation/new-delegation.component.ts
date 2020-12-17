@@ -57,7 +57,7 @@ export class NewDelegationComponent implements OnInit {
     this.filteredDelNames[index] = arrayControl.at(index).get('Delegatee').valueChanges
       .pipe(
         debounceTime(300),
-       switchMap(value => this.sidebarInfoService.searchFieldForAutoFill(value, 'IntNameSimple', ''))
+        switchMap(value => this.sidebarInfoService.searchFieldForAutoFill(value, 'IntNameSimple', ''))
       );
   }
 
@@ -143,8 +143,8 @@ export class NewDelegationComponent implements OnInit {
       const checkForm = this.checkFunction(finalRequest, DArray);
 
       if (!checkForm.error) {
-        finalRequest.delegation_start_date = this.DateToString( DArray.startDate, DArray.startTime);
-        finalRequest.delegation_end_date = this.DateToString( DArray.endDate, DArray.endTime);
+        finalRequest.delegation_start_date = this.DateToString(DArray.startDate, DArray.startTime);
+        finalRequest.delegation_end_date = this.DateToString(DArray.endDate, DArray.endTime);
         finalRequest.delegatees = EList.toString();
         if (checkForm.activate) {
           this.userConfirmation('activateDelegation', finalRequest, checkForm.activate);
@@ -176,32 +176,32 @@ export class NewDelegationComponent implements OnInit {
   createDelegationRequest(finalRequest: DelegationRequest, activate: number) {
     this.clicked = true;
     this.sidebarInfoService.createDelegationRequest(finalRequest, this.data.section)
-    .subscribe(delegationResponse => {
-      if (delegationResponse.error) {
-        this.notificationmessage.error('Delegation form error', delegationResponse.error, 2500);
-      } else if (delegationResponse.CSGroupID && activate) {
-        this.activateDelegation();
-      } else if (delegationResponse.CSGroupID && !activate) {
-        this.closeDialog();
-        this.notificationmessage.success('Delegation Created Succesfully', 'Your delegation has been created successfully', 2500);
-      }
-    },
-    responseError => {
-      this.errorHandlerFctsService.handleError(responseError).subscribe();
-    });
+      .subscribe(delegationResponse => {
+        if (delegationResponse.error) {
+          this.notificationmessage.error('Delegation form error', delegationResponse.error, 2500);
+        } else if (delegationResponse.CSGroupID && activate) {
+          this.activateDelegation();
+        } else if (delegationResponse.CSGroupID && !activate) {
+          this.closeDialog();
+          this.notificationmessage.success('Delegation Created Succesfully', 'Your delegation has been created successfully', 2500);
+        }
+      },
+        responseError => {
+          this.errorHandlerFctsService.handleError(responseError).subscribe();
+        });
   }
 
   activateDelegation() {
     this.sidebarInfoService.activateDelegation()
-    .subscribe(
-      response => {
-        this.closeDialog();
-        this.notificationmessage.success('Delegation Created Succesfully', 'Your delegation has been created and activated successfully', 2500);
-      },
-      responseError => {
-        this.errorHandlerFctsService.handleError(responseError).subscribe();
-      }
-    );
+      .subscribe(
+        response => {
+          this.closeDialog();
+          this.notificationmessage.success('Delegation Created Succesfully', 'Your delegation has been created and activated successfully', 2500);
+        },
+        responseError => {
+          this.errorHandlerFctsService.handleError(responseError).subscribe();
+        }
+      );
   }
 
   checkFunction(finalRequest, DArray) {
@@ -245,19 +245,19 @@ export class NewDelegationComponent implements OnInit {
     if (startDate >= currentDate && startDate <= currentDateTime) {
       activate = 1;
     }
-    return {error: error, activate: activate};
+    return { error: error, activate: activate };
   }
 
   DateToString(mDate, mTime): string {
     function pad(n) { return n < 10 ? '0' + n : n; }
     if (mDate instanceof Date && mTime instanceof Date) {
-    return 'D'                    + '/'
-      + mDate.getFullYear()       + '/'
-      + pad(mDate.getMonth() + 1) + '/'
-      + pad(mDate.getDate())      + ':'
-      + pad(mTime.getHours())     + ':'
-      + pad(mTime.getMinutes())   + ':'
-      + pad(mDate.getSeconds());
+      return 'D' + '/'
+        + mDate.getFullYear() + '/'
+        + pad(mDate.getMonth() + 1) + '/'
+        + pad(mDate.getDate()) + ':'
+        + pad(mTime.getHours()) + ':'
+        + pad(mTime.getMinutes()) + ':'
+        + pad(mDate.getSeconds());
     } else {
       return '';
     }
@@ -265,18 +265,18 @@ export class NewDelegationComponent implements OnInit {
 
   fieldTouch() {
     const arrayControl = this.delegationForm.get('delegation_list') as FormArray;
-      for (let i = 0; i < arrayControl.length; i++) {
-        arrayControl.at(i).get('Active').markAsTouched();
-        arrayControl.at(i).get('Delegatee').markAsTouched();
-      }
+    for (let i = 0; i < arrayControl.length; i++) {
+      arrayControl.at(i).get('Active').markAsTouched();
+      arrayControl.at(i).get('Delegatee').markAsTouched();
+    }
   }
 
   closeDialog() {
-      this.dialogRef.close();
+    this.dialogRef.close();
   }
 
   setTimeDisabled() {
-    setTimeout(function() {
+    setTimeout(function () {
       const inputs = document.getElementsByClassName('owl-dt-timer-input');
       for (let i = 0; i < inputs.length; i++) {
         inputs[i].setAttribute('disabled', '');

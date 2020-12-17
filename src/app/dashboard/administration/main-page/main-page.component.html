@@ -39,7 +39,8 @@
                       <div class="paragraph-name"
                         [style.paddingRight]="translator.lang === 'ar' ? (item.level > 2 ? item.level*20 : 15) + 'px' : 0"
                         [style.paddingLeft]="translator.lang !== 'ar' ? (item.level > 2 ? item.level*20 : 15) + 'px' : 0">
-                        <a class="color_003" [routerLink]="item.route">{{ item.name.en | translator:item.name.ar }}</a>
+                        <a [ngClass]="item.hasOwnProperty('route') ? 'color_003' : 'color_004'"
+                          [routerLink]="item.hasOwnProperty('route') && item.route !== '' ? item.route : []">{{ item.name.en | translator:item.name.ar }}</a>
                       </div>
                       <div class="paragraph-description">{{ item.description.en | translator:item.description.ar }}
                       </div>

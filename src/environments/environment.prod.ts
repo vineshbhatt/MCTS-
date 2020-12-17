@@ -175,6 +175,12 @@ export const FCTSDashBoard = {
   ORGMDTeamProjects: 'CTA_ORGMDTeamProjects',
   ORGMDTeamEmployeeRoles: 'CTA_ORGMDTeamEmployeeRoles',
   ORGMDDeleteGroup: 'CTA_ORGMDDeleteGroup',
+  AdminDelegationUsers: 'CTA_AdminDelegationUsers',
+  AdminAddDelegationGroup: 'CTA_AdminAddDelegationGroup',
+  AdminSectDelegationsActivator: 'CTA_AdminDelegationsActivator',
+  AdminCurrentDelegations: 'CTA_AdminCurrentDelegations',
+  AdminSingleDelegationsInactivator: 'CTA_AdminSingleDelegationsInactivator',
+  AdminDelegationsReport: 'CTA_AdminDelegationsReport',
 
 
   BaseHref: '/img/fctsangular/fctsapp/',
