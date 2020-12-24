@@ -26,7 +26,7 @@ export class FctsCommonRoleUsersComponent extends BaseCurrentUsersComponent impl
     , public dialog: MatDialog
     , public _translator: multiLanguageTranslatorPipe
     , public _translatorService: multiLanguageTranslator) {
-    super(_administration, formBuilder, _errorHandlerFctsService, _route, dialog, _translator, _translatorService);
+    super(_administration, _translator, _translatorService);
   }
 
   ngOnInit() {
@@ -138,7 +138,7 @@ export class FctsCommonRoleUsersComponent extends BaseCurrentUsersComponent impl
   }
 
   addUsersDialogBox(): void {
-    const dialogRef = this.dialogU.open(FctsRolesAddUsersComponent, {
+    const dialogRef = this.dialog.open(FctsRolesAddUsersComponent, {
       width: '100%',
       panelClass: 'dialog-box-wrapper',
       maxWidth: '650px',

@@ -399,7 +399,7 @@
                 }
             }
         }
-        .org-chart-wrapper{
+        .content-with-drawer-wrapper{
             .drawer-animation-holder{
                 border-left: none;
                 border-right: 1px solid #E4E5E7;
@@ -409,7 +409,7 @@
                 }
             }
             &.drawer-opened {
-                .org-chart-block {
+                .org-chart-block, .table_wrapper {
                   overflow: auto;
                   padding-right: 0px;
                   padding-left: 25px;
@@ -424,6 +424,12 @@
         }
     }
     .dialog-box-wrapper{
+        .interaction-list{
+            h4{
+                padding-right: 0;
+                padding-left: 5px;
+            }
+        }
         .input_field_wrp {
             .mat-form-field-label{
                 right: 14px;

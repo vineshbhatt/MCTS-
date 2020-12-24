@@ -15,7 +15,7 @@
       <form [formGroup]="filtersForm" class="filter-form">
         <div class="input_field_wrp">
           <mat-form-field>
-            <input matInput [placeholder]="'role_definition' | translator" formControlName="Role" autocomplete="off">
+            <input matInput [placeholder]="'definition' | translator" formControlName="Role" autocomplete="off">
           </mat-form-field>
         </div>
         <div class="input_field_wrp">
@@ -36,7 +36,7 @@
     <ng-template #elseBlock>
       <table mat-table [dataSource]="dataSource" class="mat-elevation-z0" style="width:100%">
         <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>{{ 'role_definition' | translator }}</th>
+          <th mat-header-cell *matHeaderCellDef>{{ 'definition' | translator }}</th>
           <td mat-cell *matCellDef="let element"> {{element.Name_EN | translator:element.Name_AR}} </td>
         </ng-container>
         <ng-container matColumnDef="description">

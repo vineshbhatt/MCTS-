@@ -6,8 +6,6 @@ export interface RolesData {
     Name_EN: string;
 }
 
-
-
 export interface DepFilterData {
     Name_AR: string;
     Name_EN: string;
@@ -118,22 +116,6 @@ export interface OrgChartEmployeeModel {
     wanted?: boolean;
 }
 
-export interface UnitDefinitionModel {
-    Description_AR: string;
-    Description_EN: string;
-    Name_AR: string;
-    Name_EN: string;
-    OUTID: number;
-}
-
-export interface EntityRelModel {
-    Description_AR: string;
-    Description_EN: string;
-    LTID: number;
-    Name_AR: string;
-    Name_EN: string;
-}
-
 export interface UserRolesModel {
     Name_AR: string;
     Name_EN: string;
@@ -183,3 +165,12 @@ export interface CommonRoleModel {
     Name_AR: string;
     Name_EN: string;
 }
+
+export class ActionParamsModel {
+    action: string;
+    fullSearchStr: string;
+    name: string;
+    surname: string;
+    login: string;
+    department: string;
+} 

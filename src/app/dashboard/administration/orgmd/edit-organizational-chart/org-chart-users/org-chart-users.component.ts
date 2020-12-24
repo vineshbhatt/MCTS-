@@ -27,7 +27,7 @@ export class OrgChartUsersComponent extends BaseCurrentUsersComponent implements
     , public dialogU: MatDialog
     , public translator: multiLanguageTranslatorPipe
     , public translatorService: multiLanguageTranslator) {
-    super(_administration, formBuilder, _errorHandlerFctsService, _route, dialogU, translator, translatorService);
+    super(_administration, translator, translatorService);
   }
 
   ngOnInit() {

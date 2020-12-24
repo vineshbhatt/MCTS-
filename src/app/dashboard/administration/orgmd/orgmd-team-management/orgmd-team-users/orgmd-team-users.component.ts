@@ -28,7 +28,7 @@ export class OrgmdTeamUsersComponent extends BaseCurrentUsersComponent implement
     , public translator: multiLanguageTranslatorPipe
     , public translatorService: multiLanguageTranslator
     , public _orgmdService: OrgmdService) {
-    super(_administration, formBuilder, _errorHandlerFctsService, _route, dialogU, translator, translatorService);
+    super(_administration, translator, translatorService);
   }
 
   ngOnInit() {

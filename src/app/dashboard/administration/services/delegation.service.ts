@@ -70,23 +70,13 @@ export class DelegationService {
 
   activateDelegation(): Observable<any> {
     const params = new HttpParams();
-    return this.httpServices
-      .get(
-        this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.AdminSectDelegationsActivator}?Format=webreport`,
-        {
-          headers:
-            { OTCSTICKET: CSConfig.AuthToken },
-          params: params
-        }
-      )
-      .pipe(
-        map(data => {
-          return data;
-        }),
-        catchError(error => {
-          return throwError(error);
-        })
-      );
+    const options = {
+      headers: new HttpHeaders()
+        .set('OTCSTICKET', CSConfig.AuthToken)
+    };
+    return this.httpServices.post(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.AdminSectDelegationsActivator}?Format=webreport`,
+      params, options);
   }
 
   getCurrentDelegations(): Observable<CurrentDelegationModel[]> {

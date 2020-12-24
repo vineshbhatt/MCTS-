@@ -173,7 +173,7 @@
   "chart_recipient": "Select Recipient from organizational chart ar",
   "add_role": "Add Role ar",
   "edit_role": "Edit Role ar",
-  "role_definition": "Role Definition ar",
+  "definition": "Definition ar",
   "description": "Description ar",
   "assign": "Assign ar",
   "surname": "Surname ar",
@@ -267,5 +267,10 @@
   "gbl_msg_delegation_created": "Your delegation has been created successfully",
   "gbl_msg_delegation_activated_and_created": "Your delegation has been created and activated successfully",
   "gbl_err_cannot_overlap_existing_one": "The Delegation cannot overlap an existing one",
-  "gbl_err_delegation_cannot_be_created_contact_administrator": "Delegation cannot be created. Please contact the Administrator."
+  "gbl_err_delegation_cannot_be_created_contact_administrator": "Delegation cannot be created. Please contact the Administrator.",
+  "add_unit": "Add Unit",
+  "edit_unit": "Edit Unit",
+  "add_link": "Add Link",
+  "edit_link": "Edit Link",
+  "link_definition": "Link Definition ar"
 }

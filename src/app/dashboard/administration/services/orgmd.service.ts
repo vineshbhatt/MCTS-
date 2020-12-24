@@ -4,10 +4,9 @@ import { map, catchError } from 'rxjs/operators';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { FCTSDashBoard } from 'src/environments/environment';
 import { UsersData, PaginationParameters, OrgChartEmployeeModel, UserRolesModel } from '../administration.model';
-import { ORGMDTeamProjects } from 'src/app/dashboard/administration/models/orgmd.model';
+import { EntityRelationModel, ORGMDTeamProjects, UnitDefinitionModel } from 'src/app/dashboard/administration/models/orgmd.model';
 import { AppLoadConstService } from 'src/app/app-load-const.service';
 import { OrgStructureModel, ORGMDTeamsModel } from 'src/app/dashboard/administration/models/orgmd.model';
-import { ORGMDTeamChartNode } from '../models/orgmd-teams-classes.model';
 
 @Injectable({
   providedIn: 'root'
@@ -238,4 +237,83 @@ export class OrgmdService {
       this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ORGMDDeleteGroup}?Format=webreport`,
       params, options);
   }
+
+  getUnitDefinition(): Observable<UnitDefinitionModel[]> {
+    const params = new HttpParams()
+      .set('select', 'true');
+    return this.httpServices.get<UnitDefinitionModel[]>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ORGMDUnitDefinition
+      }?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
+  saveUnitDefinition(element: UnitDefinitionModel): Observable<any> {
+    const params = new HttpParams()
+      .set('CreatorID', this._globalConstants.general.UserID)
+      .set('OUTID', element.OUTID.toString())
+      .set('recName', element.Name_EN)
+      .set('recNameArabic', element.Name_AR)
+      .set('recDescription', element.Description_EN)
+      .set('recDescriptionArabic', element.Description_AR)
+      .set('update', 'true');
+    const options = {
+      headers: new HttpHeaders()
+        .set('OTCSTICKET', CSConfig.AuthToken)
+    };
+    return this.httpServices.post(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ORGMDUnitDefinitionActions}?Format=webreport`,
+      params, options);
+  }
+
+  getEntityRelations(): Observable<EntityRelationModel[]> {
+    const params = new HttpParams()
+      .set('select', 'true');
+    return this.httpServices.get<EntityRelationModel[]>(
+      this.CSUrl +
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ORGMDStrEntityRelations
+      }?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
+  saveEntityRelations(element: EntityRelationModel): Observable<any> {
+    const params = new HttpParams()
+      .set('CreatorID', this._globalConstants.general.UserID)
+      .set('LTID', element.LTID.toString())
+      .set('recName', element.Name_EN)
+      .set('recNameArabic', element.Name_AR)
+      .set('recDescription', element.Description_EN)
+      .set('recDescriptionArabic', element.Description_AR)
+      .set('update', 'true');
+    const options = {
+      headers: new HttpHeaders()
+        .set('OTCSTICKET', CSConfig.AuthToken)
+    };
+    return this.httpServices.post(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ORGMDStrEntityRelationsActions}?Format=webreport`,
+      params, options);
+  }
+
 }
+
+

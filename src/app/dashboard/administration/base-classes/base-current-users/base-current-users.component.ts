@@ -5,13 +5,11 @@ import { AdministrationService } from 'src/app/dashboard/administration/services
 import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handler-fcts.service';
 import { MatAccordion } from '@angular/material';
 import { FCTSDashBoard } from 'src/environments/environment';
-import { SelectionModel } from '@angular/cdk/collections';
 import { Observable, Subject, Subscription } from 'rxjs';
-import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
-import { DepFilterData, UsersData, PaginationParameters, DialogDirection } from '../../administration.model';
+import { DepFilterData, UsersData } from '../../administration.model';
 import { MatDialog } from '@angular/material';
-import { AddUsersDialogComponent } from '../../admin-dialog-boxes/add-users-dialog/add-users-dialog.component';
 import { multiLanguageTranslator, multiLanguageTranslatorPipe } from 'src/assets/translator/index';
 
 @Component({
@@ -55,10 +53,10 @@ export class BaseCurrentUsersComponent implements OnInit {
 
   constructor(
     public _administration: AdministrationService
-    , public formBuilder: FormBuilder
-    , public _errorHandlerFctsService: ErrorHandlerFctsService
-    , public _route: ActivatedRoute
-    , public dialogU: MatDialog
+    /*     , public formBuilder: FormBuilder */
+    /* , public _errorHandlerFctsService: ErrorHandlerFctsService */
+    /* , public _route: ActivatedRoute */
+    /* , public dialogU: MatDialog */
     , public translator: multiLanguageTranslatorPipe
     , public translatorService: multiLanguageTranslator) { }
 

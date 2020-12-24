@@ -7,11 +7,13 @@ import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handle
 import { ConfirmationDialogComponent } from '../../admin-dialog-boxes/confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material';
 import { FCTSDashBoard } from 'src/environments/environment';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-current-delegations',
   templateUrl: './current-delegations.component.html',
-  styleUrls: ['./current-delegations.component.scss']
+  styleUrls: ['./current-delegations.component.scss'],
+  providers: [DatePipe]
 })
 export class CurrentDelegationsComponent implements OnInit {
   basehref = FCTSDashBoard.BaseHref;
@@ -49,13 +51,13 @@ export class CurrentDelegationsComponent implements OnInit {
     private _delegationService: DelegationService,
     public translator: multiLanguageTranslatorPipe,
     public translatorService: multiLanguageTranslator,
-    public _errorHandlerFctsService: ErrorHandlerFctsService
+    public _errorHandlerFctsService: ErrorHandlerFctsService,
+    private datePipe: DatePipe
   ) {
-    this.dataSource.filterPredicate = this.createFilter();
+    this.dataSource.filterPredicate = this.createFilter(this.datePipe);
   }
 
   ngOnInit() {
-
     this.filtersForm = this.formBuilder.group({
       DelegatorUser: [],
       ProxyUser: [],
@@ -98,24 +100,24 @@ export class CurrentDelegationsComponent implements OnInit {
     );
   }
 
-  createFilter(): (data: any, filter: string) => boolean {
+  createFilter(datePipe: DatePipe): (data: any, filter: string) => boolean {
     const filterFunction = function (data, filter): boolean {
       const searchTerms = JSON.parse(filter);
       if (searchTerms.filterState) {
-        return (data.UserName_EN.toLowerCase().indexOf(searchTerms.delegatorUser) !== -1 ||
-          data.UserName_AR.toLowerCase().indexOf(searchTerms.delegatorUser) !== -1) &&
-          (data.ProxyName_EN.toString().toLowerCase().indexOf(searchTerms.proxyUser) !== -1 ||
-            data.ProxyName_AR.toString().toLowerCase().indexOf(searchTerms.proxyUser) !== -1) &&
+        return (data.UserName_EN.toLowerCase().indexOf(searchTerms.delegatorUser.toLowerCase()) !== -1 ||
+          data.UserName_AR.toLowerCase().indexOf(searchTerms.delegatorUser.toLowerCase()) !== -1) &&
+          (data.ProxyName_EN.toString().toLowerCase().indexOf(searchTerms.proxyUser.toLowerCase()) !== -1 ||
+            data.ProxyName_AR.toString().toLowerCase().indexOf(searchTerms.proxyUser.toLowerCase()) !== -1) &&
           (searchTerms.startDate === '' || (new Date(data.StartDate) >= new Date(searchTerms.startDate))) &&
           (searchTerms.endDate === '' || (new Date(data.EndDate) <= new Date(searchTerms.endDate))) &&
           (searchTerms.active === '' || searchTerms.active === data.ISActive);
       } else {
-        return data.UserName_EN.toLowerCase().indexOf(searchTerms.fullSearch) !== -1 ||
-          data.UserName_AR.toLowerCase().indexOf(searchTerms.fullSearch) !== -1 ||
-          data.ProxyName_EN.toString().toLowerCase().indexOf(searchTerms.fullSearch) !== -1 ||
-          data.ProxyName_AR.toString().toLowerCase().indexOf(searchTerms.fullSearch) !== -1 ||
-          data.StartDate.toString().toLowerCase().indexOf(searchTerms.fullSearch) !== -1 ||
-          data.EndDate.toString().toLowerCase().indexOf(searchTerms.fullSearch) !== -1;
+        return data.UserName_EN.toLowerCase().indexOf(searchTerms.fullSearch.toLowerCase()) !== -1 ||
+          data.UserName_AR.toLowerCase().indexOf(searchTerms.fullSearch.toLowerCase()) !== -1 ||
+          data.ProxyName_EN.toString().toLowerCase().indexOf(searchTerms.fullSearch.toLowerCase()) !== -1 ||
+          data.ProxyName_AR.toString().toLowerCase().indexOf(searchTerms.fullSearch.toLowerCase()) !== -1 ||
+          datePipe.transform(data.StartDate, 'dd/MM/yyyy HH:mm').toString().toLowerCase().indexOf(searchTerms.fullSearch.toLowerCase()) !== -1 ||
+          datePipe.transform(data.EndDate, 'dd/MM/yyyy HH:mm').toString().toLowerCase().indexOf(searchTerms.fullSearch.toLowerCase()) !== -1;
       }
     };
     return filterFunction;

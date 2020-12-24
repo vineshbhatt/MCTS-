@@ -174,7 +174,7 @@
   "chart_recipient": "Select Recipient from organizational chart",
   "add_role": "Add Role",
   "edit_role": "Edit Role",
-  "role_definition": "Role Definition",
+  "definition": "Definition",
   "description": "Description",
   "assign": "Assign",
   "surname": "Surname",
@@ -267,5 +267,10 @@
   "gbl_err_end_date_should_be_grater_than_start_date": "End date should be grater than start date",
   "gbl_msg_delegation_created": "Your delegation has been created successfully",
   "gbl_msg_delegation_activated_and_created": "Your delegation has been created and activated successfully",
-  "gbl_err_cannot_overlap_existing_one": "The Delegation cannot overlap an existing one"
+  "gbl_err_cannot_overlap_existing_one": "The Delegation cannot overlap an existing one",
+  "add_unit": "Add Unit",
+  "edit_unit": "Edit Unit",
+  "add_link": "Add Link",
+  "edit_link": "Edit Link",
+  "link_definition": "Link Definition"
 }

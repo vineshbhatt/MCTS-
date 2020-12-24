@@ -5,8 +5,9 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { FCTSDashBoard } from 'src/environments/environment';
 import {
   RolesData, UsersData, PaginationParameters, DepFilterData, OrgStructure, UserRolesModel,
-  UnitDefinitionModel, EntityRelModel, SpecRolesOrgStructure, SpecRolesEmployees, CommonRoleModel
+  SpecRolesOrgStructure, SpecRolesEmployees, CommonRoleModel
 } from '../administration.model';
+import { UnitDefinitionModel, EntityRelationModel } from '../models/orgmd.model';
 import { AppLoadConstService } from 'src/app/app-load-const.service';
 
 @Injectable({
@@ -132,6 +133,31 @@ export class AdministrationService {
     }
     return this.httpServices.get<any>(
       this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ORGMDRoleAllUsers}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
+  ecmdRoleAllUsers(searchParameters: any, startRow: number, endRow: number): Observable<UsersData[]> {
+    let params = new HttpParams()
+      .set('StartRow', startRow.toString())
+      .set('EndRow', endRow.toString())
+      .set('ItemID', searchParameters.itemID);
+    if (searchParameters.action && searchParameters.action === 'search') {
+      params = params.append('SearchStr', searchParameters.searchString);
+      params = params.append('DepID', searchParameters.department);
+      params = params.append(searchParameters.action, 'true');
+    }
+    return this.httpServices.get<any>(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ECMDRoleAllUsers}?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
       }
@@ -290,9 +316,10 @@ export class AdministrationService {
   }
 
   orgUnitsActions(): Observable<UnitDefinitionModel[]> {
-    let params = new HttpParams();
+    let params = new HttpParams()
+      .set('select', 'true');
     return this.httpServices.get<UnitDefinitionModel[]>(
-      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ORGMDUnitDef}?Format=webreport`,
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ORGMDUnitDefinition}?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
       }
@@ -306,10 +333,11 @@ export class AdministrationService {
     );
   }
 
-  entityRelationsActions(): Observable<EntityRelModel[]> {
-    let params = new HttpParams();
-    return this.httpServices.get<EntityRelModel[]>(
-      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ORGMDEntityRelations}?Format=webreport`,
+  entityRelationsActions(): Observable<EntityRelationModel[]> {
+    const params = new HttpParams()
+      .set('select', 'true');
+    return this.httpServices.get<EntityRelationModel[]>(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ORGMDStrEntityRelations}?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
       }

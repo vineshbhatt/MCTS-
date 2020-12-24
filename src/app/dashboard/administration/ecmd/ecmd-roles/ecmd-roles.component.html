@@ -3,22 +3,24 @@
     <app-breadcrumbs></app-breadcrumbs>
     <div class="search_wrapper">
       <div class="search-header">
-        <img src="{{basehref}}assets/images/icons/search.svg" class="search-img glass">
-        <input type="text" [placeholder]="'search' | translator" #searchString (keyup)="applyMainFilter($event)"
-          (focus)="onFocus()">
-        <img src="{{basehref}}assets/images/icons/filter-list.svg" class="search-img filter" (click)="openFilter()">
+        <img src="{{basehref}}assets/images/icons/search.svg" class="search-img glass" (click)="setFullSearch()">
+        <input type="text" [placeholder]="'search' | translator" [(ngModel)]="searchValue"
+          (keyup.enter)="setFullSearch()" (focus)="closeFilter()">
+        <img class="search-img filter" src="{{basehref}}assets/images/icons/filter-list.svg"
+          (click)="switchAdvanceSearch()">
       </div>
       <!--       <div class="action-buttons">
-        <button class="btn_011" mat-stroked-button>{{possibleAction | translator}}</button>
+        <button class="btn_011" mat-stroked-button (click)="addUdef()">{{ possibleAction | translator}}</button>
       </div> -->
     </div>
   </div>
+
   <mat-accordion class="filter-wrapper">
-    <mat-expansion-panel class="mat-elevation-z0" [expanded]="filterState">
+    <mat-expansion-panel class="mat-elevation-z0" [expanded]="advanceSearch">
       <form [formGroup]="filtersForm" class="filter-form">
         <div class="input_field_wrp">
           <mat-form-field>
-            <input matInput [placeholder]="'definition' | translator" formControlName="Role" autocomplete="off">
+            <input matInput [placeholder]="'definition' | translator" formControlName="Definition" autocomplete="off">
           </mat-form-field>
         </div>
         <div class="input_field_wrp">
@@ -27,13 +29,13 @@
           </mat-form-field>
         </div>
         <div class="input_field_wrp">
-          <button class="btn_001" mat-button (click)="filterObject()">{{'search' | translator}}</button>
+          <button class="btn_001" mat-button (click)="setAdvanceSearchFilter()">{{'search' | translator}}</button>
         </div>
       </form>
     </mat-expansion-panel>
   </mat-accordion>
   <div class="table_wrapper">
-    <div *ngIf="!rolesList; else elseBlock" class="spinner-wrappar">
+    <div *ngIf="runSpinner; else elseBlock" class="spinner-wrappar">
       <mat-spinner></mat-spinner>
     </div>
     <ng-template #elseBlock>

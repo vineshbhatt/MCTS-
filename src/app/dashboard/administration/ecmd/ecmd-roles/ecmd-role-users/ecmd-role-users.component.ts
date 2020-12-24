@@ -5,27 +5,29 @@ import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handle
 import { SelectionModel } from '@angular/cdk/collections';
 import { debounceTime, switchMap } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
-import { PaginationParameters, DialogDirection } from '../../../administration.model';
+import { PaginationParameters, DialogDirection, ActionParamsModel } from '../../../administration.model';
 import { MatDialog } from '@angular/material';
 import { AddUsersDialogComponent } from '../../../admin-dialog-boxes/add-users-dialog/add-users-dialog.component';
 import { multiLanguageTranslator, multiLanguageTranslatorPipe } from 'src/assets/translator/index';
 import { BaseCurrentUsersComponent } from '../../../base-classes/base-current-users/base-current-users.component';
+import { EcmdService } from 'src/app/dashboard/administration/services/ecmd.service';
 
 @Component({
-  selector: 'app-orgmd-role-users',
-  templateUrl: './orgmd-role-users.component.html',
-  styleUrls: ['./orgmd-role-users.component.scss']
+  selector: 'app-ecmd-role-users',
+  templateUrl: './ecmd-role-users.component.html',
+  styleUrls: ['./ecmd-role-users.component.scss']
 })
-export class OrgmdRoleUsersComponent extends BaseCurrentUsersComponent implements OnInit {
+export class EcmdRoleUsersComponent extends BaseCurrentUsersComponent implements OnInit {
 
   constructor(
     public _administration: AdministrationService
     , public formBuilder: FormBuilder
-    , public _errorHandlerFctsService: ErrorHandlerFctsService
-    , public _route: ActivatedRoute
-    , public dialogU: MatDialog
+    , private _errorHandlerFctsService: ErrorHandlerFctsService
+    , private _route: ActivatedRoute
+    , private dialogU: MatDialog
     , public translator: multiLanguageTranslatorPipe
-    , public translatorService: multiLanguageTranslator) {
+    , public translatorService: multiLanguageTranslator
+    , private _ecmdService: EcmdService) {
     super(_administration, translator, translatorService);
   }
 
@@ -68,7 +70,7 @@ export class OrgmdRoleUsersComponent extends BaseCurrentUsersComponent implement
 
   currentUsers(paginationParameters: PaginationParameters): void {
     this.isLoading = true;
-    this._administration.orgmdRoleUsers(this.itemID, this.collectActionData(), paginationParameters)
+    this._ecmdService.ecmdRoleUsers(this.itemID, this.collectActionData(), paginationParameters)
       .subscribe(
         response => {
           this.usersList = response;
@@ -90,7 +92,7 @@ export class OrgmdRoleUsersComponent extends BaseCurrentUsersComponent implement
   }
 
   usersActions(action: string, usersList: string[]): void {
-    this._administration.orgmdRoleUsersActions(this.itemID, action, usersList)
+    this._ecmdService.ecmdRoleUsersActions(this.itemID, action, usersList)
       .subscribe(
         response => {
           this.getPage(1);
@@ -101,19 +103,18 @@ export class OrgmdRoleUsersComponent extends BaseCurrentUsersComponent implement
       );
   }
 
-  collectActionData(): any {
-    let actionParams = {
-      action: this.action,
-      fullSearchStr: this.searchString.nativeElement.value,
-      name: this.filtersForm.get('Name').value,
-      surname: this.filtersForm.get('Surname').value,
-      login: this.filtersForm.get('Login').value,
-      department: this.filtersForm.get('Department').value ? this.filtersForm.get('Department').value.OUID : -1
-    };
-    if (!actionParams.fullSearchStr && !actionParams.name && !actionParams.surname && !actionParams.login
-      && actionParams.department === -1) {
+  collectActionData(): ActionParamsModel {
+    const actionParams = new ActionParamsModel();
+    actionParams.fullSearchStr = this.searchString.nativeElement.value,
+      actionParams.name = this.filtersForm.get('Name').value,
+      actionParams.surname = this.filtersForm.get('Surname').value,
+      actionParams.login = this.filtersForm.get('Login').value,
+      actionParams.department = this.filtersForm.get('Department').value ? this.filtersForm.get('Department').value.OUID : '';
+    if (!(actionParams.fullSearchStr || actionParams.name || actionParams.surname || actionParams.login || actionParams.department)) {
       actionParams.action = '';
       this.action = '';
+    } else {
+      actionParams.action = this.action;
     }
     return actionParams;
   }
@@ -127,7 +128,7 @@ export class OrgmdRoleUsersComponent extends BaseCurrentUsersComponent implement
       data: {
         itemName: this.itemName,
         itemID: this.itemID,
-        allUsersActions: 'orgmdRoleAllUsers'
+        allUsersActions: 'ecmdRoleAllUsers'
       }
     }).afterClosed().subscribe(result => {
       if (result && result.length > 0) {
@@ -161,4 +162,5 @@ export class OrgmdRoleUsersComponent extends BaseCurrentUsersComponent implement
     });
     this.usersActions('removeusers', usersList);
   }
+
 }

@@ -5,9 +5,10 @@ import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handle
 import { trigger, transition, animate, style, state } from '@angular/animations';
 import { ResizedEvent } from 'angular-resize-event';
 import {
-  OrgStructure, UnitDefinitionModel, EntityRelModel, DialogDirection,
+  OrgStructure, DialogDirection,
   OrgChartEmployeeModel, UserRolesModel
 } from '../../administration.model';
+import { UnitDefinitionModel, EntityRelationModel } from '../../models/orgmd.model';
 import { EditOrgChartDialogComponent } from './edit-org-chart-dialog/edit-org-chart-dialog.component';
 import { MatDialog } from '@angular/material';
 import { multiLanguageTranslator, multiLanguageTranslatorPipe } from 'src/assets/translator/index';
@@ -47,7 +48,7 @@ export class EditOrganizationalChartComponent implements OnInit {
   possibleAction = 'Show Employees';
   sideInfoItem: OrgStructure;
   orgUnitsList: UnitDefinitionModel[];
-  entityRelationsList: EntityRelModel[];
+  entityRelationsList: EntityRelationModel[];
   detailState = 'out';
   headerHeight: number;
   maxUnitLevel = 0;

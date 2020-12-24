@@ -25,20 +25,11 @@ app-administration{
   color: #839091;
 }
 
-/* .flex-drawer-style-container{
-  display: flex;
-  flex-direction: column;
-  min-height: 100%;
-}
-
-.flex-grow-style-container {
-  display: flex;
-  flex-direction: column;
-  height:100%;
-}
- */
 .main_admin_wrapper{
   padding: 0 42px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .main_admin_wrapper, .admin_small_window_wrapper{
@@ -54,7 +45,7 @@ app-administration{
       margin-bottom: auto;
       margin-top: auto;
       align-items: center;
-      height: 32px;
+      height: 42px;
       padding-bottom: 25px;
       a {
         background-image: url(assets/images/icons/arrow_point_icon_001.svg);
@@ -104,22 +95,24 @@ app-administration{
             margin: auto;
             cursor: pointer;
             &.glass{
-              padding: 5px;
+              padding: 10px;
             }
             &.filter{
-              padding: 0 10px;
+              padding: 10px;
             }
         }
         input{
-            height: 30px;
+            height: 38px;
             width: 100%;
-            margin: 0 10px;
+            margin: 0 5px;
             border: none;
             outline-width: 0;
+            min-width: 0;
         }
       }
       .action-buttons{
         button{
+          height: 42px;
           margin-left: 5px;
           &:first-child{
             margin-left: 15px;
@@ -240,7 +233,7 @@ app-administration{
       tr{
         margin: 0 10px;
         background: #F5F5F5;
-        height: 52px;
+        /* height: 58px; */
         cursor: pointer;
         &.default-pointer {
           cursor: default;
@@ -249,10 +242,16 @@ app-administration{
           background: #E8F9FA;
         }
         td{
-          /* height: 47px !important; */
-          border-bottom: 10px solid white;
+          height: 48px;
           font-size: 14px;
           color: #65676F;
+        }
+        &:first-child td{
+          border-bottom: 10px solid white;
+        }
+        &:not(:first-child) td{
+          border-top: 10px solid white;
+          border-bottom: 10px solid white;
         }
       }
       .row-action-single-button-wrapper {
@@ -347,6 +346,9 @@ app-administration{
 .dialog-box-wrapper{
   margin: auto !important;
   padding: 20px;
+  .mat-dialog-title {
+    margin: 0;
+  }
   .dialog_header{
     display: flex;
     flex-direction: row;
@@ -601,11 +603,18 @@ app-administration{
   }
 }
 
-.org-chart-wrapper{
+.content-with-drawer-wrapper{
   display: flex;
   flex-direction: row;
-  //flex-grow: 1;
-  .org-chart-block{
+  flex: 1;
+  &.drawer-opened {
+    overflow: hidden;
+    .org-chart-block, .table_wrapper {
+      overflow: auto;
+      padding-right: 25px;
+    }
+  }
+  .org-chart-block, .table_wrapper {
     flex: 2;
   }
   .drawer-animation-holder{
@@ -639,29 +648,24 @@ app-administration{
         display: flex;
         flex-direction: row;
         margin: 15px 0;
+        flex-wrap: wrap;
         h4{
           font-size: 14px;
           color: #65676F;
           font-weight: normal;
-          width: 40%;
+          /* width: 40%; */
+          flex: 1;
           padding-right: 5px;
         }
         p{
           font-size: 14px;
           width:60%;
           padding-right: 5px;
-          word-break: break-all;
+          word-break: break-word;//break-all;
         }
       }
     }
   }
-  &.drawer-opened {
-    .org-chart-block {
-      overflow: auto;
-      padding-right: 25px;
-    }
-  }
-
 }
 
 .input_field_wrp{
@@ -728,6 +732,7 @@ app-administration{
           font-size: 14px;
           font-weight: normal;
           color: #65676F;
+          padding-right: 5px;
           &.proxy{
             width: 20%;
           }

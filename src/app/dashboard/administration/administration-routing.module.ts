@@ -4,7 +4,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { AdministrationComponent } from './administration.component';
 import { OrgmdRolesComponent } from './orgmd/orgmd-roles/orgmd-roles.component';
 import { EditOrganizationalChartComponent } from './orgmd/edit-organizational-chart/edit-organizational-chart.component';
-import { OrgmdRolesMainComponent } from './orgmd/orgmd-roles-main/orgmd-roles-main.component';
 import { ORGMDMainComponent } from './orgmd/edit-org-chart-main/edit-org-chart-main.component';
 import { MainPageComponent } from './main-page/main-page.component';
 import { OrgmdRoleUsersComponent } from './orgmd/orgmd-roles/orgmd-role-users/orgmd-role-users.component';
@@ -22,6 +21,10 @@ import { OrgmdTeamUsersComponent } from './orgmd/orgmd-team-management/orgmd-tea
 import { CreateDelegationComponent } from './delegation-management/create-delegation/create-delegation.component';
 import { CurrentDelegationsComponent } from './delegation-management/current-delegations/current-delegations.component';
 import { DelegationsReportComponent } from './delegation-management/delegations-report/delegations-report.component';
+import { UnitDefinitionComponent } from './orgmd/unit-definition/unit-definition.component';
+import { EntityRelationsComponent } from './orgmd/entity-relations/entity-relations.component';
+import { EcmdRolesComponent } from './ecmd/ecmd-roles/ecmd-roles.component';
+import { EcmdRoleUsersComponent } from './ecmd/ecmd-roles/ecmd-role-users/ecmd-role-users.component';
 
 
 
@@ -51,6 +54,22 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'orgmd-team-management',
+        component: ORGMDMainComponent,
+        children: [
+          { path: '', component: OrgmdTeamManagementComponent },
+          { path: 'users', component: OrgmdTeamUsersComponent }
+        ]
+      },
+      {
+        path: 'unit-definition',
+        component: UnitDefinitionComponent,
+      },
+      {
+        path: 'entity-relations',
+        component: EntityRelationsComponent,
+      },
+      {
         path: 'edit-org-chart',
         component: ORGMDMainComponent,
         children: [
@@ -60,12 +79,18 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'ecmd-roles',
+        component: EcmdMainComponent,
+        children: [
+          { path: '', component: EcmdRolesComponent },
+          { path: 'users', component: EcmdRoleUsersComponent }
+        ]
+      },
+      {
         path: 'ecmd-records-management',
         component: EcmdMainComponent,
         children: [
-          { path: '', component: EcmdRecordsManagementComponent },
-          /*{ path: 'users', component: OrgChartUsersComponent },
-          { path: 'unit-roles', component: EditOrgChartRolesComponent } */
+          { path: '', component: EcmdRecordsManagementComponent }
         ]
       },
       {

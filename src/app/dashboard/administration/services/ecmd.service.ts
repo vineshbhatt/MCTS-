@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, throwError, EMPTY, BehaviorSubject } from 'rxjs';
+import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { FCTSDashBoard } from 'src/environments/environment';
@@ -7,6 +7,7 @@ import { AppLoadConstService } from 'src/app/app-load-const.service';
 import {
   ECDMChartNode, ECDMChartCounterpart, ECDMChartDepartment, ECDMChartContact, CountriesModel, StatesModel, NodeListModel
 } from '../ecmd/ecmd-classes.model';
+import { PaginationParameters, UsersData, RolesData } from '../administration.model';
 
 @Injectable({
   providedIn: 'root'
@@ -277,6 +278,67 @@ export class EcmdService {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
       }
     );
+  }
+
+  getECMDRoles(): Observable<RolesData[]> {
+    const params = new HttpParams()
+      .set('select', 'true');
+    return this.httpServices.get<any>(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ECMDRoles}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
+  ecmdRoleUsers(itemID: string, actionParameters: any, pageParameters: PaginationParameters): Observable<UsersData[]> {
+    let params = new HttpParams()
+      .set('StartRow', pageParameters.startRow.toString())
+      .set('EndRow', pageParameters.endRow.toString())
+      .set('GRID', itemID)
+      .set('rowCount', pageParameters.startRow === 1 ? 'true' : 'false');
+    if (actionParameters.action) {
+      params = params.append('FullSearchStr', actionParameters.fullSearchStr ? actionParameters.fullSearchStr : '');
+      params = params.append('FirstName', actionParameters.name ? actionParameters.name : '');
+      params = params.append('LastName', actionParameters.surname ? actionParameters.surname : '');
+      params = params.append('Login', actionParameters.login ? actionParameters.login : '');
+      params = params.append('DepID', actionParameters.department);
+      params = params.append(actionParameters.action, 'true');
+    }
+    return this.httpServices.get<UsersData[]>(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ECMDRoleUsers}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
+  ecmdRoleUsersActions(itemID: string, action: string, usersList: string[]): Observable<any> {
+    const params = new HttpParams()
+      .set('GRID', itemID)
+      .set('UserIDs', usersList.toString())
+      .set(action, 'true');
+    const options = {
+      headers: new HttpHeaders()
+        .set('OTCSTICKET', CSConfig.AuthToken)
+    };
+    return this.httpServices.post(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ECMDRoleUsersActions}?Format=webreport`,
+      params, options);
   }
 }
 

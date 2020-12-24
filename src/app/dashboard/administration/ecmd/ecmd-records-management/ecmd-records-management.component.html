@@ -10,7 +10,7 @@
       </div>
     </div>
   </div>
-  <div class="org-chart-wrapper" [class.drawer-opened]="detailState === 'in'"
+  <div class="content-with-drawer-wrapper" [class.drawer-opened]="detailState === 'in'"
     [ngStyle]="{'height': 'calc(100vh - ' + headerHeight + 'px)'}">
     <app-ecmd-chart class="org-chart-block" (openNodeDetailsOutput)=showNodeDetails($event)
       (editNodeOutput)=editNode($event) (deleteNodeOutput)=deleteNode($event) (addNodeOutput)=addNode($event)

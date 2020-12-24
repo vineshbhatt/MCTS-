@@ -182,6 +182,15 @@ export const FCTSDashBoard = {
   AdminSingleDelegationsInactivator: 'CTA_AdminSingleDelegationsInactivator',
   AdminDelegationsReport: 'CTA_AdminDelegationsReport',
 
+  ORGMDUnitDefinition: 'CTA_UnitDefinition',
+  ORGMDUnitDefinitionActions: 'CTA_UnitDefinitionActions',
+  ORGMDStrEntityRelationsActions: 'CTA_StrEntityRelationsActions',
+  ORGMDStrEntityRelations: 'CTA_StrEntityRelations',
+
+  ECMDRoles: 'CTA_ECMDRoles',
+  ECMDRoleUsers: 'CTA_ECMDRoleUsers',
+  ECMDRoleAllUsers: 'CTA_ECMDRoleAllUsers',
+  ECMDRoleUsersActions: '		CTA_ECMDRoleUsersActions',
 
   BaseHref: '/img/fctsangular/fctsapp/',
   // BaseHref: '/',

@@ -5,7 +5,6 @@ import { MainPageComponent } from './main-page/main-page.component';
 import { OrgmdRolesComponent } from './orgmd/orgmd-roles/orgmd-roles.component';
 import { EditOrganizationalChartComponent } from './orgmd/edit-organizational-chart/edit-organizational-chart.component';
 import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
-import { OrgmdRolesMainComponent } from './orgmd/orgmd-roles-main/orgmd-roles-main.component';
 import { ORGMDMainComponent } from './orgmd/edit-org-chart-main/edit-org-chart-main.component';
 import { AddUsersDialogComponent } from './admin-dialog-boxes/add-users-dialog/add-users-dialog.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
@@ -41,7 +40,13 @@ import { OrgmdTeamUsersComponent } from './orgmd/orgmd-team-management/orgmd-tea
 import { CreateDelegationComponent } from './delegation-management/create-delegation/create-delegation.component';
 import { CurrentDelegationsComponent } from './delegation-management/current-delegations/current-delegations.component';
 import { DelegationsReportComponent } from './delegation-management/delegations-report/delegations-report.component';
-
+import { UnitDefinitionComponent } from './orgmd/unit-definition/unit-definition.component';
+import { UnitDefinitionDialogComponent } from './orgmd/unit-definition/unit-definition-dialog/unit-definition-dialog.component';
+import { EntityRelationsComponent } from './orgmd/entity-relations/entity-relations.component';
+import { EntityRelationsDialogComponent } from './orgmd/entity-relations/entity-relations-dialog/entity-relations-dialog.component';
+import { EcmdRolesComponent } from './ecmd/ecmd-roles/ecmd-roles.component';
+import { EcmdRoleUsersComponent } from './ecmd/ecmd-roles/ecmd-role-users/ecmd-role-users.component';
+import { BaseDefinitionComponent } from './base-classes/base-definition/base-definition.component'
 
 @NgModule({
   imports: [
@@ -56,7 +61,6 @@ import { DelegationsReportComponent } from './delegation-management/delegations-
     OrgmdRolesComponent,
     EditOrganizationalChartComponent,
     BreadcrumbsComponent,
-    OrgmdRolesMainComponent,
     ORGMDMainComponent,
     AddUsersDialogComponent,
     OrgmdChartComponent,
@@ -88,7 +92,14 @@ import { DelegationsReportComponent } from './delegation-management/delegations-
     OrgmdTeamUsersComponent,
     CreateDelegationComponent,
     CurrentDelegationsComponent,
-    DelegationsReportComponent
+    DelegationsReportComponent,
+    UnitDefinitionComponent,
+    UnitDefinitionDialogComponent,
+    EntityRelationsComponent,
+    EntityRelationsDialogComponent,
+    EcmdRolesComponent,
+    EcmdRoleUsersComponent,
+    BaseDefinitionComponent
   ],
   entryComponents: [
     AddUsersDialogComponent,
@@ -101,7 +112,9 @@ import { DelegationsReportComponent } from './delegation-management/delegations-
     EditCounterpartDialogComponent,
     EditDepartmentDialogComponent,
     EditContactDialogComponent,
-    OrgmdAddTeamDialogComponent
+    OrgmdAddTeamDialogComponent,
+    UnitDefinitionDialogComponent,
+    EntityRelationsDialogComponent
   ]
 })
 export class AdministrationModule { }

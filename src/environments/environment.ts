@@ -136,8 +136,6 @@ export const FCTSDashBoard = {
   ORGMDOrgChart: 'CTA_ORGMDOrgChart',
   ORGMDOrgChartUsers: 'CTA_ORGMDOrgChartUsers',
   ORGMDOrgChartSearch: 'CTA_OrgChartSearch',
-  ORGMDUnitDef: 'CTA_ORGMDOrgUnitDefinition',
-  ORGMDEntityRelations: 'CTA_ORGMDStrEntityRelations',
   ORGMDEditOrganizationalChart: 'CTA_ORGMDEditOrganizationalChart',
   ObjectInUse: 'CTA_ObjectInUse',
   ORGMDOrgUnitUsers: 'CTA_ORGMDOrgUnitUsers',
@@ -177,12 +175,23 @@ export const FCTSDashBoard = {
   ORGMDTeamProjects: 'CTA_ORGMDTeamProjects',
   ORGMDTeamEmployeeRoles: 'CTA_ORGMDTeamEmployeeRoles',
   ORGMDDeleteGroup: 'CTA_ORGMDDeleteGroup',
+
   AdminDelegationUsers: 'CTA_AdminDelegationUsers',
   AdminAddDelegationGroup: 'CTA_AdminAddDelegationGroup',
   AdminSectDelegationsActivator: 'CTA_AdminDelegationsActivator',
   AdminCurrentDelegations: 'CTA_AdminCurrentDelegations',
   AdminSingleDelegationsInactivator: 'CTA_AdminSingleDelegationsInactivator',
   AdminDelegationsReport: 'CTA_AdminDelegationsReport',
+
+  ORGMDUnitDefinition: 'CTA_UnitDefinition',
+  ORGMDUnitDefinitionActions: 'CTA_UnitDefinitionActions',
+  ORGMDStrEntityRelationsActions: 'CTA_StrEntityRelationsActions',
+  ORGMDStrEntityRelations: 'CTA_StrEntityRelations',
+
+  ECMDRoles: 'CTA_ECMDRoles',
+  ECMDRoleUsers: 'CTA_ECMDRoleUsers',
+  ECMDRoleAllUsers: 'CTA_ECMDRoleAllUsers',
+  ECMDRoleUsersActions: '		CTA_ECMDRoleUsersActions',
 
 
   // BaseHref: '/img/fctsangular/fctsapp/',

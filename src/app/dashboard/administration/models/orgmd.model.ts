@@ -46,3 +46,19 @@ export interface ORGMDTeamProjects {
     ID: number;
     Name: string;
 }
+
+export class UnitDefinitionModel {
+    Description_AR: string;
+    Description_EN: string;
+    Name_AR: string;
+    Name_EN: string;
+    OUTID: number;
+}
+
+export class EntityRelationModel {
+    Description_AR: string;
+    Description_EN: string;
+    LTID: number;
+    Name_AR: string;
+    Name_EN: string;
+}
