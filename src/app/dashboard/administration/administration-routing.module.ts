@@ -25,6 +25,12 @@ import { UnitDefinitionComponent } from './orgmd/unit-definition/unit-definition
 import { EntityRelationsComponent } from './orgmd/entity-relations/entity-relations.component';
 import { EcmdRolesComponent } from './ecmd/ecmd-roles/ecmd-roles.component';
 import { EcmdRoleUsersComponent } from './ecmd/ecmd-roles/ecmd-role-users/ecmd-role-users.component';
+import { PurposesComponent } from './metadata/purposes/purposes.component';
+import { PriorityComponent } from './metadata/priority/priority.component';
+import { FilingPlanComponent } from './metadata/filing-plan/filing-plan.component';
+import { MdSimpleViewComponent } from './metadata/md-simple-view/md-simple-view.component';
+import { YearReceiverComponent } from './metadata/year-receiver/year-receiver.component';
+import { RejectReasonsComponent } from './metadata/reject-reasons/reject-reasons.component';
 
 
 
@@ -158,8 +164,70 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'base-types',
+        component: MdSimpleViewComponent,
+        data: { dataType: 'base_type' }
+      },
+      {
+        path: 'correspondence-types',
+        component: MdSimpleViewComponent,
+        data: { dataType: 'correspondence_type' }
+      },
+      {
+        path: 'document-types',
+        component: MdSimpleViewComponent,
+        data: { dataType: 'document_type' }
+      },
+      {
+        path: 'purpose',
+        component: PurposesComponent
+      },
+      {
+        path: 'priority',
+        component: PriorityComponent
+      },
+      {
+        path: 'dispatch-methods',
+        component: MdSimpleViewComponent,
+        data: { dataType: 'dispatch_method' }
+      },
+      {
+        path: 'reject-reasons',
+        component: RejectReasonsComponent,
+        data: { dataType: 'dispatch_method' }
+      },
+      {
+        path: 'year-receiver',
+        component: YearReceiverComponent
+      },
+      {
+        path: 'physical-location',
+        component: FilingPlanComponent,
+        data: { dataType: 'location' }
+      },
+      {
+        path: 'cabinet',
+        component: FilingPlanComponent,
+        data: { dataType: 'cabinet' }
+      },
+      {
+        path: 'row',
+        component: FilingPlanComponent,
+        data: { dataType: 'row' }
+      },
+      {
+        path: 'shelf-receiver',
+        component: FilingPlanComponent,
+        data: { dataType: 'shelf' }
+      },
+      {
+        path: 'file',
+        component: FilingPlanComponent,
+        data: { dataType: 'file' }
+      },
+      {
         path: 'new-delegation',
-        component: CreateDelegationComponent
+        component: CreateDelegationComponent,
       },
       {
         path: 'current-delegations',

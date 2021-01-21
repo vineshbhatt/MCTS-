@@ -46,7 +46,7 @@
             {{col.columnName | translator}}
           </th>
           <td mat-cell *matCellDef="let element" [ngClass]="col.className" [ngSwitch]="col.columnDef">
-            <div *ngSwitchCase="'actionButtons'" class="row-action-single-button-wrapper">
+            <div *ngSwitchCase="'actionButtons'" class="row-action-button-wrapper">
               <a [matTooltip]="'edit' | translator" class="btn btn_013"
                 (click)="openRoleActionsDialog('updateRole', element)">
                 <img src="{{basehref}}assets/images/icons/edit_01.svg" alt="">

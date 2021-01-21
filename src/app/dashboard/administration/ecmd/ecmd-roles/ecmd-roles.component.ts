@@ -39,6 +39,7 @@ export class EcmdRolesComponent extends BaseDefinitionComponent implements OnIni
   }
 
   getRoles() {
+    this.runSpinner = true;
     this._ecmdService.getECMDRoles().subscribe(
       response => {
         this.rolesData = response;
@@ -47,6 +48,9 @@ export class EcmdRolesComponent extends BaseDefinitionComponent implements OnIni
       },
       responseError => {
         this._errorHandlerFctsService.handleError(responseError).subscribe();
+      },
+      () => {
+        this.runSpinner = false;
       }
     );
   }
@@ -56,7 +60,8 @@ export class EcmdRolesComponent extends BaseDefinitionComponent implements OnIni
       {
         queryParams:
         {
-          ID: role.Grid,
+          ID: role.ID,
+          GRID: role.Grid,
           ItemName: role.Name_EN
         }
       });

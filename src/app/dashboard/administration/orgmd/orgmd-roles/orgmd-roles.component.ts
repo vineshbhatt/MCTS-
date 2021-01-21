@@ -92,7 +92,8 @@ export class OrgmdRolesComponent implements OnInit {
       {
         queryParams:
         {
-          ID: role.Grid,
+          ID: role.ID,
+          GRID: role.Grid,
           ItemName: role.Name_EN.replace(/\s/g, '')
         }
       });

@@ -31,7 +31,7 @@ export class CurrentDelegationsComponent implements OnInit {
     { 'columnDef': 'StartDate', 'columnName': 'start_date', 'className': '' },
     { 'columnDef': 'EndDate', 'columnName': 'end_date', 'className': '' },
     { 'columnDef': 'active', 'columnName': 'active', 'className': '' },
-    { 'columnDef': 'actionButtons', 'columnName': '', 'className': 'single-action-button' }
+    { 'columnDef': 'actionButtons', 'columnName': '', 'className': 'action-button-cell' }
   ];
 
   filterValues = {

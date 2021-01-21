@@ -224,9 +224,12 @@ app-administration{
         font-size: 14px;
         border: none;
       }
-      .row-action-single-button-wrapper{
+      .row-action-button-wrapper{
         display: flex;
         justify-content: center;
+      }
+      .empty-header{
+        height: 24px;
       }
     }
     tbody{
@@ -254,16 +257,16 @@ app-administration{
           border-bottom: 10px solid white;
         }
       }
-      .row-action-single-button-wrapper {
+      .row-action-button-wrapper {
         min-width: 40px;
         display: flex;
-        justify-content: center;
+        justify-content: flex-end;
         align-items: center;
         a{
           display: none;
         }
       }
-      tr:hover td .row-action-single-button-wrapper a { 
+      tr:hover td .row-action-button-wrapper a { 
         display:inline-block;
       }
     }
@@ -271,19 +274,19 @@ app-administration{
       &:not(:first-child):not(:last-child){
         padding: 0 5px;
       }
-      &:first-child{
+      &:first-child:not(:last-child){
         padding-left: 24px;
         padding-right: 5px;
       }
-      &:last-child{
+      &:last-child:not(:first-child){
         padding-left: 5px;
         padding-right: 24px;
       }
       &.check-box {
         width: 40px;
       }
-      &.single-action-button{
-        width:40px;
+      &.action-button-cell{
+        width:75px;
       }
       &.email-column{
         width:45%;
@@ -291,6 +294,9 @@ app-administration{
       }
       &.och_roles_action-buttons{
         width: 75px;
+      }
+      &.single-column{
+        width: 100%;
       }
     }
   }
@@ -443,6 +449,7 @@ app-administration{
         font-size: 14px;
         font-weight: normal;
         color: #65676F;
+        padding-right: 5px;
       }
       .input_field_wrp{
         width:70%;

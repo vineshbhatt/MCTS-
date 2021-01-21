@@ -2,6 +2,7 @@ export interface RolesData {
     Description_AR: string;
     Description_EN: string;
     Grid: string;
+    ID: string;
     Name_AR: string;
     Name_EN: string;
 }

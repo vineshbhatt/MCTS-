@@ -92,7 +92,7 @@
             <div *ngSwitchCase="'active'">
               <p *ngIf="element.ISActive === '1'" class="status-marker active">{{'active' | translator}}</p>
             </div>
-            <div *ngSwitchCase="'actionButtons'" class="row-action-single-button-wrapper">
+            <div *ngSwitchCase="'actionButtons'" class="row-action-button-wrapper">
               <a [matTooltip]="'actbtn_delete' | translator" class="btn btn_006"
                 (click)="deleteRecordConfirmation([element.ID])">
                 <img src="{{basehref}}assets/images/icons/admin_delete.svg" alt="">

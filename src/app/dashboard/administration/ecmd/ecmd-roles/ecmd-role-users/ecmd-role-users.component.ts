@@ -18,6 +18,7 @@ import { EcmdService } from 'src/app/dashboard/administration/services/ecmd.serv
   styleUrls: ['./ecmd-role-users.component.scss']
 })
 export class EcmdRoleUsersComponent extends BaseCurrentUsersComponent implements OnInit {
+  grid: string;
 
   constructor(
     public _administration: AdministrationService
@@ -33,6 +34,7 @@ export class EcmdRoleUsersComponent extends BaseCurrentUsersComponent implements
 
   ngOnInit() {
     this.itemID = this._route.snapshot.queryParamMap.get('ID');
+    this.grid = this._route.snapshot.queryParamMap.get('GRID');
     this.itemName = this._route.snapshot.queryParamMap.get('ItemName');
 
     this.breadcrumbsSubscription();
@@ -70,7 +72,7 @@ export class EcmdRoleUsersComponent extends BaseCurrentUsersComponent implements
 
   currentUsers(paginationParameters: PaginationParameters): void {
     this.isLoading = true;
-    this._ecmdService.ecmdRoleUsers(this.itemID, this.collectActionData(), paginationParameters)
+    this._ecmdService.ecmdRoleUsers(this.grid, this.collectActionData(), paginationParameters)
       .subscribe(
         response => {
           this.usersList = response;
@@ -127,7 +129,7 @@ export class EcmdRoleUsersComponent extends BaseCurrentUsersComponent implements
       direction: DialogDirection[this.translatorService.translatorDir],
       data: {
         itemName: this.itemName,
-        itemID: this.itemID,
+        itemID: this.grid,
         allUsersActions: 'ecmdRoleAllUsers'
       }
     }).afterClosed().subscribe(result => {

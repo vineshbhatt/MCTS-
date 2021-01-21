@@ -49,7 +49,7 @@
             </th>
             <td mat-cell *matCellDef="let element" (click)="setSelectedUnit(element)" [ngSwitch]="col.columnDef"
               [ngClass]="col.className">
-              <div *ngSwitchCase="'actionButtons'" class="row-action-single-button-wrapper">
+              <div *ngSwitchCase="'actionButtons'" class="row-action-button-wrapper">
                 <a [matTooltip]="'edit' | translator" class="btn btn_013" appClickStopPropagation
                   (click)="editItem(element)">
                   <img src="{{basehref}}assets/images/icons/edit_01.svg" alt="">

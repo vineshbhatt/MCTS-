@@ -46,7 +46,19 @@ import { EntityRelationsComponent } from './orgmd/entity-relations/entity-relati
 import { EntityRelationsDialogComponent } from './orgmd/entity-relations/entity-relations-dialog/entity-relations-dialog.component';
 import { EcmdRolesComponent } from './ecmd/ecmd-roles/ecmd-roles.component';
 import { EcmdRoleUsersComponent } from './ecmd/ecmd-roles/ecmd-role-users/ecmd-role-users.component';
-import { BaseDefinitionComponent } from './base-classes/base-definition/base-definition.component'
+import { BaseDefinitionComponent } from './base-classes/base-definition/base-definition.component';
+import { PurposesComponent } from './metadata/purposes/purposes.component';
+import { EditPurposeDialogComponent } from './metadata/purposes/edit-purpose-dialog/edit-purpose-dialog.component';
+import { PriorityComponent } from './metadata/priority/priority.component';
+import { EditPriorityDialogComponent } from './metadata/priority/edit-priority-dialog/edit-priority-dialog.component';
+import { FilingPlanComponent } from './metadata/filing-plan/filing-plan.component';
+import { FilingPlanDialogComponent } from './metadata/filing-plan/filing-plan-dialog/filing-plan-dialog.component';
+import { MdSimpleViewComponent } from './metadata/md-simple-view/md-simple-view.component';
+import { MdSimpleViewDialogComponent } from './metadata/md-simple-view/md-simple-view-dialog/md-simple-view-dialog.component';
+import { YearReceiverComponent } from './metadata/year-receiver/year-receiver.component';
+import { YearReceiverDialogComponent } from './metadata/year-receiver/year-receiver-dialog/year-receiver-dialog.component';
+import { RejectReasonsComponent } from './metadata/reject-reasons/reject-reasons.component';
+import { RejectReasonsDialogComponent } from './metadata/reject-reasons/reject-reasons-dialog/reject-reasons-dialog.component'
 
 @NgModule({
   imports: [
@@ -99,7 +111,19 @@ import { BaseDefinitionComponent } from './base-classes/base-definition/base-def
     EntityRelationsDialogComponent,
     EcmdRolesComponent,
     EcmdRoleUsersComponent,
-    BaseDefinitionComponent
+    BaseDefinitionComponent,
+    PurposesComponent,
+    EditPurposeDialogComponent,
+    PriorityComponent,
+    EditPriorityDialogComponent,
+    FilingPlanComponent,
+    FilingPlanDialogComponent,
+    MdSimpleViewComponent,
+    MdSimpleViewDialogComponent,
+    YearReceiverComponent,
+    YearReceiverDialogComponent,
+    RejectReasonsComponent,
+    RejectReasonsDialogComponent
   ],
   entryComponents: [
     AddUsersDialogComponent,
@@ -114,7 +138,13 @@ import { BaseDefinitionComponent } from './base-classes/base-definition/base-def
     EditContactDialogComponent,
     OrgmdAddTeamDialogComponent,
     UnitDefinitionDialogComponent,
-    EntityRelationsDialogComponent
+    EntityRelationsDialogComponent,
+    EditPurposeDialogComponent,
+    EditPriorityDialogComponent,
+    FilingPlanDialogComponent,
+    MdSimpleViewDialogComponent,
+    YearReceiverDialogComponent,
+    RejectReasonsDialogComponent
   ]
 })
 export class AdministrationModule { }

@@ -41,8 +41,7 @@ export class CorrespondenceDetailsService {
       .set('prompting', 'done');
     return this.httpServices.get<CorrResponse[]>(
       this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.RecipientInfo
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.RecipientInfo
       }?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
@@ -68,8 +67,7 @@ export class CorrespondenceDetailsService {
       .set('FinalAppLevel', maxApproveLevel.toString());
     return this.httpServices.get<CorrResponse[]>(
       this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.SenderInfo
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.SenderInfo
       }?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
@@ -93,8 +91,7 @@ export class CorrespondenceDetailsService {
       .set('prompting', 'done');
     return this.httpServices.get<CorrResponse[]>(
       this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.CCInfo
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.CCInfo
       }?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
@@ -109,8 +106,7 @@ export class CorrespondenceDetailsService {
       .set('prompting', 'done');
     return this.httpServices.get<CorrResponse[]>(
       this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.CoverSectionInfo
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.CoverSectionInfo
       }?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
@@ -138,8 +134,7 @@ export class CorrespondenceDetailsService {
       .set('prompting', 'done');
     return this.httpServices.get<CorrResponse[]>(
       this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.AttachmentSectionInfo
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.AttachmentSectionInfo
       }?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
@@ -150,8 +145,7 @@ export class CorrespondenceDetailsService {
   getTransferPurposeAndPriority(): Observable<TransferAttributes> {
     return this.httpServices.get<TransferAttributes>(
       this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.TransferAttributes
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.TransferAttributes
       }?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }
@@ -185,8 +179,7 @@ export class CorrespondenceDetailsService {
       .set('CorrFlowType', CorrFlowType);
     return this.httpServices.get<CorrResponse[]>(
       this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.getcorrespondenceinfoRO
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.getcorrespondenceinfoRO
       }?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
@@ -199,8 +192,7 @@ export class CorrespondenceDetailsService {
       .set('volumeID', volumeID);
     return this.httpServices.get<CorrResponse[]>(
       this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.TransferHistoryTab
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.TransferHistoryTab
       }?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
@@ -215,8 +207,7 @@ export class CorrespondenceDetailsService {
       .set('onBehalfUserID', onbehalfuserid);
     return this.httpServices.get<CorrespondenenceDetailsModel[]>(
       this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.GetCorrRecordData
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.GetCorrRecordData
       }?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
@@ -251,8 +242,7 @@ export class CorrespondenceDetailsService {
       .set('volumeID', volumeID);
     return this.httpServices.get(
       this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.GetCorrFolderName
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.GetCorrFolderName
       }?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
@@ -269,8 +259,7 @@ export class CorrespondenceDetailsService {
       .set('qLive', 'false');
     return this.httpServices.get<CorrResponse[]>(
       this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.UserCollaborationRO
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.UserCollaborationRO
       }?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
@@ -283,8 +272,7 @@ export class CorrespondenceDetailsService {
       .set('ReferenceID', volumeID);
     return this.httpServices.get<CorrResponse[]>(
       this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.WorkflowCommentsList
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.WorkflowCommentsList
       }?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
@@ -297,8 +285,7 @@ export class CorrespondenceDetailsService {
       .set('ReferenceID', locationid);
     return this.httpServices.get<CorrResponse[]>(
       this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.CorrConnectionsList
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.CorrConnectionsList
       }?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
@@ -428,8 +415,7 @@ export class CorrespondenceDetailsService {
       .set('prompting', 'done');
     return this.httpServices.get<CorrResponse[]>(
       this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.CoverFolderContents
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.CoverFolderContents
       }?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
@@ -443,8 +429,7 @@ export class CorrespondenceDetailsService {
       .set('prompting', 'done');
     return this.httpServices.get<CorrResponse[]>(
       this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.AttachmentFolderContents
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.AttachmentFolderContents
       }?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
@@ -457,8 +442,7 @@ export class CorrespondenceDetailsService {
       .set('CorrFlowType', CorrFlowType);
     return this.httpServices.get<CorrespondenceFolderModel>(
       this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.createTempAttachments
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.createTempAttachments
       }?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
@@ -473,8 +457,7 @@ export class CorrespondenceDetailsService {
       .set('AttachID', '' + corrAttachID);
     return this.httpServices.get<any>(
       this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.GenerateBarcode
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.GenerateBarcode
       }?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
@@ -492,8 +475,7 @@ export class CorrespondenceDetailsService {
 
     return this.httpServices.get<CCUserSetModel[]>(
       this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.GetCCUserSet
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.GetCCUserSet
       }?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
@@ -547,7 +529,7 @@ export class CorrespondenceDetailsService {
   sendOnCorrespondence(WorkID: string, TaskID: string) {
     const url = this.CSUrl + `${FCTSDashBoard.WFApiV2}processes/${WorkID}/subprocesses/${WorkID}/tasks/${TaskID}`;
     const body = new HttpParams()
-    .set("action","SendOn");
+      .set("action", "SendOn");
     return this.httpServices.put<any>(url, body, {
       headers: new HttpHeaders()
         .set('OTCSTICKET', CSConfig.AuthToken)
@@ -565,8 +547,7 @@ export class CorrespondenceDetailsService {
   getCurrentUserMailroomPrivelage(): Observable<any> {
     return this.httpServices.get<any>(
       this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.GetUserMailroomPrivelage
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.GetUserMailroomPrivelage
       }?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }
@@ -582,8 +563,7 @@ export class CorrespondenceDetailsService {
       .set('filterField1', CSConfig.globaluserid);
     return this.httpServices.get<any[]>(
       this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.GetApproverList
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.GetApproverList
       }?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
@@ -598,8 +578,7 @@ export class CorrespondenceDetailsService {
       .set('filterField1', volumeID);
     return this.httpServices.get<any[]>(
       this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.GetApproverList
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.GetApproverList
       }?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
@@ -618,8 +597,7 @@ export class CorrespondenceDetailsService {
       .set('locationid', this._globalConstants.FCTS_StepConsole.TemplateFolder.toString());
     return this.httpServices.get<any[]>(
       this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.GetCoverLettertemplates
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.GetCoverLettertemplates
       }?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
@@ -638,15 +616,14 @@ export class CorrespondenceDetailsService {
 
     return this.httpServices.get<ColUserSetModel[]>(
       this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.GetColUserSet
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.GetColUserSet
       }?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
       }
     );
   }
-  syncDocumentMetadata(documentMetadataSync: SyncDocumentMetadataModel): Observable<any> {    
+  syncDocumentMetadata(documentMetadataSync: SyncDocumentMetadataModel): Observable<any> {
     const formData = new FormData();
     formData.append('docFolderID', documentMetadataSync.docFolderID ? documentMetadataSync.docFolderID : '');
     formData.append('srcDocID', documentMetadataSync.srcDocID ? documentMetadataSync.srcDocID : '');
@@ -666,8 +643,7 @@ export class CorrespondenceDetailsService {
     formData.append('CommitmentNumber', documentMetadataSync.CommitmentNumber ? documentMetadataSync.CommitmentNumber : '');
     formData.append('TenderNumber', documentMetadataSync.TenderNumber ? documentMetadataSync.TenderNumber : '');
 
-    return this.httpServices.post(this.CSUrl + `${FCTSDashBoard.WFApiV1}${
-      FCTSDashBoard.syncDoc
+    return this.httpServices.post(this.CSUrl + `${FCTSDashBoard.WFApiV1}${FCTSDashBoard.syncDoc
       }`,
       formData, { headers: { OTCSTICKET: CSConfig.AuthToken } });
   }
@@ -680,8 +656,7 @@ export class CorrespondenceDetailsService {
 
     return this.httpServices.get<any>(
       this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.insertNotes
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.insertNotes
       }?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
@@ -697,8 +672,7 @@ export class CorrespondenceDetailsService {
 
     return this.httpServices.get<any>(
       this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.getWFTaskInfo
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.getWFTaskInfo
       }?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
@@ -713,8 +687,7 @@ export class CorrespondenceDetailsService {
 
     return this.httpServices.get<any>(
       this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.getNotes
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.getNotes
       }?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
@@ -728,8 +701,7 @@ export class CorrespondenceDetailsService {
 
     return this.httpServices.get<any>(
       this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.SelectAttributes
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.SelectAttributes
       }?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
@@ -754,8 +726,7 @@ export class CorrespondenceDetailsService {
       .set('Deleted', Deleted);
     return this.httpServices.get<any>(
       this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.setConnection
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.setConnection
       }?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
@@ -775,8 +746,7 @@ export class CorrespondenceDetailsService {
       .set('VolumeID', VolumeID);
     return this.httpServices.get<CorrespondenceWFFormModel>(
       this.CSUrl +
-      `${FCTSDashBoard.WRApiV1}${
-      FCTSDashBoard.getCorrespondenceFormValues
+      `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.getCorrespondenceFormValues
       }?Format=webreport`,
       {
         headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
@@ -927,7 +897,7 @@ export class CorrespondenceDetailsService {
       .set('fTeamStructure', isTeamStructure.toString())
       .set('TeamID', approveData.TeamID ? approveData.TeamID.toString() : '')
       .set('LevelsList', LevelsList)
-      .set('Format',"webreport");
+      .set('Format', "webreport");
     //params.append('ApproveLevel_', approversArray.length)
     for (let row = 0; row < approversArray.length; row++) {
       const element = approversArray[row];

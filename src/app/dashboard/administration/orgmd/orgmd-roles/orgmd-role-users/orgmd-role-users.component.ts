@@ -17,6 +17,7 @@ import { BaseCurrentUsersComponent } from '../../../base-classes/base-current-us
   styleUrls: ['./orgmd-role-users.component.scss']
 })
 export class OrgmdRoleUsersComponent extends BaseCurrentUsersComponent implements OnInit {
+  grid: string;
 
   constructor(
     public _administration: AdministrationService
@@ -31,6 +32,7 @@ export class OrgmdRoleUsersComponent extends BaseCurrentUsersComponent implement
 
   ngOnInit() {
     this.itemID = this._route.snapshot.queryParamMap.get('ID');
+    this.grid = this._route.snapshot.queryParamMap.get('GRID');
     this.itemName = this._route.snapshot.queryParamMap.get('ItemName');
 
     this.breadcrumbsSubscription();
@@ -68,7 +70,7 @@ export class OrgmdRoleUsersComponent extends BaseCurrentUsersComponent implement
 
   currentUsers(paginationParameters: PaginationParameters): void {
     this.isLoading = true;
-    this._administration.orgmdRoleUsers(this.itemID, this.collectActionData(), paginationParameters)
+    this._administration.orgmdRoleUsers(this.grid, this.collectActionData(), paginationParameters)
       .subscribe(
         response => {
           this.usersList = response;
@@ -126,7 +128,7 @@ export class OrgmdRoleUsersComponent extends BaseCurrentUsersComponent implement
       direction: DialogDirection[this.translatorService.translatorDir],
       data: {
         itemName: this.itemName,
-        itemID: this.itemID,
+        itemID: this.grid,
         allUsersActions: 'orgmdRoleAllUsers'
       }
     }).afterClosed().subscribe(result => {

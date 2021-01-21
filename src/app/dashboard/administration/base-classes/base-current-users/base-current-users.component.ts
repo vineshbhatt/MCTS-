@@ -45,7 +45,7 @@ export class BaseCurrentUsersComponent implements OnInit {
     { 'columnDef': 'LastName_' + this.lang, 'columnName': 'surname', 'className': '' },
     { 'columnDef': 'Login', 'columnName': 'login', 'className': '' },
     { 'columnDef': 'DepartmentName_' + this.lang, 'columnName': 'department', 'className': '' },
-    { 'columnDef': 'actionButtons', 'columnName': '', 'className': 'single-action-button' }
+    { 'columnDef': 'actionButtons', 'columnName': '', 'className': 'action-button-cell' }
   ];
 
   @ViewChild(MatAccordion) accordion: MatAccordion;

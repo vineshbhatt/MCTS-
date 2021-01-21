@@ -29,7 +29,7 @@ export class BaseDefinitionComponent implements OnInit {
   tableStructure: any[] = [
     { columnName: 'definition', columnDef: 'Name_' + this.lang, className: '' },
     { columnName: 'description', columnDef: 'Description_' + this.lang, className: '' },
-    { columnName: '', columnDef: 'actionButtons', className: 'single-action-button' }
+    { columnName: '', columnDef: 'actionButtons', className: 'action-button-cell' }
   ];
 
   sideNavItemStructure = [
