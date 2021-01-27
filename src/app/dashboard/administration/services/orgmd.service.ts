@@ -3,7 +3,7 @@ import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { FCTSDashBoard } from 'src/environments/environment';
-import { UsersData, PaginationParameters, OrgChartEmployeeModel, UserRolesModel } from '../administration.model';
+import { UsersData, RolesData, PaginationParameters, OrgChartEmployeeModel, UserRolesModel } from '../administration.model';
 import { EntityRelationModel, ORGMDTeamProjects, UnitDefinitionModel } from 'src/app/dashboard/administration/models/orgmd.model';
 import { AppLoadConstService } from 'src/app/app-load-const.service';
 import { OrgStructureModel, ORGMDTeamsModel } from 'src/app/dashboard/administration/models/orgmd.model';
@@ -137,13 +137,14 @@ export class OrgmdService {
       .set('teamShortName', element.ShortName_EN)
       .set('teamShortName_AR', element.ShortName_AR)
       .set('teamEmail', element.Email)
-      .set(action, 'true');
+      .set(action, 'true')
+      .set('format', 'webreport');
     const options = {
       headers: new HttpHeaders()
         .set('OTCSTICKET', CSConfig.AuthToken)
     };
     return this.httpServices.post(
-      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ORGMDTeamActions}?Format=webreport`,
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ORGMDTeamActions}`,
       params, options);
   }
 
@@ -179,13 +180,14 @@ export class OrgmdService {
   orgmdTeamUsersActions(itemID: string, action: string, usersList: string[]): Observable<any> {
     const params = new HttpParams()
       .set('TeamKuafID', itemID)
-      .set(action, usersList.toString());
+      .set(action, usersList.toString())
+      .set('format', 'webreport');
     const options = {
       headers: new HttpHeaders()
         .set('OTCSTICKET', CSConfig.AuthToken)
     };
     return this.httpServices.post(
-      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ORGMDManageTeamUsers}?Format=webreport`,
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ORGMDManageTeamUsers}`,
       params, options);
   }
 
@@ -228,13 +230,14 @@ export class OrgmdService {
 
   orgmdDeleteGroup(tID: number): Observable<any> {
     const params = new HttpParams()
-      .set('TeamID', tID.toString());
+      .set('TeamID', tID.toString())
+      .set('format', 'webreport');
     const options = {
       headers: new HttpHeaders()
         .set('OTCSTICKET', CSConfig.AuthToken)
     };
     return this.httpServices.post(
-      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ORGMDDeleteGroup}?Format=webreport`,
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ORGMDDeleteGroup}`,
       params, options);
   }
 
@@ -266,13 +269,14 @@ export class OrgmdService {
       .set('recNameArabic', element.Name_AR)
       .set('recDescription', element.Description_EN)
       .set('recDescriptionArabic', element.Description_AR)
-      .set('update', 'true');
+      .set('update', 'true')
+      .set('format', 'webreport');
     const options = {
       headers: new HttpHeaders()
         .set('OTCSTICKET', CSConfig.AuthToken)
     };
     return this.httpServices.post(
-      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ORGMDUnitDefinitionActions}?Format=webreport`,
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ORGMDUnitDefinitionActions}`,
       params, options);
   }
 
@@ -304,13 +308,76 @@ export class OrgmdService {
       .set('recNameArabic', element.Name_AR)
       .set('recDescription', element.Description_EN)
       .set('recDescriptionArabic', element.Description_AR)
-      .set('update', 'true');
+      .set('update', 'true')
+      .set('format', 'webreport');
     const options = {
       headers: new HttpHeaders()
         .set('OTCSTICKET', CSConfig.AuthToken)
     };
     return this.httpServices.post(
-      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ORGMDStrEntityRelationsActions}?Format=webreport`,
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ORGMDStrEntityRelationsActions}`,
+      params, options);
+  }
+
+  getOrgmdRoles(): Observable<RolesData[]> {
+    const params = new HttpParams();
+    return this.httpServices.get<any>(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ORGMasterDataRoles}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
+  orgmdRoleUsers(itemID: string, actionParameters: any, pageParameters: PaginationParameters): Observable<UsersData[]> {
+    let params = new HttpParams()
+      .set('StartRow', pageParameters.startRow.toString())
+      .set('EndRow', pageParameters.endRow.toString())
+      .set('GRID', itemID)
+      .set('rowCount', pageParameters.startRow === 1 ? 'true' : 'false');
+    if (actionParameters.action) {
+      params = params.append('FullSearchStr', actionParameters.fullSearchStr ? actionParameters.fullSearchStr : '');
+      params = params.append('FirstName', actionParameters.name ? actionParameters.name : '');
+      params = params.append('LastName', actionParameters.surname ? actionParameters.surname : '');
+      params = params.append('Login', actionParameters.login ? actionParameters.login : '');
+      params = params.append('DepID', actionParameters.department);
+      params = params.append(actionParameters.action, 'true');
+    }
+    return this.httpServices.get<UsersData[]>(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ORGMDRoleUsers}?Format=webreport`,
+      {
+        headers: { OTCSTICKET: CSConfig.AuthToken }, params: params
+      }
+    ).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(error => {
+        return throwError(error);
+      })
+    );
+  }
+
+  orgmdRoleUsersActions(itemID: string, grid: string, action: string, usersList: string[]): Observable<any> {
+    const params = new HttpParams()
+      .set('RoleID', itemID)
+      .set('GRID', grid)
+      .set('UserIDs', usersList.toString())
+      .set(action, 'true')
+      .set('format', 'webreport');
+    const options = {
+      headers: new HttpHeaders()
+        .set('OTCSTICKET', CSConfig.AuthToken)
+    };
+    return this.httpServices.post(
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ORGMDRoleUsersAction}`,
       params, options);
   }
 

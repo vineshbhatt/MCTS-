@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { AdministrationService } from 'src/app/dashboard/administration/services/administration.service';
+import { OrgmdService } from 'src/app/dashboard/administration/services/orgmd.service';
 import { ErrorHandlerFctsService } from 'src/app/dashboard/services/error-handler-fcts.service';
 import { MatTableDataSource, MatAccordion } from '@angular/material';
 import { FormGroup, FormBuilder } from '@angular/forms';
@@ -29,7 +29,7 @@ export class OrgmdRolesComponent implements OnInit {
   @ViewChild('searchString') searchString: ElementRef;
 
   constructor(
-    private _administration: AdministrationService
+    private _orgmdService: OrgmdService
     , private formBuilder: FormBuilder
     , private _errorHandlerFctsService: ErrorHandlerFctsService
     , private router: Router) { }
@@ -44,7 +44,7 @@ export class OrgmdRolesComponent implements OnInit {
   }
 
   getOrgmdRoles(): void {
-    this._administration.getOrgmdRoles().subscribe(
+    this._orgmdService.getOrgmdRoles().subscribe(
       response => {
         this.rolesList = response;
         this.dataSource = new MatTableDataSource(this.rolesList);

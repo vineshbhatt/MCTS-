@@ -94,7 +94,7 @@ export class EcmdRoleUsersComponent extends BaseCurrentUsersComponent implements
   }
 
   usersActions(action: string, usersList: string[]): void {
-    this._ecmdService.ecmdRoleUsersActions(this.itemID, action, usersList)
+    this._ecmdService.ecmdRoleUsersActions(this.itemID, this.grid, action, usersList)
       .subscribe(
         response => {
           this.getPage(1);

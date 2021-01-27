@@ -38,7 +38,7 @@
           </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumns" class="empty-header"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="default-pointer"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="default-cursor"></tr>
       </table>
       <div class="empty-search" *ngIf="dataSource.filteredData.length === 0">No data to display.</div>
     </ng-template>

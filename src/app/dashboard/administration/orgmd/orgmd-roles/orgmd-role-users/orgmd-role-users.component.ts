@@ -10,6 +10,7 @@ import { MatDialog } from '@angular/material';
 import { AddUsersDialogComponent } from '../../../admin-dialog-boxes/add-users-dialog/add-users-dialog.component';
 import { multiLanguageTranslator, multiLanguageTranslatorPipe } from 'src/assets/translator/index';
 import { BaseCurrentUsersComponent } from '../../../base-classes/base-current-users/base-current-users.component';
+import { OrgmdService } from 'src/app/dashboard/administration/services/orgmd.service';
 
 @Component({
   selector: 'app-orgmd-role-users',
@@ -26,7 +27,8 @@ export class OrgmdRoleUsersComponent extends BaseCurrentUsersComponent implement
     , public _route: ActivatedRoute
     , public dialogU: MatDialog
     , public translator: multiLanguageTranslatorPipe
-    , public translatorService: multiLanguageTranslator) {
+    , public translatorService: multiLanguageTranslator
+    , private _orgmdService: OrgmdService) {
     super(_administration, translator, translatorService);
   }
 
@@ -70,7 +72,7 @@ export class OrgmdRoleUsersComponent extends BaseCurrentUsersComponent implement
 
   currentUsers(paginationParameters: PaginationParameters): void {
     this.isLoading = true;
-    this._administration.orgmdRoleUsers(this.grid, this.collectActionData(), paginationParameters)
+    this._orgmdService.orgmdRoleUsers(this.grid, this.collectActionData(), paginationParameters)
       .subscribe(
         response => {
           this.usersList = response;
@@ -92,7 +94,7 @@ export class OrgmdRoleUsersComponent extends BaseCurrentUsersComponent implement
   }
 
   usersActions(action: string, usersList: string[]): void {
-    this._administration.orgmdRoleUsersActions(this.itemID, action, usersList)
+    this._orgmdService.orgmdRoleUsersActions(this.itemID, this.grid, action, usersList)
       .subscribe(
         response => {
           this.getPage(1);

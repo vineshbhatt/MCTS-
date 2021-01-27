@@ -206,14 +206,14 @@ app-administration{
   }
 }
 
-.main_admin_wrapper, .dialog-box-wrapper{
-  .mat-dialog-container {
+.main_admin_wrapper/* , .dialog-box-wrapper */{
+/*   .mat-dialog-container {
     border-radius: 0px !important;
-  }
+  } */
   .table_wrapper{
-    &.all-users{
+/*     &.all-users{
       height: 65vh;
-    }
+    } */
     table{
       word-break: normal;//break-word;
     }
@@ -226,7 +226,7 @@ app-administration{
       }
       .row-action-button-wrapper{
         display: flex;
-        justify-content: center;
+        justify-content: flex-end;
       }
       .empty-header{
         height: 24px;
@@ -238,7 +238,7 @@ app-administration{
         background: #F5F5F5;
         /* height: 58px; */
         cursor: pointer;
-        &.default-pointer {
+        &.default-cursor {
           cursor: default;
         }
         &:hover{
@@ -272,13 +272,13 @@ app-administration{
     }
     th, td {
       &:not(:first-child):not(:last-child){
-        padding: 0 5px;
+        padding: 5px;
       }
-      &:first-child:not(:last-child){
+      &:first-child/* :not(:last-child) */{
         padding-left: 24px;
         padding-right: 5px;
       }
-      &:last-child:not(:first-child){
+      &:last-child/* :not(:first-child) */{
         padding-left: 5px;
         padding-right: 24px;
       }
@@ -421,7 +421,7 @@ app-administration{
       }
     }
   }
-  .table_wrapper{
+/*   .table_wrapper{
     margin: 10px;
     padding-left: 20px;
     padding-right: 13px;
@@ -437,7 +437,102 @@ app-administration{
         padding:5px;
       }
     }
+  } */
+  /* New */
+  .table_wrapper{
+    margin: 10px;
+    padding-left: 20px;
+    padding-right: 13px;
+    overflow-y: scroll;
+    &.all-users{
+      height: 65vh;
+    }
+    table{
+      word-break: normal;//break-word;
+    }
+    thead{
+      th{
+        font-weight: bold;
+        color: #65676F;
+        font-size: 14px;
+        border: none;
+      }
+/*       .row-action-button-wrapper{
+        display: flex;
+        justify-content: center;
+      }
+      .empty-header{
+        height: 24px;
+      } */
+    }
+    tbody{
+      tr{
+        margin: 0 10px;
+        background: #F5F5F5;
+        cursor: pointer;
+        &.default-cursor {
+          cursor: default;
+        }
+        &:hover{
+          background: #E8F9FA;
+        }
+        td{
+          height: 48px;
+          font-size: 14px;
+          color: #65676F;
+        }
+        &:first-child td{
+          border-bottom: 10px solid white;
+        }
+        &:not(:first-child) td{
+          border-top: 10px solid white;
+          border-bottom: 10px solid white;
+        }
+      }
+/*       .row-action-button-wrapper {
+        min-width: 40px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        a{
+          display: none;
+        }
+      } */
+/*       tr:hover td .row-action-button-wrapper a { 
+        display:inline-block;
+      } */
+    }
+    th, td {
+      &:not(:first-child):not(:last-child){
+        padding: 5px;
+      }
+      &:first-child/* :not(:last-child) */{
+        padding-left: 24px;
+        padding-right: 5px;
+      }
+      &:last-child/* :not(:first-child) */{
+        padding-left: 5px;
+        padding-right: 24px;
+      }
+      &.check-box {
+        width: 40px;
+      }
+      &.action-button-cell{
+        width:75px;
+      }
+      &.email-column{
+        width:45%;
+        max-width: 45%;
+      }
+      &.och_roles_action-buttons{
+        width: 75px;
+      }
+      &.single-column{
+        width: 100%;
+      }
+    }
   }
+  /* New */
   .dialog-body{
     padding: 0 20px;
     .interaction-list{

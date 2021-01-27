@@ -69,13 +69,14 @@ export class DelegationService {
   }
 
   activateDelegation(): Observable<any> {
-    const params = new HttpParams();
+    const params = new HttpParams()
+      .set('format', 'webreport');
     const options = {
       headers: new HttpHeaders()
         .set('OTCSTICKET', CSConfig.AuthToken)
     };
     return this.httpServices.post(
-      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.AdminSectDelegationsActivator}?Format=webreport`,
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.AdminSectDelegationsActivator}`,
       params, options);
   }
 
@@ -101,13 +102,14 @@ export class DelegationService {
   deleteDelegation(id: number): Observable<any> {
     const params = new HttpParams()
       .set('recDelegationID', id.toString())
-      .set('select', 'true');
+      .set('select', 'true')
+      .set('format', 'webreport');
     const options = {
       headers: new HttpHeaders()
         .set('OTCSTICKET', CSConfig.AuthToken)
     };
     return this.httpServices.post(
-      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.AdminSingleDelegationsInactivator}?Format=webreport`,
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.AdminSingleDelegationsInactivator}`,
       params, options);
   }
 

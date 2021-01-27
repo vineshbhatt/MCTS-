@@ -119,7 +119,7 @@ export class PurposesComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '100%',
       panelClass: 'dialog-box-wrapper',
-      maxWidth: '30vw',
+      maxWidth: '400px',
       data: {
         message: 'delete_confirmation'
       }

@@ -168,13 +168,14 @@ export class EcmdService {
       .set('lvl1ShortName', element.ShortName_EN)
       .set('lvl1ShortNameArabic', element.ShortName_AR)
       .set('ParentID', element.ParentID ? element.ParentID.toString() : '')
-      .set(action, 'true');
+      .set(action, 'true')
+      .set('format', 'webreport');
     const options = {
       headers: new HttpHeaders()
         .set('OTCSTICKET', CSConfig.AuthToken)
     };
     return this.httpServices.post(
-      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ECMDEditChart}?Format=webreport`,
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ECMDEditChart}`,
       params, options);
   }
 
@@ -202,13 +203,14 @@ export class EcmdService {
       .set('lvl2Email', element.Email)
       .set('lvl2SPID', element.SPID ? element.SPID.toString() : '')
       .set('lvl2CID', element.CountryID ? element.CountryID.toString() : '')
-      .set(action, 'true');
+      .set(action, 'true')
+      .set('format', 'webreport');
     const options = {
       headers: new HttpHeaders()
         .set('OTCSTICKET', CSConfig.AuthToken)
     };
     return this.httpServices.post(
-      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ECMDEditChart}?Format=webreport`,
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ECMDEditChart}`,
       params, options);
   }
 
@@ -222,13 +224,14 @@ export class EcmdService {
       .set('lvl3ShortNameArabic', element.ShortName_AR)
       .set('lvl3ParentID', element.ParentID ? element.ParentID.toString() : '')
       .set('lvl2CPID', element.CPID ? element.CPID.toString() : '')
-      .set(action, 'true');
+      .set(action, 'true')
+      .set('format', 'webreport');
     const options = {
       headers: new HttpHeaders()
         .set('OTCSTICKET', CSConfig.AuthToken)
     };
     return this.httpServices.post(
-      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ECMDEditChart}?Format=webreport`,
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ECMDEditChart}`,
       params, options);
   }
 
@@ -246,13 +249,14 @@ export class EcmdService {
       .set('lvl4Phone2', element.Phone2 ? element.Phone2 : '')
       .set('lvl4Fax', element.Fax ? element.Fax : '')
       .set('lvl4Email', element.Email ? element.Email : '')
-      .set(action, 'true');
+      .set(action, 'true')
+      .set('format', 'webreport');
     const options = {
       headers: new HttpHeaders()
         .set('OTCSTICKET', CSConfig.AuthToken)
     };
     return this.httpServices.post(
-      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ECMDEditChart}?Format=webreport`,
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ECMDEditChart}`,
       params, options);
   }
 
@@ -327,19 +331,20 @@ export class EcmdService {
     );
   }
 
-  ecmdRoleUsersActions(itemID: string, action: string, usersList: string[]): Observable<any> {
+  ecmdRoleUsersActions(itemID: string, grid: string, action: string, usersList: string[]): Observable<any> {
     const params = new HttpParams()
-      .set('GRID', itemID)
+      .set('RoleID', itemID)
+      .set('GRID', grid)
       .set('UserIDs', usersList.toString())
-      .set(action, 'true');
+      .set(action, 'true')
+      .set('format', 'webreport');
     const options = {
       headers: new HttpHeaders()
         .set('OTCSTICKET', CSConfig.AuthToken)
     };
     return this.httpServices.post(
-      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ECMDRoleUsersActions}?Format=webreport`,
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.ECMDRoleUsersActions}`,
       params, options);
   }
 }
-
 
