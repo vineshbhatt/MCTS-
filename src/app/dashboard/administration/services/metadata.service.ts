@@ -66,6 +66,7 @@ export class MetadataService {
       .set('OUTID', element.ID.toString())
       .set('recBaseType', element.Name_EN)
       .set('recBaseTypeArabic', element.Name_AR)
+      .set('reportType', 'BaseType')
       .set(action, 'true')
       .set('format', 'webreport');
     const options = {
@@ -73,7 +74,7 @@ export class MetadataService {
         .set('OTCSTICKET', CSConfig.AuthToken)
     };
     return this.httpServices.post(
-      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.MDBaseTypes}`,
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.MDActions}`,
       params, options);
   }
 
@@ -101,6 +102,7 @@ export class MetadataService {
       .set('OUTID', element.ID.toString())
       .set('recCorrespondenceType', element.Name_EN)
       .set('recCorrespondenceTypeArabic', element.Name_AR)
+      .set('reportType', 'CorrespondenceType')
       .set(action, 'true')
       .set('format', 'webreport');
     const options = {
@@ -108,7 +110,7 @@ export class MetadataService {
         .set('OTCSTICKET', CSConfig.AuthToken)
     };
     return this.httpServices.post(
-      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.MDCorrespondenceTypes}`,
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.MDActions}`,
       params, options);
   }
 
@@ -136,6 +138,7 @@ export class MetadataService {
       .set('OUTID', element.ID.toString())
       .set('recDocumentType', element.Name_EN)
       .set('recDocumentTypeArabic', element.Name_AR)
+      .set('reportType', 'DocumentType')
       .set(action, 'true')
       .set('format', 'webreport');
     const options = {
@@ -143,7 +146,7 @@ export class MetadataService {
         .set('OTCSTICKET', CSConfig.AuthToken)
     };
     return this.httpServices.post(
-      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.MDDocumentTypes}`,
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.MDActions}`,
       params, options);
   }
 
@@ -171,6 +174,7 @@ export class MetadataService {
       .set('OUTID', element.ID.toString())
       .set('recDispatchMethod', element.Name_EN)
       .set('recDispatchMethodArabic', element.Name_AR)
+      .set('reportType', 'DispatchMethod')
       .set(action, 'true')
       .set('format', 'webreport');
     const options = {
@@ -178,7 +182,7 @@ export class MetadataService {
         .set('OTCSTICKET', CSConfig.AuthToken)
     };
     return this.httpServices.post(
-      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.MDDispatchMethods}?Format=webreport`,
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.MDActions}`,
       params, options);
   }
 
@@ -224,6 +228,7 @@ export class MetadataService {
       .set('recPurpose', element.Purpose_EN)
       .set('recPurposeArabic', element.Purpose_AR)
       .set('recPhaseID', element.PhaseID.toString())
+      .set('reportType', 'Purpose')
       .set(action, 'true')
       .set('format', 'webreport');
     const options = {
@@ -231,7 +236,7 @@ export class MetadataService {
         .set('OTCSTICKET', CSConfig.AuthToken)
     };
     return this.httpServices.post(
-      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.MDPurposes}`,
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.MDActions}`,
       params, options);
   }
 
@@ -260,6 +265,7 @@ export class MetadataService {
       .set('recPriority', element.Priority_EN)
       .set('recPriorityArabic', element.Priority_AR)
       .set('recNumberOfDays', element.NumberOfDays.toString())
+      .set('reportType', 'Priority')
       .set(action, 'true')
       .set('format', 'webreport');
     const options = {
@@ -267,7 +273,7 @@ export class MetadataService {
         .set('OTCSTICKET', CSConfig.AuthToken)
     };
     return this.httpServices.post(
-      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.MDPriority}?Format=webreport`,
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.MDActions}`,
       params, options);
   }
 
@@ -296,6 +302,7 @@ export class MetadataService {
       .set('recRejectReason', element.RejectReason_EN)
       .set('recRejectReasonArabic', element.RejectReason_AR)
       .set('recPhaseID', element.PhaseID.toString())
+      .set('reportType', 'RejectReasons')
       .set(action, 'true')
       .set('format', 'webreport');
     const options = {
@@ -303,7 +310,7 @@ export class MetadataService {
         .set('OTCSTICKET', CSConfig.AuthToken)
     };
     return this.httpServices.post(
-      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.MDRejectReasons}?Format=webreport`,
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.MDActions}`,
       params, options);
   }
 
@@ -332,6 +339,7 @@ export class MetadataService {
       .set('recYear', element.Name_EN)
       .set('recYearArabic', element.Name_AR)
       .set('recYearIsFull', element.IsFull)
+      .set('reportType', 'Year')
       .set(action, 'true')
       .set('format', 'webreport');
     const options = {
@@ -339,7 +347,7 @@ export class MetadataService {
         .set('OTCSTICKET', CSConfig.AuthToken)
     };
     return this.httpServices.post(
-      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.MDYear}`,
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.MDActions}`,
       params, options);
   }
 
@@ -405,6 +413,7 @@ export class MetadataService {
       .set('recPhysicalLocationArabic', element.Name_AR)
       .set('recPhysicalLocationIsFull', element.IsFull)
       .set('recYearID', element.ParentID || '')
+      .set('reportType', 'PhysicalLocation')
       .set(action, 'true')
       .set('format', 'webreport');
     const options = {
@@ -412,7 +421,7 @@ export class MetadataService {
         .set('OTCSTICKET', CSConfig.AuthToken)
     };
     return this.httpServices.post(
-      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.MDPhysicalLocation}?Format=webreport`,
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.MDActions}`,
       params, options);
   }
 
@@ -461,6 +470,7 @@ export class MetadataService {
       .set('recCabinetArabic', element.Name_AR)
       .set('recCabinetIsFull', element.IsFull)
       .set('recPhysicalLocationID', element.ParentID || '')
+      .set('reportType', 'Cabinet')
       .set(action, 'true')
       .set('format', 'webreport');
     const options = {
@@ -468,7 +478,7 @@ export class MetadataService {
         .set('OTCSTICKET', CSConfig.AuthToken)
     };
     return this.httpServices.post(
-      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.MDCabinet}`,
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.MDActions}`,
       params, options);
   }
 
@@ -517,6 +527,7 @@ export class MetadataService {
       .set('recRowArabic', element.Name_AR)
       .set('recRowIsFull', element.IsFull)
       .set('recCabinetID', element.ParentID || '')
+      .set('reportType', 'Row')
       .set(action, 'true')
       .set('format', 'webreport');
     const options = {
@@ -524,7 +535,7 @@ export class MetadataService {
         .set('OTCSTICKET', CSConfig.AuthToken)
     };
     return this.httpServices.post(
-      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.MDRow}`,
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.MDActions}`,
       params, options);
   }
 
@@ -573,6 +584,7 @@ export class MetadataService {
       .set('recShelfArabic', element.Name_AR)
       .set('recShelfIsFull', element.IsFull)
       .set('recRowID', element.ParentID || '')
+      .set('reportType', 'Shelf')
       .set(action, 'true')
       .set('format', 'webreport');
     const options = {
@@ -580,7 +592,7 @@ export class MetadataService {
         .set('OTCSTICKET', CSConfig.AuthToken)
     };
     return this.httpServices.post(
-      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.MDShelf}`,
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.MDActions}`,
       params, options);
   }
 
@@ -611,6 +623,7 @@ export class MetadataService {
       .set('recFileArabic', element.Name_AR)
       .set('recFileIsFull', element.IsFull)
       .set('recShelfID', element.ParentID || '')
+      .set('reportType', 'File')
       .set(action, 'true')
       .set('format', 'webreport');
     const options = {
@@ -618,7 +631,7 @@ export class MetadataService {
         .set('OTCSTICKET', CSConfig.AuthToken)
     };
     return this.httpServices.post(
-      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.MDFile}`,
+      this.CSUrl + `${FCTSDashBoard.WRApiV1}${FCTSDashBoard.MDActions}`,
       params, options);
   }
 }

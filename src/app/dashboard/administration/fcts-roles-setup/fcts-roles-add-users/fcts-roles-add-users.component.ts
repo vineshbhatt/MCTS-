@@ -82,12 +82,13 @@ export class FctsRolesAddUsersComponent implements OnInit {
   }
 
   collectSearchData() {
+    debugger;
     let searchParams = {
       search: false,
       searchString: this.searchString.nativeElement.value,
       department: this.filtersForm.get('Department').value ? this.filtersForm.get('Department').value.OUID : ''
     };
-    if (searchParams.searchString || searchParams.department >= 0) {
+    if (searchParams.searchString || searchParams.department) {
       searchParams.search = true;
     }
     return searchParams;

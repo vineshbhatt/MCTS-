@@ -112,10 +112,9 @@ export class OrgmdRoleUsersComponent extends BaseCurrentUsersComponent implement
       name: this.filtersForm.get('Name').value,
       surname: this.filtersForm.get('Surname').value,
       login: this.filtersForm.get('Login').value,
-      department: this.filtersForm.get('Department').value ? this.filtersForm.get('Department').value.OUID : -1
+      department: this.filtersForm.get('Department').value ? this.filtersForm.get('Department').value.OUID : ''
     };
-    if (!actionParams.fullSearchStr && !actionParams.name && !actionParams.surname && !actionParams.login
-      && actionParams.department === -1) {
+    if (!actionParams.fullSearchStr && !actionParams.name && !actionParams.surname && !actionParams.login && !actionParams.department) {
       actionParams.action = '';
       this.action = '';
     }

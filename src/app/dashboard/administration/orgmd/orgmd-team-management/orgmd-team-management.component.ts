@@ -145,7 +145,7 @@ export class OrgmdTeamManagementComponent implements OnInit {
         const project = this.projectsList.find(element => {
           return element.ID = node.ProjectID;
         });
-        this.sideInfoItem.ProjectName = project.Name;
+        this.sideInfoItem.ProjectName = project ? project.Name : '';
         this.sideNavItemStructure = this.sideNavTeamStructure;
         this.detailState = 'in';
         this.sideInfoHeader = 'team';
